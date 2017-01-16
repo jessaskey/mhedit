@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Alphabetical">
+  <Font Name="Tahoma" Size="8.25" />
+  <Class Name="mhedit.MazeEnemies.Cannon" Collapsed="true">
+    <Position X="2.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeEnemies\Cannon.cs</FileName>
+      <HashCode>AAAAAAAAAAADgAAgBACAAAAACAAAABIAAAQCggAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeEnemies.Lightning" Collapsed="true">
+    <Position X="7.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeEnemies\Lightning.cs</FileName>
+      <HashCode>AAAAAAAAAQADoAAgAAAAAAAACAAAABIAAAQCggAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeEnemies.Perkoid" Collapsed="true">
+    <Position X="5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeEnemies\Perkoid.cs</FileName>
+      <HashCode>AAAAAAAAAAIDgAAgAAAAAAAACAAAABIAAAQCggAEAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeEnemies.Pyroid" Collapsed="true">
+    <Position X="5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeEnemies\Pyroid.cs</FileName>
+      <HashCode>AAAAAAAAAAIDgAAgAAAAAAAACAAAABIAAAQCggAEAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeEnemies.TripPad" Collapsed="true">
+    <Position X="7.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeEnemies\TripPad.cs</FileName>
+      <HashCode>AAAAAAAAAAADgAAgAAAAAAAACAAAABIAAAQCggAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeObjects.Arrow" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\Arrow.cs</FileName>
+      <HashCode>AAQABAAAAAADgAAgAAAAAAAACAAAABIAAAQCggAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeObjects.EscapePod" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\Pod.cs</FileName>
+      <NewMemberFileName>MazeObjects\Boots.cs</NewMemberFileName>
+      <HashCode>AAAAAAAAAAADgAAgAAAACAAACgAAABIAAAQCggAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeObjects.Clock" Collapsed="true">
+    <Position X="2.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\Clock.cs</FileName>
+      <HashCode>AAAAAAAAAAADgAAgAAAAAAAACAAAABIAAAQCggAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeObjects.Hand" Collapsed="true">
+    <Position X="7.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\Hand.cs</FileName>
+      <HashCode>AAAAAAAAAAADgAAgAAAAAAAACAAAABIAAAQCggAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeObjects.Key" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\Key.cs</FileName>
+      <HashCode>AAAAAAAAAAALgAAgAAAAAAAACAAAABoAAAQCggAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeObjects.Lock" Collapsed="true">
+    <Position X="9.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\Lock.cs</FileName>
+      <HashCode>AAAAAAAAAAALgAAgAAAAAAAACAAAABIAAAQSggAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeObjects.OneWay" Collapsed="true">
+    <Position X="5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\OneWay.cs</FileName>
+      <HashCode>AAAAAAAAAAADgAAgACAAAAAACAAAABIAAAQKggAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeObjects.Oxoid" Collapsed="true">
+    <Position X="9.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\Oxoid.cs</FileName>
+      <HashCode>AAAAAAAAAAADgAAiAAAAAAAACAAAABIAAAQCggAAAgQ=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeObjects.Reactoid" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\Reactoid.cs</FileName>
+      <HashCode>AAAAAAAAAAAjgAAgAAAAAAAACAAAABIAAAQCggAEAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeObjects.Spikes" Collapsed="true">
+    <Position X="0.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\Spikes.cs</FileName>
+      <HashCode>AAAAAAAAAAADgAAgAAAAAAAACAAAABIAAAQCggAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeObjects.Transporter" Collapsed="true">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\Transporter.cs</FileName>
+      <HashCode>AAAAAAAAAAADgAAgACAAAAAACAAAABIAAAQKggAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.Maze" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Maze.cs</FileName>
+      <HashCode>EIChSACCCAIACQAwWCEECEygDBoEKElAHmRDyABAiYA=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="mhedit.MazeCollection" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeCollection.cs</FileName>
+      <HashCode>AICgCAAACAIAAAIgCCHAAAygQBgFIAkABERDCABACEI=</HashCode>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="mhedit.MazeBase" Collapsed="true">
+    <Position X="15.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeBase.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.Velocity" Collapsed="true">
+    <Position X="14" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\MazeObject.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAYAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeObject" Collapsed="true">
+    <Position X="5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\MazeObject.cs</FileName>
+      <HashCode>AAAAAAAAAAAAgAAgAAAAAAQACAAEABAAAAQAAgBAAAI=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeWall" Collapsed="true">
+    <Position X="9.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeWall.cs</FileName>
+      <HashCode>AAAAAAAAAAADgAAgAAAAAAAAiBAAABIQAAwAggAAAgA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="mhedit.MazeEnemies.CannonMovements" Collapsed="true">
+    <Position X="12.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeEnemies\CannonMovements.cs</FileName>
+      <HashCode>AAIEAAAAIAAAAAAACAAABAAAAAAAAAAAAAAAAAAUAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="mhedit.ITreeObject" Collapsed="true">
+    <Position X="12.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>ITreeObject.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAAgAAAAABAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="mhedit.MazeEnemies.Orientation" Collapsed="true">
+    <Position X="12.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeEnemies\Lightning.cs</FileName>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="mhedit.MazeObjects.ArrowDirection" Collapsed="true">
+    <Position X="12.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\Arrow.cs</FileName>
+      <HashCode>AAAQAgIAAAAAAAAAAAAAAAAAAAAAAAAACACAIAABABI=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="mhedit.MazeObjects.LockKeyColor" Collapsed="true">
+    <Position X="14" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\Lock.cs</FileName>
+      <HashCode>AAACAAAAAAIAAoAAAAAAAAAAAAAAAAAAAAAAADAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="mhedit.MazeObjects.OneWayDirection" Collapsed="true">
+    <Position X="15.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\OneWay.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="mhedit.MazeObjects.OxoidType" Collapsed="true">
+    <Position X="14" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeObjects\Oxoid.cs</FileName>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="mhedit.MazeType" Collapsed="true">
+    <Position X="12.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>Maze.cs</FileName>
+      <HashCode>AAAAAEAAAIAAAAAAAAAgEAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="mhedit.MazeWallType" Collapsed="true">
+    <Position X="14" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <FileName>MazeWall.cs</FileName>
+      <HashCode>gAAACAAAAABAAAAAAAIAAAIAAAAAAAAAEAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Enum>
+</ClassDiagram>

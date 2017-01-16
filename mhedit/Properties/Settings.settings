@@ -1,0 +1,27 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="mhedit.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="mhedit_mhedit_ws_Service" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://localhost:4213/mhedit_ws/Service.asmx</Value>
+    </Setting>
+    <Setting Name="MameExecutable" Type="System.String" Scope="User">
+      <Value Profile="(Default)">c:\mame\mame.exe</Value>
+    </Setting>
+    <Setting Name="MameDriver" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mhavoc</Value>
+    </Setting>
+    <Setting Name="MHPUsername" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MHPPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MameDebug" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ShowGridReferences" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

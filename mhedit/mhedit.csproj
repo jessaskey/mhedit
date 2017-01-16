@@ -1,0 +1,473 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{064D0FB3-1A17-40C9-8043-DA13F1971F2E}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>mhedit</RootNamespace>
+    <AssemblyName>mhedit</AssemblyName>
+    <ApplicationIcon>app2.ico</ApplicationIcon>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <ManifestCertificateThumbprint>64FE5CF743E100A80D667B00268DC153F7687F56</ManifestCertificateThumbprint>
+    <ManifestKeyFile>mhedit_1_TemporaryKey.pfx</ManifestKeyFile>
+    <GenerateManifests>true</GenerateManifests>
+    <SignManifests>true</SignManifests>
+    <TargetFrameworkProfile />
+    <PublishUrl>Y:\inetpub\org\askey\mhedit\app\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>http://mhedit.askey.org/app/</InstallUrl>
+    <UpdateUrl>http://mhedit.askey.org/app/</UpdateUrl>
+    <ProductName>Major Havoc Level Editor</ProductName>
+    <PublisherName>Jess Askey</PublisherName>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>default.aspx</WebPage>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationVersion>0.2.2.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>mhedit.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>mhedit.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Context.cs" />
+    <Compile Include="Crc32.cs" />
+    <Compile Include="MazeEnemies\CannonEditor.cs" />
+    <Compile Include="MazeEnemies\CannonMovement.cs" />
+    <Compile Include="MazeEnemies\CannonMovementAngle.cs" />
+    <Compile Include="MazeEnemies\CannonMovementEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MazeEnemies\CannonMovementEditor.Designer.cs">
+      <DependentUpon>CannonMovementEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogAbout.Designer.cs">
+      <DependentUpon>DialogAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DialogConfiguration.Designer.cs">
+      <DependentUpon>DialogConfiguration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Globals.cs" />
+    <Compile Include="ITreeObject.cs" />
+    <Compile Include="Mainform.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Mainform.Designer.cs">
+      <DependentUpon>Mainform.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Maze.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="MazeEnemies\CannonMovementMove.cs" />
+    <Compile Include="MazeEnemies\CannonMovementPause.cs" />
+    <Compile Include="MazeEnemies\CannonMovementPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MazeEnemies\CannonMovementPreview.Designer.cs">
+      <DependentUpon>CannonMovementPreview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MazeEnemies\CannonMovementReturn.cs" />
+    <Compile Include="MazeEnemies\LightningV.cs" />
+    <Compile Include="MazeEnemies\LightningH.cs" />
+    <Compile Include="MazeEnemies\TripPadPyroid.cs" />
+    <Compile Include="MazeEnemies\iCannonMovement.cs" />
+    <Compile Include="MazeFactory.cs">
+    </Compile>
+    <Compile Include="MazeCollection.cs">
+    </Compile>
+    <Compile Include="MazeEnemies\Cannon.cs" />
+    <Compile Include="MazeEnemies\Perkoid.cs" />
+    <Compile Include="MazeEnemies\Pyroid.cs" />
+    <Compile Include="MazeEnemies\TripPad.cs" />
+    <Compile Include="MazeObjects\MazeObject.cs" />
+    <Compile Include="MazeObjects\Arrow.cs" />
+    <Compile Include="MazeObjects\Boots.cs" />
+    <Compile Include="MazeObjects\Clock.cs" />
+    <Compile Include="MazeObjects\Hand.cs" />
+    <Compile Include="MazeObjects\Key.cs" />
+    <Compile Include="MazeObjects\Lock.cs" />
+    <Compile Include="MazeObjects\ObjectColor.cs" />
+    <Compile Include="MazeObjects\OneWay.cs" />
+    <Compile Include="MazeObjects\Oxoid.cs" />
+    <Compile Include="MazeObjects\EscapePod.cs" />
+    <Compile Include="MazeObjects\Reactoid.cs">
+    </Compile>
+    <Compile Include="MazeObjects\Spikes.cs" />
+    <Compile Include="MazeObjects\Transporter.cs" />
+    <Compile Include="MazeWall.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DialogAbout.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DialogAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mainform.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>Mainform.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Maze.resx">
+      <DependentUpon>Maze.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="ClassDiagram.cd" />
+    <None Include="mhedit_1_TemporaryKey.pfx" />
+    <None Include="mhedit_TemporaryKey.pfx" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="resource.cs" />
+    <Compile Include="ROMDump.cs" />
+    <Compile Include="Service References\ServiceReferenceMhedit\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="TypeConverters\VectorPositionTypeConverter.cs" />
+    <Compile Include="TypeConverters\TripPadPyroidTypeConverter.cs" />
+    <Compile Include="TypeConverters\SignedVelocityTypeConverter.cs" />
+    <Compile Include="TypeConverters\VelocityTypeConverter.cs" />
+    <Compile Include="Web References\mhedit_ws\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app.ico">
+    </Content>
+    <Content Include="app2.ico">
+    </Content>
+    <EmbeddedResource Include="MazeEnemies\CannonMovementEditor.resx">
+      <DependentUpon>CannonMovementEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DialogConfiguration.resx">
+      <DependentUpon>DialogConfiguration.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="images\buttons\trippad_32.ico" />
+    <EmbeddedResource Include="images\objects\trippad_obj.ico" />
+    <EmbeddedResource Include="images\objects\lightning_obj.ico" />
+    <EmbeddedResource Include="images\buttons\lock_32.ico" />
+    <EmbeddedResource Include="images\objects\lock_obj.ico" />
+    <EmbeddedResource Include="images\objects\key_obj.ico" />
+    <EmbeddedResource Include="images\objects\clock_obj.ico" />
+    <EmbeddedResource Include="images\buttons\hand_32.ico" />
+    <EmbeddedResource Include="images\objects\hand_obj.ico" />
+    <EmbeddedResource Include="images\buttons\spikes_32.ico" />
+    <EmbeddedResource Include="images\objects\spikes_obj.ico" />
+    <EmbeddedResource Include="images\buttons\booties_32.ico" />
+    <EmbeddedResource Include="images\objects\booties_obj.ico" />
+    <EmbeddedResource Include="images\buttons\transporter_32.ico" />
+    <EmbeddedResource Include="images\objects\transporter_obj.ico" />
+    <EmbeddedResource Include="images\objects\arrow_question_obj.ico" />
+    <EmbeddedResource Include="images\objects\cannon_obj.ico" />
+    <EmbeddedResource Include="images\buttons\pod_32.ico" />
+    <EmbeddedResource Include="images\objects\pod_obj.ico" />
+    <EmbeddedResource Include="images\objects\wallc_empty_64.ico" />
+    <EmbeddedResource Include="images\objects\wallc_horizontal_64.ico" />
+    <EmbeddedResource Include="images\objects\wallc_leftdown_64.ico" />
+    <EmbeddedResource Include="images\objects\wallc_leftup_64.ico" />
+    <EmbeddedResource Include="images\objects\wallc_rightdown_64.ico" />
+    <EmbeddedResource Include="images\objects\wallc_rightup_64.ico" />
+    <EmbeddedResource Include="images\objects\wallc_vertical_64.ico" />
+    <EmbeddedResource Include="images\buttons\lightning_v_32.ico" />
+    <Content Include="images\objects\cannon_barrel_right.ico" />
+    <EmbeddedResource Include="images\objects\pyroidr_obj.ico" />
+    <EmbeddedResource Include="images\objects\lightning_v_obj.ico" />
+    <EmbeddedResource Include="images\objects\oneway_l_obj.ico" />
+    <Content Include="images\toolbarbuttons\ActionRequired_03.bmp" />
+    <Content Include="images\toolbarbuttons\BuilderDialog_delete.bmp" />
+    <Content Include="images\toolbarbuttons\BuilderDialog_movedown.bmp" />
+    <Content Include="images\toolbarbuttons\BuilderDialog_moveup.bmp" />
+    <Content Include="images\toolbarbuttons\gear_32.bmp" />
+    <Content Include="images\toolbarbuttons\HomeHS.bmp" />
+    <Content Include="images\toolbarbuttons\Information.bmp" />
+    <Content Include="images\toolbarbuttons\mame.bmp" />
+    <Content Include="images\toolbarbuttons\maze1.bmp" />
+    <Content Include="images\toolbarbuttons\maze2.bmp" />
+    <Content Include="images\toolbarbuttons\maze3.bmp" />
+    <Content Include="images\toolbarbuttons\maze4.bmp" />
+    <Content Include="images\toolbarbuttons\NewCollection.bmp" />
+    <Content Include="images\toolbarbuttons\NewDocument.bmp" />
+    <Content Include="images\toolbarbuttons\NewDocumentHS.BMP" />
+    <Content Include="images\toolbarbuttons\NewFolderHS.bmp" />
+    <Content Include="images\toolbarbuttons\NewMaze.bmp" />
+    <Content Include="images\toolbarbuttons\OpenCollection.bmp" />
+    <Content Include="images\toolbarbuttons\openHS.bmp" />
+    <Content Include="images\toolbarbuttons\openMaze.bmp" />
+    <Content Include="images\toolbarbuttons\OpenSelectedItemHS.BMP" />
+    <EmbeddedResource Include="images\toolbarbuttons\Run.bmp" />
+    <Content Include="images\toolbarbuttons\Pause.bmp" />
+    <Content Include="images\toolbarbuttons\RolledBack.bmp" />
+    <Content Include="images\toolbarbuttons\SaveAllHS.bmp" />
+    <Content Include="images\toolbarbuttons\SaveAsDocument.bmp" />
+    <Content Include="images\toolbarbuttons\SaveAsWebPageHS.bmp" />
+    <Content Include="images\toolbarbuttons\SaveCollection.bmp" />
+    <Content Include="images\toolbarbuttons\saveMaze.bmp" />
+    <Content Include="images\toolbarbuttons\Shortcut.bmp" />
+    <Content Include="images\toolbarbuttons\ShowGridlines2HS.bmp" />
+    <EmbeddedResource Include="images\toolbarbuttons\Stop.bmp" />
+    <Content Include="images\toolbarbuttons\ThumbnailViewHS.bmp" />
+    <Content Include="images\toolbarbuttons\ZoomHS.bmp" />
+    <Content Include="images\toolbarbuttons\ZoomIn.bmp" />
+    <Content Include="images\toolbarbuttons\ZoomOut.bmp" />
+    <None Include="Service References\ServiceReferenceMhedit\Service.disco" />
+    <None Include="Service References\ServiceReferenceMhedit\configuration91.svcinfo" />
+    <None Include="Service References\ServiceReferenceMhedit\configuration.svcinfo" />
+    <None Include="Service References\ServiceReferenceMhedit\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <Content Include="template\136025.106">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="template\136025.107">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="template\136025.108">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="template\136025.210">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="template\136025.215">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="template\136025.216">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="template\136025.217">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="template\136025.318">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="template\havoc.exp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Service References\ServiceReferenceMhedit\Service.wsdl" />
+    <None Include="Service References\ServiceReferenceMhedit\Service.xsd" />
+    <None Include="Service References\ServiceReferenceMhedit\Service1.xsd" />
+    <None Include="Web References\mhedit_ws\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\mhedit_ws\Service.disco" />
+    <None Include="Web References\mhedit_ws\Service.wsdl" />
+    <EmbeddedResource Include="images\objects\oneway_obj.ico" />
+    <EmbeddedResource Include="images\objects\arrow_angle_obj.ico" />
+    <EmbeddedResource Include="images\objects\arrow_square_obj.ico" />
+    <EmbeddedResource Include="images\objects\oxoid_obj.ico" />
+    <EmbeddedResource Include="images\objects\perkoid_obj.ico" />
+    <EmbeddedResource Include="images\objects\reactoid_obj.ico" />
+    <EmbeddedResource Include="images\buttons\arrow_32.ico" />
+    <EmbeddedResource Include="images\buttons\cannon_32.ico" />
+    <EmbeddedResource Include="images\buttons\clock_32.ico" />
+    <EmbeddedResource Include="images\buttons\key_32.ico" />
+    <EmbeddedResource Include="images\buttons\lightning_32.ico" />
+    <EmbeddedResource Include="images\buttons\oneway_32.ico" />
+    <EmbeddedResource Include="images\buttons\oxoid_32.ico" />
+    <EmbeddedResource Include="images\buttons\perkoid_32.ico" />
+    <EmbeddedResource Include="images\buttons\pyroid.ico" />
+    <EmbeddedResource Include="images\buttons\pyroid_32.ico" />
+    <EmbeddedResource Include="images\buttons\reactoid_32.ico" />
+    <EmbeddedResource Include="images\buttons\roboid_32.ico" />
+    <EmbeddedResource Include="images\buttons\wall_empty_32.ico" />
+    <EmbeddedResource Include="images\buttons\wall_horizontal_32.ico" />
+    <EmbeddedResource Include="images\buttons\wall_leftdown_32.ico" />
+    <EmbeddedResource Include="images\buttons\wall_leftup_32.ico" />
+    <EmbeddedResource Include="images\buttons\wall_rightdown_32.ico" />
+    <EmbeddedResource Include="images\buttons\wall_rightup_32.ico" />
+    <EmbeddedResource Include="images\buttons\wall_vertical_32.ico" />
+    <EmbeddedResource Include="images\objects\pyroid_obj.ico" />
+    <EmbeddedResource Include="images\objects\wall_empty_64.ico" />
+    <EmbeddedResource Include="images\objects\wall_horizontal_64.ico" />
+    <EmbeddedResource Include="images\objects\wall_leftdown_64.ico" />
+    <EmbeddedResource Include="images\objects\wall_leftup_64.ico" />
+    <EmbeddedResource Include="images\objects\wall_rightdown_64.ico" />
+    <EmbeddedResource Include="images\objects\wall_rightup_64.ico" />
+    <EmbeddedResource Include="images\objects\wall_vertical_64.ico" />
+    <EmbeddedResource Include="MazeEnemies\CannonMovementPreview.resx">
+      <DependentUpon>CannonMovementPreview.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://localhost:4213/mhedit_ws/Service.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\mhedit_ws\</RelPath>
+      <UpdateFromURL>http://localhost:4213/mhedit_ws/Service.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>mhedit_mhedit_ws_Service</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <FileAssociation Include=".mhc">
+      <Visible>False</Visible>
+      <Description>Major Havoc Level Editor Maze Collection File</Description>
+      <Progid>mhedit.colleciton</Progid>
+      <DefaultIcon>app2.ico</DefaultIcon>
+    </FileAssociation>
+    <FileAssociation Include=".mhz">
+      <Visible>False</Visible>
+      <Description>Major Havoc Level Editor Maze File</Description>
+      <Progid>mhedit.maze</Progid>
+      <DefaultIcon>app2.ico</DefaultIcon>
+    </FileAssociation>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ServiceReferenceMhedit\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="doc\" />
+    <Folder Include="exports\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Silver.UI.ToolBox\Silver.UI.ToolBox.csproj">
+      <Project>{d937e1f4-1b9f-4567-b28e-eed24aa31c9c}</Project>
+      <Name>Silver.UI.ToolBox</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

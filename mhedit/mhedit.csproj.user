@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <ProjectView>ShowAllFiles</ProjectView>
+    <PublishUrlHistory>Y:\inetpub\org\askey\mhedit\app\|Y:\inetpub\org\askey\mhedit\mhedit\|Y:\inetpub\org\askey\havoc\|\\Env-int\C%24\inetpub\org\askey\havoc\</PublishUrlHistory>
+    <InstallUrlHistory>http://mhedit.askey.org/app/|http://mhedit.askey.org/</InstallUrlHistory>
+    <SupportUrlHistory>
+    </SupportUrlHistory>
+    <UpdateUrlHistory>http://mhedit.askey.org/app/|http://mhedit.askey.org/</UpdateUrlHistory>
+    <BootstrapperUrlHistory>
+    </BootstrapperUrlHistory>
+    <FallbackCulture>en-US</FallbackCulture>
+    <VerifyUploadedFiles>true</VerifyUploadedFiles>
+    <ErrorReportUrlHistory />
+  </PropertyGroup>
+</Project>
