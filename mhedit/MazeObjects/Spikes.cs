@@ -18,21 +18,10 @@ namespace mhedit.MazeObjects
 
         public Spikes()
         {
-            Init(new Point(0, 0));
-        }
-
-        public Spikes(Point position)
-        {
-            Init(position);
-        }
-
-        private void Init(Point position)
-        {
-            //base.mazeObjectType = MazeObjectType.Spikes;
             LoadDefaultImage();
-            _position = position;
             renderOffset.X = 0;
             renderOffset.Y = 32;
+            staticLsb = new Point(0x80, 0x0b);
         }
 
         [BrowsableAttribute(false)]

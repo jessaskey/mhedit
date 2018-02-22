@@ -1668,22 +1668,21 @@ namespace mhedit
                 }
                 //build reactor
                 ushort mazeInitIndex = rom.ReadWord(0x2581, i*2);
-
-                Point reactorPosition = Context.ConvertVectorToPixels(Context.ByteArrayLongToPoint(rom.ReadBytes(mazeInitIndex, 4)));
-                //Point adjustedPoint = new Point(reactorPosition.X, reactorPosition.Y);
+                MazeObjects.Reactoid reactor = new MazeObjects.Reactoid();
+                reactor.LoadPosition(rom.ReadBytes(mazeInitIndex, 4));
                 mazeInitIndex += 4;
-
-                MazeObjects.Reactoid reactor = new MazeObjects.Reactoid(reactorPosition);
                 int timer = rom.HexToDecimal((int) rom.ReadByte(0x3355, i));
                 reactor.Timer = timer;
                 maze.AddObject(reactor);
+
+
 
                 //pyroids
                 byte firstValue = rom.ReadByte(mazeInitIndex, 0);
                 while (firstValue != 0xff)
                 {
-                    Point pyroidPosition = Context.ConvertVectorToPixels(Context.ByteArrayLongToPoint(rom.ReadBytes(mazeInitIndex, 4)));
-                    MazeEnemies.Pyroid pyroid = new MazeEnemies.Pyroid(pyroidPosition);
+                    MazeEnemies.Pyroid pyroid = new MazeEnemies.Pyroid();
+                    pyroid.LoadPosition(rom.ReadBytes(mazeInitIndex, 4));
                     mazeInitIndex += 4;
                     byte fireballVelX = rom.ReadByte(mazeInitIndex, 0);
                     if (fireballVelX > 0x70 && fireballVelX < 0x90)
@@ -1714,9 +1713,8 @@ namespace mhedit
                     {
                         mazeInitIndex++;
                         //perkoids now...
-                        Tuple<short, short> perkoidVector = Context.ByteArrayLongToPoint(rom.ReadBytes(mazeInitIndex, 4));
-                        Point perkoidPoint = Context.ConvertVectorToPixels(perkoidVector);
-                        MazeEnemies.Perkoid perkoid = new MazeEnemies.Perkoid(perkoidPoint);
+                        MazeEnemies.Perkoid perkoid = new MazeEnemies.Perkoid();
+                        perkoid.LoadPosition(rom.ReadBytes(mazeInitIndex, 4));
                         mazeInitIndex += 4;
                         byte perkoidVelX = rom.ReadByte(mazeInitIndex, 0);
                         if (perkoidVelX > 0x70 && perkoidVelX < 0x90)
@@ -1751,10 +1749,8 @@ namespace mhedit
                 byte oxoidValue = rom.ReadByte(oxygenBaseAddress, 0);
                 while (oxoidValue != 0x00)
                 {
-                    Tuple<short, short> oxoidVector = Context.BytePackedToVector(typeof(MazeObjects.Oxoid),oxoidValue);
-                    Point oxoidPosition = Context.ConvertVectorToPixels(oxoidVector);
-                    MazeObjects.Oxoid oxoid = new MazeObjects.Oxoid(oxoidPosition);
-
+                    MazeObjects.Oxoid oxoid = new MazeObjects.Oxoid();
+                    oxoid.LoadPosition(oxoidValue);
                     maze.AddObject(oxoid);
 
                     oxygenBaseAddress++;
@@ -1776,17 +1772,17 @@ namespace mhedit
 
                 while (lightningValue != 0x00)
                 {
-                    Tuple<short, short> lightningVector = Context.BytePackedToVector(typeof(MazeEnemies.LightningH), lightningValue);
-                    Point lightningPosition = Context.ConvertVectorToPixels(lightningVector);
 
                     if (isHorizontal)
                     {
-                        MazeEnemies.LightningH lightningh = new MazeEnemies.LightningH(lightningPosition);
+                        MazeEnemies.LightningH lightningh = new MazeEnemies.LightningH();
+                        lightningh.LoadPosition(lightningValue);
                         maze.AddObject(lightningh);
                     }
                     else
                     {
-                        MazeEnemies.LightningV lightningv = new MazeEnemies.LightningV(lightningPosition);
+                        MazeEnemies.LightningV lightningv = new MazeEnemies.LightningV();
+                        lightningv.LoadPosition(lightningValue);
                         maze.AddObject(lightningv);
 
                     }
@@ -1807,8 +1803,8 @@ namespace mhedit
 
                 while (arrowValue != 0x00)
                 {
-                    Point arrowPosition = Context.ConvertVectorToPixels(Context.BytePackedToVector(typeof(MazeObjects.Arrow), arrowValue));
-                    MazeObjects.Arrow arrow = new MazeObjects.Arrow(arrowPosition);
+                    MazeObjects.Arrow arrow = new MazeObjects.Arrow();
+                    arrow.LoadPosition(arrowValue);
                     arrowBaseAddress++;
                     arrowValue = rom.ReadByte(arrowBaseAddress, 0);
                     arrow.ArrowDirection = (MazeObjects.ArrowDirection)arrowValue;
@@ -1860,8 +1856,8 @@ namespace mhedit
 
                 while (onewayValue != 0x00)
                 {
-                    Point onewayPosition = Context.ConvertVectorToPixels(Context.BytePackedToVector(typeof(MazeObjects.OneWay), onewayValue));
-                    MazeObjects.OneWay oneway = new MazeObjects.OneWay(onewayPosition);
+                    MazeObjects.OneWay oneway = new MazeObjects.OneWay();
+                    oneway.LoadPosition(onewayValue);
                     oneway.Direction = onewayOrientation;
                     maze.AddObject(oneway);
 
@@ -1884,16 +1880,16 @@ namespace mhedit
                     byte lockColor = lockValue;
                     lockBaseAddress++;
 
-                    Point keyPosition = Context.ConvertVectorToPixels(Context.BytePackedToVector(typeof(MazeObjects.Key), rom.ReadByte(lockBaseAddress, 0)));
-                    lockBaseAddress++;
-                    Point lockPosition = Context.ConvertVectorToPixels(Context.BytePackedToVector(typeof(MazeObjects.Lock), rom.ReadByte(lockBaseAddress, 0)));
-
-                    MazeObjects.Key key = new MazeObjects.Key(new Point(keyPosition.X, keyPosition.Y));
+                    MazeObjects.Key key = new MazeObjects.Key();
+                    key.LoadPosition(rom.ReadByte(lockBaseAddress, 0));
                     key.KeyColor = (MazeObjects.ObjectColor)lockColor;
                     maze.AddObject(key);
 
-                    MazeObjects.Lock keylock = new MazeObjects.Lock(new Point(lockPosition.X, lockPosition.Y));
-                    keylock.LockColor    = (MazeObjects.ObjectColor)lockColor;
+                    lockBaseAddress++;
+
+                    MazeObjects.Lock keylock = new MazeObjects.Lock();
+                    keylock.LoadPosition(rom.ReadByte(lockBaseAddress, 0));
+                    keylock.LockColor = (MazeObjects.ObjectColor)lockColor;
                     maze.AddObject(keylock);
 
                     lockBaseAddress++;
@@ -1920,15 +1916,15 @@ namespace mhedit
 
                 if (clockData != 0)
                 {
-                    Point clockPosition = Context.ConvertVectorToPixels(Context.BytePackedToVector(typeof(MazeObjects.Clock), clockData));
-                    MazeObjects.Clock clock = new MazeObjects.Clock(clockPosition);
+                    MazeObjects.Clock clock = new MazeObjects.Clock();
+                    clock.LoadPosition(clockData);
                     maze.AddObject(clock);
                 }
 
                 if (bootsData != 0)
                 {
-                    Point bootsPosition = Context.ConvertVectorToPixels(Context.BytePackedToVector(typeof(MazeObjects.Boots), bootsData));
-                    MazeObjects.Boots boots = new MazeObjects.Boots(bootsPosition);
+                    MazeObjects.Boots boots = new MazeObjects.Boots();
+                    boots.LoadPosition(bootsData);
                     maze.AddObject(boots);
                 }
                
@@ -1939,8 +1935,8 @@ namespace mhedit
                 while (colorValue != 0x00)
                 {
                     transporterBaseAddress++;
-                    Point transporterPosition = Context.ConvertVectorToPixels(Context.BytePackedToVector(typeof(MazeObjects.Transporter), rom.ReadByte(transporterBaseAddress, 0)));
-                    MazeObjects.Transporter transporter = new MazeObjects.Transporter(transporterPosition);
+                    MazeObjects.Transporter transporter = new MazeObjects.Transporter();
+                    transporter.LoadPosition(rom.ReadByte(transporterBaseAddress, 0));
                     transporter.Direction = MazeObjects.OneWayDirection.Left;
                     if ((colorValue & 0x10) > 0)
                     {
@@ -1961,9 +1957,8 @@ namespace mhedit
                     
                     while (cannonPointerAddress != 0)
                     {
-                        //ushort cannonDataAddress = rom.ReadWord(cannonPointerAddress, 0);
-                        Point cannonPosition = Context.ConvertVectorToPixels(Context.ByteArrayLongToPoint(rom.ReadBytes(cannonPointerAddress, 4)));
-                        MazeEnemies.Cannon cannon = new MazeEnemies.Cannon(cannonPosition);
+                        MazeEnemies.Cannon cannon = new MazeEnemies.Cannon();
+                        cannon.LoadPosition(rom.ReadBytes(cannonPointerAddress, 4));
                         maze.AddObject(cannon);
 
                         cannonBaseAddress += 2;
@@ -1982,8 +1977,8 @@ namespace mhedit
 
                     while (tripX != 0)
                     {
-                        Point tripPosition = Context.ConvertVectorToPixels(Context.BytePackedToVector(typeof(MazeEnemies.TripPad), tripX));
-                        MazeEnemies.TripPad trip = new MazeEnemies.TripPad(new Point(tripPosition.X, tripPosition.Y - 32));
+                        MazeEnemies.TripPad trip = new MazeEnemies.TripPad();
+                        trip.LoadPosition(tripX);
                         maze.AddObject(trip);
 
                         tripBaseAddress++;
@@ -2001,16 +1996,13 @@ namespace mhedit
                         longBytes[2] = 0x80;
                         longBytes[3] = by;
 
-                        Point tripPyroidPosition = Context.ConvertVectorToPixels(Context.ByteArrayLongToPoint(longBytes));
-                        MazeEnemies.TripPadPyroid tpp = new MazeEnemies.TripPadPyroid(new Point(tripPyroidPosition.X, tripPyroidPosition.Y));
+                        MazeEnemies.TripPadPyroid tpp = new MazeEnemies.TripPadPyroid();
+                        tpp.LoadPosition(longBytes);
                         maze.AddObject(tpp);
 
                         trip.Pyroid = tpp;
-                    }
-
-                    
+                    } 
                 }
-
 
                 //finally... de hand
                 if (i > 5)
@@ -2021,14 +2013,11 @@ namespace mhedit
                     {
                         handBaseAddress++;
                         byte handY = rom.ReadByte(handBaseAddress, 0);
-
-                        Point handPosition = Context.ConvertVectorToPixels(Context.BytePackedToVector(typeof(MazeObjects.Hand),(byte)( ((byte)(handY << 4)) + ((byte)((handX-1) & 0x0f)))));
-                        MazeObjects.Hand hand = new MazeObjects.Hand(new Point(handPosition.X, handPosition.Y + 16));
+                        MazeObjects.Hand hand = new MazeObjects.Hand();
+                        hand.LoadPosition(handY);
                         maze.AddObject(hand);
                     }
                 }
-
-
                 mazeCollection.InsertMaze(i, maze);
             }
 

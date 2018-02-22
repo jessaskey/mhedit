@@ -18,23 +18,23 @@ namespace mhedit
         private static int _canvasGridOffsetX = 3;
         private static int _canvasGridOffsetY = -3;
 
-        private static Dictionary<Type, Point> _objectLSBs = new Dictionary<Type, Point>()
-        {
-            {typeof(MazeObjects.Spikes),new Point(0x80,0x0b)},
-            {typeof(MazeObjects.Transporter),new Point(0x80,0x80)},
-            {typeof(MazeObjects.Lock),new Point(0x80,0x80)},
-            {typeof(MazeObjects.Key),new Point(0x00,0x40)},
-            {typeof(MazeObjects.Clock),new Point(0x00,0x40)},
-            {typeof(MazeObjects.Boots),new Point(0x00,0x34)},
-            {typeof(MazeObjects.EscapePod),new Point(0x00,0x80)},
-            {typeof(MazeObjects.Hand),new Point(0x3c,0x01)},
-            {typeof(MazeObjects.Oxoid),new Point(0x90,0x40)},
-            {typeof(MazeEnemies.LightningH),new Point(0x00,0x80)},
-            {typeof(MazeEnemies.LightningV),new Point(0x80,0x80)},
-            {typeof(MazeEnemies.TripPad),new Point(0x80,0x08)},
-            {typeof(MazeObjects.OneWay),new Point(0x80,0x80)},
-            {typeof(MazeObjects.Arrow),new Point(0xc0,0x40)}
-        };
+        //private static Dictionary<Type, Point> _objectLSBs = new Dictionary<Type, Point>()
+        //{
+           // {typeof(MazeObjects.Spikes),new Point(0x80,0x0b)},
+           // {typeof(MazeObjects.Transporter),new Point(0x80,0x80)},
+           // {typeof(MazeObjects.Lock),new Point(0x80,0x80)},
+           // {typeof(MazeObjects.Key),new Point(0x00,0x40)},
+           // {typeof(MazeObjects.Clock),new Point(0x00,0x40)},
+           // {typeof(MazeObjects.Boots),new Point(0x00,0x34)},
+           // {typeof(MazeObjects.EscapePod),new Point(0x00,0x80)},
+           // {typeof(MazeObjects.Hand),new Point(0x3c,0x01)},
+           // {typeof(MazeObjects.Oxoid),new Point(0x90,0x40)},
+           // {typeof(MazeEnemies.LightningH),new Point(0x00,0x80)},
+           // {typeof(MazeEnemies.LightningV),new Point(0x80,0x80)},
+           // {typeof(MazeEnemies.TripPad),new Point(0x80,0x08)},
+           // {typeof(MazeObjects.OneWay),new Point(0x80,0x80)},
+           // {typeof(MazeObjects.Arrow),new Point(0xc0,0x40)}
+        //};
 
         /// <summary>
         /// Converts an Atari vector tuple into an editor
@@ -51,7 +51,7 @@ namespace mhedit
             // |
             // Negative
             //
-            // Standard C# Winforms in a weird 1st quadrant with Y inverted... I don't know how to explain that.
+            // Standard C# Winforms are in a weird 1st quadrant with Y inverted... I don't know how to explain that.
             // This method translates an Atari vector passed as a usigned word tuple (X,Y) and converts it
             // into a Point that can be plotted on the Design Screen. 
             // 
@@ -99,8 +99,9 @@ namespace mhedit
             Tuple<short, short> vector = new Tuple<short, short>(x, y);
             return vector;
         }
+        
 
-        public static Tuple<short, short> BytePackedToVector(Type type, byte b)
+        public static Tuple<short, short> BytePackedToVector(byte b, Point staticLsb)
         {
             byte[] longBytes = new byte[4];
 
@@ -112,10 +113,10 @@ namespace mhedit
             //some packed objects have a pre-defined LSB byte in the code
             //we need to set this upon decoding of the packed data
             //for encoding, it doesn't matter since it goes away.
-            if (_objectLSBs.ContainsKey(type))
+            if (staticLsb != Point.Empty)
             {
-                longBytes[0] = (byte)_objectLSBs[type].X;
-                longBytes[2] = (byte)_objectLSBs[type].Y;
+                longBytes[0] = (byte)staticLsb.X; // (byte)_objectLSBs[type].X;
+                longBytes[2] = (byte)staticLsb.Y; //(byte)_objectLSBs[type].Y;
             }
 
             return ByteArrayLongToPoint(longBytes);
@@ -124,7 +125,6 @@ namespace mhedit
             //ushort xh = (ushort)(((b & 0x0f) + 1) << 8);
             //return new Tuple<ushort, ushort>(xh, yh);
         }
-
 
         public static byte[] PointToByteArrayShort(Point point)
         {

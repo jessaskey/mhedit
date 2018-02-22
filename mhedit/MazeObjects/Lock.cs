@@ -23,22 +23,12 @@ namespace mhedit.MazeObjects
 
         public Lock()
         {
-            Init(new Point(0, 0));
-        }
-
-        public Lock(Point position)
-        {
-            Init(position);
-        }
-
-        private void Init(Point position)
-        {
-            //base.mazeObjectType = MazeObjectType.Lock;
             LoadDefaultImage();
-            _position = position;
             renderOffset.X = 32;
             renderOffset.Y = 32;
+            staticLsb = new Point(0x80, 0x80);
         }
+
 
         [BrowsableAttribute(false)]
         public override Size Size

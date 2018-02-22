@@ -11,7 +11,7 @@ namespace mhedit.MazeEnemies
     /// The Lightning objects have have either horizontal or vertical orientation.
     /// </summary>
     [Serializable]
-    class LightningH : MazeObject
+    public class LightningH : MazeObject
     {
         private const int _SNAP_X = 64;
         private const int _SNAP_Y = 64;
@@ -22,21 +22,10 @@ namespace mhedit.MazeEnemies
 
         public LightningH()
         {
-            Init(new Point(0, 0));
-        }
-
-        public LightningH(Point position)
-        {
-            Init(position);
-        }
-
-        private void Init(Point position)
-        {
-            //base.mazeObjectType = MazeObjectType.Lightning;
             LoadDefaultImage();
-            _position = position;
             renderOffset.X = 32;
             renderOffset.Y = 32;
+            staticLsb = new Point(0x00, 0x80);
         }
 
         [BrowsableAttribute(false)]

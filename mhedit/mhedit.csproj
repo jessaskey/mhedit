@@ -22,8 +22,8 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <ManifestCertificateThumbprint>64FE5CF743E100A80D667B00268DC153F7687F56</ManifestCertificateThumbprint>
-    <ManifestKeyFile>mhedit_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestCertificateThumbprint>9D5352BA38D140747E15A84867A69CCA6817442E</ManifestCertificateThumbprint>
+    <ManifestKeyFile>mhedit_2_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>true</SignManifests>
     <TargetFrameworkProfile />
@@ -70,6 +70,12 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>mhedit.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>mhedit_2_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
@@ -195,6 +201,7 @@
     <None Include="app.config" />
     <None Include="ClassDiagram.cd" />
     <None Include="mhedit_1_TemporaryKey.pfx" />
+    <None Include="mhedit_2_TemporaryKey.pfx" />
     <None Include="mhedit_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

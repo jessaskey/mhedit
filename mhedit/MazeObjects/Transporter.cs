@@ -23,21 +23,10 @@ namespace mhedit.MazeObjects
 
         public Transporter()
         {
-            Init(new Point(0, 0));
-        }
-
-        public Transporter(Point position)
-        {
-            Init(position);
-        }
-
-        private void Init(Point position)
-        {
-            //base.mazeObjectType = MazeObjectType.Transporter;
             LoadDefaultImage();
-            _position = position;
             //renderOffset.X = 32;
             renderOffset.Y = 32;
+            staticLsb = new Point(0x80, 0x80);
         }
 
         [BrowsableAttribute(false)]

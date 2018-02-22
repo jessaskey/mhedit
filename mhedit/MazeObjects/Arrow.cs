@@ -66,21 +66,12 @@ namespace mhedit.MazeObjects
 
         public Arrow()
         {
-            Init(new Point(0, 0));
-        }
-
-        public Arrow(Point position)
-        {
-            Init(position);
-        }
-
-        private void Init(Point position)
-        {
             //base.mazeObjectType = MazeObjectType.Arrow;
             LoadDefaultImage();
-            _position = position;
+            _position = Point.Empty;
             renderOffset.X = 0;
             renderOffset.Y = 8;
+            staticLsb = new Point(0xc0, 0x40);
         }
 
         [BrowsableAttribute(false)]

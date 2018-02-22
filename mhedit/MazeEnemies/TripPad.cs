@@ -23,19 +23,8 @@ namespace mhedit.MazeEnemies
 
         public TripPad()
         {
-            Init(new Point(0, 0));
-        }
-
-        public TripPad(Point position)
-        {
-            Init(position);
-        }
-
-        private void Init(Point position)
-        {
-            //base.mazeObjectType = MazeObjectType.TripPad;
             LoadDefaultImage();
-            _position = position;
+            staticLsb = new Point(0x80, 0x08);
         }
 
         [BrowsableAttribute(false)]

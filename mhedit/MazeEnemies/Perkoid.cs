@@ -23,19 +23,7 @@ namespace mhedit.MazeEnemies
 
         public Perkoid()
         {
-            Init(new Point(0,0));
-        }
-
-        public Perkoid(Point position)
-        {
-            Init(position);
-        }
-
-        private void Init(Point position)
-        {
-            //base.mazeObjectType = MazeObjectType.Perkoid;
             LoadDefaultImage();
-            _position = position;
             _velocity = new Velocity();
             renderOffset.X = 16;
             renderOffset.Y = 16;

@@ -19,19 +19,7 @@ namespace mhedit.MazeObjects
 
         public Reactoid()
         {
-            Init(new Point(0,0));
-        }
-
-        public Reactoid(Point position)
-        {
-            Init(position);
-        }
-
-        private void Init(Point position)
-        {
-            //base.mazeObjectType = MazeObjectType.Reactoid;
             LoadDefaultImage();
-            _position = position;
             renderOffset.X = 12;
             renderOffset.Y = 16;
         }

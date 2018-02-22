@@ -21,21 +21,10 @@ namespace mhedit.MazeObjects
 
         public Clock()
         {
-            Init(new Point(0, 0));
-        }
-
-        public Clock(Point position)
-        {
-            Init(position);
-        }
-
-        private void Init(Point position)
-        {
-            //base.mazeObjectType = MazeObjectType.Clock;
             LoadDefaultImage();
-            _position = position;
             renderOffset.X = 16;
             renderOffset.Y = 16;
+            staticLsb = new Point(0x00, 0x40);
         }
 
         [BrowsableAttribute(false)]

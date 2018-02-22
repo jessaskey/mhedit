@@ -32,24 +32,8 @@ namespace mhedit.MazeEnemies
 
         public TripPadPyroid()
         {
-            Init(new Point(0,0));
-        }
-
-        public TripPadPyroid(Point position)
-        {
-            Init(position);
-        }
-
-        public override string ToString()
-        {
-            return name;
-        }
-
-        private void Init(Point position)
-        {
             LoadDefaultImage();
             renderOffset.X = 32;
-            _position = position;
         }
 
         [DescriptionAttribute("Maximum number of pyroids allowed in this maze.")]

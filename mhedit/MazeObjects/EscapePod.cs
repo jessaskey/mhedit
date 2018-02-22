@@ -42,19 +42,9 @@ namespace mhedit.MazeObjects
 
         public EscapePod()
         {
-            Init(new Point(0, 0));
-        }
-
-        public EscapePod(Point position)
-        {
-            Init(position);
-        }
-
-        private void Init(Point position)
-        {
-            //base.mazeObjectType = MazeObjectType.EscapePod;
             LoadDefaultImage();
-            _position = new Point(1184,352);
+            _position = new Point(1184, 352);
+            staticLsb = new Point(0x00, 0x80);
         }
 
         [BrowsableAttribute(false)]

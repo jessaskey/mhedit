@@ -22,21 +22,10 @@ namespace mhedit.MazeObjects
 
         public Hand()
         {
-            Init(new Point(0, 0));
-        }
-
-        public Hand(Point position)
-        {
-            Init(position);
-        }
-
-        private void Init(Point position)
-        {
-            //base.mazeObjectType = MazeObjectType.Hand;
             LoadDefaultImage();
             renderOffset.X = -8;
             renderOffset.Y = 24;
-            _position = position;
+            staticLsb = new Point(0x3c, 0x01);
         }
 
         [BrowsableAttribute(false)]

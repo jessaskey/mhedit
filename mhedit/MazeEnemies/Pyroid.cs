@@ -23,24 +23,7 @@ namespace mhedit.MazeEnemies
 
         public Pyroid()
         {
-            Init(new Point(0,0));
-        }
-
-        public Pyroid(Point position)
-        {
-            Init(position);
-        }
-
-        public override string ToString()
-        {
-            return name;
-        }
-
-        private void Init(Point position)
-        {
-            //base.mazeObjectType = MazeObjectType.Pyroid;
             LoadDefaultImage();
-            _position = position;
             _velocity = new Velocity();
             renderOffset.X = 8;
             renderOffset.Y = 8;

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
@@ -52,6 +53,7 @@ namespace mhedit
         protected bool selected = false;
         protected string name;
         protected Point renderOffset = new Point(0, 0);
+        protected Point staticLsb = new Point(0,0);
 
 
         public abstract Point SnapSize { get; }
@@ -135,6 +137,14 @@ namespace mhedit
             set { selected = value; }
         }
 
+        [BrowsableAttribute(false)]
+        [IgnoreDataMemberAttribute]
+        public Point StaticLSB
+        {
+            get { return staticLsb; }
+            set { staticLsb = value; }
+        }
+
         public object Clone()
         {
             MemoryStream ms = new MemoryStream();
@@ -166,7 +176,16 @@ namespace mhedit
             return img;
         }
 
+        internal void LoadPosition(byte bytePosition)
+        {
+            Tuple<short, short> oxoidVector = Context.BytePackedToVector(bytePosition, staticLsb);
+            Position = Context.ConvertVectorToPixels(oxoidVector);
+        }
 
+        internal void LoadPosition(byte[] longPosition)
+        {
+            Position = Context.ConvertVectorToPixels(Context.ByteArrayLongToPoint(longPosition));
+        }
 
     }
 }

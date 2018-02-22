@@ -69,6 +69,7 @@ namespace mhedit
             this.comboBoxMazeObjects = new System.Windows.Forms.ComboBox();
             this.splitterUpDown = new System.Windows.Forms.Splitter();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.contextMenuStripTree.SuspendLayout();
@@ -115,8 +116,9 @@ namespace mhedit
             this.toolStripSeparator3,
             this.toolStripButtonHome,
             this.toolStripButtonAbout,
-            this.toolStripButtonConfiguration,
-            this.toolStripButtonLoadFromROM});
+            this.toolStripButtonLoadFromROM,
+            this.toolStripSeparator4,
+            this.toolStripButtonConfiguration});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1033, 25);
@@ -495,6 +497,7 @@ namespace mhedit
             // propertyGrid
             // 
             this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyGrid.LineColor = System.Drawing.SystemColors.ControlDark;
             this.propertyGrid.Location = new System.Drawing.Point(0, 21);
             this.propertyGrid.Name = "propertyGrid";
             this.propertyGrid.Size = new System.Drawing.Size(230, 235);
@@ -523,6 +526,11 @@ namespace mhedit
             // 
             this.timerMain.Interval = 1000;
             this.timerMain.Tick += new System.EventHandler(this.timerMain_Tick);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
             // 
             // Mainform
             // 
@@ -596,10 +604,7 @@ namespace mhedit
         private System.Windows.Forms.ComboBox comboBoxMazeObjects;
         private Silver.UI.ToolBox toolBox;
         private System.Windows.Forms.ToolStripButton toolStripButtonLoadFromROM;
-
-
-
-
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
     }
 }
 

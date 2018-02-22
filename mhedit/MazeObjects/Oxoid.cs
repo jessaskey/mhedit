@@ -34,21 +34,10 @@ namespace mhedit.MazeObjects
 
         public Oxoid()
         {
-            Init(new Point(0, 0));
-        }
-
-        public Oxoid(Point position)
-        {
-            Init(position);
-        }
-
-        private void Init(Point position)
-        {
-            //base.mazeObjectType = MazeObjectType.Oxoid;
             LoadDefaultImage();
-            _position = position;
             renderOffset.X = 0;
             renderOffset.Y = 2;
+            staticLsb = new Point(0x90, 0x40);
         }
 
         [BrowsableAttribute(false)]

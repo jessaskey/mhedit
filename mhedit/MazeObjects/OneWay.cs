@@ -37,20 +37,9 @@ namespace mhedit.MazeObjects
 
         public OneWay()
         {
-            Init(new Point(0, 0));
-        }
-
-        public OneWay(Point position)
-        {
-            Init(position);
-        }
-
-        private void Init(Point position)
-        {
-            //base.mazeObjectType = MazeObjectType.OneWay;
-            _position = position;
             renderOffset.X = 32;
             renderOffset.Y = 32;
+            staticLsb = new Point(0x80, 0x80);
         }
 
         [BrowsableAttribute(false)]
