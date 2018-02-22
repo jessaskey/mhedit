@@ -111,7 +111,7 @@ namespace mhedit
             toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.booties_32.ico"));
             toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.transporter_32.ico"));
             toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.pod_32.ico"));
-
+            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.roboid_32.ico"));
             toolBox.SmallImageList = toolboxImageList;
 
             int tabIndex;
@@ -127,6 +127,7 @@ namespace mhedit
             tabIndex = toolBox.AddTab("Maze Enemies", -1);
             itemIndex = toolBox[tabIndex].AddItem("Pyroid", 7, true, new MazeEnemies.Pyroid());
             itemIndex = toolBox[tabIndex].AddItem("Perkoid", 9, true, new MazeEnemies.Perkoid());
+            itemIndex = toolBox[tabIndex].AddItem("Maxoid", 26, true, new MazeEnemies.Maxoid());
             itemIndex = toolBox[tabIndex].AddItem("Force Field", 14, true, new MazeEnemies.LightningH());
             itemIndex = toolBox[tabIndex].AddItem("Force Field", 15, true, new MazeEnemies.LightningV());
             itemIndex = toolBox[tabIndex].AddItem("Ion Cannon", 17, true, new MazeEnemies.Cannon());

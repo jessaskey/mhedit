@@ -83,7 +83,7 @@ namespace mhedit.MazeEnemies
 
         private void LoadDefaultImage()
         {
-            _img = Resource.GetResourceImage("images.objects.maxoid_obj.ico");
+            _img = Resource.GetResourceImage("images.objects.roboid_obj.ico");
         }
     }
 }

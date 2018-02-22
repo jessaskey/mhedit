@@ -285,6 +285,7 @@
     <EmbeddedResource Include="images\objects\pyroidr_obj.ico" />
     <EmbeddedResource Include="images\objects\lightning_v_obj.ico" />
     <EmbeddedResource Include="images\objects\oneway_l_obj.ico" />
+    <EmbeddedResource Include="images\objects\roboid_obj.ico" />
     <Content Include="images\toolbarbuttons\ActionRequired_03.bmp" />
     <Content Include="images\toolbarbuttons\BuilderDialog_delete.bmp" />
     <Content Include="images\toolbarbuttons\BuilderDialog_movedown.bmp" />
