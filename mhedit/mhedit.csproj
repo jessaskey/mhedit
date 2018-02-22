@@ -105,7 +105,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context.cs" />
+    <Compile Include="Controllers\MHPController.cs" />
     <Compile Include="Crc32.cs" />
+    <Compile Include="Dialogs\DialogMHPLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DialogMHPLogin.Designer.cs">
+      <DependentUpon>DialogMHPLogin.cs</DependentUpon>
+    </Compile>
     <Compile Include="MazeEnemies\CannonEditor.cs" />
     <Compile Include="MazeEnemies\CannonMovement.cs" />
     <Compile Include="MazeEnemies\CannonMovementAngle.cs" />
@@ -115,16 +122,16 @@
     <Compile Include="MazeEnemies\CannonMovementEditor.Designer.cs">
       <DependentUpon>CannonMovementEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="DialogAbout.cs">
+    <Compile Include="Dialogs\DialogAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DialogAbout.Designer.cs">
+    <Compile Include="Dialogs\DialogAbout.Designer.cs">
       <DependentUpon>DialogAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="DialogConfiguration.cs">
+    <Compile Include="Dialogs\DialogConfiguration.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DialogConfiguration.Designer.cs">
+    <Compile Include="Dialogs\DialogConfiguration.Designer.cs">
       <DependentUpon>DialogConfiguration.cs</DependentUpon>
     </Compile>
     <Compile Include="Globals.cs" />
@@ -149,6 +156,7 @@
     <Compile Include="MazeEnemies\CannonMovementReturn.cs" />
     <Compile Include="MazeEnemies\LightningV.cs" />
     <Compile Include="MazeEnemies\LightningH.cs" />
+    <Compile Include="MazeEnemies\Maxoid.cs" />
     <Compile Include="MazeEnemies\TripPadPyroid.cs" />
     <Compile Include="MazeEnemies\iCannonMovement.cs" />
     <Compile Include="MazeFactory.cs">
@@ -177,9 +185,12 @@
     <Compile Include="MazeWall.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="DialogAbout.resx">
+    <EmbeddedResource Include="Dialogs\DialogAbout.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DialogAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\DialogMHPLogin.resx">
+      <DependentUpon>DialogMHPLogin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mainform.resx">
       <SubType>Designer</SubType>
@@ -239,7 +250,7 @@
       <DependentUpon>CannonMovementEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="DialogConfiguration.resx">
+    <EmbeddedResource Include="Dialogs\DialogConfiguration.resx">
       <DependentUpon>DialogConfiguration.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -281,11 +292,16 @@
     <Content Include="images\toolbarbuttons\gear_32.bmp" />
     <Content Include="images\toolbarbuttons\HomeHS.bmp" />
     <Content Include="images\toolbarbuttons\Information.bmp" />
+    <Content Include="images\toolbarbuttons\majorhavocproject.BMP" />
     <Content Include="images\toolbarbuttons\mame.bmp" />
     <Content Include="images\toolbarbuttons\maze1.bmp" />
     <Content Include="images\toolbarbuttons\maze2.bmp" />
     <Content Include="images\toolbarbuttons\maze3.bmp" />
     <Content Include="images\toolbarbuttons\maze4.bmp" />
+    <Content Include="images\toolbarbuttons\maze_a.bmp" />
+    <Content Include="images\toolbarbuttons\maze_b.bmp" />
+    <Content Include="images\toolbarbuttons\maze_c.bmp" />
+    <Content Include="images\toolbarbuttons\maze_d.bmp" />
     <Content Include="images\toolbarbuttons\NewCollection.bmp" />
     <Content Include="images\toolbarbuttons\NewDocument.bmp" />
     <Content Include="images\toolbarbuttons\NewDocumentHS.BMP" />
@@ -294,6 +310,7 @@
     <Content Include="images\toolbarbuttons\OpenCollection.bmp" />
     <Content Include="images\toolbarbuttons\openHS.bmp" />
     <Content Include="images\toolbarbuttons\openMaze.bmp" />
+    <Content Include="images\toolbarbuttons\openMazeMHP.bmp" />
     <Content Include="images\toolbarbuttons\OpenSelectedItemHS.BMP" />
     <EmbeddedResource Include="images\toolbarbuttons\Run.bmp" />
     <Content Include="images\toolbarbuttons\Pause.bmp" />
@@ -303,6 +320,7 @@
     <Content Include="images\toolbarbuttons\SaveAsWebPageHS.bmp" />
     <Content Include="images\toolbarbuttons\SaveCollection.bmp" />
     <Content Include="images\toolbarbuttons\saveMaze.bmp" />
+    <Content Include="images\toolbarbuttons\saveMazeMHP.bmp" />
     <Content Include="images\toolbarbuttons\Shortcut.bmp" />
     <Content Include="images\toolbarbuttons\ShowGridlines2HS.bmp" />
     <EmbeddedResource Include="images\toolbarbuttons\Stop.bmp" />

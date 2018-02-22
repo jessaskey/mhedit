@@ -50,8 +50,9 @@ namespace mhedit
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonHome = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonAbout = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonConfiguration = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonLoadFromROM = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButtonConfiguration = new System.Windows.Forms.ToolStripButton();
             this.treeView = new System.Windows.Forms.TreeView();
             this.contextMenuStripTree = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.saveMazeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,7 +70,11 @@ namespace mhedit
             this.comboBoxMazeObjects = new System.Windows.Forms.ComboBox();
             this.splitterUpDown = new System.Windows.Forms.Splitter();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripButtonContestUpload = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButtonContestLogin = new System.Windows.Forms.ToolStripButton();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.contextMenuStripTree.SuspendLayout();
@@ -118,7 +123,12 @@ namespace mhedit
             this.toolStripButtonAbout,
             this.toolStripButtonLoadFromROM,
             this.toolStripSeparator4,
-            this.toolStripButtonConfiguration});
+            this.toolStripButtonConfiguration,
+            this.toolStripSeparator5,
+            this.toolStripLabel1,
+            this.toolStripButtonContestLogin,
+            this.toolStripButtonContestUpload,
+            this.toolStripSeparator6});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1033, 25);
@@ -303,6 +313,21 @@ namespace mhedit
             this.toolStripButtonAbout.ToolTipText = "About this program";
             this.toolStripButtonAbout.Click += new System.EventHandler(this.toolStripButtonAbout_Click);
             // 
+            // toolStripButtonLoadFromROM
+            // 
+            this.toolStripButtonLoadFromROM.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonLoadFromROM.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonLoadFromROM.Image")));
+            this.toolStripButtonLoadFromROM.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonLoadFromROM.Name = "toolStripButtonLoadFromROM";
+            this.toolStripButtonLoadFromROM.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonLoadFromROM.Text = "Load Mazes from ROMs";
+            this.toolStripButtonLoadFromROM.Click += new System.EventHandler(this.toolStripButtonLoadFromROM_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+            // 
             // toolStripButtonConfiguration
             // 
             this.toolStripButtonConfiguration.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -313,16 +338,6 @@ namespace mhedit
             this.toolStripButtonConfiguration.Text = "toolStripButton1";
             this.toolStripButtonConfiguration.ToolTipText = "Configuration";
             this.toolStripButtonConfiguration.Click += new System.EventHandler(this.toolStripButtonConfiguration_Click);
-            // 
-            // toolStripButtonLoadFromROM
-            // 
-            this.toolStripButtonLoadFromROM.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonLoadFromROM.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonLoadFromROM.Image")));
-            this.toolStripButtonLoadFromROM.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonLoadFromROM.Name = "toolStripButtonLoadFromROM";
-            this.toolStripButtonLoadFromROM.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonLoadFromROM.Text = "Load Mazes from ROMs";
-            this.toolStripButtonLoadFromROM.Click += new System.EventHandler(this.toolStripButtonLoadFromROM_Click);
             // 
             // treeView
             // 
@@ -527,10 +542,40 @@ namespace mhedit
             this.timerMain.Interval = 1000;
             this.timerMain.Tick += new System.EventHandler(this.timerMain_Tick);
             // 
-            // toolStripSeparator4
+            // toolStripSeparator5
             // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(82, 22);
+            this.toolStripLabel1.Text = "Contest Tools:";
+            // 
+            // toolStripButtonContestUpload
+            // 
+            this.toolStripButtonContestUpload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonContestUpload.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonContestUpload.Image")));
+            this.toolStripButtonContestUpload.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonContestUpload.Name = "toolStripButtonContestUpload";
+            this.toolStripButtonContestUpload.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonContestUpload.Text = "Download Submitted Maze";
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButtonContestLogin
+            // 
+            this.toolStripButtonContestLogin.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonContestLogin.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonContestLogin.Image")));
+            this.toolStripButtonContestLogin.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonContestLogin.Name = "toolStripButtonContestLogin";
+            this.toolStripButtonContestLogin.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonContestLogin.Text = "Contest Login";
+            this.toolStripButtonContestLogin.Click += new System.EventHandler(this.toolStripButtonContestLogin_Click);
             // 
             // Mainform
             // 
@@ -605,6 +650,11 @@ namespace mhedit
         private Silver.UI.ToolBox toolBox;
         private System.Windows.Forms.ToolStripButton toolStripButtonLoadFromROM;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+        private System.Windows.Forms.ToolStripButton toolStripButtonContestLogin;
+        private System.Windows.Forms.ToolStripButton toolStripButtonContestUpload;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
     }
 }
 

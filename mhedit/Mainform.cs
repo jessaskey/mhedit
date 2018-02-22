@@ -2030,5 +2030,10 @@ namespace mhedit
             mazeCollection.PropertyGrid = propertyGrid;
         }
 
+        private void toolStripButtonContestLogin_Click(object sender, EventArgs e)
+        {
+            DialogMHPLogin mhpLogin = new DialogMHPLogin();
+            mhpLogin.ShowDialog();
+        }
     }
 }

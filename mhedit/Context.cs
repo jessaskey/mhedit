@@ -18,24 +18,6 @@ namespace mhedit
         private static int _canvasGridOffsetX = 3;
         private static int _canvasGridOffsetY = -3;
 
-        //private static Dictionary<Type, Point> _objectLSBs = new Dictionary<Type, Point>()
-        //{
-           // {typeof(MazeObjects.Spikes),new Point(0x80,0x0b)},
-           // {typeof(MazeObjects.Transporter),new Point(0x80,0x80)},
-           // {typeof(MazeObjects.Lock),new Point(0x80,0x80)},
-           // {typeof(MazeObjects.Key),new Point(0x00,0x40)},
-           // {typeof(MazeObjects.Clock),new Point(0x00,0x40)},
-           // {typeof(MazeObjects.Boots),new Point(0x00,0x34)},
-           // {typeof(MazeObjects.EscapePod),new Point(0x00,0x80)},
-           // {typeof(MazeObjects.Hand),new Point(0x3c,0x01)},
-           // {typeof(MazeObjects.Oxoid),new Point(0x90,0x40)},
-           // {typeof(MazeEnemies.LightningH),new Point(0x00,0x80)},
-           // {typeof(MazeEnemies.LightningV),new Point(0x80,0x80)},
-           // {typeof(MazeEnemies.TripPad),new Point(0x80,0x08)},
-           // {typeof(MazeObjects.OneWay),new Point(0x80,0x80)},
-           // {typeof(MazeObjects.Arrow),new Point(0xc0,0x40)}
-        //};
-
         /// <summary>
         /// Converts an Atari vector tuple into an editor
         /// surface coordinate.
