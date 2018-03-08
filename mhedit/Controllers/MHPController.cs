@@ -8,10 +8,16 @@ namespace mhedit
 {
     public static class MHPController
     {
+        private static MHPServiceReference.ImheditClient _client = new MHPServiceReference.ImheditClient();
+
         public static bool Login(string username, string password)
         {
-            return true;
+            return _client.Login(username, password);
         }
 
+        public static bool UploadMazeDefinition(string username, string password, string mazeDefinition)
+        {
+            return false;
+        }
     }
 }

@@ -226,6 +226,11 @@
     </Compile>
     <Compile Include="resource.cs" />
     <Compile Include="ROMDump.cs" />
+    <Compile Include="Service References\MHPServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\ServiceReferenceMhedit\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -235,11 +240,6 @@
     <Compile Include="TypeConverters\TripPadPyroidTypeConverter.cs" />
     <Compile Include="TypeConverters\SignedVelocityTypeConverter.cs" />
     <Compile Include="TypeConverters\VelocityTypeConverter.cs" />
-    <Compile Include="Web References\mhedit_ws\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.map</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.ico">
@@ -329,10 +329,24 @@
     <Content Include="images\toolbarbuttons\ZoomHS.bmp" />
     <Content Include="images\toolbarbuttons\ZoomIn.bmp" />
     <Content Include="images\toolbarbuttons\ZoomOut.bmp" />
+    <None Include="Service References\MHPServiceReference\mhedit.wsdl" />
+    <None Include="Service References\MHPServiceReference\mhedit.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MHPServiceReference\mhedit1.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\ServiceReferenceMhedit\Service.disco" />
     <None Include="Service References\ServiceReferenceMhedit\configuration91.svcinfo" />
     <None Include="Service References\ServiceReferenceMhedit\configuration.svcinfo" />
     <None Include="Service References\ServiceReferenceMhedit\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\MHPServiceReference\mhedit.disco" />
+    <None Include="Service References\MHPServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\MHPServiceReference\configuration.svcinfo" />
+    <None Include="Service References\MHPServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -366,12 +380,6 @@
     <None Include="Service References\ServiceReferenceMhedit\Service.wsdl" />
     <None Include="Service References\ServiceReferenceMhedit\Service.xsd" />
     <None Include="Service References\ServiceReferenceMhedit\Service1.xsd" />
-    <None Include="Web References\mhedit_ws\Reference.map">
-      <Generator>MSDiscoCodeGenerator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Web References\mhedit_ws\Service.disco" />
-    <None Include="Web References\mhedit_ws\Service.wsdl" />
     <EmbeddedResource Include="images\objects\oneway_obj.ico" />
     <EmbeddedResource Include="images\objects\arrow_angle_obj.ico" />
     <EmbeddedResource Include="images\objects\arrow_square_obj.ico" />
@@ -449,19 +457,6 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://localhost:4213/mhedit_ws/Service.asmx">
-      <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\mhedit_ws\</RelPath>
-      <UpdateFromURL>http://localhost:4213/mhedit_ws/Service.asmx</UpdateFromURL>
-      <ServiceLocationURL>
-      </ServiceLocationURL>
-      <CachedDynamicPropName>
-      </CachedDynamicPropName>
-      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
-      <CachedSettingsPropName>mhedit_mhedit_ws_Service</CachedSettingsPropName>
-    </WebReferenceUrl>
-  </ItemGroup>
-  <ItemGroup>
     <FileAssociation Include=".mhc">
       <Visible>False</Visible>
       <Description>Major Havoc Level Editor Maze Collection File</Description>
@@ -476,6 +471,7 @@
     </FileAssociation>
   </ItemGroup>
   <ItemGroup>
+    <WCFMetadataStorage Include="Service References\MHPServiceReference\" />
     <WCFMetadataStorage Include="Service References\ServiceReferenceMhedit\" />
   </ItemGroup>
   <ItemGroup>

@@ -2036,5 +2036,32 @@ namespace mhedit
             DialogMHPLogin mhpLogin = new DialogMHPLogin();
             mhpLogin.ShowDialog();
         }
+
+        private void toolStripButtonContestUpload_Click(object sender, EventArgs e)
+        {
+            if (treeView.SelectedNode != null)
+            {
+                if (treeView.SelectedNode.Tag != null)
+                {
+                    if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.Maze")
+                    {
+                        Maze maze = (Maze)treeView.SelectedNode.Tag;
+
+                        using (MemoryStream oStream = new MemoryStream())
+                        {
+                            using (MemoryStream mStream = new MemoryStream())
+                            {
+                                BinaryFormatter b = new BinaryFormatter();
+                                b.Serialize(mStream, maze);
+                                mStream.Position = 0;
+                                BZip2.Compress(mStream, oStream, true, 4096);
+                            }
+
+                            byte[]
+                        }
+                    }
+                }
+            }
+        }
     }
 }

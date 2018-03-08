@@ -53,6 +53,11 @@ namespace mhedit
             this.toolStripButtonLoadFromROM = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonConfiguration = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.toolStripButtonContestLogin = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonContestUpload = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.treeView = new System.Windows.Forms.TreeView();
             this.contextMenuStripTree = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.saveMazeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,11 +75,6 @@ namespace mhedit
             this.comboBoxMazeObjects = new System.Windows.Forms.ComboBox();
             this.splitterUpDown = new System.Windows.Forms.Splitter();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripButtonContestUpload = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButtonContestLogin = new System.Windows.Forms.ToolStripButton();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.contextMenuStripTree.SuspendLayout();
@@ -339,6 +339,42 @@ namespace mhedit
             this.toolStripButtonConfiguration.ToolTipText = "Configuration";
             this.toolStripButtonConfiguration.Click += new System.EventHandler(this.toolStripButtonConfiguration_Click);
             // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(82, 22);
+            this.toolStripLabel1.Text = "Contest Tools:";
+            // 
+            // toolStripButtonContestLogin
+            // 
+            this.toolStripButtonContestLogin.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonContestLogin.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonContestLogin.Image")));
+            this.toolStripButtonContestLogin.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonContestLogin.Name = "toolStripButtonContestLogin";
+            this.toolStripButtonContestLogin.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonContestLogin.Text = "Contest Login";
+            this.toolStripButtonContestLogin.Click += new System.EventHandler(this.toolStripButtonContestLogin_Click);
+            // 
+            // toolStripButtonContestUpload
+            // 
+            this.toolStripButtonContestUpload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonContestUpload.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonContestUpload.Image")));
+            this.toolStripButtonContestUpload.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonContestUpload.Name = "toolStripButtonContestUpload";
+            this.toolStripButtonContestUpload.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonContestUpload.Text = "Download Submitted Maze";
+            this.toolStripButtonContestUpload.Click += new System.EventHandler(this.toolStripButtonContestUpload_Click);
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+            // 
             // treeView
             // 
             this.treeView.AllowDrop = true;
@@ -541,41 +577,6 @@ namespace mhedit
             // 
             this.timerMain.Interval = 1000;
             this.timerMain.Tick += new System.EventHandler(this.timerMain_Tick);
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(82, 22);
-            this.toolStripLabel1.Text = "Contest Tools:";
-            // 
-            // toolStripButtonContestUpload
-            // 
-            this.toolStripButtonContestUpload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonContestUpload.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonContestUpload.Image")));
-            this.toolStripButtonContestUpload.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonContestUpload.Name = "toolStripButtonContestUpload";
-            this.toolStripButtonContestUpload.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonContestUpload.Text = "Download Submitted Maze";
-            // 
-            // toolStripSeparator6
-            // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripButtonContestLogin
-            // 
-            this.toolStripButtonContestLogin.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonContestLogin.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonContestLogin.Image")));
-            this.toolStripButtonContestLogin.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonContestLogin.Name = "toolStripButtonContestLogin";
-            this.toolStripButtonContestLogin.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonContestLogin.Text = "Contest Login";
-            this.toolStripButtonContestLogin.Click += new System.EventHandler(this.toolStripButtonContestLogin_Click);
             // 
             // Mainform
             // 

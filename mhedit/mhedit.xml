@@ -725,29 +725,5 @@
             <param name="destinationType"></param>
             <returns></returns>
         </member>
-        <member name="T:mhedit.mhedit_ws.Service">
-            <remarks/>
-        </member>
-        <member name="M:mhedit.mhedit_ws.Service.#ctor">
-            <remarks/>
-        </member>
-        <member name="E:mhedit.mhedit_ws.Service.LogExceptionCompleted">
-            <remarks/>
-        </member>
-        <member name="M:mhedit.mhedit_ws.Service.LogException(System.String,System.String,System.String,System.String,System.String)">
-            <remarks/>
-        </member>
-        <member name="M:mhedit.mhedit_ws.Service.LogExceptionAsync(System.String,System.String,System.String,System.String,System.String)">
-            <remarks/>
-        </member>
-        <member name="M:mhedit.mhedit_ws.Service.LogExceptionAsync(System.String,System.String,System.String,System.String,System.String,System.Object)">
-            <remarks/>
-        </member>
-        <member name="M:mhedit.mhedit_ws.Service.CancelAsync(System.Object)">
-            <remarks/>
-        </member>
-        <member name="T:mhedit.mhedit_ws.LogExceptionCompletedEventHandler">
-            <remarks/>
-        </member>
     </members>
 </doc>
