@@ -2056,8 +2056,6 @@ namespace mhedit
                                 mStream.Position = 0;
                                 BZip2.Compress(mStream, oStream, true, 4096);
                             }
-
-                            byte[]
                         }
                     }
                 }
