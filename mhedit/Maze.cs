@@ -15,11 +15,9 @@ using Silver.UI;
 
 namespace mhedit
 {
-
-
     [DefaultPropertyAttribute("Name")]
     [Serializable]
-    class Maze : Panel, ISerializable, ITreeObject, ICustomTypeDescriptor
+    public class Maze : Panel, ISerializable, ITreeObject, ICustomTypeDescriptor
     {
 
         #region Declarations

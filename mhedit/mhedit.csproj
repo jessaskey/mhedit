@@ -25,7 +25,7 @@
     <ManifestCertificateThumbprint>9D5352BA38D140747E15A84867A69CCA6817442E</ManifestCertificateThumbprint>
     <ManifestKeyFile>mhedit_2_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
     <TargetFrameworkProfile />
     <PublishUrl>Y:\inetpub\org\askey\mhedit\app\</PublishUrl>
     <Install>true</Install>

@@ -1439,9 +1439,9 @@ namespace Silver.UI
             {
                 DoPainting(e);
             }
-            catch(Exception ex)
+            catch
             {
-                ex = ex;
+
             }
         }
 

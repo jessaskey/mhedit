@@ -19,23 +19,6 @@
             <param name="pixels"></param>
             <returns></returns>
         </member>
-        <member name="F:mhedit.DialogMHPLogin.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:mhedit.DialogMHPLogin.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:mhedit.DialogMHPLogin.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
         <member name="F:mhedit.MazeEnemies.CannonMovementPreview.components">
             <summary>
             Required designer variable.
@@ -63,12 +46,6 @@
             <summary>
             The Lightning class shows the force fields in the maze. They will kill the player upon contact. 
             The Lightning objects have have either horizontal or vertical orientation.
-            </summary>
-        </member>
-        <member name="T:mhedit.MazeEnemies.Maxoid">
-            <summary>
-            Pyroids are the common 'spark-like' enemies in the maze. They have a speed and velocity
-            component and freeze when the reactoid is touched.
             </summary>
         </member>
         <member name="T:mhedit.MazeEnemies.TripPadPyroid">
@@ -724,6 +701,30 @@
             <param name="value"></param>
             <param name="destinationType"></param>
             <returns></returns>
+        </member>
+        <member name="T:mhedit.mhedit_ws.Service">
+            <remarks/>
+        </member>
+        <member name="M:mhedit.mhedit_ws.Service.#ctor">
+            <remarks/>
+        </member>
+        <member name="E:mhedit.mhedit_ws.Service.LogExceptionCompleted">
+            <remarks/>
+        </member>
+        <member name="M:mhedit.mhedit_ws.Service.LogException(System.String,System.String,System.String,System.String,System.String)">
+            <remarks/>
+        </member>
+        <member name="M:mhedit.mhedit_ws.Service.LogExceptionAsync(System.String,System.String,System.String,System.String,System.String)">
+            <remarks/>
+        </member>
+        <member name="M:mhedit.mhedit_ws.Service.LogExceptionAsync(System.String,System.String,System.String,System.String,System.String,System.Object)">
+            <remarks/>
+        </member>
+        <member name="M:mhedit.mhedit_ws.Service.CancelAsync(System.Object)">
+            <remarks/>
+        </member>
+        <member name="T:mhedit.mhedit_ws.LogExceptionCompletedEventHandler">
+            <remarks/>
         </member>
     </members>
 </doc>
