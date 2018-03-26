@@ -1635,7 +1635,8 @@ namespace mhedit
         private void toolStripButtonLoadFromROM_Click(object sender, EventArgs e)
         {
 
-            string romPath = "Z:\\Files\\ROM Archive\\Vid ROM's\\Atari\\MajorHavoc\\";
+            //string romPath = "Z:\\Files\\ROM Archive\\Vid ROM's\\Atari\\MajorHavoc\\";
+            string romPath = @"..\..\ProductionROMs\";
 
             if (!Directory.Exists(romPath))
             {
@@ -1769,6 +1770,8 @@ namespace mhedit
                 {
                     isHorizontal = false;
                     lightningBaseAddress++;
+                    /// I think we are missing this load here...
+                    ///lightningValue = rom.ReadByte( lightningBaseAddress, 0 );
                 }
 
                 while (lightningValue != 0x00)
@@ -1782,6 +1785,11 @@ namespace mhedit
                     }
                     else
                     {
+                        /// Weird?? We don't seem to load a new lightningValue thus this
+                        /// value is always OxFF for the 1st one???? So the position never
+                        /// changes??
+                        /// Seems like this code doesn't work if the first lightning is
+                        /// Vertical?
                         MazeEnemies.LightningV lightningv = new MazeEnemies.LightningV();
                         lightningv.LoadPosition(lightningValue);
                         maze.AddObject(lightningv);
@@ -1850,6 +1858,7 @@ namespace mhedit
 
 
                 //one way walls
+                // Are they stored all Right first, then all left? See comments below.
                 ushort onewayBaseAddress = rom.ReadWord(0x2677, i * 2);
 
                 byte onewayValue = rom.ReadByte(onewayBaseAddress, 0);
@@ -1859,11 +1868,15 @@ namespace mhedit
                 {
                     MazeObjects.OneWay oneway = new MazeObjects.OneWay();
                     oneway.LoadPosition(onewayValue);
+                    /// This is not loaded the 1st time through. It's assumed to be Right.
                     oneway.Direction = onewayOrientation;
                     maze.AddObject(oneway);
 
                     onewayBaseAddress++;
                     onewayValue = rom.ReadByte(onewayBaseAddress, 0);
+                    /// There is no ELSE here. I.e. we fail to initialize to Right if it's
+                    /// NOT left. Since the variable is ONLY set to left inside the while
+                    /// loop, the first left will make all remaining left? Is this correct?
                     if (onewayValue == 0xff)
                     {
                         onewayOrientation = MazeObjects.OneWayDirection.Left;
@@ -1985,15 +1998,26 @@ namespace mhedit
                         tripBaseAddress++;
                         tripX = rom.ReadByte(tripBaseAddress, 0);
 
+                        /// We don't seem to be incrementing the tripPyroidBaseAddress
+                        /// based upon the Maze?? So all mazes are referencing the same
+                        /// Pyroid?? Seems we should be incrementing the base addresss
+                        /// for each maze index...
+                        /// Also, it seems only one Pyroid can be tripped by any given
+                        /// trip pad yes?
                         //trip pyroid too
                         byte bx = (byte) (0x7f & rom.ReadByte(tripPyroidBaseAddress++, 0));
                         byte by = rom.ReadByte(tripPyroidBaseAddress++, 0);
+
+                        /// This velocity value isn't used anywhere??
                         byte bv = rom.ReadByte(tripPyroidBaseAddress++, 0);
 
                         byte[] longBytes = new byte[4];
 
                         longBytes[0] = 0;
                         longBytes[1] = (byte)((bx & 0x1f)+1);
+
+                        /// this isn't the same sign extension used elsewhere? I need to spend
+                        /// some more time understanding the position conversions.
                         longBytes[2] = 0x80;
                         longBytes[3] = by;
 
@@ -2009,6 +2033,9 @@ namespace mhedit
                 if (i > 5)
                 {
                     ushort handBaseAddress = rom.ReadWord((ushort)(0x2721 + ((i - 6) * 2)), 0);
+
+                    /// The X position never seems to be used. Only the Y is providing
+                    /// a low res position for the hand. 
                     byte handX = rom.ReadByte(handBaseAddress, 0);
                     if (handX != 0)
                     {

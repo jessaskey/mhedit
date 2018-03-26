@@ -1,0 +1,10 @@
+.module aux1
+
+copym            .EQU  $23c2
+drawm            .EQU  $2001
+domap            .EQU  $26e9
+ispeed           .EQU  $379b
+map              .EQU  $286e
+newarrow         .EQU  $26b0
+trap             .EQU  $2195
+trtbl            .EQU  $361b

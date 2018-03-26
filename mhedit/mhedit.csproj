@@ -75,7 +75,7 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>mhedit_2_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>mhedit_1_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
@@ -477,6 +477,7 @@
   <ItemGroup>
     <Folder Include="doc\" />
     <Folder Include="exports\" />
+    <Folder Include="ProductionROMs\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Silver.UI.ToolBox\Silver.UI.ToolBox.csproj">
