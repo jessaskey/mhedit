@@ -1858,31 +1858,43 @@ namespace mhedit
 
 
                 //one way walls
-                // Are they stored all Right first, then all left? See comments below.
                 ushort onewayBaseAddress = rom.ReadWord(0x2677, i * 2);
-
                 byte onewayValue = rom.ReadByte(onewayBaseAddress, 0);
-                MazeObjects.OneWayDirection onewayOrientation = MazeObjects.OneWayDirection.Right;
 
                 while (onewayValue != 0x00)
                 {
                     MazeObjects.OneWay oneway = new MazeObjects.OneWay();
+                    if ( onewayValue == 0xff )
+                    {
+                        oneway.Direction = MazeObjects.OneWayDirection.Left;
+                        onewayBaseAddress++;
+                        onewayValue = rom.ReadByte( onewayBaseAddress, 0 );
+                    }
+                    else
+                    {
+                        oneway.Direction = MazeObjects.OneWayDirection.Right;
+                    }
                     oneway.LoadPosition(onewayValue);
-                    /// This is not loaded the 1st time through. It's assumed to be Right.
-                    oneway.Direction = onewayOrientation;
                     maze.AddObject(oneway);
 
                     onewayBaseAddress++;
                     onewayValue = rom.ReadByte(onewayBaseAddress, 0);
-                    /// There is no ELSE here. I.e. we fail to initialize to Right if it's
-                    /// NOT left. Since the variable is ONLY set to left inside the while
-                    /// loop, the first left will make all remaining left? Is this correct?
-                    if (onewayValue == 0xff)
+                }
+
+                if ( i > 4 )
+                {
+                    ushort stalactiteBaseAddress = rom.ReadWord( 0x26B3, (i-5) * 2 );
+                    byte stalactiteValue = rom.ReadByte( stalactiteBaseAddress, 0 );
+
+                    while ( stalactiteValue != 0x00 )
                     {
-                        onewayOrientation = MazeObjects.OneWayDirection.Left;
-                        onewayBaseAddress++;
+                        MazeObjects.Spikes spikes = new MazeObjects.Spikes();
+                        spikes.LoadPosition( stalactiteValue );
+                        maze.AddObject( spikes );
+
+                        stalactiteBaseAddress++;
+                        stalactiteValue = rom.ReadByte( stalactiteBaseAddress, 0 );
                     }
-                    onewayValue = rom.ReadByte(onewayBaseAddress, 0);
                 }
 
                 //locks and keys
@@ -2032,17 +2044,21 @@ namespace mhedit
                 //finally... de hand
                 if (i > 5)
                 {
-                    ushort handBaseAddress = rom.ReadWord((ushort)(0x2721 + ((i - 6) * 2)), 0);
+                    byte[] longBytes = new byte[ 4 ];
 
-                    /// The X position never seems to be used. Only the Y is providing
-                    /// a low res position for the hand. 
-                    byte handX = rom.ReadByte(handBaseAddress, 0);
-                    if (handX != 0)
+                    //longBytes[ 0 ] = 0;
+                    //longBytes[ 2 ] = 0;
+
+                    ushort handBaseAddress = rom.ReadWord((ushort)(0x2721 + ((i - 6) * 2)), 0);
+                    longBytes[ 1 ] = rom.ReadByte(handBaseAddress, 0);
+                    if ( longBytes[ 1 ] != 0)
                     {
                         handBaseAddress++;
-                        byte handY = rom.ReadByte(handBaseAddress, 0);
+                        longBytes[ 3 ] = rom.ReadByte(handBaseAddress, 0);
+
                         MazeObjects.Hand hand = new MazeObjects.Hand();
-                        hand.LoadPosition(handY);
+
+                        hand.LoadPosition( longBytes );
                         maze.AddObject(hand);
                     }
                 }
