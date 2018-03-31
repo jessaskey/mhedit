@@ -271,6 +271,11 @@ namespace GameEditor.Core
         LockAndKeyInformationPointerArray = 0x26D1,
 
         /// <summary>
+        /// Array of word *'s 16 elements long to Stalactite Data. Data is a Null terminated list.
+        /// </summary>
+        StalactiteInformationPointerArray = 0x26B3,
+
+        /// <summary>
         /// Array of byte sized bool - Escape Pod Data with size 4??. Only mazes of
         /// type 1, looks like every 4th maze have a pod.
         /// </summary>
