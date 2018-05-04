@@ -213,6 +213,11 @@ namespace GameEditor.Core
 
     public enum ProductionOffsets
     {
+        /// TODO:: find the following offsets:
+        /// Maze type,
+        /// Out Arrows,
+        /// 
+     
         /// <summary>
         ///  Array of bytes with size 12. Contains index into the MazeHintMessagePointerArray
         ///  which contains * to message. levels 1-12 ONLY.
@@ -297,15 +302,20 @@ namespace GameEditor.Core
         TransporterInformationPointerArray = 0x26F9,
 
         /// <summary>
-        /// Array of byte sized bool with size 16. If "true" this value is used as an offset into the
-        /// IonCannonInformationPointerArray for info on the cannon.
+        /// Array of byte sized offsets with size 16. If non-zero this value is an offset
+        /// into a stream of word pointers to IonCannonInformation.
+        /// See IonCannonInformationPointerStream.  Zero is not a valid offset. So the
+        /// first pointer in the IonCannonInformationPointerStream is NULL and unused.
         /// </summary>
-        IonCannonEnabledArray = 0x269F,
+        IonCannonOffsetArray = 0x269F,
 
         /// <summary>
-        /// Array of word *'s 16 elements long to IonCannon Data. Data is a Null terminated list.
+        /// Stream of word *'s to IonCannon Data. Each Cannon has a pointer, multiple cannons
+        /// on a level are represented by multiple word pointers in a Null terminated list.
+        /// The next pointer list would be after the NULL terminator of the previous.
+        /// Obviously limited to a stream FF bytes long.
         /// </summary>
-        IonCannonInformationPointerArray = 0x30B1,
+        IonCannonInformationPointerStream = 0x30B1,
 
         /// <summary>
         /// Array of word *'s 12 elements long to Trip Pad Data. Only Levels 5 and up.

@@ -45,12 +45,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Xsd\MajorHavocProfile.xsd">
+    <None Include="Xsd\GameProfile.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Xsd\ExampleHavocProfile.xml">
+    <Content Include="Xsd\GameProfile.xml">
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>

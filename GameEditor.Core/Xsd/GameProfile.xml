@@ -1,0 +1,497 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<!-- This is a working example of a Major Havoc Profile -->
+<GameProfile Version="1.0.0.0">
+    <GameInfo>
+        <Name>Major Havoc</Name>
+        <Version>1.0</Version>
+        <Manufacturer>Atari Inc.</Manufacturer>
+        <ReleaseDate>1984-01</ReleaseDate>
+        <Comment>Production ROMs</Comment>
+    </GameInfo>
+    <MemoryMap Id="AlphaProcessor"
+               AddressWidth="16"
+               AddressBase="0x0000"
+               BusWidth="8">
+        <ROM Id="PagedProgramRom"
+             Address="0x2000"
+             Size="0x2000">
+            <Memory>
+                <Bank Id="1Q">
+                    <EEPROM Id="1Q"
+                            Name="136025.215"
+                            Size="16384"
+                            Width="8">
+                    </EEPROM>
+                </Bank>
+                <Bank Id="1N/P">
+                    <EEPROM Id="1N/P"
+                            Name="136025.216"
+                            Size="16384"
+                            Width="8">
+                    </EEPROM>
+                </Bank>
+            </Memory>
+            <Pages>
+                <Page Id="Page_0">
+                    <BankRef Id="1Q" />
+                </Page>
+                <Page Id="Page_1">
+                    <BankRef Id="1Q" />
+                </Page>
+                <Page Id="Page_2">
+                    <BankRef Id="1N/P" />
+                </Page>
+                <Page Id="Page_3">
+                    <BankRef Id="1N/P" />
+                </Page>
+            </Pages>
+        </ROM>
+        <ROM Id="ProgramRom"
+             Address="0x8000"
+             Size="0x8000">
+            <Memory>
+                <Bank Id="1M/N">
+                    <EEPROM Id="1M/N"
+                            Name="136025.217"
+                            Size="16384"
+                            Width="8">
+                    </EEPROM>
+                </Bank>
+                <Bank Id="1L">
+                    <EEPROM Id="1L"
+                            Name="136025.318"
+                            Size="16384"
+                            Width="8">
+                    </EEPROM>
+                </Bank>
+            </Memory>
+            <Pages>
+                <Page Id="Page_0">
+                    <BankRef Id="1M/N" />
+                    <BankRef Id="1L" />
+                </Page>
+            </Pages>
+        </ROM>
+    </MemoryMap>
+    <ProgramMemory>
+        <TextSegment>
+            <Data Path="AlphaProcessor.ProgramRom"
+                  Name="Page_0"
+                  Reserved="no"
+                  Start="0x2000"
+                  Length="0x0234"/>
+            <Checksum Id="Checksum1L"
+                      Type="Crc32">
+                <EEPROMRef Path="AlphaProcessor.ProgramRom"
+                           Name="1L"
+                           Start="0x0000"
+                           End="0xFFFF"/>
+                <StorageDefinition>
+                    <Short/>
+                    <PageRef Path="AlphaProcessor.ProgramRom"
+                             Name="Page_0">
+                        0x1111
+                    </PageRef>
+                </StorageDefinition>
+            </Checksum>
+        </TextSegment>
+    </ProgramMemory>
+    <!-- Individual Maze Features,
+    The Maximum value represents total # allowed for all mazes combined. -->
+    <Features>
+        <Feature Id="MazeHint"
+                 Name="MazeHint"
+                 Maximum="12">
+            <!--Not every level has a hint. -->
+            <StorageDefinition Id="IndexToMazeHints">
+                <Array StorageClass="byte"
+                       DataType="ArrayIndex">
+                    <StorageDefinitionRef Id="PointerToMazeHintString" />
+                </Array>
+                <PageRef Path="AlphaProcessor.ProgramRom"
+                         Name="Page_0">
+                    0x93FE
+                </PageRef>
+            </StorageDefinition>
+            <StorageDefinition Id="PointerToMazeHintString">
+                <Array StorageClass="short"
+                       DataType="PointerToString"/>
+                <PageRef Path="AlphaProcessor.ProgramRom"
+                         Name="Page_0">
+                    0xE48b
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="ReactoidTime"
+                 Name="ReactoidTime"
+                 Maximum="16">
+            <!-- Every level MUST have a Reactoid timer value. -->
+            <StorageDefinition Id="ReactoidMeltdownTimes">
+                <Array StorageClass="byte"
+                       DataType="Integer"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x3355
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="Reactoid"
+                 Name="Reactoid"
+                 Maximum="16">
+            <!-- Every level MUST have a Reactoid. It's actually stored as
+            the first maze object in the MazeEnemiesObjectList List.-->
+            <StorageDefinition Id="MazeEnemiesObjectList">
+                <Array StorageClass="short"
+                       DataType="PointerToMazeObjectList"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_0">
+                    0x2581
+                </PageRef>
+            </StorageDefinition>
+        </Feature> 
+        <Feature Id="Pyroid"
+                 Name="Pyroid">
+            <!-- Only one Reactoid ever, so no delimiter before the Pyroids. -->
+            <StorageDefinitionRef Id="MazeEnemiesObjectList"
+                                  Order="1"/>
+        </Feature>
+        <Feature Id="Perkoid"
+                 Name="Perkoid">
+            <!-- May be many Pyroids in list already so use delimiter before
+            inserting the Perkoids. -->
+            <StorageDefinitionRef Id="MazeEnemiesObjectList"
+                                  Order="2"
+                                  Delimiter="0xFE"/>
+        </Feature>      
+        <Feature Id="Oxoid"
+                 Name="Oxoid">
+            <StorageDefinition>
+                <Array StorageClass="short"
+                       DataType="PointerToMazeObjectList"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x25A9
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="Lightning"
+                 Name="Lightning">
+            <StorageDefinition>
+                <Array StorageClass="short"
+                       DataType="PointerToMazeObjectList"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x25D1
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="Arrow"
+                 Name="Arrow">
+            <StorageDefinition>
+                <Array StorageClass="short"
+                       DataType="PointerToMazeObjectList"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x25F9
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="MazeWall"
+                 Name="MazeWall">
+            <StorageDefinition>
+                <Array StorageClass="short"
+                       DataType="PointerToMazeObjectList"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x2647
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="OneWaySign"
+                 Name="OneWaySign">
+            <StorageDefinition>
+                <Array StorageClass="short"
+                       DataType="PointerToMazeObjectList"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x2677
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="LockAndKey"
+                 Name="LockAndKey">
+            <StorageDefinition>
+                <Array StorageClass="short"
+                       DataType="PointerToMazeObjectList"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x26D1
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="Stalactite"
+                 Name="Stalactite">
+            <StorageDefinition>
+                <Array StorageClass="short"
+                       DataType="PointerToMazeObjectList"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x26B3
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="EscapePod"
+                 Name="EscapePod"
+                 Maximum="4">
+            <!-- Only Maze type 1 Supports Escape Pods. -->
+            <StorageDefinition Id="EscapePodEnabled">
+                <Array StorageClass="byte"
+                       DataType="Boolean"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x32FF
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="Clock"
+                 Name="Clock"
+                 Maximum="16">
+            <StorageDefinition Id="ClockEnabled">
+                <Array StorageClass="byte"
+                       DataType="Boolean"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x3290
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="Boots"
+                 Name="Boots"
+                 Maximum="16">
+            <StorageDefinition Id="BootsEnabled">
+                <Array StorageClass="byte"
+                       DataType="Boolean"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x32A0
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="Transporter"
+                 Name="Transporter">
+            <!-- Transporters come in pairs. -->
+            <StorageDefinition>
+                <Array StorageClass="short"
+                       DataType="PointerToMazeObjectList"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x26F9
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="IonCannon"
+                 Name="IonCannon">
+            <!-- Ion Cannon info stored in stream of data object pointers. Offset to
+            first cannon object pointer is contained in the byte array. Stream of pointers
+            is Null Terminated. -->
+            <StorageDefinition Id="IonCannonStreamOffsets">
+                <Array StorageClass="byte"
+                       DataType="ByteOffset">
+                    <StorageDefinitionRef Id="IonCannonInformation" />
+                </Array>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x269F
+                </PageRef>
+            </StorageDefinition>
+            <StorageDefinition Id="IonCannonInformation">
+                <Array StorageClass="short"
+                       DataType="IonCannonObjectPointerStream"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x30B1
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="TripPad"
+                 Name="TripPad"
+                 Maximum="50">
+            <!-- Trips use low res maze object position (1 byte). I need to work that out
+            with the datatype definitions. -->
+            <!-- One Pyroid for each Trip Pad! -->
+            <StorageDefinition>
+                <Array StorageClass="short"
+                       DataType="PointerToMazeObjectList"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x2627
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+        <Feature Id="TripPadPyroid"
+                 Name="TripPadPyroid"
+                 Maximum="50">
+            <!-- One Pyroid for each Trip Pad! -->
+            <!-- I need to look at this since these pyroids are 3 bytes. Not 6 like the
+            normal pyroids. -->
+            <StorageDefinition>
+                <Array StorageClass="ArrayOfTripPadPyroid"
+                       DataType="Array"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x2D36
+                </PageRef>
+            </StorageDefinition>
+            <Array Id="ArrayOfTripPadPyroid"
+                   StorageClass="TripPadPyroid"
+                   DataType="TripPadPyroid"
+                   Size="7"/>
+        </Feature>
+        <Feature Id="ReactoidHand"
+                 Name="ReactoidHand"
+                 Maximum="16">
+            <StorageDefinition>
+                <Array StorageClass="short"
+                       DataType="PointerToMazeObjectList"/>
+                <PageRef Path="AlphaProcessor.PagedProgramRom"
+                         Name="Page_1">
+                    0x2721
+                </PageRef>
+            </StorageDefinition>
+        </Feature>
+    </Features>
+    <FeatureGroups>
+        <!-- Feature Ref's allow setting max and required for each level that
+        feature is included in. The Maximum value represents total # allowed that
+        maze and Required = "yes" means that there must be a value for that maze. -->
+        
+        <FeatureGroup Id="CommonMazeElements">
+            <!-- While not on every level in the Production ROMs they could be. -->
+            <FeatureRef Id="Reactoid"
+                        Maximum="1"
+                        Required="yes"/>
+            <FeatureRef Id="ReactoidTime"
+                        Maximum="1"
+                        Required="yes"/>
+            <FeatureRef Id="Pyroid" />
+            <FeatureRef Id="Perkoid" />
+            <FeatureRef Id="Oxoid" />
+            <FeatureRef Id="Lightning" />
+            <FeatureRef Id="Arrow" />
+            <FeatureRef Id="MazeWall" />
+            <FeatureRef Id="OneWaySign" />
+            <FeatureRef Id="LockAndKey" />
+            <FeatureRef Id="Clock"
+                        Maximum="1"/>
+            <FeatureRef Id="Boots"
+                        Maximum="1"/>
+            <FeatureRef Id="Transporter"
+                        Maximum="3"/><!-- Transporters come in pairs -->
+            <FeatureRef Id="IonCannon"
+                        Maximum="5"/>
+        </FeatureGroup>
+        <FeatureGroup Id="Level5AndUpMazeFeatures">
+            <!--<FeatureGroupRef Id="CommonMazeElements"/>-->
+            <FeatureRef Id="TripPad"
+                        Maximum="7"/>
+            <FeatureRef Id="TripPadPyroid"
+                        Maximum="7"/>
+        </FeatureGroup>
+        <FeatureGroup Id="Level6AndUpMazeFeatures">
+            <FeatureGroupRef Id="Level5AndUpMazeFeatures"/>
+            <FeatureRef Id="Stalactite" />
+        </FeatureGroup>
+        <FeatureGroup Id="AdvancedMazeFeatures">
+            <!-- Levels 7 and up. -->
+            <FeatureGroupRef Id="Level6AndUpMazeFeatures"/>
+            <FeatureRef Id="ReactoidHand"
+                        Maximum="1"/>
+        </FeatureGroup>
+    </FeatureGroups>
+    <Levels Maximum="16"
+            Minimum="16">
+        <!-- Levels are ascending based on child order. -->
+        <Default>
+            <!-- Common to all levels without specifically including
+            these features. -->
+            <FeatureGroupRef Id="CommonMazeElements"/>
+        </Default>
+        <Level Name="Level 1">
+            <FeatureRef Id="MazeHint"
+                        Maximum="1"/>
+        </Level>
+        <Level Name="Level 2">
+            <FeatureRef Id="MazeHint"
+                        Maximum="1"/>
+            <FeatureRef Id="EscapePod"
+                        Maximum="1"/>
+        </Level>
+        <Level Name="Level 3">
+            <FeatureRef Id="MazeHint"
+                        Maximum="1"/>
+        </Level>
+        <Level Name="Level 4">
+            <FeatureRef Id="MazeHint"
+                        Maximum="1"/>
+        </Level>
+        <Level Name="Level 5">
+            <FeatureRef Id="MazeHint"
+                        Maximum="1"/>
+            <FeatureGroupRef Id="Level5AndUpMazeFeatures"/>
+        </Level>
+        <Level Name="Level 6">
+            <FeatureRef Id="MazeHint"
+                        Maximum="1"/>
+            <FeatureRef Id="EscapePod"
+                        Maximum="1"/>
+            <FeatureGroupRef Id="Level6AndUpMazeFeatures"/>
+        </Level>
+        <Level Name="Level 7">
+            <FeatureRef Id="MazeHint"
+                        Maximum="1"/>
+            <FeatureGroupRef Id="AdvancedMazeFeatures"/>
+        </Level>
+        <Level Name="Level 8">
+            <FeatureRef Id="MazeHint"
+                        Maximum="1"/>
+            <FeatureGroupRef Id="AdvancedMazeFeatures"/>
+        </Level>
+        <Level Name="Level 9">
+            <FeatureRef Id="MazeHint"
+                        Maximum="1"/>
+            <FeatureGroupRef Id="AdvancedMazeFeatures"/>
+        </Level>
+        <Level Name="Level 10">
+            <FeatureRef Id="MazeHint"
+                        Maximum="1"/>
+            <FeatureRef Id="EscapePod"
+                        Maximum="1"/>
+            <FeatureGroupRef Id="AdvancedMazeFeatures"/>
+        </Level>
+        <Level Name="Level 11">
+            <FeatureRef Id="MazeHint"
+                        Maximum="1"/>
+            <FeatureGroupRef Id="AdvancedMazeFeatures"/>
+        </Level>
+        <Level Name="Level 12">
+            <FeatureRef Id="MazeHint"
+                        Maximum="1"/>
+            <FeatureGroupRef Id="AdvancedMazeFeatures"/>
+        </Level>
+        <Level Name="Level 13">
+            <FeatureGroupRef Id="AdvancedMazeFeatures"/>
+        </Level>
+        <Level Name="Level 14">
+            <FeatureRef Id="EscapePod"
+                        Maximum="1"/>
+            <FeatureGroupRef Id="AdvancedMazeFeatures"/>
+        </Level>
+        <Level Name="Level 15">
+            <FeatureGroupRef Id="AdvancedMazeFeatures"/>
+        </Level>
+        <Level Name="Level 16">
+            <FeatureGroupRef Id="AdvancedMazeFeatures"/>
+        </Level>
+    </Levels>
+</GameProfile>
+ 

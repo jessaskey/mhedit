@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="StorageDefinition">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Short" type="xs:string" minOccurs="0" msdata:Ordinal="0" />
+        <xs:element name="PageRef" nillable="true" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:simpleContent msdata:ColumnName="PageRef_Text" msdata:Ordinal="2">
+              <xs:extension base="xs:string">
+                <xs:attribute name="Path" type="xs:string" />
+                <xs:attribute name="Name" type="xs:string" />
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="Array" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="Id" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StorageDefinitionRef">
+    <xs:complexType>
+      <xs:attribute name="Id" type="xs:string" />
+      <xs:attribute name="Order" type="xs:string" />
+      <xs:attribute name="Delimiter" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Array">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="StorageDefinitionRef" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="StorageClass" type="xs:string" />
+      <xs:attribute name="DataType" type="xs:string" />
+      <xs:attribute name="Id" type="xs:string" />
+      <xs:attribute name="Size" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FeatureGroupRef">
+    <xs:complexType>
+      <xs:attribute name="Id" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FeatureRef">
+    <xs:complexType>
+      <xs:attribute name="Id" type="xs:string" />
+      <xs:attribute name="Maximum" type="xs:string" />
+      <xs:attribute name="Required" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GameProfile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="GameInfo" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Name" type="xs:string" minOccurs="0" />
+              <xs:element name="Version" type="xs:string" minOccurs="0" />
+              <xs:element name="Manufacturer" type="xs:string" minOccurs="0" />
+              <xs:element name="ReleaseDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Comment" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="MemoryMap" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ROM" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Memory" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Bank" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="EEPROM" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:attribute name="Id" type="xs:string" />
+                                    <xs:attribute name="Name" type="xs:string" />
+                                    <xs:attribute name="Size" type="xs:string" />
+                                    <xs:attribute name="Width" type="xs:string" />
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                              <xs:attribute name="Id" type="xs:string" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Pages" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Page" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="BankRef" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:attribute name="Id" type="xs:string" />
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                              <xs:attribute name="Id" type="xs:string" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="Id" type="xs:string" />
+                  <xs:attribute name="Address" type="xs:string" />
+                  <xs:attribute name="Size" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Id" type="xs:string" />
+            <xs:attribute name="AddressWidth" type="xs:string" />
+            <xs:attribute name="AddressBase" type="xs:string" />
+            <xs:attribute name="BusWidth" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ProgramMemory" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="TextSegment" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Data" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="Path" type="xs:string" />
+                        <xs:attribute name="Name" type="xs:string" />
+                        <xs:attribute name="Reserved" type="xs:string" />
+                        <xs:attribute name="Start" type="xs:string" />
+                        <xs:attribute name="Length" type="xs:string" />
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Checksum" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="EEPROMRef" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="Path" type="xs:string" />
+                              <xs:attribute name="Name" type="xs:string" />
+                              <xs:attribute name="Start" type="xs:string" />
+                              <xs:attribute name="End" type="xs:string" />
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element ref="StorageDefinition" minOccurs="0" maxOccurs="unbounded" />
+                        </xs:sequence>
+                        <xs:attribute name="Id" type="xs:string" />
+                        <xs:attribute name="Type" type="xs:string" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Features" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Feature" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element ref="StorageDefinitionRef" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element ref="StorageDefinition" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element ref="Array" minOccurs="0" maxOccurs="unbounded" />
+                  </xs:sequence>
+                  <xs:attribute name="Id" type="xs:string" />
+                  <xs:attribute name="Name" type="xs:string" />
+                  <xs:attribute name="Maximum" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="FeatureGroups" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="FeatureGroup" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element ref="FeatureGroupRef" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element ref="FeatureRef" minOccurs="0" maxOccurs="unbounded" />
+                  </xs:sequence>
+                  <xs:attribute name="Id" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Levels" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Default" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element ref="FeatureGroupRef" minOccurs="0" maxOccurs="unbounded" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Level" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element ref="FeatureRef" minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element ref="FeatureGroupRef" minOccurs="0" maxOccurs="unbounded" />
+                  </xs:sequence>
+                  <xs:attribute name="Name" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Maximum" type="xs:string" />
+            <xs:attribute name="Minimum" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="Version" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="StorageDefinition" />
+        <xs:element ref="StorageDefinitionRef" />
+        <xs:element ref="Array" />
+        <xs:element ref="FeatureGroupRef" />
+        <xs:element ref="FeatureRef" />
+        <xs:element ref="GameProfile" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
