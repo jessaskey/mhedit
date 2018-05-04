@@ -1653,8 +1653,8 @@ namespace mhedit
 
             MazeCollection mazeCollection = new MazeCollection("Production Mazes");
             mazeCollection.AuthorEmail = "Owen Rubin";
-           
-            for (int i = 0; i < 16; i++)
+
+            for ( int i = 0; i < 16; i++)
             {
 
                 byte mazeType = (byte) (i & 0x03);
@@ -1714,36 +1714,42 @@ namespace mhedit
                     {
                         mazeInitIndex++;
                         //perkoids now...
-                        MazeEnemies.Perkoid perkoid = new MazeEnemies.Perkoid();
-                        perkoid.LoadPosition(rom.ReadBytes(mazeInitIndex, 4));
-                        mazeInitIndex += 4;
-                        byte perkoidVelX = rom.ReadByte(mazeInitIndex, 0);
-                        if (perkoidVelX > 0x70 && perkoidVelX < 0x90)
-                        {
-                            //incrementing velocity
-                            mazeInitIndex++;
-                            byte perkoidVelXIncrement = perkoidVelX;
-                            perkoidVelX = rom.ReadByte(mazeInitIndex, 0);
-                        }
-                        mazeInitIndex++;
-                        byte perkoidVelY = rom.ReadByte(mazeInitIndex, 0);
-                        if (perkoidVelY > 0x70 && perkoidVelY < 0x90)
-                        {
-                            //incrementing velocity
-                            mazeInitIndex++;
-                            byte perkoidVelYIncrement = perkoidVelY;
-                            perkoidVelY = rom.ReadByte(mazeInitIndex, 0);
-                        }
-                        mazeInitIndex++;
-
-                        perkoid.Velocity.X = perkoidVelX;
-                        perkoid.Velocity.Y = perkoidVelY;
-                        maze.AddObject(perkoid);
-
-                        firstValue = rom.ReadByte(mazeInitIndex, 0);
+                        break;
                     }
-                }             
-      
+                }   
+
+                /// Perkoids 
+                while ( firstValue != 0xff )
+                {
+                    MazeEnemies.Perkoid perkoid = new MazeEnemies.Perkoid();
+                    perkoid.LoadPosition( rom.ReadBytes( mazeInitIndex, 4 ) );
+                    mazeInitIndex += 4;
+                    byte perkoidVelX = rom.ReadByte( mazeInitIndex, 0 );
+                    if ( perkoidVelX > 0x70 && perkoidVelX < 0x90 )
+                    {
+                        //incrementing velocity
+                        mazeInitIndex++;
+                        byte perkoidVelXIncrement = perkoidVelX;
+                        perkoidVelX = rom.ReadByte( mazeInitIndex, 0 );
+                    }
+                    mazeInitIndex++;
+                    byte perkoidVelY = rom.ReadByte( mazeInitIndex, 0 );
+                    if ( perkoidVelY > 0x70 && perkoidVelY < 0x90 )
+                    {
+                        //incrementing velocity
+                        mazeInitIndex++;
+                        byte perkoidVelYIncrement = perkoidVelY;
+                        perkoidVelY = rom.ReadByte( mazeInitIndex, 0 );
+                    }
+                    mazeInitIndex++;
+
+                    perkoid.Velocity.X = perkoidVelX;
+                    perkoid.Velocity.Y = perkoidVelY;
+                    maze.AddObject( perkoid );
+
+                    firstValue = rom.ReadByte( mazeInitIndex, 0 );
+                }
+
                 //do oxygens now
                 ushort oxygenBaseAddress = rom.ReadWord(0x25A9, i * 2);
 
@@ -1873,6 +1879,7 @@ namespace mhedit
                     onewayValue = rom.ReadByte(onewayBaseAddress, 0);
                 }
 
+                // Stalactite Level 6 and up
                 if ( i > 4 )
                 {
                     ushort stalactiteBaseAddress = rom.ReadWord( 0x26B3, (i-5) * 2 );
@@ -1915,7 +1922,7 @@ namespace mhedit
                 }
 
                 //Escape pod
-
+                // Levels 2,6,10,14 only
                 if (mazeType == 0x01)
                 {
                     ushort podBaseAddress = 0x32FF;
@@ -1967,6 +1974,11 @@ namespace mhedit
                 }
 
                 //Laser Cannon
+                /// Ok, So looking at why the cannons are shifted down on level 16.
+                /// The issue is that the cannon goes up and down. The key is where
+                /// the cannon starts with respect to the ceiling. Cannons 2 and 3
+                /// start low (closer to the floor) than all others.
+                /// I need to figure out how that's encoded.
                 byte cannonAddressOffset = rom.ReadByte(0x269F, i );
                 if (cannonAddressOffset != 0)
                 {
@@ -1985,11 +1997,18 @@ namespace mhedit
                 }
 
                 //build trips now
-
+                // Level 5 and up
                 if (i > 3)
                 {
+                    /// The max number of trips in a maze is 7. Trips are stored in a list
+                    /// that is null terminated. Trips start on level 5 and exist on every
+                    /// level to 16. 12 total levels.
                     ushort tripBaseAddress = rom.ReadWord( (ushort)0x2627, ((i-4)*2));
-                    ushort tripPyroidBaseAddress = 0x2D36;
+                    /// Trip Pyroids are a 1 to 1 relationship to a trip. Trip Pyroids are
+                    /// described in 3 bytes. Each level worth of trip pyroids are stored in
+                    /// an array 8 pyroids long (7 + null) even if there are less than 7
+                    /// trips in a level.
+                    ushort tripPyroidBaseAddress = (ushort)(0x2D36 + ((i-4)*3*8));
 
                     byte tripX = rom.ReadByte(tripBaseAddress, 0);
 
@@ -2002,6 +2021,7 @@ namespace mhedit
                         tripBaseAddress++;
                         tripX = rom.ReadByte(tripBaseAddress, 0);
 
+                        /// level 8 has 2 pyroids per trip pad.
                         //trip pyroid too
                         byte bx = (byte) (0x7f & rom.ReadByte(tripPyroidBaseAddress++, 0));
                         byte by = rom.ReadByte(tripPyroidBaseAddress++, 0);
@@ -2019,10 +2039,11 @@ namespace mhedit
                         maze.AddObject(tpp);
 
                         trip.Pyroid = tpp;
-                    } 
+                    }
                 }
 
                 //finally... de hand
+                // Level 7 and up.
                 if (i > 5)
                 {
                     byte[] longBytes = new byte[ 4 ];
