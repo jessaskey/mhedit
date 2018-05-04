@@ -45,8 +45,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Xsd\GameProfile.xsc">
+      <DependentUpon>GameProfile.xsd</DependentUpon>
+    </None>
     <None Include="Xsd\GameProfile.xsd">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Xsd\GameProfile.xss">
+      <DependentUpon>GameProfile.xsd</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
