@@ -1,6 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?> 
 <!-- This is a working example of a Major Havoc Profile -->
-<GameProfile Version="1.0.0.0">
+<GameProfile xmlns="http://askey.org/GameProfile"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://askey.org/GameProfile GameProfile.xsd"
+             Version="1.0.0.0">
     <GameInfo>
         <Name>Major Havoc</Name>
         <Version>1.0</Version>
@@ -20,15 +23,13 @@
                     <EEPROM Id="1Q"
                             Name="136025.215"
                             Size="16384"
-                            Width="8">
-                    </EEPROM>
+                            Width="8"/>
                 </Bank>
                 <Bank Id="1N/P">
                     <EEPROM Id="1N/P"
                             Name="136025.216"
                             Size="16384"
-                            Width="8">
-                    </EEPROM>
+                            Width="8"/>
                 </Bank>
             </Memory>
             <Pages>
@@ -54,15 +55,13 @@
                     <EEPROM Id="1M/N"
                             Name="136025.217"
                             Size="16384"
-                            Width="8">
-                    </EEPROM>
+                            Width="8"/>
                 </Bank>
                 <Bank Id="1L">
                     <EEPROM Id="1L"
                             Name="136025.318"
                             Size="16384"
-                            Width="8">
-                    </EEPROM>
+                            Width="8"/>
                 </Bank>
             </Memory>
             <Pages>
@@ -153,7 +152,8 @@
                  Name="Pyroid">
             <!-- Only one Reactoid ever, so no delimiter before the Pyroids. -->
             <StorageDefinitionRef Id="MazeEnemiesObjectList"
-                                  Order="1"/>
+                                  Order="1"
+                                  Delimiter="none"/>
         </Feature>
         <Feature Id="Perkoid"
                  Name="Perkoid">
@@ -494,4 +494,3 @@
         </Level>
     </Levels>
 </GameProfile>
- 
