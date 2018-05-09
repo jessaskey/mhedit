@@ -6,9 +6,9 @@
  <xs:element name="StorageDefinition">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="Short" type="xs:string" minOccurs="0" maxOccurs="1"/>
-        <xs:element ref="Array" minOccurs="0" maxOccurs="1" />
-        <xs:element name="PageRef" minOccurs="1" maxOccurs="1">
+        <xs:element name="Short" type="xs:string" minOccurs="0"/>
+        <xs:element ref="Array" minOccurs="0" />
+        <xs:element name="PageRef">
           <xs:complexType>
             <xs:simpleContent>
               <xs:extension base="Uint16Hex">
@@ -32,7 +32,7 @@
   <xs:element name="Array">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="StorageDefinitionRef" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="StorageDefinitionRef" minOccurs="0" />
       </xs:sequence>
       <xs:attribute name="StorageClass" type="StorageClassType" />
       <xs:attribute name="DataType" type="ArrayDataType" />
@@ -59,21 +59,21 @@
           </xs:annotation>
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="GameInfo" maxOccurs="1">
+        <xs:element name="GameInfo">
             <xs:annotation>
                 <xs:documentation>Basic Game information.</xs:documentation>
             </xs:annotation>
             <xs:complexType>
             <xs:sequence>
-              <xs:element name="Name" type="xs:string" maxOccurs="1" />
-              <xs:element name="Version" type="xs:string" maxOccurs="1" />
-              <xs:element name="Manufacturer" type="xs:string" minOccurs="0" maxOccurs="1" />
-              <xs:element name="ReleaseDate" type="xs:string" minOccurs="0" maxOccurs="1" />
-              <xs:element name="Comment" type="xs:string" minOccurs="0" maxOccurs="1" />
+              <xs:element name="Name" type="xs:string" />
+              <xs:element name="Version" type="xs:string" />
+              <xs:element name="Manufacturer" type="xs:string" minOccurs="0" />
+              <xs:element name="ReleaseDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Comment" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="MemoryMap" maxOccurs="1">
+        <xs:element name="MemoryMap">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="ROM" maxOccurs="unbounded">
@@ -131,10 +131,10 @@
             <xs:attribute name="BusWidth" type="xs:int" />
           </xs:complexType>
         </xs:element>
-        <xs:element name="ProgramMemory" maxOccurs="1">
+        <xs:element name="ProgramMemory">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="TextSegment" maxOccurs="1">
+              <xs:element name="TextSegment">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="Data" maxOccurs="unbounded">
@@ -149,7 +149,7 @@
                     <xs:element name="Checksum" maxOccurs="unbounded">
                       <xs:complexType>
                         <xs:sequence>
-                          <xs:element name="EEPROMRef" maxOccurs="1">
+                          <xs:element name="EEPROMRef">
                             <xs:complexType>
                               <xs:attribute name="Path" type="xs:string" />
                               <xs:attribute name="Name" type="xs:string" />
@@ -157,7 +157,7 @@
                               <xs:attribute name="End" type="Uint16Hex" />
                             </xs:complexType>
                           </xs:element>
-                          <xs:element ref="StorageDefinition" maxOccurs="1" />
+                          <xs:element ref="StorageDefinition" />
                         </xs:sequence>
                         <xs:attribute name="Id" type="xs:string" />
                         <xs:attribute name="Type" type="ChecksumType" />
@@ -169,12 +169,12 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Features" maxOccurs="1">
+        <xs:element name="Features">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Feature" maxOccurs="unbounded">
                 <xs:complexType>
-                   <xs:choice minOccurs="1" maxOccurs="1">
+                   <xs:choice>
                       <xs:sequence>
                         <xs:element ref="StorageDefinitionRef" maxOccurs="unbounded" />
                         <xs:element ref="StorageDefinition" minOccurs="0" maxOccurs="unbounded" />
@@ -196,12 +196,12 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="FeatureGroups" maxOccurs="1">
+        <xs:element name="FeatureGroups">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="FeatureGroup" maxOccurs="unbounded">
                 <xs:complexType>
-                   <xs:choice minOccurs="1" maxOccurs="1">
+                   <xs:choice>
                       <xs:sequence>
                         <xs:element ref="FeatureGroupRef" maxOccurs="unbounded" />
                         <xs:element ref="FeatureRef" minOccurs="0" maxOccurs="unbounded" />
@@ -216,10 +216,10 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Levels" maxOccurs="1">
+        <xs:element name="Levels">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="Default" minOccurs="0" maxOccurs="1">
+              <xs:element name="Default" minOccurs="0">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element ref="FeatureGroupRef" minOccurs="0" maxOccurs="unbounded" />
@@ -228,7 +228,7 @@
               </xs:element>
               <xs:element name="Level" maxOccurs="unbounded">
                 <xs:complexType>
-                   <xs:choice minOccurs="1" maxOccurs="1">
+                   <xs:choice>
                       <xs:sequence>
                         <xs:element ref="FeatureRef" maxOccurs="unbounded" />
                         <xs:element ref="FeatureGroupRef" minOccurs="0" maxOccurs="unbounded" />
