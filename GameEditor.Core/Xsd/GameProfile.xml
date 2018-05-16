@@ -19,31 +19,31 @@
              Address="0x2000"
              Size="0x2000">
             <Memory>
-                <Bank Id="1Q">
-                    <EEPROM Id="1Q"
+                <Bank Id="Bank_1Q">
+                    <EPROM Id="EPROM_1Q"
                             Name="136025.215"
                             Size="16384"
                             Width="8"/>
                 </Bank>
-                <Bank Id="1N/P">
-                    <EEPROM Id="1N/P"
+                <Bank Id="Bank_1NP">
+                    <EPROM Id="EPROM_1NP"
                             Name="136025.216"
                             Size="16384"
                             Width="8"/>
                 </Bank>
             </Memory>
             <Pages>
-                <Page Id="Page_0">
-                    <BankRef Id="1Q" />
+                <Page Id="PagedProgramRom.Page_0">
+                    <BankRef Id="Bank_1Q" />
                 </Page>
-                <Page Id="Page_1">
-                    <BankRef Id="1Q" />
+                <Page Id="PagedProgramRom.Page_1">
+                    <BankRef Id="Bank_1Q" />
                 </Page>
-                <Page Id="Page_2">
-                    <BankRef Id="1N/P" />
+                <Page Id="PagedProgramRom.Page_2">
+                    <BankRef Id="Bank_1NP" />
                 </Page>
-                <Page Id="Page_3">
-                    <BankRef Id="1N/P" />
+                <Page Id="PagedProgramRom.Page_3">
+                    <BankRef Id="Bank_1NP" />
                 </Page>
             </Pages>
         </ROM>
@@ -51,44 +51,41 @@
              Address="0x8000"
              Size="0x8000">
             <Memory>
-                <Bank Id="1M/N">
-                    <EEPROM Id="1M/N"
+                <Bank Id="Bank_1MN">
+                    <EPROM Id="EPROM_1MN"
                             Name="136025.217"
                             Size="16384"
                             Width="8"/>
                 </Bank>
-                <Bank Id="1L">
-                    <EEPROM Id="1L"
+                <Bank Id="Bank_1L">
+                    <EPROM Id="EPROM_1L"
                             Name="136025.318"
                             Size="16384"
-                            Width="8"/>
+                            Width="8"/> 
                 </Bank>
             </Memory>
             <Pages>
-                <Page Id="Page_0">
-                    <BankRef Id="1M/N" />
-                    <BankRef Id="1L" />
+                <Page Id="ProgramRom.Page_0">
+                    <BankRef Id="Bank_1MN" />
+                    <BankRef Id="Bank_1L" />
                 </Page>
             </Pages>
         </ROM>
     </MemoryMap>
     <ProgramMemory>
         <TextSegment>
-            <Data Path="AlphaProcessor.ProgramRom"
-                  Name="Page_0"
+            <Data Id="AlphaProcessor.ProgramRom.Page_0"
                   Reserved="no"
                   Start="0x2000"
                   Length="0x0234"/>
             <Checksum Id="Checksum1L"
                       Type="Crc32">
-                <EEPROMRef Path="AlphaProcessor.ProgramRom"
-                           Name="1L"
-                           Start="0x0000"
-                           End="0xFFFF"/>
-                <StorageDefinition>
+                <EPROMRef Id="EPROM_1L"
+                          Start="0x0000"
+                          End="0xFFFF"/>
+                <StorageDefinition Id="Checksum_1L">
                     <Short/>
-                    <PageRef Path="AlphaProcessor.ProgramRom"
-                             Name="Page_0">
+                    <PageRef Id="PagedProgramRom.Page_0">
                         0x1111
                     </PageRef>
                 </StorageDefinition>
@@ -107,16 +104,14 @@
                        DataType="ArrayIndex">
                     <StorageDefinitionRef Id="PointerToMazeHintString" />
                 </Array>
-                <PageRef Path="AlphaProcessor.ProgramRom"
-                         Name="Page_0">
+                <PageRef Id="ProgramRom.Page_0">
                     0x93FE
                 </PageRef>
             </StorageDefinition>
             <StorageDefinition Id="PointerToMazeHintString">
                 <Array StorageClass="short"
                        DataType="PointerToString"/>
-                <PageRef Path="AlphaProcessor.ProgramRom"
-                         Name="Page_0">
+                <PageRef Id="ProgramRom.Page_0">
                     0xE48b
                 </PageRef>
             </StorageDefinition>
@@ -128,8 +123,7 @@
             <StorageDefinition Id="ReactoidMeltdownTimes">
                 <Array StorageClass="byte"
                        DataType="Integer"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x3355
                 </PageRef>
             </StorageDefinition>
@@ -142,8 +136,7 @@
             <StorageDefinition Id="MazeEnemiesObjectList">
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_0">
+                <PageRef Id="PagedProgramRom.Page_0">
                     0x2581
                 </PageRef>
             </StorageDefinition>
@@ -168,8 +161,7 @@
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x25A9
                 </PageRef>
             </StorageDefinition>
@@ -179,8 +171,7 @@
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x25D1
                 </PageRef>
             </StorageDefinition>
@@ -190,8 +181,7 @@
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x25F9
                 </PageRef>
             </StorageDefinition>
@@ -201,8 +191,7 @@
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x2647
                 </PageRef>
             </StorageDefinition>
@@ -212,8 +201,7 @@
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x2677
                 </PageRef>
             </StorageDefinition>
@@ -223,8 +211,7 @@
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x26D1
                 </PageRef>
             </StorageDefinition>
@@ -234,8 +221,7 @@
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x26B3
                 </PageRef>
             </StorageDefinition>
@@ -247,8 +233,7 @@
             <StorageDefinition Id="EscapePodEnabled">
                 <Array StorageClass="byte"
                        DataType="Boolean"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x32FF
                 </PageRef>
             </StorageDefinition>
@@ -259,8 +244,7 @@
             <StorageDefinition Id="ClockEnabled">
                 <Array StorageClass="byte"
                        DataType="Boolean"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x3290
                 </PageRef>
             </StorageDefinition>
@@ -271,8 +255,7 @@
             <StorageDefinition Id="BootsEnabled">
                 <Array StorageClass="byte"
                        DataType="Boolean"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x32A0
                 </PageRef>
             </StorageDefinition>
@@ -283,8 +266,7 @@
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x26F9
                 </PageRef>
             </StorageDefinition>
@@ -299,16 +281,14 @@
                        DataType="ByteOffset">
                     <StorageDefinitionRef Id="IonCannonInformation" />
                 </Array>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x269F
                 </PageRef>
             </StorageDefinition>
             <StorageDefinition Id="IonCannonInformation">
                 <Array StorageClass="short"
                        DataType="IonCannonObjectPointerStream"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x30B1
                 </PageRef>
             </StorageDefinition>
@@ -322,8 +302,7 @@
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x2627
                 </PageRef>
             </StorageDefinition>
@@ -337,8 +316,7 @@
             <StorageDefinition>
                 <Array StorageClass="ArrayOfTripPadPyroid"
                        DataType="Array"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x2D36
                 </PageRef>
             </StorageDefinition>
@@ -353,8 +331,7 @@
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
-                <PageRef Path="AlphaProcessor.PagedProgramRom"
-                         Name="Page_1">
+                <PageRef Id="PagedProgramRom.Page_1">
                     0x2721
                 </PageRef>
             </StorageDefinition>
@@ -416,80 +393,80 @@
             these features. -->
             <FeatureGroupRef Id="CommonMazeElements"/>
         </Default>
-        <Level Name="Level 1">
+        <Level Name="Level_1">
             <FeatureRef Id="MazeHint"
                         Maximum="1"/>
         </Level>
-        <Level Name="Level 2">
+        <Level Name="Level_2">
             <FeatureRef Id="MazeHint"
                         Maximum="1"/>
             <FeatureRef Id="EscapePod"
                         Maximum="1"/>
         </Level>
-        <Level Name="Level 3">
+        <Level Name="Level_3">
             <FeatureRef Id="MazeHint"
                         Maximum="1"/>
         </Level>
-        <Level Name="Level 4">
+        <Level Name="Level_4">
             <FeatureRef Id="MazeHint"
                         Maximum="1"/>
         </Level>
-        <Level Name="Level 5">
+        <Level Name="Level_5">
             <FeatureRef Id="MazeHint"
                         Maximum="1"/>
             <FeatureGroupRef Id="Level5AndUpMazeFeatures"/>
         </Level>
-        <Level Name="Level 6">
+        <Level Name="Level_6">
             <FeatureRef Id="MazeHint"
                         Maximum="1"/>
             <FeatureRef Id="EscapePod"
                         Maximum="1"/>
             <FeatureGroupRef Id="Level6AndUpMazeFeatures"/>
         </Level>
-        <Level Name="Level 7">
+        <Level Name="Level_7">
             <FeatureRef Id="MazeHint"
                         Maximum="1"/>
             <FeatureGroupRef Id="AdvancedMazeFeatures"/>
         </Level>
-        <Level Name="Level 8">
+        <Level Name="Level_8">
             <FeatureRef Id="MazeHint"
                         Maximum="1"/>
             <FeatureGroupRef Id="AdvancedMazeFeatures"/>
         </Level>
-        <Level Name="Level 9">
+        <Level Name="Level_9">
             <FeatureRef Id="MazeHint"
                         Maximum="1"/>
             <FeatureGroupRef Id="AdvancedMazeFeatures"/>
         </Level>
-        <Level Name="Level 10">
+        <Level Name="Level_10">
             <FeatureRef Id="MazeHint"
                         Maximum="1"/>
             <FeatureRef Id="EscapePod"
                         Maximum="1"/>
             <FeatureGroupRef Id="AdvancedMazeFeatures"/>
         </Level>
-        <Level Name="Level 11">
+        <Level Name="Level_11">
             <FeatureRef Id="MazeHint"
                         Maximum="1"/>
             <FeatureGroupRef Id="AdvancedMazeFeatures"/>
         </Level>
-        <Level Name="Level 12">
+        <Level Name="Level_12">
             <FeatureRef Id="MazeHint"
                         Maximum="1"/>
             <FeatureGroupRef Id="AdvancedMazeFeatures"/>
         </Level>
-        <Level Name="Level 13">
+        <Level Name="Level_13">
             <FeatureGroupRef Id="AdvancedMazeFeatures"/>
         </Level>
-        <Level Name="Level 14">
+        <Level Name="Level_14">
             <FeatureRef Id="EscapePod"
                         Maximum="1"/>
             <FeatureGroupRef Id="AdvancedMazeFeatures"/>
         </Level>
-        <Level Name="Level 15">
+        <Level Name="Level_15">
             <FeatureGroupRef Id="AdvancedMazeFeatures"/>
         </Level>
-        <Level Name="Level 16">
+        <Level Name="Level_16">
             <FeatureGroupRef Id="AdvancedMazeFeatures"/>
         </Level>
     </Levels>

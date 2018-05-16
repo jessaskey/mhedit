@@ -15,27 +15,32 @@
                     <xs:complexType>
                         <xs:simpleContent>
                             <xs:extension base="Uint16Hex">
-                                <xs:attribute name="Path"
-                                              type="xs:string" />
-                                <xs:attribute name="Name"
-                                              type="xs:string" />
+                                <xs:attribute name="Id"
+                                              type="xs:IDREF"
+                                              use="required"/>
                             </xs:extension>
                         </xs:simpleContent>
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
             <xs:attribute name="Id"
-                          type="xs:string" />
+                          type="xs:ID"
+                          use="optional"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="StorageDefinitionRef">
         <xs:complexType>
             <xs:attribute name="Id"
-                          type="xs:string" />
+                          type="xs:IDREF"
+                          use="required"/>
             <xs:attribute name="Order"
-                          type="xs:int" />
+                          type="xs:int"
+                          default="0"
+                          use="optional"/>
             <xs:attribute name="Delimiter"
-                          type="Uint8Delimiter" />
+                          type="Uint8Delimiter"
+                          default="none"
+                          use="optional"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="Array">
@@ -45,29 +50,40 @@
                             minOccurs="0" />
             </xs:sequence>
             <xs:attribute name="StorageClass"
-                          type="StorageClassType" />
+                          type="StorageClassType"
+                          use="required"/>
             <xs:attribute name="DataType"
-                          type="ArrayDataType" />
+                          type="ArrayDataType"
+                          use="required"/>
             <xs:attribute name="Id"
-                          type="xs:string" />
+                          type="xs:ID"
+                          use="optional"/>
             <xs:attribute name="Size"
-                          type="xs:int" />
+                          type="xs:int"
+                          default="0"
+                          use="optional"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="FeatureGroupRef">
         <xs:complexType>
             <xs:attribute name="Id"
-                          type="xs:string" />
+                          type="xs:IDREF"
+                          use="required"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="FeatureRef">
         <xs:complexType>
             <xs:attribute name="Id"
-                          type="xs:string" />
+                          type="xs:IDREF"
+                          use="required"/>
             <xs:attribute name="Maximum"
-                          type="xs:int" />
+                          type="xs:int"
+                          default="1"
+                          use="optional"/>
             <xs:attribute name="Required"
-                          type="YesNoType" />
+                          type="YesNoType"
+                          default="no"
+                          use="optional"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="GameProfile">
@@ -93,7 +109,7 @@
                                         type="xs:string"
                                         minOccurs="0" />
                             <xs:element name="ReleaseDate"
-                                        type="xs:string"
+                                        type="xs:gYearMonth"
                                         minOccurs="0" />
                             <xs:element name="Comment"
                                         type="xs:string"
@@ -116,22 +132,27 @@
                                                                 maxOccurs="unbounded">
                                                         <xs:complexType>
                                                             <xs:sequence>
-                                                                <xs:element name="EEPROM"
+                                                                <xs:element name="EPROM"
                                                                             maxOccurs="unbounded">
                                                                     <xs:complexType>
                                                                         <xs:attribute name="Id"
-                                                                                      type="xs:string" />
+                                                                                      type="xs:ID"
+                                                                                      use="required"/>
                                                                         <xs:attribute name="Name"
-                                                                                      type="xs:string" />
+                                                                                      type="xs:string"
+                                                                                      use="required"/>
                                                                         <xs:attribute name="Size"
-                                                                                      type="xs:int" />
+                                                                                      type="xs:int"
+                                                                                      use="required"/>
                                                                         <xs:attribute name="Width"
-                                                                                      type="xs:int" />
+                                                                                      type="xs:int"
+                                                                                      use="required"/>
                                                                     </xs:complexType>
                                                                 </xs:element>
                                                             </xs:sequence>
                                                             <xs:attribute name="Id"
-                                                                          type="xs:string" />
+                                                                          type="xs:ID"
+                                                                          use="required"/>
                                                         </xs:complexType>
                                                     </xs:element>
                                                 </xs:sequence>
@@ -149,12 +170,14 @@
                                                                             maxOccurs="unbounded">
                                                                     <xs:complexType>
                                                                         <xs:attribute name="Id"
-                                                                                      type="xs:string" />
+                                                                                      type="xs:IDREF"
+                                                                                      use="required"/>
                                                                     </xs:complexType>
                                                                 </xs:element>
                                                             </xs:sequence>
                                                             <xs:attribute name="Id"
-                                                                          type="xs:string" />
+                                                                          type="xs:ID"
+                                                                          use="optional"/>
                                                         </xs:complexType>
                                                     </xs:element>
                                                 </xs:sequence>
@@ -162,22 +185,31 @@
                                         </xs:element>
                                     </xs:sequence>
                                     <xs:attribute name="Id"
-                                                  type="xs:string" />
+                                                  type="xs:ID"
+                                                  use="optional"/>
                                     <xs:attribute name="Address"
-                                                  type="Uint16Hex" />
+                                                  type="Uint16Hex"
+                                                  use="required"/>
                                     <xs:attribute name="Size"
-                                                  type="Uint16Hex" />
+                                                  type="Uint16Hex"
+                                                  use="required"/>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
                         <xs:attribute name="Id"
-                                      type="xs:string" />
+                                      type="xs:ID"
+                                      use="optional"/>
                         <xs:attribute name="AddressWidth"
-                                      type="xs:int" />
+                                      type="xs:int"
+                                      use="required"/>
                         <xs:attribute name="AddressBase"
-                                      type="Uint16Hex" />
+                                      type="Uint16Hex"
+                                      default="0x0000"
+                                      use="optional"/>
                         <xs:attribute name="BusWidth"
-                                      type="xs:int" />
+                                      type="xs:int"
+                                      default="8"
+                                      use="optional"/>
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="ProgramMemory">
@@ -189,40 +221,46 @@
                                         <xs:element name="Data"
                                                     maxOccurs="unbounded">
                                             <xs:complexType>
-                                                <xs:attribute name="Path"
-                                                              type="xs:string" />
-                                                <xs:attribute name="Name"
-                                                              type="xs:string" />
+                                                <xs:attribute name="Id"
+                                                              type="xs:ID"
+                                                              use="required"/>
                                                 <xs:attribute name="Reserved"
-                                                              type="xs:string" />
+                                                              type="YesNoType"
+                                                              default="no"
+                                                              use="optional"/>
                                                 <xs:attribute name="Start"
-                                                              type="xs:string" />
+                                                              type="Uint16Hex"
+                                                              use="required"/>
                                                 <xs:attribute name="Length"
-                                                              type="xs:string" />
+                                                              type="Uint16Hex"
+                                                              use="required"/>
                                             </xs:complexType>
                                         </xs:element>
                                         <xs:element name="Checksum"
                                                     maxOccurs="unbounded">
                                             <xs:complexType>
                                                 <xs:sequence>
-                                                    <xs:element name="EEPROMRef">
+                                                    <xs:element name="EPROMRef">
                                                         <xs:complexType>
-                                                            <xs:attribute name="Path"
-                                                                          type="xs:string" />
-                                                            <xs:attribute name="Name"
-                                                                          type="xs:string" />
+                                                            <xs:attribute name="Id"
+                                                                          type="xs:IDREF"
+                                                                          use="required"/>
                                                             <xs:attribute name="Start"
-                                                                          type="Uint16Hex" />
+                                                                          type="Uint16Hex"
+                                                                          use="required"/>
                                                             <xs:attribute name="End"
-                                                                          type="Uint16Hex" />
+                                                                          type="Uint16Hex"
+                                                                          use="required"/>
                                                         </xs:complexType>
                                                     </xs:element>
                                                     <xs:element ref="StorageDefinition" />
                                                 </xs:sequence>
                                                 <xs:attribute name="Id"
-                                                              type="xs:string" />
+                                                              type="xs:ID" />
                                                 <xs:attribute name="Type"
-                                                              type="ChecksumType" />
+                                                              type="ChecksumType"
+                                                              default="Additive"
+                                                              use="optional"/>
                                             </xs:complexType>
                                         </xs:element>
                                     </xs:sequence>
@@ -261,11 +299,15 @@
                                         </xs:sequence>
                                     </xs:choice>
                                     <xs:attribute name="Id"
-                                                  type="xs:string" />
+                                                  type="xs:ID"
+                                                  use="required"/>
                                     <xs:attribute name="Name"
-                                                  type="xs:string" />
+                                                  type="xs:string"
+                                                  use="required"/>
                                     <xs:attribute name="Maximum"
-                                                  type="xs:int" />
+                                                  type="xs:int"
+                                                  default="1"
+                                                  use="optional"/>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
@@ -291,7 +333,8 @@
                                         </xs:sequence>
                                     </xs:choice>
                                     <xs:attribute name="Id"
-                                                  type="xs:string" />
+                                                  type="xs:ID"
+                                                  use="required"/>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
@@ -303,11 +346,19 @@
                             <xs:element name="Default"
                                         minOccurs="0">
                                 <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element ref="FeatureGroupRef"
-                                                    minOccurs="0"
-                                                    maxOccurs="unbounded" />
-                                    </xs:sequence>
+                                    <xs:choice>
+                                        <xs:sequence>
+                                            <xs:element ref="FeatureRef"
+                                                        maxOccurs="unbounded" />
+                                            <xs:element ref="FeatureGroupRef"
+                                                        minOccurs="0"
+                                                        maxOccurs="unbounded" />
+                                        </xs:sequence>
+                                        <xs:sequence>
+                                            <xs:element ref="FeatureGroupRef"
+                                                        maxOccurs="unbounded" />
+                                        </xs:sequence>
+                                    </xs:choice>
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="Level"
@@ -327,14 +378,19 @@
                                         </xs:sequence>
                                     </xs:choice>
                                     <xs:attribute name="Name"
-                                                  type="xs:string" />
+                                                  type="xs:ID"
+                                                  use="required"/>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
                         <xs:attribute name="Maximum"
-                                      type="xs:int" />
+                                      type="xs:int"
+                                      default="1"
+                                      use="optional"/>
                         <xs:attribute name="Minimum"
-                                      type="xs:int" />
+                                      type="xs:int"
+                                      default="1"
+                                      use="optional"/>
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
