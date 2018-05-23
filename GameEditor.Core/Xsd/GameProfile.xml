@@ -61,7 +61,7 @@
                     <EPROM Id="EPROM_1L"
                             Name="136025.318"
                             Size="16384"
-                            Width="8"/> 
+                            Width="8"/>
                 </Bank>
             </Memory>
             <Pages>
@@ -96,7 +96,6 @@
     The Maximum value represents total # allowed for all mazes combined. -->
     <Features>
         <Feature Id="MazeHint"
-                 Name="MazeHint"
                  Maximum="12">
             <!--Not every level has a hint. -->
             <StorageDefinition Id="IndexToMazeHints">
@@ -117,7 +116,6 @@
             </StorageDefinition>
         </Feature>
         <Feature Id="ReactoidTime"
-                 Name="ReactoidTime"
                  Maximum="16">
             <!-- Every level MUST have a Reactoid timer value. -->
             <StorageDefinition Id="ReactoidMeltdownTimes">
@@ -129,7 +127,6 @@
             </StorageDefinition>
         </Feature>
         <Feature Id="Reactoid"
-                 Name="Reactoid"
                  Maximum="16">
             <!-- Every level MUST have a Reactoid. It's actually stored as
             the first maze object in the MazeEnemiesObjectList List.-->
@@ -141,23 +138,20 @@
                 </PageRef>
             </StorageDefinition>
         </Feature> 
-        <Feature Id="Pyroid"
-                 Name="Pyroid">
+        <Feature Id="Pyroid">
             <!-- Only one Reactoid ever, so no delimiter before the Pyroids. -->
             <StorageDefinitionRef Id="MazeEnemiesObjectList"
                                   Order="1"
                                   Delimiter="none"/>
         </Feature>
-        <Feature Id="Perkoid"
-                 Name="Perkoid">
+        <Feature Id="Perkoid">
             <!-- May be many Pyroids in list already so use delimiter before
             inserting the Perkoids. -->
             <StorageDefinitionRef Id="MazeEnemiesObjectList"
                                   Order="2"
                                   Delimiter="0xFE"/>
         </Feature>      
-        <Feature Id="Oxoid"
-                 Name="Oxoid">
+        <Feature Id="Oxoid">
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
@@ -166,8 +160,7 @@
                 </PageRef>
             </StorageDefinition>
         </Feature>
-        <Feature Id="Lightning"
-                 Name="Lightning">
+        <Feature Id="Lightning">
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
@@ -176,8 +169,7 @@
                 </PageRef>
             </StorageDefinition>
         </Feature>
-        <Feature Id="Arrow"
-                 Name="Arrow">
+        <Feature Id="Arrow">
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
@@ -186,8 +178,7 @@
                 </PageRef>
             </StorageDefinition>
         </Feature>
-        <Feature Id="MazeWall"
-                 Name="MazeWall">
+        <Feature Id="MazeWall">
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
@@ -196,8 +187,7 @@
                 </PageRef>
             </StorageDefinition>
         </Feature>
-        <Feature Id="OneWaySign"
-                 Name="OneWaySign">
+        <Feature Id="OneWaySign">
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
@@ -206,8 +196,7 @@
                 </PageRef>
             </StorageDefinition>
         </Feature>
-        <Feature Id="LockAndKey"
-                 Name="LockAndKey">
+        <Feature Id="LockAndKey">
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
@@ -216,8 +205,7 @@
                 </PageRef>
             </StorageDefinition>
         </Feature>
-        <Feature Id="Stalactite"
-                 Name="Stalactite">
+        <Feature Id="Stalactite">
             <StorageDefinition>
                 <Array StorageClass="short"
                        DataType="PointerToMazeObjectList"/>
@@ -227,7 +215,6 @@
             </StorageDefinition>
         </Feature>
         <Feature Id="EscapePod"
-                 Name="EscapePod"
                  Maximum="4">
             <!-- Only Maze type 1 Supports Escape Pods. -->
             <StorageDefinition Id="EscapePodEnabled">
@@ -239,7 +226,6 @@
             </StorageDefinition>
         </Feature>
         <Feature Id="Clock"
-                 Name="Clock"
                  Maximum="16">
             <StorageDefinition Id="ClockEnabled">
                 <Array StorageClass="byte"
@@ -250,7 +236,6 @@
             </StorageDefinition>
         </Feature>
         <Feature Id="Boots"
-                 Name="Boots"
                  Maximum="16">
             <StorageDefinition Id="BootsEnabled">
                 <Array StorageClass="byte"
@@ -260,8 +245,7 @@
                 </PageRef>
             </StorageDefinition>
         </Feature>
-        <Feature Id="Transporter"
-                 Name="Transporter">
+        <Feature Id="Transporter">
             <!-- Transporters come in pairs. -->
             <StorageDefinition>
                 <Array StorageClass="short"
@@ -271,8 +255,7 @@
                 </PageRef>
             </StorageDefinition>
         </Feature>
-        <Feature Id="IonCannon"
-                 Name="IonCannon">
+        <Feature Id="IonCannon">
             <!-- Ion Cannon info stored in stream of data object pointers. Offset to
             first cannon object pointer is contained in the byte array. Stream of pointers
             is Null Terminated. -->
@@ -294,7 +277,6 @@
             </StorageDefinition>
         </Feature>
         <Feature Id="TripPad"
-                 Name="TripPad"
                  Maximum="50">
             <!-- Trips use low res maze object position (1 byte). I need to work that out
             with the datatype definitions. -->
@@ -308,7 +290,6 @@
             </StorageDefinition>
         </Feature>
         <Feature Id="TripPadPyroid"
-                 Name="TripPadPyroid"
                  Maximum="50">
             <!-- One Pyroid for each Trip Pad! -->
             <!-- I need to look at this since these pyroids are 3 bytes. Not 6 like the
@@ -326,7 +307,6 @@
                    Size="7"/>
         </Feature>
         <Feature Id="ReactoidHand"
-                 Name="ReactoidHand"
                  Maximum="16">
             <StorageDefinition>
                 <Array StorageClass="short"

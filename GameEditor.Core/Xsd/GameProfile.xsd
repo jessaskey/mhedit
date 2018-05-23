@@ -2,6 +2,7 @@
 <xs:schema targetNamespace="http://askey.org/GameProfile"
            elementFormDefault="qualified"
            xmlns="http://askey.org/GameProfile"
+           xmlns:gpns="http://askey.org/GameProfile"
            xmlns:xs="http://www.w3.org/2001/XMLSchema" >
     <xs:element name="StorageDefinition">
         <xs:complexType>
@@ -16,7 +17,7 @@
                         <xs:simpleContent>
                             <xs:extension base="Uint16Hex">
                                 <xs:attribute name="Id"
-                                              type="xs:IDREF"
+                                              type="xs:string"
                                               use="required"/>
                             </xs:extension>
                         </xs:simpleContent>
@@ -24,14 +25,14 @@
                 </xs:element>
             </xs:sequence>
             <xs:attribute name="Id"
-                          type="xs:ID"
+                          type="xs:string"
                           use="optional"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="StorageDefinitionRef">
         <xs:complexType>
             <xs:attribute name="Id"
-                          type="xs:IDREF"
+                          type="xs:string"
                           use="required"/>
             <xs:attribute name="Order"
                           type="xs:int"
@@ -67,14 +68,14 @@
     <xs:element name="FeatureGroupRef">
         <xs:complexType>
             <xs:attribute name="Id"
-                          type="xs:IDREF"
+                          type="xs:string"
                           use="required"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="FeatureRef">
         <xs:complexType>
             <xs:attribute name="Id"
-                          type="xs:IDREF"
+                          type="xs:string"
                           use="required"/>
             <xs:attribute name="Maximum"
                           type="xs:int"
@@ -104,7 +105,7 @@
                             <xs:element name="Name"
                                         type="xs:string" />
                             <xs:element name="Version"
-                                        type="xs:string" />
+                                        type="VersionString" />
                             <xs:element name="Manufacturer"
                                         type="xs:string"
                                         minOccurs="0" />
@@ -136,7 +137,7 @@
                                                                             maxOccurs="unbounded">
                                                                     <xs:complexType>
                                                                         <xs:attribute name="Id"
-                                                                                      type="xs:ID"
+                                                                                      type="xs:string"
                                                                                       use="required"/>
                                                                         <xs:attribute name="Name"
                                                                                       type="xs:string"
@@ -151,7 +152,7 @@
                                                                 </xs:element>
                                                             </xs:sequence>
                                                             <xs:attribute name="Id"
-                                                                          type="xs:ID"
+                                                                          type="xs:string"
                                                                           use="required"/>
                                                         </xs:complexType>
                                                     </xs:element>
@@ -170,14 +171,14 @@
                                                                             maxOccurs="unbounded">
                                                                     <xs:complexType>
                                                                         <xs:attribute name="Id"
-                                                                                      type="xs:IDREF"
+                                                                                      type="xs:string"
                                                                                       use="required"/>
                                                                     </xs:complexType>
                                                                 </xs:element>
                                                             </xs:sequence>
                                                             <xs:attribute name="Id"
-                                                                          type="xs:ID"
-                                                                          use="optional"/>
+                                                                          type="xs:string"
+                                                                          use="required"/>
                                                         </xs:complexType>
                                                     </xs:element>
                                                 </xs:sequence>
@@ -243,7 +244,7 @@
                                                     <xs:element name="EPROMRef">
                                                         <xs:complexType>
                                                             <xs:attribute name="Id"
-                                                                          type="xs:IDREF"
+                                                                          type="xs:string"
                                                                           use="required"/>
                                                             <xs:attribute name="Start"
                                                                           type="Uint16Hex"
@@ -299,9 +300,6 @@
                                         </xs:sequence>
                                     </xs:choice>
                                     <xs:attribute name="Id"
-                                                  type="xs:ID"
-                                                  use="required"/>
-                                    <xs:attribute name="Name"
                                                   type="xs:string"
                                                   use="required"/>
                                     <xs:attribute name="Maximum"
@@ -333,7 +331,7 @@
                                         </xs:sequence>
                                     </xs:choice>
                                     <xs:attribute name="Id"
-                                                  type="xs:ID"
+                                                  type="xs:string"
                                                   use="required"/>
                                 </xs:complexType>
                             </xs:element>
@@ -378,7 +376,7 @@
                                         </xs:sequence>
                                     </xs:choice>
                                     <xs:attribute name="Name"
-                                                  type="xs:ID"
+                                                  type="xs:string"
                                                   use="required"/>
                                 </xs:complexType>
                             </xs:element>
@@ -392,13 +390,96 @@
                                       default="1"
                                       use="optional"/>
                     </xs:complexType>
-                </xs:element>
+                    <xs:unique name="LevelNameUnique">
+                        <xs:selector xpath="gpns:Level" />
+                        <xs:field xpath="@Name" />
+                    </xs:unique>
+            </xs:element>
             </xs:sequence>
             <xs:attribute name="Version"
-                          type="xs:string"
+                          type="VersionString"
                           use="required" />
         </xs:complexType>
+        <xs:key name="BankKey">
+            <xs:selector xpath=".//gpns:Bank"/>
+            <xs:field xpath="@Id"/>
+        </xs:key>
+        <xs:keyref name="BankKeyRef"
+                   refer="BankKey">
+            <xs:selector xpath=".//gpns:BankRef"/>
+            <xs:field xpath="@Id"/>
+        </xs:keyref>
+        <xs:key name="EPROMKey">
+            <xs:selector xpath=".//gpns:EPROM"/>
+            <xs:field xpath="@Id"/>
+        </xs:key>
+        <xs:keyref name="EPROMKeyRef"
+                   refer="EPROMKey">
+            <xs:selector xpath=".//gpns:EPROMRef"/>
+            <xs:field xpath="@Id"/>
+        </xs:keyref>
+        <xs:key name="PageKey">
+            <xs:selector xpath=".//gpns:Page"/>
+            <xs:field xpath="@Id"/>
+        </xs:key>
+        <xs:keyref name="PageKeyRef"
+                   refer="PageKey">
+            <xs:selector xpath=".//gpns:PageRef"/>
+            <xs:field xpath="@Id"/>
+        </xs:keyref>
+        <!-- Storage definitions don't require Id -->
+        <xs:unique name="StorageDefinitionKey">
+            <xs:selector xpath=".//gpns:StorageDefinition"/>
+            <xs:field xpath="@Id"/>
+        </xs:unique>
+        <xs:keyref name="StorageDefinitionKeyRef"
+                   refer="StorageDefinitionKey">
+            <xs:selector xpath=".//gpns:StorageDefinitionRef"/>
+            <xs:field xpath="@Id"/>
+        </xs:keyref>
+        <xs:key name="FeatureKey">
+            <xs:selector xpath=".//gpns:Feature"/>
+            <xs:field xpath="@Id"/>
+        </xs:key>
+        <xs:keyref name="FeatureKeyRef"
+                   refer="FeatureKey">
+            <xs:selector xpath=".//gpns:FeatureRef"/>
+            <xs:field xpath="@Id"/>
+        </xs:keyref>
+        <xs:key name="FeatureGroupKey">
+            <xs:selector xpath=".//gpns:FeatureGroup"/>
+            <xs:field xpath="@Id"/>
+        </xs:key>
+        <xs:keyref name="FeatureGroupKeyRef"
+                   refer="FeatureGroupKey">
+            <xs:selector xpath=".//gpns:FeatureGroupRef"/>
+            <xs:field xpath="@Id"/>
+        </xs:keyref>
     </xs:element>
+    <xs:simpleType name="VersionString">
+        <xs:annotation>
+            <xs:documentation>
+                Basic version string. Equivalent to xx.xx.xxxxx.xxxxx with at least Major.Minor defined.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:union>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="(([0-9]?[0-9])\.){2}(([0-9]?[0-9]?[0-9]?[0-9]?[0-9])\.)([0-9]?[0-9]?[0-9]?[0-9]?[0-9])" />
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="(([0-9]?[0-9])\.){2}([0-9]?[0-9]?[0-9]?[0-9]?[0-9])" />
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="(([0-9]?[0-9])\.)([0-9]?[0-9])" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:union>
+    </xs:simpleType>
     <xs:simpleType name="YesNoType">
         <xs:annotation>
             <xs:documentation>This type is used for boolean-like attributes.</xs:documentation>
