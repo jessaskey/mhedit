@@ -84,10 +84,11 @@
                           Start="0x0000"
                           End="0xFFFF"/>
                 <StorageDefinition Id="Checksum_1L">
-                    <Short/>
-                    <PageRef Id="PagedProgramRom.Page_0">
-                        0x1111
-                    </PageRef>
+                    <Short>
+                        <PageRef Id="PagedProgramRom.Page_0">
+                            0x1111
+                        </PageRef>
+                    </Short>
                 </StorageDefinition>
             </Checksum>
         </TextSegment>
@@ -98,182 +99,244 @@
         <Feature Id="MazeHint"
                  Maximum="12">
             <!--Not every level has a hint. -->
-            <StorageDefinition Id="IndexToMazeHints">
-                <Array StorageClass="byte"
-                       DataType="ArrayIndex">
-                    <StorageDefinitionRef Id="PointerToMazeHintString" />
+            <StorageDefinition>
+                <Array Id="HintIndex"
+                       Type="byte"
+                       Storage="value"
+                       Dimensions="1"
+                       Size="12">
+                    <PageRef Id="ProgramRom.Page_0">
+                        0x93FE
+                    </PageRef>
                 </Array>
-                <PageRef Id="ProgramRom.Page_0">
-                    0x93FE
-                </PageRef>
-            </StorageDefinition>
-            <StorageDefinition Id="PointerToMazeHintString">
-                <Array StorageClass="short"
-                       DataType="PointerToString"/>
-                <PageRef Id="ProgramRom.Page_0">
-                    0xE48b
-                </PageRef>
+                <Array Id="PointerToHintString"
+                       Type="string"
+                       Storage="pointer"
+                       Dimensions="1"
+                       Size="12">
+                    <PageRef Id="ProgramRom.Page_0">
+                        0xE48b
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="ReactoidTime"
                  Maximum="16">
             <!-- Every level MUST have a Reactoid timer value. -->
-            <StorageDefinition Id="ReactoidMeltdownTimes">
-                <Array StorageClass="byte"
-                       DataType="Integer"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x3355
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="ReactoidMeltdownTimes"
+                       Type="byte"
+                       Storage="value"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x3355
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="Reactoid"
                  Maximum="16">
             <!-- Every level MUST have a Reactoid. It's actually stored as
             the first maze object in the MazeEnemiesObjectList List.-->
-            <StorageDefinition Id="MazeEnemiesObjectList">
-                <Array StorageClass="short"
-                       DataType="PointerToMazeObjectList"/>
-                <PageRef Id="PagedProgramRom.Page_0">
-                    0x2581
-                </PageRef>
+            <StorageDefinition Id="MazeEnemiesList">
+                <Array Id="MazeEnemiesList"
+                       Type="object"
+                       Storage="pointer"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_0">
+                        0x2581
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature> 
         <Feature Id="Pyroid">
             <!-- Only one Reactoid ever, so no delimiter before the Pyroids. -->
-            <StorageDefinitionRef Id="MazeEnemiesObjectList"
+            <StorageDefinitionRef Id="MazeEnemiesList"
                                   Order="1"
                                   Delimiter="none"/>
         </Feature>
         <Feature Id="Perkoid">
             <!-- May be many Pyroids in list already so use delimiter before
             inserting the Perkoids. -->
-            <StorageDefinitionRef Id="MazeEnemiesObjectList"
+            <StorageDefinitionRef Id="MazeEnemiesList"
                                   Order="2"
                                   Delimiter="0xFE"/>
         </Feature>      
         <Feature Id="Oxoid">
-            <StorageDefinition>
-                <Array StorageClass="short"
-                       DataType="PointerToMazeObjectList"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x25A9
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="OxoidList"
+                       Type="object"
+                       Storage="pointer"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x25A9
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="Lightning">
-            <StorageDefinition>
-                <Array StorageClass="short"
-                       DataType="PointerToMazeObjectList"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x25D1
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="LightningList"
+                       Type="object"
+                       Storage="pointer"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x25D1
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="Arrow">
-            <StorageDefinition>
-                <Array StorageClass="short"
-                       DataType="PointerToMazeObjectList"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x25F9
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="ArrowList"
+                       Type="object"
+                       Storage="pointer"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x25F9
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="MazeWall">
-            <StorageDefinition>
-                <Array StorageClass="short"
-                       DataType="PointerToMazeObjectList"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x2647
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="MazeWallList"
+                       Type="object"
+                       Storage="pointer"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x2647
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="OneWaySign">
-            <StorageDefinition>
-                <Array StorageClass="short"
-                       DataType="PointerToMazeObjectList"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x2677
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="OneWaySignList"
+                       Type="object"
+                       Storage="pointer"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x2677
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="LockAndKey">
-            <StorageDefinition>
-                <Array StorageClass="short"
-                       DataType="PointerToMazeObjectList"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x26D1
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="LockAndKeyList"
+                       Type="object"
+                       Storage="pointer"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x26D1
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="Stalactite">
-            <StorageDefinition>
-                <Array StorageClass="short"
-                       DataType="PointerToMazeObjectList"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x26B3
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="StalactiteList"
+                       Type="object"
+                       Storage="pointer"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x26B3
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="EscapePod"
                  Maximum="4">
             <!-- Only Maze type 1 Supports Escape Pods. -->
-            <StorageDefinition Id="EscapePodEnabled">
-                <Array StorageClass="byte"
-                       DataType="Boolean"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x32FF
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="EscapePodEnabled"
+                       Type="boolean"
+                       Storage="value"
+                       Dimensions="1"
+                       Size="4">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x32FF
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="Clock"
                  Maximum="16">
-            <StorageDefinition Id="ClockEnabled">
-                <Array StorageClass="byte"
-                       DataType="Boolean"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x3290
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="ClockEnabled"
+                       Type="boolean"
+                       Storage="value"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x3290
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="Boots"
                  Maximum="16">
-            <StorageDefinition Id="BootsEnabled">
-                <Array StorageClass="byte"
-                       DataType="Boolean"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x32A0
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="BootsEnabled"
+                       Type="boolean"
+                       Storage="value"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x32A0
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="Transporter">
             <!-- Transporters come in pairs. -->
-            <StorageDefinition>
-                <Array StorageClass="short"
-                       DataType="PointerToMazeObjectList"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x26F9
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="TransporterList"
+                       Type="object"
+                       Storage="pointer"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x26F9
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="IonCannon">
             <!-- Ion Cannon info stored in stream of data object pointers. Offset to
             first cannon object pointer is contained in the byte array. Stream of pointers
             is Null Terminated. -->
-            <StorageDefinition Id="IonCannonStreamOffsets">
-                <Array StorageClass="byte"
-                       DataType="ByteOffset">
-                    <StorageDefinitionRef Id="IonCannonInformation" />
+            <StorageDefinition >
+                <Array Id="IonCannonStreamOffsets"
+                       Type="byte"
+                       Storage="value"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x269F
+                    </PageRef>
                 </Array>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x269F
-                </PageRef>
             </StorageDefinition>
-            <StorageDefinition Id="IonCannonInformation">
-                <Array StorageClass="short"
-                       DataType="IonCannonObjectPointerStream"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x30B1
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="IonCannonInformation"
+                       Type="object"
+                       Storage="pointer"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x30B1
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="TripPad"
@@ -281,39 +344,48 @@
             <!-- Trips use low res maze object position (1 byte). I need to work that out
             with the datatype definitions. -->
             <!-- One Pyroid for each Trip Pad! -->
-            <StorageDefinition>
-                <Array StorageClass="short"
-                       DataType="PointerToMazeObjectList"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x2627
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="TripPadList"
+                       Type="object"
+                       Storage="pointer"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x2627
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
         <Feature Id="TripPadPyroid"
                  Maximum="50">
             <!-- One Pyroid for each Trip Pad! -->
             <!-- I need to look at this since these pyroids are 3 bytes. Not 6 like the
-            normal pyroids. -->
-            <StorageDefinition>
-                <Array StorageClass="ArrayOfTripPadPyroid"
-                       DataType="Array"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x2D36
-                </PageRef>
+            normal pyroids.
+            A 2 dimensional array, the 1st dimension is x, 2nd is fixed at 7. -->
+            <StorageDefinition >
+                <Array Id="TripPadPyroidList"
+                       Type="object"
+                       Storage="value"
+                       Dimensions="2"
+                       Size="16;7">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x2D36
+                    </PageRef>
+                </Array>
             </StorageDefinition>
-            <Array Id="ArrayOfTripPadPyroid"
-                   StorageClass="TripPadPyroid"
-                   DataType="TripPadPyroid"
-                   Size="7"/>
         </Feature>
         <Feature Id="ReactoidHand"
                  Maximum="16">
-            <StorageDefinition>
-                <Array StorageClass="short"
-                       DataType="PointerToMazeObjectList"/>
-                <PageRef Id="PagedProgramRom.Page_1">
-                    0x2721
-                </PageRef>
+            <StorageDefinition >
+                <Array Id="ReactoidHands"
+                       Type="object"
+                       Storage="pointer"
+                       Dimensions="1"
+                       Size="16">
+                    <PageRef Id="PagedProgramRom.Page_1">
+                        0x2721
+                    </PageRef>
+                </Array>
             </StorageDefinition>
         </Feature>
     </Features>
