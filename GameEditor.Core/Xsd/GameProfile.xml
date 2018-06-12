@@ -103,7 +103,6 @@
                 <Array Id="HintIndex"
                        Type="byte"
                        Storage="value"
-                       Dimensions="1"
                        Size="12">
                     <PageRef Id="ProgramRom.Page_0">
                         0x93FE
@@ -112,7 +111,6 @@
                 <Array Id="PointerToHintString"
                        Type="string"
                        Storage="pointer"
-                       Dimensions="1"
                        Size="12">
                     <PageRef Id="ProgramRom.Page_0">
                         0xE48b
@@ -127,7 +125,6 @@
                 <Array Id="ReactoidMeltdownTimes"
                        Type="byte"
                        Storage="value"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x3355
@@ -143,7 +140,6 @@
                 <Array Id="MazeEnemiesList"
                        Type="object"
                        Storage="pointer"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_0">
                         0x2581
@@ -169,7 +165,6 @@
                 <Array Id="OxoidList"
                        Type="object"
                        Storage="pointer"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x25A9
@@ -182,7 +177,6 @@
                 <Array Id="LightningList"
                        Type="object"
                        Storage="pointer"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x25D1
@@ -195,7 +189,6 @@
                 <Array Id="ArrowList"
                        Type="object"
                        Storage="pointer"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x25F9
@@ -208,7 +201,6 @@
                 <Array Id="MazeWallList"
                        Type="object"
                        Storage="pointer"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x2647
@@ -221,7 +213,6 @@
                 <Array Id="OneWaySignList"
                        Type="object"
                        Storage="pointer"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x2677
@@ -234,7 +225,6 @@
                 <Array Id="LockAndKeyList"
                        Type="object"
                        Storage="pointer"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x26D1
@@ -247,7 +237,6 @@
                 <Array Id="StalactiteList"
                        Type="object"
                        Storage="pointer"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x26B3
@@ -262,7 +251,6 @@
                 <Array Id="EscapePodEnabled"
                        Type="boolean"
                        Storage="value"
-                       Dimensions="1"
                        Size="4">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x32FF
@@ -276,7 +264,6 @@
                 <Array Id="ClockEnabled"
                        Type="boolean"
                        Storage="value"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x3290
@@ -290,7 +277,6 @@
                 <Array Id="BootsEnabled"
                        Type="boolean"
                        Storage="value"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x32A0
@@ -304,7 +290,6 @@
                 <Array Id="TransporterList"
                        Type="object"
                        Storage="pointer"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x26F9
@@ -320,7 +305,6 @@
                 <Array Id="IonCannonStreamOffsets"
                        Type="byte"
                        Storage="value"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x269F
@@ -331,7 +315,6 @@
                 <Array Id="IonCannonInformation"
                        Type="object"
                        Storage="pointer"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x30B1
@@ -348,7 +331,6 @@
                 <Array Id="TripPadList"
                        Type="object"
                        Storage="pointer"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x2627
@@ -363,15 +345,15 @@
             normal pyroids.
             A 2 dimensional array, the 1st dimension is x, 2nd is fixed at 7. -->
             <StorageDefinition >
-                <Array Id="TripPadPyroidList"
-                       Type="object"
-                       Storage="value"
-                       Dimensions="2"
-                       Size="16;7">
+                <Array_2d Id="TripPadPyroidList"
+                          Type="object"
+                          Storage="value"
+                          Size_X="16"
+                          Size_Y="7">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x2D36
                     </PageRef>
-                </Array>
+                </Array_2d>
             </StorageDefinition>
         </Feature>
         <Feature Id="ReactoidHand"
@@ -380,7 +362,6 @@
                 <Array Id="ReactoidHands"
                        Type="object"
                        Storage="pointer"
-                       Dimensions="1"
                        Size="16">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x2721

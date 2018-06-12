@@ -30,6 +30,9 @@
                 <xs:element ref="Array"
                             minOccurs="0"
                             maxOccurs="unbounded"/>
+                <xs:element ref="Array_2d"
+                            minOccurs="0"
+                            maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="Id"
                           type="xs:string"
@@ -52,6 +55,11 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="Array">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                This is a one dimensional Array.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="PageRef"
@@ -67,12 +75,40 @@
                           type="ArrayStorageType"
                           default="value"
                           use="optional"/>
-            <xs:attribute name="Dimensions"
-                          type="ArrayDimensionsType"
+            <xs:attribute name="Size"
+                          type="xs:int"
                           default="1"
                           use="optional"/>
-            <xs:attribute name="Size"
-                          type="ArraySizeType"
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Array_2d">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                This is a 2 dimensional Array as described here https://stackoverflow.com/a/12567378.
+                I.e. array[x,y]
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="PageRef"
+                            minOccurs="1" />
+            </xs:sequence>
+            <xs:attribute name="Id"
+                          type="xs:ID"
+                          use="optional"/>
+            <xs:attribute name="Type"
+                          type="ArrayType"
+                          use="required"/>
+            <xs:attribute name="Storage"
+                          type="ArrayStorageType"
+                          default="value"
+                          use="optional"/>
+            <xs:attribute name="Size_X"
+                          type="xs:int"
+                          default="1"
+                          use="optional"/>
+            <xs:attribute name="Size_Y"
+                          type="xs:int"
                           default="1"
                           use="optional"/>
         </xs:complexType>
@@ -539,38 +575,6 @@
             <xs:enumeration value="value"/>
             <xs:enumeration value="pointer"/>
         </xs:restriction>
-    </xs:simpleType>
-    <xs:simpleType name="ArrayDimensionsType">
-        <xs:annotation>
-            <xs:documentation>Could forgo the dimensions attribute if inferred from size.</xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:token">
-            <xs:enumeration value="1"/>
-            <xs:enumeration value="2"/>
-            <!--<xs:enumeration value="3"/>-->
-        </xs:restriction>
-    </xs:simpleType>
-    <xs:simpleType name="ArraySizeType">
-        <xs:annotation>
-            <xs:documentation>A set of sizes correlating to the dimensions attribute.</xs:documentation>
-        </xs:annotation>
-        <xs:union>
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:pattern value="([0-9]?[0-9]?[0-9]?[0-9])" />
-                </xs:restriction>
-            </xs:simpleType>
-            <xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:pattern value="(([0-9]?[0-9]?[0-9]?[0-9])\;)([0-9]?[0-9]?[0-9]?[0-9])" />
-                </xs:restriction>
-            </xs:simpleType>
-            <!--<xs:simpleType>
-                <xs:restriction base="xs:string">
-                    <xs:pattern value="(([0-9]?[0-9]?[0-9]?[0-9])\;){2}([0-9]?[0-9]?[0-9]?[0-9])" />
-                </xs:restriction>
-            </xs:simpleType>-->
-        </xs:union>
     </xs:simpleType>
     <!--https://stackoverflow.com/a/36830971-->
     <xs:simpleType name="Uint32Hex">
