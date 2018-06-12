@@ -84,11 +84,11 @@
                           Start="0x0000"
                           End="0xFFFF"/>
                 <StorageDefinition Id="Checksum_1L">
-                    <Short>
+                    <Array Type="short">
                         <PageRef Id="PagedProgramRom.Page_0">
                             0x1111
                         </PageRef>
-                    </Short>
+                    </Array>
                 </StorageDefinition>
             </Checksum>
         </TextSegment>

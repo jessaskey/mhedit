@@ -18,15 +18,6 @@
     <xs:element name="StorageDefinition">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="Short"
-                            minOccurs="0">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element ref="PageRef"
-                                        minOccurs="0" />
-                        </xs:sequence>
-                    </xs:complexType>
-                </xs:element>
                 <xs:element ref="Array"
                             minOccurs="0"
                             maxOccurs="unbounded"/>
