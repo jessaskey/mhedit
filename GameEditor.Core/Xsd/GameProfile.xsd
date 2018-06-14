@@ -7,7 +7,7 @@
     <xs:element name="PageRef">
         <xs:complexType>
             <xs:simpleContent>
-                <xs:extension base="Uint16Hex">
+                <xs:extension base="HexAddress">
                     <xs:attribute name="Id"
                                   type="xs:string"
                                   use="required"/>
@@ -40,7 +40,7 @@
                           default="0"
                           use="optional"/>
             <xs:attribute name="Delimiter"
-                          type="Uint8Delimiter"
+                          type="HexDelimiter"
                           default="none"
                           use="optional"/>
         </xs:complexType>
@@ -63,7 +63,7 @@
                           type="ArrayType"
                           use="required"/>
             <xs:attribute name="Storage"
-                          type="ArrayStorageType"
+                          type="ArrayStorage"
                           default="value"
                           use="optional"/>
             <xs:attribute name="Size"
@@ -91,7 +91,7 @@
                           type="ArrayType"
                           use="required"/>
             <xs:attribute name="Storage"
-                          type="ArrayStorageType"
+                          type="ArrayStorage"
                           default="value"
                           use="optional"/>
             <xs:attribute name="Size_X"
@@ -228,10 +228,10 @@
                                                   type="xs:ID"
                                                   use="optional"/>
                                     <xs:attribute name="Address"
-                                                  type="Uint16Hex"
+                                                  type="HexAddress"
                                                   use="required"/>
                                     <xs:attribute name="Size"
-                                                  type="Uint16Hex"
+                                                  type="HexAddress"
                                                   use="required"/>
                                 </xs:complexType>
                             </xs:element>
@@ -243,7 +243,7 @@
                                       type="xs:int"
                                       use="required"/>
                         <xs:attribute name="AddressBase"
-                                      type="Uint16Hex"
+                                      type="HexAddress"
                                       default="0x0000"
                                       use="optional"/>
                         <xs:attribute name="BusWidth"
@@ -269,10 +269,10 @@
                                                               default="no"
                                                               use="optional"/>
                                                 <xs:attribute name="Start"
-                                                              type="Uint16Hex"
+                                                              type="HexAddress"
                                                               use="required"/>
                                                 <xs:attribute name="Length"
-                                                              type="Uint16Hex"
+                                                              type="HexAddress"
                                                               use="required"/>
                                             </xs:complexType>
                                         </xs:element>
@@ -286,10 +286,10 @@
                                                                           type="xs:string"
                                                                           use="required"/>
                                                             <xs:attribute name="Start"
-                                                                          type="Uint16Hex"
+                                                                          type="HexAddress"
                                                                           use="required"/>
                                                             <xs:attribute name="End"
-                                                                          type="Uint16Hex"
+                                                                          type="HexAddress"
                                                                           use="required"/>
                                                         </xs:complexType>
                                                     </xs:element>
@@ -539,9 +539,6 @@
         </xs:restriction>
     </xs:simpleType>
     <!--  https://www.w3.org/2005/07/xml-schema-patterns.html#Enumerated  -->
-    <!--<xs:simpleType name="ChecksumType" >
-        <xs:union memberTypes="gpns:KnownChecksumTypes xs:token"/>
-    </xs:simpleType>-->
     <xs:simpleType name="ArrayType">
         <xs:annotation>
             <xs:documentation>.</xs:documentation>
@@ -558,7 +555,7 @@
             <xs:enumeration value="object"/>
         </xs:restriction>
     </xs:simpleType>
-    <xs:simpleType name="ArrayStorageType">
+    <xs:simpleType name="ArrayStorage">
         <xs:annotation>
             <xs:documentation>.</xs:documentation>
         </xs:annotation>
@@ -568,26 +565,18 @@
         </xs:restriction>
     </xs:simpleType>
     <!--https://stackoverflow.com/a/36830971-->
-    <xs:simpleType name="Uint32Hex">
+    <xs:simpleType name="HexAddress">
         <xs:union memberTypes="xs:unsignedInt">
             <xs:simpleType>
                 <xs:restriction base="xs:token">
                     <xs:pattern value="0x[0-9A-Fa-f]{8}"/>
                 </xs:restriction>
             </xs:simpleType>
-        </xs:union>
-    </xs:simpleType>
-    <xs:simpleType name="Uint16Hex">
-        <xs:union memberTypes="xs:unsignedShort">
             <xs:simpleType>
                 <xs:restriction base="xs:token">
                     <xs:pattern value="0x[0-9A-Fa-f]{4}"/>
                 </xs:restriction>
             </xs:simpleType>
-        </xs:union>
-    </xs:simpleType>
-    <xs:simpleType name="Uint8Hex">
-        <xs:union memberTypes="xs:unsignedByte">
             <xs:simpleType>
                 <xs:restriction base="xs:token">
                     <xs:pattern value="0x[0-9A-Fa-f]{2}"/>
@@ -595,13 +584,8 @@
             </xs:simpleType>
         </xs:union>
     </xs:simpleType>
-    <xs:simpleType name="Uint8Delimiter">
-        <xs:union memberTypes="xs:unsignedByte">
-            <xs:simpleType>
-                <xs:restriction base="xs:token">
-                    <xs:pattern value="0x[0-9A-Fa-f]{2}"/>
-                </xs:restriction>
-            </xs:simpleType>
+    <xs:simpleType name="HexDelimiter">
+        <xs:union memberTypes="gpns:HexAddress">
             <xs:simpleType>
                 <xs:restriction base="xs:token">
                     <xs:enumeration value="none"/>
