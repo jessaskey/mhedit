@@ -150,15 +150,17 @@
         <Feature Id="Pyroid">
             <!-- Only one Reactoid ever, so no delimiter before the Pyroids. -->
             <StorageDefinitionRef Id="MazeEnemiesList"
-                                  Order="1"
-                                  Delimiter="none"/>
+                                  Order="1"/>
         </Feature>
         <Feature Id="Perkoid">
             <!-- May be many Pyroids in list already so use delimiter before
             inserting the Perkoids. -->
             <StorageDefinitionRef Id="MazeEnemiesList"
-                                  Order="2"
-                                  Delimiter="0xFE"/>
+                                  Order="2">
+                <Delimiter>
+                    FE
+                </Delimiter>
+            </StorageDefinitionRef>
         </Feature>      
         <Feature Id="Oxoid">
             <StorageDefinition >
@@ -345,15 +347,15 @@
             normal pyroids.
             A 2 dimensional array, the 1st dimension is x, 2nd is fixed at 7. -->
             <StorageDefinition >
-                <Array_2d Id="TripPadPyroidList"
+                <Array2d Id="TripPadPyroidList"
                           Type="object"
                           Storage="value"
-                          Size_X="16"
-                          Size_Y="7">
+                          Size="16"
+                          Size2="7">
                     <PageRef Id="PagedProgramRom.Page_1">
                         0x2D36
                     </PageRef>
-                </Array_2d>
+                </Array2d>
             </StorageDefinition>
         </Feature>
         <Feature Id="ReactoidHand"

@@ -21,7 +21,7 @@
                 <xs:element ref="Array"
                             minOccurs="0"
                             maxOccurs="unbounded"/>
-                <xs:element ref="Array_2d"
+                <xs:element ref="Array2d"
                             minOccurs="0"
                             maxOccurs="unbounded"/>
             </xs:sequence>
@@ -32,16 +32,17 @@
     </xs:element>
     <xs:element name="StorageDefinitionRef">
         <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Delimiter"
+                            type="xs:hexBinary"
+                            minOccurs="0" />
+            </xs:sequence>
             <xs:attribute name="Id"
                           type="xs:string"
                           use="required"/>
             <xs:attribute name="Order"
                           type="xs:int"
                           default="0"
-                          use="optional"/>
-            <xs:attribute name="Delimiter"
-                          type="HexDelimiter"
-                          default="none"
                           use="optional"/>
         </xs:complexType>
     </xs:element>
@@ -72,7 +73,7 @@
                           use="optional"/>
         </xs:complexType>
     </xs:element>
-    <xs:element name="Array_2d">
+    <xs:element name="Array2d">
         <xs:annotation>
             <xs:documentation xml:lang="en">
                 This is a 2 dimensional Array as described here https://stackoverflow.com/a/12567378.
@@ -94,11 +95,11 @@
                           type="ArrayStorage"
                           default="value"
                           use="optional"/>
-            <xs:attribute name="Size_X"
+            <xs:attribute name="Size"
                           type="xs:int"
                           default="1"
                           use="optional"/>
-            <xs:attribute name="Size_Y"
+            <xs:attribute name="Size2"
                           type="xs:int"
                           default="1"
                           use="optional"/>
@@ -580,15 +581,6 @@
             <xs:simpleType>
                 <xs:restriction base="xs:token">
                     <xs:pattern value="0x[0-9A-Fa-f]{2}"/>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:union>
-    </xs:simpleType>
-    <xs:simpleType name="HexDelimiter">
-        <xs:union memberTypes="gpns:HexAddress">
-            <xs:simpleType>
-                <xs:restriction base="xs:token">
-                    <xs:enumeration value="none"/>
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
