@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GameEditor.Core</RootNamespace>
     <AssemblyName>GameEditor.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,19 +41,42 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ProductionOffsets.cs" />
+    <Compile Include="HexExtensions.cs" />
+    <None Include="ProductionOffsets.cs" />
     <Compile Include="RomImage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Xml\Array.cs" />
+    <Compile Include="Xml\ArrayType.cs" />
+    <Compile Include="Xml\ArrayStorage.cs" />
+    <Compile Include="Xml\Array2d.cs" />
+    <Compile Include="Xml\FeatureGroupRef.cs" />
+    <Compile Include="Xml\FeatureRef.cs" />
+    <Compile Include="Xml\GameInfo.cs" />
+    <Compile Include="Xml\EPROM.cs" />
+    <Compile Include="Xml\Bank.cs" />
+    <Compile Include="Xml\Page.cs" />
+    <Compile Include="Xml\ROM.cs" />
+    <Compile Include="Xml\BankRef.cs" />
+    <Compile Include="Xml\Checksum.cs" />
+    <Compile Include="Xml\Data.cs" />
+    <Compile Include="Xml\EPROMRef.cs" />
+    <Compile Include="Xml\ChecksumType.cs" />
+    <Compile Include="Xml\Feature.cs" />
+    <Compile Include="Xml\FeatureGroup.cs" />
+    <Compile Include="Xml\PageRef.cs" />
+    <Compile Include="Xml\StorageDefinition.cs" />
+    <Compile Include="Xml\StorageDefinitionRef.cs" />
+    <Compile Include="Xml\GameProfile.cs" />
+    <Compile Include="Xml\MemoryMap.cs" />
+    <Compile Include="Xml\ProgramMemory.cs" />
+    <Compile Include="Xml\TextSegment.cs" />
+    <Compile Include="Xml\YesNoType.cs" />
+    <Compile Include="Xml\Level.cs" />
+    <Compile Include="Xml\Levels.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Xsd\GameProfile.xsc">
-      <DependentUpon>GameProfile.xsd</DependentUpon>
-    </None>
     <None Include="Xsd\GameProfile.xsd">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="Xsd\GameProfile.xss">
-      <DependentUpon>GameProfile.xsd</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -60,5 +84,6 @@
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
