@@ -18,7 +18,7 @@
         <ROM Id="PagedProgramRom"
              Address="0x2000"
              Size="0x2000">
-            <Memory>
+            <Banks>
                 <Bank Id="Bank_1Q">
                     <EPROM Id="EPROM_1Q"
                             Name="136025.215"
@@ -31,7 +31,7 @@
                             Size="16384"
                             Width="8"/>
                 </Bank>
-            </Memory>
+            </Banks>
             <Pages>
                 <Page Id="PagedProgramRom.Page_0">
                     <BankRef Id="Bank_1Q" />
@@ -50,7 +50,7 @@
         <ROM Id="ProgramRom"
              Address="0x8000"
              Size="0x8000">
-            <Memory>
+            <Banks>
                 <Bank Id="Bank_1MN">
                     <EPROM Id="EPROM_1MN"
                             Name="136025.217"
@@ -63,7 +63,7 @@
                             Size="16384"
                             Width="8"/>
                 </Bank>
-            </Memory>
+            </Banks>
             <Pages>
                 <Page Id="ProgramRom.Page_0">
                     <BankRef Id="Bank_1MN" />
@@ -312,8 +312,6 @@
                         0x269F
                     </PageRef>
                 </Array>
-            </StorageDefinition>
-            <StorageDefinition >
                 <Array Id="IonCannonInformation"
                        Type="object"
                        Storage="pointer"

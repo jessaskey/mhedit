@@ -165,8 +165,7 @@
                                         maxOccurs="unbounded">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="Memory"
-                                                    maxOccurs="unbounded">
+                                        <xs:element name="Banks">
                                             <xs:complexType>
                                                 <xs:sequence>
                                                     <xs:element name="Bank"
@@ -199,8 +198,7 @@
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
-                                        <xs:element name="Pages"
-                                                    maxOccurs="unbounded">
+                                        <xs:element name="Pages">
                                             <xs:complexType>
                                                 <xs:sequence>
                                                     <xs:element name="Page"
@@ -323,19 +321,9 @@
                                             <xs:element ref="StorageDefinition"
                                                         minOccurs="0"
                                                         maxOccurs="unbounded" />
-                                            <xs:element ref="Array"
-                                                        minOccurs="0"
-                                                        maxOccurs="unbounded" />
                                         </xs:sequence>
                                         <xs:sequence>
                                             <xs:element ref="StorageDefinition"
-                                                        maxOccurs="unbounded" />
-                                            <xs:element ref="Array"
-                                                        minOccurs="0"
-                                                        maxOccurs="unbounded" />
-                                        </xs:sequence>
-                                        <xs:sequence>
-                                            <xs:element ref="Array"
                                                         maxOccurs="unbounded" />
                                         </xs:sequence>
                                     </xs:choice>
