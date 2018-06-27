@@ -373,23 +373,26 @@
         </Feature>
     </Features>
     <FeatureGroups>
-        <!-- Feature Ref's allow setting max and required for each level that
-        feature is included in. The Maximum value represents total # allowed that
-        maze and Required = "yes" means that there must be a value for that maze. -->
+        <!-- Feature Ref's allow setting max and min for each group that feature is
+        included in. The Maximum/Minimum should be self explanatory. If a single
+        instance of any feature is required set Max = Min = 1. -->
         
-        <FeatureGroup Id="CommonMazeElements">
-            <!-- While not on every level in the Production ROMs they could be. -->
+        <FeatureGroup Id="CommonMazeElements"
+                      IsDefault="true">
+            <!-- While each of these features are not on every level in the
+            Production ROMs they could be. -->
             <FeatureRef Id="Reactoid"
                         Maximum="1"
-                        Required="yes"/>
+                        Minimum="1"/>
             <FeatureRef Id="ReactoidTime"
                         Maximum="1"
-                        Required="yes"/>
+                        Minimum="1"/>
             <FeatureRef Id="Pyroid" />
             <FeatureRef Id="Perkoid" />
             <FeatureRef Id="Oxoid" />
             <FeatureRef Id="Lightning" />
             <FeatureRef Id="Arrow" />
+            <!-- Seems there should be some min for walls? -->
             <FeatureRef Id="MazeWall" />
             <FeatureRef Id="OneWaySign" />
             <FeatureRef Id="LockAndKey" />
@@ -423,11 +426,6 @@
     <Levels Maximum="16"
             Minimum="16">
         <!-- Levels are ascending based on child order. -->
-        <Default>
-            <!-- Common to all levels without specifically including
-            these features. -->
-            <FeatureGroupRef Id="CommonMazeElements"/>
-        </Default>
         <Level Name="Level_1">
             <FeatureRef Id="MazeHint"
                         Maximum="1"/>

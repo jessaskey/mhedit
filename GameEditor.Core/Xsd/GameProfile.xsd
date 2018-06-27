@@ -118,12 +118,12 @@
                           type="xs:string"
                           use="required"/>
             <xs:attribute name="Maximum"
-                          type="xs:int"
-                          default="1"
+                          type="MaximumType"
+                          default="-1"
                           use="optional"/>
-            <xs:attribute name="Required"
-                          type="YesNoType"
-                          default="no"
+            <xs:attribute name="Minimum"
+                          type="MinimumType"
+                          default="0"
                           use="optional"/>
         </xs:complexType>
     </xs:element>
@@ -343,7 +343,7 @@
                                                   type="xs:string"
                                                   use="required"/>
                                     <xs:attribute name="Maximum"
-                                                  type="xs:int"
+                                                  type="MaximumType"
                                                   default="1"
                                                   use="optional"/>
                                 </xs:complexType>
@@ -373,32 +373,34 @@
                                     <xs:attribute name="Id"
                                                   type="xs:string"
                                                   use="required"/>
+                                    <xs:attribute name="IsDefault"
+                                                  type="xs:boolean"
+                                                  use="optional">
+                                        <!-- https://stackoverflow.com/a/22100835/3596482 -->
+                                        <xs:annotation>
+                                            <xs:documentation>
+                                                Identifies the FeatureGroup as being the default set of features for all
+                                                defined levels. Only one FeatureGroup can have this attribute set to true.
+                                            </xs:documentation>
+                                        </xs:annotation>
+                                        <!--<xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:enumeration value="yes"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>-->
+                                    </xs:attribute>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
                     </xs:complexType>
+                    <xs:unique name="IsDefaultFeatureGroup">
+                        <xs:selector xpath=".//gpns:FeatureGroup"/>
+                        <xs:field xpath="@IsDefault"/>
+                    </xs:unique>
                 </xs:element>
                 <xs:element name="Levels">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="Default"
-                                        minOccurs="0">
-                                <xs:complexType>
-                                    <xs:choice>
-                                        <xs:sequence>
-                                            <xs:element ref="FeatureRef"
-                                                        maxOccurs="unbounded" />
-                                            <xs:element ref="FeatureGroupRef"
-                                                        minOccurs="0"
-                                                        maxOccurs="unbounded" />
-                                        </xs:sequence>
-                                        <xs:sequence>
-                                            <xs:element ref="FeatureGroupRef"
-                                                        maxOccurs="unbounded" />
-                                        </xs:sequence>
-                                    </xs:choice>
-                                </xs:complexType>
-                            </xs:element>
                             <xs:element name="Level"
                                         maxOccurs="unbounded">
                                 <xs:complexType>
@@ -422,11 +424,11 @@
                             </xs:element>
                         </xs:sequence>
                         <xs:attribute name="Maximum"
-                                      type="xs:int"
-                                      default="1"
+                                      type="MaximumType"
+                                      default="-1"
                                       use="optional"/>
                         <xs:attribute name="Minimum"
-                                      type="xs:int"
+                                      type="MinimumType"
                                       default="1"
                                       use="optional"/>
                     </xs:complexType>
@@ -537,6 +539,28 @@
             <xs:enumeration value="Crc32"/>
             <xs:enumeration value="Crc16"/>
             <xs:enumeration value="Additive"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="MaximumType">
+        <xs:annotation>
+            <xs:documentation>
+                The maximum number of occurrences allowed. The value can be an integer greater
+                than or equal to zero. To set no limit on the maximum number, use the value -1 (unbounded).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="-1" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="MinimumType">
+        <xs:annotation>
+            <xs:documentation>
+                The minimum number of occurrences allowed. The value can be an integer greater
+                than or equal to zero.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int">
+            <xs:minInclusive value="0" />
         </xs:restriction>
     </xs:simpleType>
     <!--  https://www.w3.org/2005/07/xml-schema-patterns.html#Enumerated  -->
