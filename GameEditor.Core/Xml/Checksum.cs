@@ -16,35 +16,35 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class Checksum
     {
-        private EpromRef _ePromRefField;
+        private EpromRef _ePromRef;
 
-        private string _idField;
+        private string _id;
 
-        private StorageDefinition _storageDefinitionField;
+        private StorageDefinition _storageDefinition;
 
-        private ChecksumType _typeField = ChecksumType.Additive;
+        private ChecksumType _type = ChecksumType.Additive;
 
         /// <remarks />
         [ XmlElement( "EPROMRef", typeof( EpromRef ) ) ]
         public EpromRef EpromRef
         {
-            get { return this._ePromRefField; }
-            set { this._ePromRefField = value; }
+            get { return this._ePromRef; }
+            set { this._ePromRef = value; }
         }
 
         /// <remarks />
         public StorageDefinition StorageDefinition
         {
-            get { return this._storageDefinitionField; }
-            set { this._storageDefinitionField = value; }
+            get { return this._storageDefinition; }
+            set { this._storageDefinition = value; }
         }
 
         /// <remarks />
         [ XmlAttribute( DataType = "ID" ) ]
         public string Id
         {
-            get { return this._idField; }
-            set { this._idField = value; }
+            get { return this._id; }
+            set { this._id = value; }
         }
 
         /// <remarks />
@@ -52,8 +52,8 @@ namespace GameEditor.Core.Xml
         [ DefaultValue( ChecksumType.Additive ) ]
         public ChecksumType Type
         {
-            get { return this._typeField; }
-            set { this._typeField = value; }
+            get { return this._type; }
+            set { this._type = value; }
         }
     }
 

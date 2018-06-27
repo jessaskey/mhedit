@@ -16,15 +16,15 @@ namespace GameEditor.Core.Xml
     [ XmlRoot( Namespace = "http://askey.org/GameProfile", IsNullable = false ) ]
     public class PageRef
     {
-        private string _idField;
+        private string _id;
         private int _address;
 
         /// <remarks />
         [ XmlAttribute ]
         public string Id
         {
-            get { return this._idField; }
-            set { this._idField = value; }
+            get { return this._id; }
+            set { this._id = value; }
         }
 
         [ XmlIgnore ]

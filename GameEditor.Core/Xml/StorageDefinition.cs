@@ -17,24 +17,24 @@ namespace GameEditor.Core.Xml
     [ XmlRoot( Namespace = "http://askey.org/GameProfile", IsNullable = false ) ]
     public class StorageDefinition
     {
-        private List<Array> _arrayField;
-        private string _idField;
+        private List<Array> _array;
+        private string _id;
 
         /// <remarks />
         [ XmlElement( "Array", typeof( Array ) ) ]
         [ XmlElement( "Array2d", typeof( Array2D ) ) ]
         public List<Array> Array
         {
-            get { return this._arrayField; }
-            set { this._arrayField = value; }
+            get { return this._array; }
+            set { this._array = value; }
         }
 
         /// <remarks />
         [ XmlAttribute ]
         public string Id
         {
-            get { return this._idField; }
-            set { this._idField = value; }
+            get { return this._id; }
+            set { this._id = value; }
         }
     }
 

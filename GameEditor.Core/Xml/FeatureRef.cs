@@ -16,18 +16,18 @@ namespace GameEditor.Core.Xml
     [ XmlRoot( Namespace = "http://askey.org/GameProfile", IsNullable = false ) ]
     public class FeatureRef
     {
-        private string _idField;
+        private string _id;
 
-        private int _maximumField = -1;
+        private int _maximum = -1;
 
-        private int _minimumField = 0;
+        private int _minimum = 0;
 
         /// <remarks />
         [ XmlAttribute ]
         public string Id
         {
-            get { return this._idField; }
-            set { this._idField = value; }
+            get { return this._id; }
+            set { this._id = value; }
         }
 
         /// <remarks />
@@ -35,8 +35,8 @@ namespace GameEditor.Core.Xml
         [ DefaultValue( -1 ) ]
         public int Maximum
         {
-            get { return this._maximumField; }
-            set { this._maximumField = value; }
+            get { return this._maximum; }
+            set { this._maximum = value; }
         }
 
         /// <remarks />
@@ -44,8 +44,8 @@ namespace GameEditor.Core.Xml
         [ DefaultValue( 0 ) ]
         public int Minimum
         {
-            get { return this._minimumField; }
-            set { this._minimumField = value; }
+            get { return this._minimum; }
+            set { this._minimum = value; }
         }
     }
 

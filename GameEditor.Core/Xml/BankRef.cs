@@ -15,14 +15,14 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class BankRef
     {
-        private string _idField;
+        private string _id;
 
         /// <remarks />
         [ XmlAttribute ]
         public string Id
         {
-            get { return this._idField; }
-            set { this._idField = value; }
+            get { return this._id; }
+            set { this._id = value; }
         }
     }
 

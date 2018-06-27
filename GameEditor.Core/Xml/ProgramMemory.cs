@@ -15,13 +15,13 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class ProgramMemory
     {
-        private TextSegment _textSegmentField;
+        private TextSegment _textSegment;
 
         /// <remarks />
         public TextSegment TextSegment
         {
-            get { return this._textSegmentField; }
-            set { this._textSegmentField = value; }
+            get { return this._textSegment; }
+            set { this._textSegment = value; }
         }
     }
 

@@ -15,25 +15,25 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class Level
     {
-        private object[] _itemsField;
+        private object[] _items;
 
-        private string _nameField;
+        private string _name;
 
         /// <remarks />
         [ XmlElement( "FeatureGroupRef", typeof( FeatureGroupRef ) ) ]
         [ XmlElement( "FeatureRef", typeof( FeatureRef ) ) ]
         public object[] Items
         {
-            get { return this._itemsField; }
-            set { this._itemsField = value; }
+            get { return this._items; }
+            set { this._items = value; }
         }
 
         /// <remarks />
         [ XmlAttribute ]
         public string Name
         {
-            get { return this._nameField; }
-            set { this._nameField = value; }
+            get { return this._name; }
+            set { this._name = value; }
         }
     }
 

@@ -15,27 +15,27 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class Feature
     {
-        private string _idField;
+        private string _id;
 
-        private object[] _itemsField;
+        private object[] _items;
 
-        private int _maximumField = 1;
+        private int _maximum = 1;
 
         /// <remarks />
         [ XmlElement( "StorageDefinition", typeof( StorageDefinition ) ) ]
         [ XmlElement( "StorageDefinitionRef", typeof( StorageDefinitionRef ) ) ]
         public object[] Items
         {
-            get { return this._itemsField; }
-            set { this._itemsField = value; }
+            get { return this._items; }
+            set { this._items = value; }
         }
 
         /// <remarks />
         [ XmlAttribute ]
         public string Id
         {
-            get { return this._idField; }
-            set { this._idField = value; }
+            get { return this._id; }
+            set { this._id = value; }
         }
 
         /// <remarks />
@@ -43,8 +43,8 @@ namespace GameEditor.Core.Xml
         [ DefaultValue( 1 ) ]
         public int Maximum
         {
-            get { return this._maximumField; }
-            set { this._maximumField = value; }
+            get { return this._maximum; }
+            set { this._maximum = value; }
         }
     }
 

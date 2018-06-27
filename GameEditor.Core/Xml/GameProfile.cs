@@ -17,70 +17,70 @@ namespace GameEditor.Core.Xml
     [ XmlRoot( Namespace = "http://askey.org/GameProfile", IsNullable = false ) ]
     public class GameProfile
     {
-        private List<FeatureGroup> _featureGroupsField;
+        private List<FeatureGroup> _featureGroups;
 
-        private List<Feature> _featuresField;
+        private List<Feature> _features;
 
-        private GameInfo _gameInfoField;
+        private GameInfo _gameInfo;
 
-        private Levels _levelsField;
+        private Levels _levels;
 
-        private MemoryMap _memoryMapField;
+        private MemoryMap _memoryMap;
 
-        private ProgramMemory _programMemoryField;
+        private ProgramMemory _programMemory;
 
-        private string _versionField;
+        private string _version;
 
         /// <remarks />
         public GameInfo GameInfo
         {
-            get { return this._gameInfoField; }
-            set { this._gameInfoField = value; }
+            get { return this._gameInfo; }
+            set { this._gameInfo = value; }
         }
 
         /// <remarks />
         public MemoryMap MemoryMap
         {
-            get { return this._memoryMapField; }
-            set { this._memoryMapField = value; }
+            get { return this._memoryMap; }
+            set { this._memoryMap = value; }
         }
 
         /// <remarks />
         public ProgramMemory ProgramMemory
         {
-            get { return this._programMemoryField; }
-            set { this._programMemoryField = value; }
+            get { return this._programMemory; }
+            set { this._programMemory = value; }
         }
 
         /// <remarks />
         [ XmlArrayItem( "Feature", IsNullable = false ) ]
         public List<Feature> Features
         {
-            get { return this._featuresField; }
-            set { this._featuresField = value; }
+            get { return this._features; }
+            set { this._features = value; }
         }
 
         /// <remarks />
         [ XmlArrayItem( "FeatureGroup", IsNullable = false ) ]
         public List<FeatureGroup> FeatureGroups
         {
-            get { return this._featureGroupsField; }
-            set { this._featureGroupsField = value; }
+            get { return this._featureGroups; }
+            set { this._featureGroups = value; }
         }
 
         /// <remarks />
         public Levels Levels
         {
-            get { return this._levelsField; }
-            set { this._levelsField = value; }
+            get { return this._levels; }
+            set { this._levels = value; }
         }
 
         /// <remarks />
         [ XmlAttribute ]
         public string Version
         {
-            get { return this._versionField; }
-            set { this._versionField = value; }
+            get { return this._version; }
+            set { this._version = value; }
         }
     }
 

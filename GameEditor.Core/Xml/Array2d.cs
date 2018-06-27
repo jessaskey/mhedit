@@ -16,15 +16,15 @@ namespace GameEditor.Core.Xml
     [ XmlRoot( Namespace = "http://askey.org/GameProfile", IsNullable = false ) ]
     public class Array2D : Array
     {
-        private int _size2Field = 1;
+        private int _size2 = 1;
 
         /// <remarks />
         [ XmlAttribute ]
         [ DefaultValue( 1 ) ]
         public int Size2
         {
-            get { return this._size2Field; }
-            set { this._size2Field = value; }
+            get { return this._size2; }
+            set { this._size2 = value; }
         }
     }
 

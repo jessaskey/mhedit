@@ -16,39 +16,39 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class MemoryMap
     {
-        private string _addressBaseField = "0x0000";
+        private string _addressBase = "0x0000";
 
-        private int _addressWidthField;
+        private int _addressWidth;
 
-        private int _busWidthField = 8;
+        private int _busWidth = 8;
 
-        private string _idField;
+        private string _id;
 
-        private List<Rom> _romField;
+        private List<Rom> _rom;
 
         /// <remarks />
         [ XmlElement( "ROM" ) ]
         //[ XmlArrayItem( "ROM", IsNullable = false ) ]
         public List<Rom> Rom
         {
-            get { return this._romField; }
-            set { this._romField = value; }
+            get { return this._rom; }
+            set { this._rom = value; }
         }
 
         /// <remarks />
         [ XmlAttribute( DataType = "ID" ) ]
         public string Id
         {
-            get { return this._idField; }
-            set { this._idField = value; }
+            get { return this._id; }
+            set { this._id = value; }
         }
 
         /// <remarks />
         [ XmlAttribute ]
         public int AddressWidth
         {
-            get { return this._addressWidthField; }
-            set { this._addressWidthField = value; }
+            get { return this._addressWidth; }
+            set { this._addressWidth = value; }
         }
 
         /// <remarks />
@@ -56,8 +56,8 @@ namespace GameEditor.Core.Xml
         [ DefaultValue( "0x0000" ) ]
         public string AddressBase
         {
-            get { return this._addressBaseField; }
-            set { this._addressBaseField = value; }
+            get { return this._addressBase; }
+            set { this._addressBase = value; }
         }
 
         /// <remarks />
@@ -65,8 +65,8 @@ namespace GameEditor.Core.Xml
         [ DefaultValue( 8 ) ]
         public int BusWidth
         {
-            get { return this._busWidthField; }
-            set { this._busWidthField = value; }
+            get { return this._busWidth; }
+            set { this._busWidth = value; }
         }
     }
 

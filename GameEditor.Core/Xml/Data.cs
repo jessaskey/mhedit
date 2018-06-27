@@ -15,20 +15,20 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class Data
     {
-        private string _idField;
+        private string _id;
 
-        private string _lengthField;
+        private string _length;
 
-        private YesNoType _reservedField = YesNoType.No;
+        private YesNoType _reserved = YesNoType.No;
 
-        private string _startField;
+        private string _start;
 
         /// <remarks />
         [ XmlAttribute( DataType = "ID" ) ]
         public string Id
         {
-            get { return this._idField; }
-            set { this._idField = value; }
+            get { return this._id; }
+            set { this._id = value; }
         }
 
         /// <remarks />
@@ -36,24 +36,24 @@ namespace GameEditor.Core.Xml
         [ DefaultValue( YesNoType.No ) ]
         public YesNoType Reserved
         {
-            get { return this._reservedField; }
-            set { this._reservedField = value; }
+            get { return this._reserved; }
+            set { this._reserved = value; }
         }
 
         /// <remarks />
         [ XmlAttribute ]
         public string Start
         {
-            get { return this._startField; }
-            set { this._startField = value; }
+            get { return this._start; }
+            set { this._start = value; }
         }
 
         /// <remarks />
         [ XmlAttribute ]
         public string Length
         {
-            get { return this._lengthField; }
-            set { this._lengthField = value; }
+            get { return this._length; }
+            set { this._length = value; }
         }
     }
 

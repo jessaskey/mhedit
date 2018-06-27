@@ -16,37 +16,37 @@ namespace GameEditor.Core.Xml
     [ XmlRoot( Namespace = "http://askey.org/GameProfile", IsNullable = false ) ]
     public class Array
     {
-        private string _idField;
+        private string _id;
 
-        private PageRef _pageRefField;
+        private PageRef _pageRef;
 
-        private int _sizeField = 1;
+        private int _size = 1;
 
-        private ArrayStorage _storageField = ArrayStorage.Value;
+        private ArrayStorage _storage = ArrayStorage.Value;
 
-        private ArrayType _typeField;
+        private ArrayType _type;
 
         /// <remarks />
         public PageRef PageRef
         {
-            get { return this._pageRefField; }
-            set { this._pageRefField = value; }
+            get { return this._pageRef; }
+            set { this._pageRef = value; }
         }
 
         /// <remarks />
         [ XmlAttribute( DataType = "ID" ) ]
         public string Id
         {
-            get { return this._idField; }
-            set { this._idField = value; }
+            get { return this._id; }
+            set { this._id = value; }
         }
 
         /// <remarks />
         [ XmlAttribute ]
         public ArrayType Type
         {
-            get { return this._typeField; }
-            set { this._typeField = value; }
+            get { return this._type; }
+            set { this._type = value; }
         }
 
         /// <remarks />
@@ -54,8 +54,8 @@ namespace GameEditor.Core.Xml
         [ DefaultValue( ArrayStorage.Value ) ]
         public ArrayStorage Storage
         {
-            get { return this._storageField; }
-            set { this._storageField = value; }
+            get { return this._storage; }
+            set { this._storage = value; }
         }
 
         /// <remarks />
@@ -63,8 +63,8 @@ namespace GameEditor.Core.Xml
         [ DefaultValue( 1 ) ]
         public int Size
         {
-            get { return this._sizeField; }
-            set { this._sizeField = value; }
+            get { return this._size; }
+            set { this._size = value; }
         }
     }
 

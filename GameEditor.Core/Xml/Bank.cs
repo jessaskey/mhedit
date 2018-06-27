@@ -16,24 +16,24 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class Bank
     {
-        private List<Eprom> _ePromField;
+        private List<Eprom> _eProm;
 
-        private string _idField;
+        private string _id;
 
         /// <remarks />
         [ XmlElement( "EPROM" ) ]
         public List<Eprom> Eprom
         {
-            get { return this._ePromField; }
-            set { this._ePromField = value; }
+            get { return this._eProm; }
+            set { this._eProm = value; }
         }
 
         /// <remarks />
         [ XmlAttribute ]
         public string Id
         {
-            get { return this._idField; }
-            set { this._idField = value; }
+            get { return this._id; }
+            set { this._id = value; }
         }
     }
 

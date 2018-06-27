@@ -15,44 +15,44 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class Eprom
     {
-        private string _idField;
+        private string _id;
 
-        private string _nameField;
+        private string _name;
 
-        private int _sizeField;
+        private int _size;
 
-        private int _widthField;
+        private int _width;
 
         /// <remarks />
         [ XmlAttribute ]
         public string Id
         {
-            get { return this._idField; }
-            set { this._idField = value; }
+            get { return this._id; }
+            set { this._id = value; }
         }
 
         /// <remarks />
         [ XmlAttribute ]
         public string Name
         {
-            get { return this._nameField; }
-            set { this._nameField = value; }
+            get { return this._name; }
+            set { this._name = value; }
         }
 
         /// <remarks />
         [ XmlAttribute ]
         public int Size
         {
-            get { return this._sizeField; }
-            set { this._sizeField = value; }
+            get { return this._size; }
+            set { this._size = value; }
         }
 
         /// <remarks />
         [ XmlAttribute ]
         public int Width
         {
-            get { return this._widthField; }
-            set { this._widthField = value; }
+            get { return this._width; }
+            set { this._width = value; }
         }
     }
 

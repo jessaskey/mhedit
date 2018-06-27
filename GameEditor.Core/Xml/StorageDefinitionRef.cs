@@ -15,26 +15,26 @@ namespace GameEditor.Core.Xml
     [ XmlRoot( Namespace = "http://askey.org/GameProfile", IsNullable = false ) ]
     public class StorageDefinitionRef
     {
-        private byte[] _delimiterField;
+        private byte[] _delimiter;
 
-        private string _idField;
+        private string _id;
 
-        private int _orderField;
+        private int _order;
 
         /// <remarks />
         [ XmlElement( DataType = "hexBinary" ) ]
         public byte[] Delimiter
         {
-            get { return this._delimiterField; }
-            set { this._delimiterField = value; }
+            get { return this._delimiter; }
+            set { this._delimiter = value; }
         }
 
         /// <remarks />
         [ XmlAttribute ]
         public string Id
         {
-            get { return this._idField; }
-            set { this._idField = value; }
+            get { return this._id; }
+            set { this._id = value; }
         }
 
         /// <remarks />
@@ -42,8 +42,8 @@ namespace GameEditor.Core.Xml
         [ DefaultValue( 0 ) ]
         public int Order
         {
-            get { return this._orderField; }
-            set { this._orderField = value; }
+            get { return this._order; }
+            set { this._order = value; }
         }
     }
 

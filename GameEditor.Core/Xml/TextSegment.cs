@@ -16,24 +16,24 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class TextSegment
     {
-        private List<Checksum> _checksumField;
+        private List<Checksum> _checksum;
 
-        private List<Data> _dataField;
+        private List<Data> _data;
 
         /// <remarks />
         [ XmlElement( "Data" ) ]
         public List<Data> Data
         {
-            get { return this._dataField; }
-            set { this._dataField = value; }
+            get { return this._data; }
+            set { this._data = value; }
         }
 
         /// <remarks />
         [ XmlElement( "Checksum" ) ]
         public List<Checksum> Checksum
         {
-            get { return this._checksumField; }
-            set { this._checksumField = value; }
+            get { return this._checksum; }
+            set { this._checksum = value; }
         }
     }
 
