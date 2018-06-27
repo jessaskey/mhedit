@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Xml.Serialization;
@@ -15,17 +16,17 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class Level
     {
-        private object[] _items;
+        private List<object> _features;
 
         private string _name;
 
         /// <remarks />
         [ XmlElement( "FeatureGroupRef", typeof( FeatureGroupRef ) ) ]
         [ XmlElement( "FeatureRef", typeof( FeatureRef ) ) ]
-        public object[] Items
+        public List<object> Features
         {
-            get { return this._items; }
-            set { this._items = value; }
+            get { return this._features; }
+            set { this._features = value; }
         }
 
         /// <remarks />

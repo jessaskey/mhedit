@@ -16,16 +16,19 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class Bank
     {
-        private List<Eprom> _eProm;
+        private List<Eprom> _eproms;
 
         private string _id;
 
-        /// <remarks />
+        /// <summary>
+        /// This could probably renamed to "MemoryChips" or something since
+        /// Ideally we could be describing RAM banks in the future.
+        /// </summary>
         [ XmlElement( "EPROM" ) ]
-        public List<Eprom> Eprom
+        public List<Eprom> Eproms
         {
-            get { return this._eProm; }
-            set { this._eProm = value; }
+            get { return this._eproms; }
+            set { this._eproms = value; }
         }
 
         /// <remarks />

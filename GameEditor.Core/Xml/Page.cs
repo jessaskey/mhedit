@@ -16,16 +16,16 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class Page
     {
-        private List<BankRef> _bankRef;
+        private List<BankRef> _bankRefs;
 
         private string _id;
 
         /// <remarks />
         [ XmlElement( "BankRef" ) ]
-        public List<BankRef> BankRef
+        public List<BankRef> BankRefs
         {
-            get { return this._bankRef; }
-            set { this._bankRef = value; }
+            get { return this._bankRefs; }
+            set { this._bankRefs = value; }
         }
 
         /// <remarks />

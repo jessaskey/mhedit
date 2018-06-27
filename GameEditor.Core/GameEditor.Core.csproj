@@ -52,14 +52,14 @@
     <Compile Include="Xml\FeatureGroupRef.cs" />
     <Compile Include="Xml\FeatureRef.cs" />
     <Compile Include="Xml\GameInfo.cs" />
-    <Compile Include="Xml\EPROM.cs" />
+    <Compile Include="Xml\Eprom.cs" />
     <Compile Include="Xml\Bank.cs" />
     <Compile Include="Xml\Page.cs" />
-    <Compile Include="Xml\ROM.cs" />
+    <Compile Include="Xml\Rom.cs" />
     <Compile Include="Xml\BankRef.cs" />
     <Compile Include="Xml\Checksum.cs" />
     <Compile Include="Xml\Data.cs" />
-    <Compile Include="Xml\EPROMRef.cs" />
+    <Compile Include="Xml\EpromRef.cs" />
     <Compile Include="Xml\ChecksumType.cs" />
     <Compile Include="Xml\Feature.cs" />
     <Compile Include="Xml\FeatureGroup.cs" />

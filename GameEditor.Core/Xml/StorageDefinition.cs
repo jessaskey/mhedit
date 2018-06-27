@@ -17,16 +17,16 @@ namespace GameEditor.Core.Xml
     [ XmlRoot( Namespace = "http://askey.org/GameProfile", IsNullable = false ) ]
     public class StorageDefinition
     {
-        private List<Array> _array;
+        private List<Array> _arrays;
         private string _id;
 
         /// <remarks />
         [ XmlElement( "Array", typeof( Array ) ) ]
         [ XmlElement( "Array2d", typeof( Array2D ) ) ]
-        public List<Array> Array
+        public List<Array> Arrays
         {
-            get { return this._array; }
-            set { this._array = value; }
+            get { return this._arrays; }
+            set { this._arrays = value; }
         }
 
         /// <remarks />

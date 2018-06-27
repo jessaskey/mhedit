@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Xml.Serialization;
@@ -21,15 +22,15 @@ namespace GameEditor.Core.Xml
 
         private bool _isDefaultSpecified;
 
-        private object[] _items;
+        private List<object> _features;
 
         /// <remarks />
         [ XmlElement( "FeatureGroupRef", typeof( FeatureGroupRef ) ) ]
         [ XmlElement( "FeatureRef", typeof( FeatureRef ) ) ]
-        public object[] Items
+        public List<object> Features
         {
-            get { return this._items; }
-            set { this._items = value; }
+            get { return this._features; }
+            set { this._features = value; }
         }
 
         /// <remarks />
