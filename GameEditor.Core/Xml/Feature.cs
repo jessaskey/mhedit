@@ -17,17 +17,17 @@ namespace GameEditor.Core.Xml
     {
         private string _id;
 
-        private object[] _items;
+        private object _storageDefinition;
 
         private int _maximum = 1;
 
         /// <remarks />
         [ XmlElement( "StorageDefinition", typeof( StorageDefinition ) ) ]
         [ XmlElement( "StorageDefinitionRef", typeof( StorageDefinitionRef ) ) ]
-        public object[] Items
+        public object StorageDefinition
         {
-            get { return this._items; }
-            set { this._items = value; }
+            get { return this._storageDefinition; }
+            set { this._storageDefinition = value; }
         }
 
         /// <remarks />
