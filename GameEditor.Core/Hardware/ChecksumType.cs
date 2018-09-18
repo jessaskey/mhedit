@@ -2,13 +2,10 @@
 using System.CodeDom.Compiler;
 using System.Xml.Serialization;
 
-namespace GameEditor.Core.Xml
+namespace GameEditor.Core.Hardware
 {
 
-    /// <remarks />
-    [ GeneratedCode( "xsd", "4.6.1055.0" ) ]
     [ Serializable ]
-    //[ XmlType( Namespace = "http://askey.org/GameProfile" ) ]
     public enum ChecksumType
     {
         /// <remarks />

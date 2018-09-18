@@ -25,7 +25,7 @@ namespace GameEditor.Core.Xml
 
         private Levels _levels;
 
-        private MemoryMap _memoryMap;
+        private HardwareDescription _hardwareDescription;
 
         private ProgramMemory _programMemory;
 
@@ -39,10 +39,10 @@ namespace GameEditor.Core.Xml
         }
 
         /// <remarks />
-        public MemoryMap MemoryMap
+        public HardwareDescription HardwareDescription
         {
-            get { return this._memoryMap; }
-            set { this._memoryMap = value; }
+            get { return this._hardwareDescription; }
+            set { this._hardwareDescription = value; }
         }
 
         /// <remarks />

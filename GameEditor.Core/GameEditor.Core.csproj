@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GameEditor.Core</RootNamespace>
     <AssemblyName>GameEditor.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -41,26 +41,48 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HexExtensions.cs" />
+    <Compile Include="Array.cs" />
+    <Compile Include="Extensions\ListExtensions.cs" />
+    <Compile Include="Hardware\BankReference.cs" />
+    <Compile Include="Hardware\MemoryPageStream.cs" />
+    <Compile Include="Hardware\MultipleDeviceBank.cs" />
+    <Compile Include="Hardware\HardwareDescription.cs" />
+    <Compile Include="Hardware\IHardwareProfile.cs" />
+    <Compile Include="Hardware\IMemoryBank.cs" />
+    <Compile Include="Hardware\IMemoryMap.cs" />
+    <Compile Include="Hardware\IMemoryDevice.cs" />
+    <Compile Include="Hardware\IMemoryPage.cs" />
+    <Compile Include="Hardware\IMemorySegment.cs" />
+    <Compile Include="Hardware\MemoryBank.cs" />
+    <Compile Include="Hardware\SingleDeviceBank.cs" />
+    <Compile Include="Hardware\MemoryDevice.cs" />
+    <Compile Include="Hardware\MemoryMap.cs" />
+    <Compile Include="Hardware\MemoryPage.cs" />
+    <Compile Include="Hardware\MemorySegment.cs" />
+    <Compile Include="IName.cs" />
+    <Compile Include="Extensions\HexExtensions.cs" />
     <None Include="ProductionOffsets.cs" />
-    <Compile Include="RomImage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Xml\Array.cs" />
     <Compile Include="Xml\ArrayType.cs" />
     <Compile Include="Xml\ArrayStorage.cs" />
     <Compile Include="Xml\Array2d.cs" />
+    <Compile Include="Hardware\EndianType.cs" />
     <Compile Include="Xml\FeatureGroupRef.cs" />
     <Compile Include="Xml\FeatureRef.cs" />
     <Compile Include="Xml\GameInfo.cs" />
     <Compile Include="Xml\Eprom.cs" />
     <Compile Include="Xml\Bank.cs" />
+    <Compile Include="Xml\HardwareDescription.cs" />
+    <Compile Include="Xml\MemoryDevice.cs" />
     <Compile Include="Xml\Page.cs" />
+    <Compile Include="Xml\ProfileElement.cs" />
     <Compile Include="Xml\Rom.cs" />
     <Compile Include="Xml\BankRef.cs" />
     <Compile Include="Xml\Checksum.cs" />
     <Compile Include="Xml\Data.cs" />
     <Compile Include="Xml\EpromRef.cs" />
-    <Compile Include="Xml\ChecksumType.cs" />
+    <Compile Include="Hardware\ChecksumType.cs" />
     <Compile Include="Xml\Feature.cs" />
     <Compile Include="Xml\FeatureGroup.cs" />
     <Compile Include="Xml\PageRef.cs" />

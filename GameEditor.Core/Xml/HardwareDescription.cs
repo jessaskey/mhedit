@@ -1,6 +1,7 @@
 ﻿using GameEditor.Core.Hardware;
 using System;
 using System.CodeDom.Compiler;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -15,27 +16,17 @@ namespace GameEditor.Core.Xml
     [ DebuggerStepThrough ]
     [ DesignerCategory( "code" ) ]
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
-    public class Page
+    public class HardwareDescription
     {
-        private List<BankRef> _bankRefs;
-
-        private string _id;
+        private List<MemoryMap> _memoryMaps;
 
         /// <remarks />
-        [ XmlElement( "BankRef" ) ]
-        public List<BankRef> BankRefs
+        [ XmlElement( "MemoryMap" ) ]
+        public List<MemoryMap> MemoryMaps
         {
-            get { return this._bankRefs; }
-            set { this._bankRefs = value; }
+            get { return this._memoryMaps; }
+            set { this._memoryMaps = value; }
         }
 
-        /// <remarks />
-        [ XmlAttribute ]
-        public string Id
-        {
-            get { return this._id; }
-            set { this._id = value; }
-        }
     }
-
 }

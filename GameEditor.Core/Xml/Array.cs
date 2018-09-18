@@ -2,11 +2,12 @@
 using System.CodeDom.Compiler;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace GameEditor.Core.Xml
 {
-
+        
     /// <remarks />
     [ GeneratedCode( "xsd", "4.6.1055.0" ) ]
     [ Serializable ]
@@ -27,6 +28,7 @@ namespace GameEditor.Core.Xml
         private ArrayType _type;
 
         /// <remarks />
+        [XmlElement( "PageRef" )]
         public PageRef PageRef
         {
             get { return this._pageRef; }
@@ -66,6 +68,7 @@ namespace GameEditor.Core.Xml
             get { return this._size; }
             set { this._size = value; }
         }
+
     }
 
 }

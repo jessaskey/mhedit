@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace GameEditor.Core
+namespace GameEditor.Core.Extensions
 {
 
     internal static class HexExtensions

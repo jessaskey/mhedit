@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameEditor.Core.Hardware;
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,7 +17,7 @@ namespace GameEditor.Core.Xml
     //[ XmlType( AnonymousType = true, Namespace = "http://askey.org/GameProfile" ) ]
     public class Bank
     {
-        private List<Eprom> _eproms;
+        private List<MemoryDevice> _devices;
 
         private string _id;
 
@@ -24,11 +25,11 @@ namespace GameEditor.Core.Xml
         /// This could probably renamed to "MemoryChips" or something since
         /// Ideally we could be describing RAM banks in the future.
         /// </summary>
-        [ XmlElement( "EPROM" ) ]
-        public List<Eprom> Eproms
+        [ XmlElement( "EPROM", typeof( Eprom ) ) ]
+        public List<MemoryDevice> Devices
         {
-            get { return this._eproms; }
-            set { this._eproms = value; }
+            get { return this._devices; }
+            set { this._devices = value; }
         }
 
         /// <remarks />

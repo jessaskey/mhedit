@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameEditor.Core.Hardware;
+using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,14 +23,16 @@ namespace GameEditor.Core.Xml
 
         private int _busWidth = 8;
 
+        private EndianType _endianness = EndianType.Little;
+
         private string _id;
 
         private List<Rom> _rom;
 
         /// <remarks />
+        /// This should have a base class like Segments or something.
         [ XmlElement( "ROM" ) ]
-        //[ XmlArrayItem( "ROM", IsNullable = false ) ]
-        public List<Rom> Rom
+        public List<Rom> Roms
         {
             get { return this._rom; }
             set { this._rom = value; }
@@ -63,11 +66,21 @@ namespace GameEditor.Core.Xml
         /// <remarks />
         [ XmlAttribute ]
         [ DefaultValue( 8 ) ]
-        public int BusWidth
+        public int DataWidth
         {
             get { return this._busWidth; }
             set { this._busWidth = value; }
         }
+
+        /// <remarks />
+        [XmlAttribute]
+        [DefaultValue( EndianType.Little )]
+        public EndianType Endianness
+        {
+            get { return this._endianness; }
+            set { this._endianness = value; }
+        }
+
     }
 
 }
