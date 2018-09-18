@@ -9,7 +9,7 @@
             <xs:simpleContent>
                 <xs:extension base="HexAddress">
                     <xs:attribute name="Id"
-                                  type="xs:string"
+                                  type="StoragePathType"
                                   use="required"/>
                 </xs:extension>
             </xs:simpleContent>
@@ -158,97 +158,149 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="MemoryMap">
+                <xs:element name="HardwareDescription">
+                    <xs:annotation>
+                        <xs:documentation>Describes the hardware design.</xs:documentation>
+                    </xs:annotation>
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="ROM"
+                            <xs:element name="MemoryMap"
                                         maxOccurs="unbounded">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="Banks">
+                                        <xs:element name="ROM"
+                                                    maxOccurs="unbounded">
                                             <xs:complexType>
                                                 <xs:sequence>
-                                                    <xs:element name="Bank"
-                                                                maxOccurs="unbounded">
+                                                    <xs:element name="Banks">
                                                         <xs:complexType>
                                                             <xs:sequence>
-                                                                <xs:element name="EPROM"
+                                                                <xs:element name="Bank"
                                                                             maxOccurs="unbounded">
                                                                     <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="EPROM"
+                                                                                        maxOccurs="unbounded">
+                                                                                <xs:complexType>
+                                                                                    <xs:attribute name="Id"
+                                                                                                  type="xs:string"
+                                                                                                  use="required"/>
+                                                                                    <xs:attribute name="Path"
+                                                                                                  type="xs:string"
+                                                                                                  use="required">
+                                                                                        <xs:annotation>
+                                                                                            <xs:documentation>
+                                                                                                The path to the device image file, including filename.ext,
+                                                                                                relative to the GameProfile.xml file.
+                                                                                            </xs:documentation>
+                                                                                        </xs:annotation>
+                                                                                    </xs:attribute>
+                                                                                    <xs:attribute name="Size"
+                                                                                                  type="xs:int"
+                                                                                                  use="required">
+                                                                                        <xs:annotation>
+                                                                                            <xs:documentation>
+                                                                                                The address size of the device, in decimal.
+                                                                                                I.e. A 27128 is 16k by 8 bits, thus its size is 16384.
+                                                                                            </xs:documentation>
+                                                                                        </xs:annotation>
+                                                                                    </xs:attribute>
+                                                                                    <xs:attribute name="Width"
+                                                                                                  type="DeviceWidthType"
+                                                                                                  use="required">
+                                                                                        <xs:annotation>
+                                                                                            <xs:documentation>
+                                                                                                Width of the device's Data Bus.
+                                                                                            </xs:documentation>
+                                                                                        </xs:annotation>
+                                                                                    </xs:attribute>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
                                                                         <xs:attribute name="Id"
                                                                                       type="xs:string"
-                                                                                      use="required"/>
-                                                                        <xs:attribute name="Name"
-                                                                                      type="xs:string"
-                                                                                      use="required"/>
-                                                                        <xs:attribute name="Size"
-                                                                                      type="xs:int"
-                                                                                      use="required"/>
-                                                                        <xs:attribute name="Width"
-                                                                                      type="xs:int"
                                                                                       use="required"/>
                                                                     </xs:complexType>
                                                                 </xs:element>
                                                             </xs:sequence>
-                                                            <xs:attribute name="Id"
-                                                                          type="xs:string"
-                                                                          use="required"/>
                                                         </xs:complexType>
                                                     </xs:element>
-                                                </xs:sequence>
-                                            </xs:complexType>
-                                        </xs:element>
-                                        <xs:element name="Pages">
-                                            <xs:complexType>
-                                                <xs:sequence>
-                                                    <xs:element name="Page"
-                                                                maxOccurs="unbounded">
+                                                    <xs:element name="Pages">
                                                         <xs:complexType>
                                                             <xs:sequence>
-                                                                <xs:element name="BankRef"
+                                                                <xs:element name="Page"
                                                                             maxOccurs="unbounded">
                                                                     <xs:complexType>
+                                                                        <xs:sequence>
+                                                                            <xs:element name="BankRef"
+                                                                                        maxOccurs="unbounded">
+                                                                                <xs:complexType>
+                                                                                    <xs:attribute name="Id"
+                                                                                                  type="xs:string"
+                                                                                                  use="required"/>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
                                                                         <xs:attribute name="Id"
                                                                                       type="xs:string"
                                                                                       use="required"/>
                                                                     </xs:complexType>
                                                                 </xs:element>
                                                             </xs:sequence>
-                                                            <xs:attribute name="Id"
-                                                                          type="xs:string"
-                                                                          use="required"/>
                                                         </xs:complexType>
                                                     </xs:element>
                                                 </xs:sequence>
+                                                <xs:attribute name="Id"
+                                                              type="xs:ID"
+                                                              use="optional"/>
+                                                <xs:attribute name="Address"
+                                                              type="HexAddress"
+                                                              use="required"/>
+                                                <xs:attribute name="Size"
+                                                              type="HexAddress"
+                                                              use="required"/>
                                             </xs:complexType>
+                                            <xs:key name="BankKey">
+                                                <xs:selector xpath=".//gpns:Bank"/>
+                                                <xs:field xpath="@Id"/>
+                                            </xs:key>
+                                            <xs:keyref name="BankKeyRef"
+                                                       refer="BankKey">
+                                                <xs:selector xpath=".//gpns:BankRef"/>
+                                                <xs:field xpath="@Id"/>
+                                            </xs:keyref>
+                                            <xs:key name="PageKey">
+                                                <xs:selector xpath=".//gpns:Page"/>
+                                                <xs:field xpath="@Id"/>
+                                            </xs:key>
+                                            <xs:keyref name="PageKeyRef"
+                                                       refer="PageKey">
+                                                <xs:selector xpath=".//gpns:PageRef"/>
+                                                <xs:field xpath="@Id"/>
+                                            </xs:keyref>
                                         </xs:element>
                                     </xs:sequence>
                                     <xs:attribute name="Id"
                                                   type="xs:ID"
                                                   use="optional"/>
-                                    <xs:attribute name="Address"
-                                                  type="HexAddress"
+                                    <xs:attribute name="AddressWidth"
+                                                  type="BusWidthType"
                                                   use="required"/>
-                                    <xs:attribute name="Size"
+                                    <xs:attribute name="AddressBase"
                                                   type="HexAddress"
-                                                  use="required"/>
+                                                  default="0x0000"
+                                                  use="optional"/>
+                                    <xs:attribute name="DataWidth"
+                                                  type="BusWidthType"
+                                                  default="8"
+                                                  use="optional"/>
+                                    <xs:attribute name="Endianness"
+                                                  type="EndianType"
+                                                  default="little"
+                                                  use="optional"/>
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>
-                        <xs:attribute name="Id"
-                                      type="xs:ID"
-                                      use="optional"/>
-                        <xs:attribute name="AddressWidth"
-                                      type="xs:int"
-                                      use="required"/>
-                        <xs:attribute name="AddressBase"
-                                      type="HexAddress"
-                                      default="0x0000"
-                                      use="optional"/>
-                        <xs:attribute name="BusWidth"
-                                      type="xs:int"
-                                      default="8"
-                                      use="optional"/>
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="ProgramMemory">
@@ -261,7 +313,7 @@
                                                     maxOccurs="unbounded">
                                             <xs:complexType>
                                                 <xs:attribute name="Id"
-                                                              type="xs:ID"
+                                                              type="StoragePathType"
                                                               use="required"/>
                                                 <xs:attribute name="Reserved"
                                                               type="YesNoType"
@@ -421,15 +473,6 @@
                           type="VersionString"
                           use="required" />
         </xs:complexType>
-        <xs:key name="BankKey">
-            <xs:selector xpath=".//gpns:Bank"/>
-            <xs:field xpath="@Id"/>
-        </xs:key>
-        <xs:keyref name="BankKeyRef"
-                   refer="BankKey">
-            <xs:selector xpath=".//gpns:BankRef"/>
-            <xs:field xpath="@Id"/>
-        </xs:keyref>
         <xs:key name="EPROMKey">
             <xs:selector xpath=".//gpns:EPROM"/>
             <xs:field xpath="@Id"/>
@@ -437,15 +480,6 @@
         <xs:keyref name="EPROMKeyRef"
                    refer="EPROMKey">
             <xs:selector xpath=".//gpns:EPROMRef"/>
-            <xs:field xpath="@Id"/>
-        </xs:keyref>
-        <xs:key name="PageKey">
-            <xs:selector xpath=".//gpns:Page"/>
-            <xs:field xpath="@Id"/>
-        </xs:key>
-        <xs:keyref name="PageKeyRef"
-                   refer="PageKey">
-            <xs:selector xpath=".//gpns:PageRef"/>
             <xs:field xpath="@Id"/>
         </xs:keyref>
         <!-- Storage definitions don't require Id -->
@@ -568,7 +602,41 @@
             <xs:enumeration value="pointer"/>
         </xs:restriction>
     </xs:simpleType>
-    <!--https://stackoverflow.com/a/36830971-->
+    <xs:simpleType name="EndianType">
+        <xs:annotation>
+            <xs:documentation>.</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="big"/>
+            <xs:enumeration value="little"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- Processor bus width, multiples of 8 bits. -->
+    <xs:simpleType name="BusWidthType">
+        <xs:annotation>
+            <xs:documentation>
+                Width in bits.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int">
+            <xs:pattern value="8|16|24|32"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- A device (like an Eprom) might have a data width that's
+    smaller than the processor's data bus and are connected in
+    banks to meet the bus width. -->
+    <xs:simpleType name="DeviceWidthType">
+        <xs:annotation>
+            <xs:documentation>
+                Width in bits.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int">
+            <xs:pattern value="8|16|32"/>
+            <!--<xs:pattern value="1|2|4|8|16|32"/>-->
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- https://stackoverflow.com/a/36830971 -->
     <xs:simpleType name="HexAddress">
         <xs:union memberTypes="xs:unsignedInt">
             <xs:simpleType>
@@ -587,5 +655,13 @@
                 </xs:restriction>
             </xs:simpleType>
         </xs:union>
+    </xs:simpleType>
+    <!-- Regex in xsd is constrained to a subset of features.
+         https://regex101.com/r/cQ9nK8/1 
+         https://regexr.com/ Not quite as useful but nice UX -->
+    <xs:simpleType name="StoragePathType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="([\w\d_]+\.){1,3}([\w\d_]+[^.])"/>
+        </xs:restriction>
     </xs:simpleType>
 </xs:schema>

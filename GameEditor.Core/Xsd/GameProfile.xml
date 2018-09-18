@@ -11,67 +11,69 @@
         <ReleaseDate>1984-01</ReleaseDate>
         <Comment>Production ROMs</Comment>
     </GameInfo>
-    <MemoryMap Id="AlphaProcessor"
-               AddressWidth="16"
-               AddressBase="0x0000"
-               BusWidth="8">
-        <ROM Id="PagedProgramRom"
-             Address="0x2000"
-             Size="0x2000">
-            <Banks>
-                <Bank Id="Bank_1Q">
-                    <EPROM Id="EPROM_1Q"
-                            Name="136025.215"
-                            Size="16384"
-                            Width="8"/>
-                </Bank>
-                <Bank Id="Bank_1NP">
-                    <EPROM Id="EPROM_1NP"
-                            Name="136025.216"
-                            Size="16384"
-                            Width="8"/>
-                </Bank>
-            </Banks>
-            <Pages>
-                <Page Id="PagedProgramRom.Page_0">
-                    <BankRef Id="Bank_1Q" />
-                </Page>
-                <Page Id="PagedProgramRom.Page_1">
-                    <BankRef Id="Bank_1Q" />
-                </Page>
-                <Page Id="PagedProgramRom.Page_2">
-                    <BankRef Id="Bank_1NP" />
-                </Page>
-                <Page Id="PagedProgramRom.Page_3">
-                    <BankRef Id="Bank_1NP" />
-                </Page>
-            </Pages>
-        </ROM>
-        <ROM Id="ProgramRom"
-             Address="0x8000"
-             Size="0x8000">
-            <Banks>
-                <Bank Id="Bank_1MN">
-                    <EPROM Id="EPROM_1MN"
-                            Name="136025.217"
-                            Size="16384"
-                            Width="8"/>
-                </Bank>
-                <Bank Id="Bank_1L">
-                    <EPROM Id="EPROM_1L"
-                            Name="136025.318"
-                            Size="16384"
-                            Width="8"/>
-                </Bank>
-            </Banks>
-            <Pages>
-                <Page Id="ProgramRom.Page_0">
-                    <BankRef Id="Bank_1MN" />
-                    <BankRef Id="Bank_1L" />
-                </Page>
-            </Pages>
-        </ROM>
-    </MemoryMap>
+    <HardwareDescription>
+        <MemoryMap Id="AlphaProcessor"
+                   AddressWidth="16"
+                   AddressBase="0x0000"
+                   DataWidth="8">
+            <ROM Id="PagedProgramRom"
+                 Address="0x2000"
+                 Size="0x2000">
+                <Banks>
+                    <Bank Id="Bank_1Q">
+                        <EPROM Id="EPROM_1Q"
+                               Path="136025.215"
+                               Size="16384"
+                               Width="8"/>
+                    </Bank>
+                    <Bank Id="Bank_1NP">
+                        <EPROM Id="EPROM_1NP"
+                               Path="136025.216"
+                               Size="16384"
+                               Width="8"/>
+                    </Bank>
+                </Banks>
+                <Pages>
+                    <Page Id="Page_0">
+                        <BankRef Id="Bank_1Q" />
+                    </Page>
+                    <Page Id="Page_1">
+                        <BankRef Id="Bank_1Q" />
+                    </Page>
+                    <Page Id="Page_2">
+                        <BankRef Id="Bank_1NP" />
+                    </Page>
+                    <Page Id="Page_3">
+                        <BankRef Id="Bank_1NP" />
+                    </Page>
+                </Pages>
+            </ROM>
+            <ROM Id="ProgramRom"
+                 Address="0x8000"
+                 Size="0x8000">
+                <Banks>
+                    <Bank Id="Bank_1MN">
+                        <EPROM Id="EPROM_1MN"
+                               Path="136025.217"
+                               Size="16384"
+                               Width="8"/>
+                    </Bank>
+                    <Bank Id="Bank_1L">
+                        <EPROM Id="EPROM_1L"
+                               Path="136025.318"
+                               Size="16384"
+                               Width="8"/>
+                    </Bank>
+                </Banks>
+                <Pages>
+                    <Page Id="Page_0">
+                        <BankRef Id="Bank_1MN" />
+                        <BankRef Id="Bank_1L" />
+                    </Page>
+                </Pages>
+            </ROM>
+        </MemoryMap>
+    </HardwareDescription>
     <ProgramMemory>
         <TextSegment>
             <Data Id="AlphaProcessor.ProgramRom.Page_0"
@@ -85,7 +87,7 @@
                           End="0xFFFF"/>
                 <StorageDefinition Id="Checksum_1L">
                     <Array Type="short">
-                        <PageRef Id="PagedProgramRom.Page_0">
+                        <PageRef Id="AlphaProcessor.PagedProgramRom.Page_0">
                             0x1111
                         </PageRef>
                     </Array>
@@ -104,7 +106,7 @@
                        Type="byte"
                        Storage="value"
                        Size="12">
-                    <PageRef Id="ProgramRom.Page_0">
+                    <PageRef Id="StoragePathTypeProgramRom.Page_0">
                         0x93FE
                     </PageRef>
                 </Array>
@@ -112,7 +114,7 @@
                        Type="string"
                        Storage="pointer"
                        Size="12">
-                    <PageRef Id="ProgramRom.Page_0">
+                    <PageRef Id="AlphaProcessor.ProgramRom.Page_0">
                         0xE48b
                     </PageRef>
                 </Array>
@@ -126,7 +128,7 @@
                        Type="byte"
                        Storage="value"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x3355
                     </PageRef>
                 </Array>
@@ -141,7 +143,7 @@
                        Type="object"
                        Storage="pointer"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_0">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_0">
                         0x2581
                     </PageRef>
                 </Array>
@@ -168,7 +170,7 @@
                        Type="object"
                        Storage="pointer"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x25A9
                     </PageRef>
                 </Array>
@@ -180,7 +182,7 @@
                        Type="object"
                        Storage="pointer"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x25D1
                     </PageRef>
                 </Array>
@@ -192,7 +194,7 @@
                        Type="object"
                        Storage="pointer"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x25F9
                     </PageRef>
                 </Array>
@@ -204,7 +206,7 @@
                        Type="object"
                        Storage="pointer"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x2647
                     </PageRef>
                 </Array>
@@ -216,7 +218,7 @@
                        Type="object"
                        Storage="pointer"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x2677
                     </PageRef>
                 </Array>
@@ -228,7 +230,7 @@
                        Type="object"
                        Storage="pointer"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x26D1
                     </PageRef>
                 </Array>
@@ -240,7 +242,7 @@
                        Type="object"
                        Storage="pointer"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x26B3
                     </PageRef>
                 </Array>
@@ -254,7 +256,7 @@
                        Type="boolean"
                        Storage="value"
                        Size="4">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x32FF
                     </PageRef>
                 </Array>
@@ -267,7 +269,7 @@
                        Type="boolean"
                        Storage="value"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x3290
                     </PageRef>
                 </Array>
@@ -280,7 +282,7 @@
                        Type="boolean"
                        Storage="value"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x32A0
                     </PageRef>
                 </Array>
@@ -293,7 +295,7 @@
                        Type="object"
                        Storage="pointer"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x26F9
                     </PageRef>
                 </Array>
@@ -308,7 +310,7 @@
                        Type="byte"
                        Storage="value"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x269F
                     </PageRef>
                 </Array>
@@ -316,7 +318,7 @@
                        Type="object"
                        Storage="pointer"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x30B1
                     </PageRef>
                 </Array>
@@ -332,7 +334,7 @@
                        Type="object"
                        Storage="pointer"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x2627
                     </PageRef>
                 </Array>
@@ -350,7 +352,7 @@
                           Storage="value"
                           Size="16"
                           Size2="7">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x2D36
                     </PageRef>
                 </Array2d>
@@ -363,7 +365,7 @@
                        Type="object"
                        Storage="pointer"
                        Size="16">
-                    <PageRef Id="PagedProgramRom.Page_1">
+                    <PageRef Id="AlphaProcessor.PagedProgramRom.Page_1">
                         0x2721
                     </PageRef>
                 </Array>
