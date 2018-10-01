@@ -226,12 +226,8 @@
     </Compile>
     <Compile Include="resource.cs" />
     <Compile Include="ROMDump.cs" />
-    <Compile Include="Service References\MHPServiceReference\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-    <Compile Include="Service References\ServiceReferenceMhedit\Reference.cs">
+    <Compile Include="Security\StringEncryption.cs" />
+    <Compile Include="Service References\MHEditServiceReference\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -240,6 +236,25 @@
     <Compile Include="TypeConverters\TripPadPyroidTypeConverter.cs" />
     <Compile Include="TypeConverters\SignedVelocityTypeConverter.cs" />
     <Compile Include="TypeConverters\VelocityTypeConverter.cs" />
+    <None Include="Service References\MHEditServiceReference\mhedit.MHEditServiceReference.ClientResponseOfbase64Binary.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MHEditServiceReference\mhedit.MHEditServiceReference.ClientResponseOfboolean.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MHEditServiceReference\mhedit.MHEditServiceReference.ClientResponseOfstring.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\MHEditServiceReference\MHEdit.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MHEditServiceReference\MHEdit1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MHEditServiceReference\MHEdit2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MHEditServiceReference\MHEditService.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.ico">
@@ -329,24 +344,10 @@
     <Content Include="images\toolbarbuttons\ZoomHS.bmp" />
     <Content Include="images\toolbarbuttons\ZoomIn.bmp" />
     <Content Include="images\toolbarbuttons\ZoomOut.bmp" />
-    <None Include="Service References\MHPServiceReference\mhedit.wsdl" />
-    <None Include="Service References\MHPServiceReference\mhedit.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\MHPServiceReference\mhedit1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\ServiceReferenceMhedit\Service.disco" />
-    <None Include="Service References\ServiceReferenceMhedit\configuration91.svcinfo" />
-    <None Include="Service References\ServiceReferenceMhedit\configuration.svcinfo" />
-    <None Include="Service References\ServiceReferenceMhedit\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Service References\MHPServiceReference\mhedit.disco" />
-    <None Include="Service References\MHPServiceReference\configuration91.svcinfo" />
-    <None Include="Service References\MHPServiceReference\configuration.svcinfo" />
-    <None Include="Service References\MHPServiceReference\Reference.svcmap">
+    <None Include="Service References\MHEditServiceReference\MHEdit.disco" />
+    <None Include="Service References\MHEditServiceReference\configuration91.svcinfo" />
+    <None Include="Service References\MHEditServiceReference\configuration.svcinfo" />
+    <None Include="Service References\MHEditServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -377,9 +378,6 @@
     <Content Include="template\havoc.exp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Service References\ServiceReferenceMhedit\Service.wsdl" />
-    <None Include="Service References\ServiceReferenceMhedit\Service.xsd" />
-    <None Include="Service References\ServiceReferenceMhedit\Service1.xsd" />
     <EmbeddedResource Include="images\objects\oneway_obj.ico" />
     <EmbeddedResource Include="images\objects\arrow_angle_obj.ico" />
     <EmbeddedResource Include="images\objects\arrow_square_obj.ico" />
@@ -471,10 +469,6 @@
     </FileAssociation>
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadataStorage Include="Service References\MHPServiceReference\" />
-    <WCFMetadataStorage Include="Service References\ServiceReferenceMhedit\" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="doc\" />
     <Folder Include="exports\" />
   </ItemGroup>
@@ -483,6 +477,9 @@
       <Project>{d937e1f4-1b9f-4567-b28e-eed24aa31c9c}</Project>
       <Name>Silver.UI.ToolBox</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\MHEditServiceReference\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
