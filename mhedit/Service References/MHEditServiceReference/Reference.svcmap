@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="879003fc-2989-4c4a-a941-00791d7dd9d2" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://mhp.askey.org/MHEdit.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="MHEdit.xsd" MetadataType="Schema" ID="96d679e9-2634-404c-a51f-e7dfb6898462" SourceId="1" SourceUrl="http://mhp.askey.org/MHEdit.svc?xsd=xsd2" />
+    <MetadataFile FileName="MHEditService.wsdl" MetadataType="Wsdl" ID="db619597-f27e-4a2a-8a6e-0353c4ad5fe4" SourceId="1" SourceUrl="http://mhp.askey.org/MHEdit.svc?wsdl" />
+    <MetadataFile FileName="MHEdit1.xsd" MetadataType="Schema" ID="ef2d6c60-9e5f-4dac-9198-4a3b9160d79f" SourceId="1" SourceUrl="http://mhp.askey.org/MHEdit.svc?xsd=xsd0" />
+    <MetadataFile FileName="MHEdit.disco" MetadataType="Disco" ID="90aa8ab0-8266-453a-a200-233d4c9b167a" SourceId="1" SourceUrl="http://mhp.askey.org/MHEdit.svc?disco" />
+    <MetadataFile FileName="MHEdit2.xsd" MetadataType="Schema" ID="8218d7f2-e638-4944-86af-002a8196d873" SourceId="1" SourceUrl="http://mhp.askey.org/MHEdit.svc?xsd=xsd1" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

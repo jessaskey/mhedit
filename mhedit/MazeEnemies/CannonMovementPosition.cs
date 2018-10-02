@@ -6,22 +6,22 @@ using System.Text;
 namespace mhedit.MazeEnemies
 {
     [Serializable]
-    class CannonMovementAngle : iCannonMovement
+    class CannonMovementPosition : iCannonMovement
     {
-        public CannonGunAngle Angle { get; set; }
-        public CannonGunAngleSpeed Speed { get; set; }
+        public CannonGunPosition Position { get; set; }
+        public CannonGunSpeed Speed { get; set; }
         public byte FireShot { get; set; }
 
         public override string ToString()
         {
-            return "Angle: " + Angle.ToString() + " Speed: " + Speed.ToString() + " Fire: " + FireShot.ToString();
+            return "Position: " + Position.ToString() + " Speed: " + Speed.ToString() + " Fire: " + FireShot.ToString();
         }
 
         #region iCannonMovement
 
         public CannonMovementType GetMovementType()
         {
-            return CannonMovementType.Angle;
+            return CannonMovementType.Position;
         }
 
         public SignedVelocity GetVelocity()
@@ -29,9 +29,9 @@ namespace mhedit.MazeEnemies
             return null;
         }
 
-        public CannonGunAngle GetGunAngle()
+        public CannonGunPosition GetGunPosition()
         {
-            return Angle;
+            return Position;
         }
 
         public int GetWaitFrames()
@@ -39,7 +39,7 @@ namespace mhedit.MazeEnemies
             return 0;
         }
 
-        public CannonGunAngleSpeed GetAngleSpeed()
+        public CannonGunSpeed GetSpeed()
         {
             return Speed;
         }

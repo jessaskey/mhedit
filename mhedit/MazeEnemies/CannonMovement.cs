@@ -8,24 +8,23 @@ namespace mhedit
     public enum CannonMovementType
     {
         Return,
-        Angle,
+        Position,
         Move,
         Pause
     }
 
-    public enum CannonGunAngle
+    public enum CannonGunPosition
     {
         TopRight = 0,
-        Right,
+        MiddleRight,
         BottomRight,
         Down,
-        BottomLeft,
-        Left,
         TopLeft,
-        Up
+        MiddleLeft,
+        BottomLeft
     }
 
-    public enum CannonGunAngleSpeed
+    public enum CannonGunSpeed
     {
         Slow = 0,
         Medium,

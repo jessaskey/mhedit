@@ -1532,21 +1532,21 @@ namespace mhedit
                             command = 0x00;
                             offset += rom.Write(ROMAddress.mcand, 0, offset);
                         }
-                        else if (movement is MazeEnemies.CannonMovementAngle)
+                        else if (movement is MazeEnemies.CannonMovementPosition)
                         {
-                            MazeEnemies.CannonMovementAngle angle = (MazeEnemies.CannonMovementAngle)movement;
+                            MazeEnemies.CannonMovementPosition position = (MazeEnemies.CannonMovementPosition)movement;
                             command = 0x40;
-                            command += (byte)(((int)angle.Angle) << 3);
-                            command += (byte)(((int)angle.Speed) << 1);
-                            if (angle.FireShot > 0)
+                            command += (byte)(((int)position.Position) << 3);
+                            command += (byte)(((int)position.Speed) << 1);
+                            if (position.FireShot > 0)
                             {
                                 command += 0x01;
                             }
                             offset += rom.Write(ROMAddress.mcand, command, offset);
-                            if (angle.FireShot > 0)
+                            if (position.FireShot > 0)
                             {
                                 //write velocity now too
-                                offset += rom.Write(ROMAddress.mcand, angle.FireShot, offset);
+                                offset += rom.Write(ROMAddress.mcand, position.FireShot, offset);
                             }
                         }
                     }

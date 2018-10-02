@@ -115,7 +115,7 @@
     </Compile>
     <Compile Include="MazeEnemies\CannonEditor.cs" />
     <Compile Include="MazeEnemies\CannonMovement.cs" />
-    <Compile Include="MazeEnemies\CannonMovementAngle.cs" />
+    <Compile Include="MazeEnemies\CannonMovementPosition.cs" />
     <Compile Include="MazeEnemies\CannonMovementEditor.cs">
       <SubType>Form</SubType>
     </Compile>

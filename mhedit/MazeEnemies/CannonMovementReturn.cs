@@ -25,9 +25,9 @@ namespace mhedit.MazeEnemies
             return null;
         }
 
-        public CannonGunAngle GetGunAngle()
+        public CannonGunPosition GetGunPosition()
         {
-            return CannonGunAngle.Up;
+            return CannonGunPosition.MiddleRight;
         }
 
         public int GetWaitFrames()
@@ -35,9 +35,9 @@ namespace mhedit.MazeEnemies
             return 0;
         }
 
-        public CannonGunAngleSpeed GetAngleSpeed()
+        public CannonGunSpeed GetSpeed()
         {
-            return CannonGunAngleSpeed.Slow;
+            return CannonGunSpeed.Slow;
         }
 
         public byte GetFireStatus()

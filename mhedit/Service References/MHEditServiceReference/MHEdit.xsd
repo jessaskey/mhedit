@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ClientResponseOfbase64Binary">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ClientResponseOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="base64Binary" Namespace="http://www.w3.org/2001/XMLSchema" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ErrorMessage" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IsSuccessful" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Payload" nillable="true" type="xs:base64Binary" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ClientResponseOfbase64Binary" nillable="true" type="tns:ClientResponseOfbase64Binary" />
+  <xs:complexType name="ClientResponseOfboolean">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ClientResponseOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="boolean" Namespace="http://www.w3.org/2001/XMLSchema" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ErrorMessage" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IsSuccessful" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Payload" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ClientResponseOfboolean" nillable="true" type="tns:ClientResponseOfboolean" />
+  <xs:complexType name="ClientResponseOfstring">
+    <xs:annotation>
+      <xs:appinfo>
+        <GenericType Name="ClientResponseOf{0}{#}" Namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models" xmlns="http://schemas.microsoft.com/2003/10/Serialization/">
+          <GenericParameter Name="string" Namespace="http://www.w3.org/2001/XMLSchema" />
+        </GenericType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ErrorMessage" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IsSuccessful" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Payload" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ClientResponseOfstring" nillable="true" type="tns:ClientResponseOfstring" />
+</xs:schema>

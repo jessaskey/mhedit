@@ -10,9 +10,9 @@ namespace mhedit.MazeEnemies
 
         CannonMovementType GetMovementType();
         SignedVelocity GetVelocity();
-        CannonGunAngle GetGunAngle();
+        CannonGunPosition GetGunPosition();
         int GetWaitFrames();
-        CannonGunAngleSpeed GetAngleSpeed();
+        CannonGunSpeed GetSpeed();
         byte GetFireStatus();
     }
 }

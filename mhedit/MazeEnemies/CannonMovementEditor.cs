@@ -54,7 +54,7 @@ namespace mhedit
 
         private void toolStripButtonAddAngle_Click(object sender, EventArgs e)
         {
-            CannonMovementAngle movement = new CannonMovementAngle();
+            CannonMovementPosition movement = new CannonMovementPosition();
             _movements.Add((iCannonMovement)movement);
             BindListBox();
             listBoxMovements.SelectedIndex = _movements.Count - 1;
