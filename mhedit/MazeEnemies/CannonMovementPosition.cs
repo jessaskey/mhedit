@@ -10,11 +10,11 @@ namespace mhedit.MazeEnemies
     {
         public CannonGunPosition Position { get; set; }
         public CannonGunSpeed Speed { get; set; }
-        public byte FireShot { get; set; }
+        public byte ShotSpeed { get; set; }
 
         public override string ToString()
         {
-            return "Position: " + Position.ToString() + " Speed: " + Speed.ToString() + " Fire: " + FireShot.ToString();
+            return "Position: " + Position.ToString() + " Speed: " + Speed.ToString() + " ShotSpeed: " + ShotSpeed.ToString();
         }
 
         #region iCannonMovement
@@ -44,9 +44,9 @@ namespace mhedit.MazeEnemies
             return Speed;
         }
 
-        public byte GetFireStatus()
+        public byte GetFireSpeed()
         {
-            return FireShot;
+            return ShotSpeed;
         }
 
         #endregion

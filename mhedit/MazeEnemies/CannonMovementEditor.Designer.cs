@@ -43,7 +43,11 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.toolStripButtonPreview = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -57,9 +61,12 @@
             this.toolStripButtonAddAngle,
             this.toolStripButtonAddPause,
             this.toolStripButtonAddRepeat,
+            this.toolStripSeparator1,
             this.toolStripButtonDelete,
             this.toolStripButtonMoveUp,
-            this.toolStripButtonMoveDown});
+            this.toolStripButtonMoveDown,
+            this.toolStripSeparator2,
+            this.toolStripButtonPreview});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(557, 25);
@@ -73,7 +80,7 @@
             this.toolStripButtonAddMove.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonAddMove.Name = "toolStripButtonAddMove";
             this.toolStripButtonAddMove.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonAddMove.Text = "toolStripButton1";
+            this.toolStripButtonAddMove.Text = "toolStripButtonMovement";
             this.toolStripButtonAddMove.ToolTipText = "Add Velocity Movement";
             this.toolStripButtonAddMove.Click += new System.EventHandler(this.toolStripButtonAddMove_Click);
             // 
@@ -84,8 +91,8 @@
             this.toolStripButtonAddAngle.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonAddAngle.Name = "toolStripButtonAddAngle";
             this.toolStripButtonAddAngle.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonAddAngle.Text = "toolStripButton2";
-            this.toolStripButtonAddAngle.ToolTipText = "Add Gun Angle Movement";
+            this.toolStripButtonAddAngle.Text = "toolStripButtonPosition";
+            this.toolStripButtonAddAngle.ToolTipText = "Add Gun Position/FireShot";
             this.toolStripButtonAddAngle.Click += new System.EventHandler(this.toolStripButtonAddAngle_Click);
             // 
             // toolStripButtonAddPause
@@ -166,7 +173,7 @@
             this.listBoxMovements.FormattingEnabled = true;
             this.listBoxMovements.Location = new System.Drawing.Point(0, 0);
             this.listBoxMovements.Name = "listBoxMovements";
-            this.listBoxMovements.Size = new System.Drawing.Size(297, 420);
+            this.listBoxMovements.Size = new System.Drawing.Size(297, 421);
             this.listBoxMovements.TabIndex = 0;
             this.listBoxMovements.SelectedIndexChanged += new System.EventHandler(this.listBoxMovements_SelectedIndexChanged);
             // 
@@ -210,6 +217,26 @@
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
+            // toolStripButtonPreview
+            // 
+            this.toolStripButtonPreview.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonPreview.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonPreview.Image")));
+            this.toolStripButtonPreview.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonPreview.Name = "toolStripButtonPreview";
+            this.toolStripButtonPreview.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonPreview.Text = "toolStripButton1";
+            this.toolStripButtonPreview.Click += new System.EventHandler(this.toolStripButtonPreview_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
             // CannonMovementEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -229,6 +256,7 @@
             this.toolStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -252,5 +280,8 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripButton toolStripButtonPreview;
     }
 }

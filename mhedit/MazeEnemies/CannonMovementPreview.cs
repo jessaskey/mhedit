@@ -26,7 +26,18 @@ namespace mhedit.MazeEnemies
         private void timerMain_Tick(object sender, EventArgs e)
         {
             _currentIndex++;
-            
+            toolStripLabelSequenceCounter.Text = "(" + _currentIndex.ToString() + "/" + _movements.Count.ToString() + ")";
+        
+            if (_currentIndex > _movements.Count)
+            {
+                _currentIndex = 0;
+
+                if (!toolStripButtonRepeat.Checked)
+                {
+                    timerMain.Enabled = false;
+                }
+            }
+      
         }
     }
 }

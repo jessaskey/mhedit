@@ -129,5 +129,12 @@ namespace mhedit
         {
 
         }
+
+        private void toolStripButtonPreview_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Preview no workie. Preview in MAME.");
+            //CannonMovementPreview pd = new CannonMovementPreview(_movements);
+            //pd.ShowDialog();
+        }
     }
 }

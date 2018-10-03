@@ -40,7 +40,7 @@ namespace mhedit.MazeEnemies
             return CannonGunSpeed.Slow;
         }
 
-        public byte GetFireStatus()
+        public byte GetFireSpeed()
         {
             return 0;
         }

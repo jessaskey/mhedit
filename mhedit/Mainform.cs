@@ -724,7 +724,7 @@ namespace mhedit
                 {
                     using (mStream = new MemoryStream())
                     {
-                        BZip2.Decompress(fStream, mStream, true);
+                        BZip2.Decompress(fStream, mStream, false);
                         mStream.Position = 0;
                         BinaryFormatter b = new BinaryFormatter();
                         Maze maze = (Maze)b.Deserialize(mStream);
@@ -1538,15 +1538,15 @@ namespace mhedit
                             command = 0x40;
                             command += (byte)(((int)position.Position) << 3);
                             command += (byte)(((int)position.Speed) << 1);
-                            if (position.FireShot > 0)
+                            if (position.ShotSpeed > 0)
                             {
                                 command += 0x01;
                             }
                             offset += rom.Write(ROMAddress.mcand, command, offset);
-                            if (position.FireShot > 0)
+                            if (position.ShotSpeed > 0)
                             {
                                 //write velocity now too
-                                offset += rom.Write(ROMAddress.mcand, position.FireShot, offset);
+                                offset += rom.Write(ROMAddress.mcand, position.ShotSpeed, offset);
                             }
                         }
                     }

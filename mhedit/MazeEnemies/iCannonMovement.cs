@@ -13,6 +13,6 @@ namespace mhedit.MazeEnemies
         CannonGunPosition GetGunPosition();
         int GetWaitFrames();
         CannonGunSpeed GetSpeed();
-        byte GetFireStatus();
+        byte GetFireSpeed();
     }
 }
