@@ -5,14 +5,9 @@
       <xsd:import schemaLocation="http://mhp.askey.org/MHEdit.svc?xsd=xsd0" namespace="http://tempuri.org/" />
       <xsd:import schemaLocation="http://mhp.askey.org/MHEdit.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import schemaLocation="http://mhp.askey.org/MHEdit.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models" />
+      <xsd:import schemaLocation="http://mhp.askey.org/MHEdit.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Containers" />
     </xsd:schema>
   </wsdl:types>
-  <wsdl:message name="IMHEdit_GetEncryptionKey_InputMessage">
-    <wsdl:part name="parameters" element="tns:GetEncryptionKey" />
-  </wsdl:message>
-  <wsdl:message name="IMHEdit_GetEncryptionKey_OutputMessage">
-    <wsdl:part name="parameters" element="tns:GetEncryptionKeyResponse" />
-  </wsdl:message>
   <wsdl:message name="IMHEdit_Login_InputMessage">
     <wsdl:part name="parameters" element="tns:Login" />
   </wsdl:message>
@@ -32,10 +27,6 @@
     <wsdl:part name="parameters" element="tns:LogExceptionResponse" />
   </wsdl:message>
   <wsdl:portType name="IMHEdit">
-    <wsdl:operation name="GetEncryptionKey">
-      <wsdl:input wsaw:Action="http://tempuri.org/IMHEdit/GetEncryptionKey" message="tns:IMHEdit_GetEncryptionKey_InputMessage" />
-      <wsdl:output wsaw:Action="http://tempuri.org/IMHEdit/GetEncryptionKeyResponse" message="tns:IMHEdit_GetEncryptionKey_OutputMessage" />
-    </wsdl:operation>
     <wsdl:operation name="Login">
       <wsdl:input wsaw:Action="http://tempuri.org/IMHEdit/Login" message="tns:IMHEdit_Login_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IMHEdit/LoginResponse" message="tns:IMHEdit_Login_OutputMessage" />
@@ -49,5 +40,39 @@
       <wsdl:output wsaw:Action="http://tempuri.org/IMHEdit/LogExceptionResponse" message="tns:IMHEdit_LogException_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:service name="MHEditService" />
+  <wsdl:binding name="BasicHttpBinding_IMHEdit" type="tns:IMHEdit">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Login">
+      <soap:operation soapAction="http://tempuri.org/IMHEdit/Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SubmitMaze">
+      <soap:operation soapAction="http://tempuri.org/IMHEdit/SubmitMaze" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="LogException">
+      <soap:operation soapAction="http://tempuri.org/IMHEdit/LogException" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MHEditService">
+    <wsdl:port name="BasicHttpBinding_IMHEdit" binding="tns:BasicHttpBinding_IMHEdit">
+      <soap:address location="http://mhp.askey.org/MHEdit.svc" />
+    </wsdl:port>
+  </wsdl:service>
 </wsdl:definitions>

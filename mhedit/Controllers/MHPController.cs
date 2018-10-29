@@ -1,4 +1,4 @@
-﻿using mhedit.Security;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,28 +9,30 @@ namespace mhedit
 {
     public static class MHPController
     {
-        private static MHEditServiceReference.MHEditClient _client = new MHEditServiceReference.MHEditClient();
-
-        public static bool Login(string username, string password)
+        public static MHEditServiceReference.MHEditClient GetClient()
         {
-            MHEditServiceReference.ClientResponseOfbase64Binary response = _client.GetEncryptionKey();
+            MHEditServiceReference.MHEditClient client = new MHEditServiceReference.MHEditClient();
+#if DEBUG
+            client.Endpoint.Address = new System.ServiceModel.EndpointAddress("http://localhost:52484/MHEdit.svc");
+#endif
+            return client;
+        }
+        public static MHEditServiceReference.SecurityToken Login(string username, string password)
+        {
+            MHEditServiceReference.MHEditClient _client = GetClient();
+            MHEditServiceReference.ClientResponseOfSecurityToken6aJH8QNC response = _client.Login(username, password);
             if (response.IsSuccessful)
             {
-                StringEncryption se = new StringEncryption(response.Payload);
-                string encryptedUsername = se.Encrypt(username);
-                string encryptedPassword = se.Encrypt(password);
-                MHEditServiceReference.ClientResponseOfboolean responseLogin = _client.Login(encryptedUsername, encryptedPassword);
-                if (responseLogin.IsSuccessful)
-                {
-                    return true;
-                }
+                return response.Payload;
             }
-            return false;
+            return null;
         }
 
-        public static bool UploadMazeDefinition(string username, string password, string mazeDefinition)
+        public static bool UploadMazeDefinition(MHEditServiceReference.SecurityToken token, byte[] mazeDefinition, byte[] screenshot)
         {
-            return false;
+            MHEditServiceReference.MHEditClient _client = GetClient();
+            MHEditServiceReference.ClientResponseOfboolean result =_client.SubmitMaze(token, mazeDefinition, screenshot);
+            return result.Payload;
         }
     }
 }

@@ -15,9 +15,9 @@ namespace mhedit.MHEditServiceReference {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="ClientResponseOfbase64Binary", Namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ClientResponseOfSecurityToken6aJH8QNC", Namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models")]
     [System.SerializableAttribute()]
-    public partial class ClientResponseOfbase64Binary : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+    public partial class ClientResponseOfSecurityToken6aJH8QNC : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
@@ -29,7 +29,7 @@ namespace mhedit.MHEditServiceReference {
         private bool IsSuccessfulField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private byte[] PayloadField;
+        private mhedit.MHEditServiceReference.SecurityToken PayloadField;
         
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
@@ -68,7 +68,7 @@ namespace mhedit.MHEditServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public byte[] Payload {
+        public mhedit.MHEditServiceReference.SecurityToken Payload {
             get {
                 return this.PayloadField;
             }
@@ -76,6 +76,83 @@ namespace mhedit.MHEditServiceReference {
                 if ((object.ReferenceEquals(this.PayloadField, value) != true)) {
                     this.PayloadField = value;
                     this.RaisePropertyChanged("Payload");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="SecurityToken", Namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Containers")]
+    [System.SerializableAttribute()]
+    public partial class SecurityToken : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string EncryptedPasswordField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string EncryptionKeyField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string UsernameField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string EncryptedPassword {
+            get {
+                return this.EncryptedPasswordField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.EncryptedPasswordField, value) != true)) {
+                    this.EncryptedPasswordField = value;
+                    this.RaisePropertyChanged("EncryptedPassword");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string EncryptionKey {
+            get {
+                return this.EncryptionKeyField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.EncryptionKeyField, value) != true)) {
+                    this.EncryptionKeyField = value;
+                    this.RaisePropertyChanged("EncryptionKey");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Username {
+            get {
+                return this.UsernameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.UsernameField, value) != true)) {
+                    this.UsernameField = value;
+                    this.RaisePropertyChanged("Username");
                 }
             }
         }
@@ -248,23 +325,17 @@ namespace mhedit.MHEditServiceReference {
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="MHEditServiceReference.IMHEdit")]
     public interface IMHEdit {
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/GetEncryptionKey", ReplyAction="http://tempuri.org/IMHEdit/GetEncryptionKeyResponse")]
-        mhedit.MHEditServiceReference.ClientResponseOfbase64Binary GetEncryptionKey();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/GetEncryptionKey", ReplyAction="http://tempuri.org/IMHEdit/GetEncryptionKeyResponse")]
-        System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfbase64Binary> GetEncryptionKeyAsync();
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/Login", ReplyAction="http://tempuri.org/IMHEdit/LoginResponse")]
+        mhedit.MHEditServiceReference.ClientResponseOfSecurityToken6aJH8QNC Login(string username, string password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/Login", ReplyAction="http://tempuri.org/IMHEdit/LoginResponse")]
-        mhedit.MHEditServiceReference.ClientResponseOfboolean Login(string encryptedUsername, string encryptedPassword);
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/Login", ReplyAction="http://tempuri.org/IMHEdit/LoginResponse")]
-        System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfboolean> LoginAsync(string encryptedUsername, string encryptedPassword);
+        System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfSecurityToken6aJH8QNC> LoginAsync(string username, string password);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/SubmitMaze", ReplyAction="http://tempuri.org/IMHEdit/SubmitMazeResponse")]
-        mhedit.MHEditServiceReference.ClientResponseOfboolean SubmitMaze(string encryptedUsername, string encryptedPassword, byte[] maze, byte[] image);
+        mhedit.MHEditServiceReference.ClientResponseOfboolean SubmitMaze(mhedit.MHEditServiceReference.SecurityToken token, byte[] maze, byte[] image);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/SubmitMaze", ReplyAction="http://tempuri.org/IMHEdit/SubmitMazeResponse")]
-        System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfboolean> SubmitMazeAsync(string encryptedUsername, string encryptedPassword, byte[] maze, byte[] image);
+        System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfboolean> SubmitMazeAsync(mhedit.MHEditServiceReference.SecurityToken token, byte[] maze, byte[] image);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/LogException", ReplyAction="http://tempuri.org/IMHEdit/LogExceptionResponse")]
         mhedit.MHEditServiceReference.ClientResponseOfstring LogException(string message, string source, string stackTrace, string username, string version);
@@ -300,28 +371,20 @@ namespace mhedit.MHEditServiceReference {
                 base(binding, remoteAddress) {
         }
         
-        public mhedit.MHEditServiceReference.ClientResponseOfbase64Binary GetEncryptionKey() {
-            return base.Channel.GetEncryptionKey();
+        public mhedit.MHEditServiceReference.ClientResponseOfSecurityToken6aJH8QNC Login(string username, string password) {
+            return base.Channel.Login(username, password);
         }
         
-        public System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfbase64Binary> GetEncryptionKeyAsync() {
-            return base.Channel.GetEncryptionKeyAsync();
+        public System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfSecurityToken6aJH8QNC> LoginAsync(string username, string password) {
+            return base.Channel.LoginAsync(username, password);
         }
         
-        public mhedit.MHEditServiceReference.ClientResponseOfboolean Login(string encryptedUsername, string encryptedPassword) {
-            return base.Channel.Login(encryptedUsername, encryptedPassword);
+        public mhedit.MHEditServiceReference.ClientResponseOfboolean SubmitMaze(mhedit.MHEditServiceReference.SecurityToken token, byte[] maze, byte[] image) {
+            return base.Channel.SubmitMaze(token, maze, image);
         }
         
-        public System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfboolean> LoginAsync(string encryptedUsername, string encryptedPassword) {
-            return base.Channel.LoginAsync(encryptedUsername, encryptedPassword);
-        }
-        
-        public mhedit.MHEditServiceReference.ClientResponseOfboolean SubmitMaze(string encryptedUsername, string encryptedPassword, byte[] maze, byte[] image) {
-            return base.Channel.SubmitMaze(encryptedUsername, encryptedPassword, maze, image);
-        }
-        
-        public System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfboolean> SubmitMazeAsync(string encryptedUsername, string encryptedPassword, byte[] maze, byte[] image) {
-            return base.Channel.SubmitMazeAsync(encryptedUsername, encryptedPassword, maze, image);
+        public System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfboolean> SubmitMazeAsync(mhedit.MHEditServiceReference.SecurityToken token, byte[] maze, byte[] image) {
+            return base.Channel.SubmitMazeAsync(token, maze, image);
         }
         
         public mhedit.MHEditServiceReference.ClientResponseOfstring LogException(string message, string source, string stackTrace, string username, string version) {

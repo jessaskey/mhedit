@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,10 +14,52 @@ namespace mhedit
 {
     public partial class DialogMHPLogin : Form
     {
+        private string _savedPasswordKey = "";
+
         public DialogMHPLogin()
         {
             InitializeComponent();
         }
+
+        public string Username
+        {
+            get { return textBoxUsername.Text; }
+            set { textBoxUsername.Text = value; }
+        }
+
+        public string Password
+        {
+            get { return textBoxPassword.Text; }
+            set { textBoxPassword.Text = value; }
+        }
+
+        public string PasswordKey
+        {
+            get { return _savedPasswordKey; }
+            set { _savedPasswordKey = value; }
+        }
+
+        public bool SavePassword
+        {
+            get { return checkBoxSavePassword.Checked; }
+            set { checkBoxSavePassword.Checked = value; }
+        }
+        public Image MazePreview
+        {
+            set
+            {
+                pictureBoxMaze.Image = value;
+                //pictureBoxMaze.Width = value.Width;
+            }
+        }
+
+        public string MazeName
+        {
+            get { return labelMazeName.Text; }
+            set { labelMazeName.Text = value; }
+        }
+
+        public byte[] MazeBytes { get; set; }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
@@ -24,22 +68,115 @@ namespace mhedit
 
         private void buttonOk_Click(object sender, EventArgs e)
         {
-            if (Validate())
+            //make sure inputs are valid
+            if (CredentialsNotEmpty())
             {
-                Properties.Settings.Default.MHPUsername = textBoxUsername.Text;
-                Properties.Settings.Default.MHPPassword = textBoxPassword.Text;
-                Properties.Settings.Default.Save();
-                Close();
-            }
-            else
-            {
-                MessageBox.Show("Username or Password is incorrect.", "Login Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (MazeNameIsOkay())
+                {
+                    try
+                    {
+                        Cursor.Current = Cursors.WaitCursor;
+
+                        MHEditServiceReference.SecurityToken token = null;
+                        if (String.IsNullOrEmpty(_savedPasswordKey))
+                        {
+                            token = MHPController.Login(textBoxUsername.Text, textBoxPassword.Text);
+                        }
+                        else
+                        {
+                            token = new MHEditServiceReference.SecurityToken();
+                            token.Username = Username;
+                            token.EncryptedPassword = Password;
+                            token.EncryptionKey = _savedPasswordKey;
+                        }
+
+                        if (token != null)
+                        {
+                            Properties.Settings.Default.MHPUsername = token.Username; 
+                            if (checkBoxSavePassword.Checked)
+                            {
+                                Properties.Settings.Default.MHPPassword = token.EncryptedPassword;
+                                Properties.Settings.Default.MHPKey = token.EncryptionKey;
+                            }
+                            Properties.Settings.Default.MHPSavePassword = checkBoxSavePassword.Checked;
+                            Properties.Settings.Default.Save();
+
+                            try
+                            {
+                                byte[] imageBytes = null;
+                                using (MemoryStream memoryStream = new MemoryStream())
+                                {
+                                    pictureBoxMaze.Image.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg); //you could ave in BPM, PNG  etc format.
+                                    imageBytes = new byte[memoryStream.Length];
+                                    memoryStream.Position = 0;
+                                    memoryStream.Read(imageBytes, 0, imageBytes.Length);
+                                    memoryStream.Close();
+                                }
+                                if (MazeBytes != null && imageBytes != null && token != null)
+                                {
+                                    if (MHPController.UploadMazeDefinition(token, MazeBytes, imageBytes))
+                                    {
+                                        MessageBox.Show("Maze has been uploaded sucessfully!", "Major Havoc Project", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("There was an error uploading the maze. Contact Jess.", "Major Havoc Project", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Cursor.Current = Cursors.Default;
+                                MessageBox.Show("There was a problem uploading the maze info, check your internet connection or try again later.", "Upload Issue", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+
+                            Cursor.Current = Cursors.Default;
+                            Close();
+                        }
+                        else
+                        {
+                            Cursor.Current = Cursors.Default;
+                            MessageBox.Show("Username or Password is incorrect.", "Login Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Cursor.Current = Cursors.Default;
+                        MessageBox.Show("There was an error communicating to the website, please check your internet connection.", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    Cursor.Current = Cursors.Default;
+                }
             }
         }
 
-        private bool Validate()
+        private bool CredentialsNotEmpty()
         {
-            return MHPController.Login(textBoxUsername.Text, textBoxPassword.Text);
+            if (String.IsNullOrEmpty(textBoxUsername.Text) || String.IsNullOrEmpty(textBoxPassword.Text))
+            {
+                MessageBox.Show("Username and password cannont be blank.", "Empty Username or Password", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+            return true;
+        }
+
+        private bool MazeNameIsOkay()
+        {
+            string badRegex = @"(\s)*level(\s)*(\d)*";
+            Regex regex = new Regex(badRegex, RegexOptions.IgnoreCase);
+            Match match = regex.Match(labelMazeName.Text);
+            if (match.Success)
+            {
+                //not good, they have to give it a better name.
+                MessageBox.Show("Your maze name of '" + labelMazeName.Text + "' seems to be pretty generic. You have to go edit the maze name to something more descriptive as this will be how we label the maze on the gallery.", "Crappy Maze Name", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+            return true;
+        }
+
+        private void linkLabelWebLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://mhp.askey.org");
         }
     }
 }

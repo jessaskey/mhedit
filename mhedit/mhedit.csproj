@@ -104,7 +104,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Context.cs" />
     <Compile Include="Controllers\MHPController.cs" />
     <Compile Include="Crc32.cs" />
     <Compile Include="Dialogs\DialogMHPLogin.cs">
@@ -112,15 +111,6 @@
     </Compile>
     <Compile Include="Dialogs\DialogMHPLogin.Designer.cs">
       <DependentUpon>DialogMHPLogin.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MazeEnemies\CannonEditor.cs" />
-    <Compile Include="MazeEnemies\CannonMovement.cs" />
-    <Compile Include="MazeEnemies\CannonMovementPosition.cs" />
-    <Compile Include="MazeEnemies\CannonMovementEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MazeEnemies\CannonMovementEditor.Designer.cs">
-      <DependentUpon>CannonMovementEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\DialogAbout.cs">
       <SubType>Form</SubType>
@@ -135,56 +125,19 @@
       <DependentUpon>DialogConfiguration.cs</DependentUpon>
     </Compile>
     <Compile Include="Globals.cs" />
-    <Compile Include="ITreeObject.cs" />
     <Compile Include="Mainform.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Mainform.Designer.cs">
       <DependentUpon>Mainform.cs</DependentUpon>
     </Compile>
-    <Compile Include="Maze.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="MazeEnemies\CannonMovementMove.cs" />
-    <Compile Include="MazeEnemies\CannonMovementPause.cs" />
-    <Compile Include="MazeEnemies\CannonMovementPreview.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MazeEnemies\CannonMovementPreview.Designer.cs">
-      <DependentUpon>CannonMovementPreview.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MazeEnemies\CannonMovementReturn.cs" />
-    <Compile Include="MazeEnemies\LightningV.cs" />
-    <Compile Include="MazeEnemies\LightningH.cs" />
-    <Compile Include="MazeEnemies\Maxoid.cs" />
-    <Compile Include="MazeEnemies\TripPadPyroid.cs" />
-    <Compile Include="MazeEnemies\iCannonMovement.cs" />
-    <Compile Include="MazeFactory.cs">
-    </Compile>
-    <Compile Include="MazeCollection.cs">
-    </Compile>
-    <Compile Include="MazeEnemies\Cannon.cs" />
-    <Compile Include="MazeEnemies\Perkoid.cs" />
-    <Compile Include="MazeEnemies\Pyroid.cs" />
-    <Compile Include="MazeEnemies\TripPad.cs" />
-    <Compile Include="MazeObjects\MazeObject.cs" />
-    <Compile Include="MazeObjects\Arrow.cs" />
-    <Compile Include="MazeObjects\Boots.cs" />
-    <Compile Include="MazeObjects\Clock.cs" />
-    <Compile Include="MazeObjects\Hand.cs" />
-    <Compile Include="MazeObjects\Key.cs" />
-    <Compile Include="MazeObjects\Lock.cs" />
-    <Compile Include="MazeObjects\ObjectColor.cs" />
-    <Compile Include="MazeObjects\OneWay.cs" />
-    <Compile Include="MazeObjects\Oxoid.cs" />
-    <Compile Include="MazeObjects\EscapePod.cs" />
-    <Compile Include="MazeObjects\Reactoid.cs">
-    </Compile>
-    <Compile Include="MazeObjects\Spikes.cs" />
-    <Compile Include="MazeObjects\Transporter.cs" />
-    <Compile Include="MazeWall.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\MHEditServiceReference\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Dialogs\DialogAbout.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DialogAbout.cs</DependentUpon>
@@ -195,9 +148,6 @@
     <EmbeddedResource Include="Mainform.resx">
       <SubType>Designer</SubType>
       <DependentUpon>Mainform.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Maze.resx">
-      <DependentUpon>Maze.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -224,22 +174,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="resource.cs" />
     <Compile Include="ROMDump.cs" />
-    <Compile Include="Security\StringEncryption.cs" />
-    <Compile Include="Service References\MHEditServiceReference\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-    <Compile Include="TypeConverters\VectorPositionTypeConverter.cs" />
-    <Compile Include="TypeConverters\TripPadPyroidTypeConverter.cs" />
-    <Compile Include="TypeConverters\SignedVelocityTypeConverter.cs" />
-    <Compile Include="TypeConverters\VelocityTypeConverter.cs" />
-    <None Include="Service References\MHEditServiceReference\mhedit.MHEditServiceReference.ClientResponseOfbase64Binary.datasource">
+    <None Include="Service References\MHEditServiceReference\mhedit.MHEditServiceReference.ClientResponseOfboolean.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Service References\MHEditServiceReference\mhedit.MHEditServiceReference.ClientResponseOfboolean.datasource">
+    <None Include="Service References\MHEditServiceReference\mhedit.MHEditServiceReference.ClientResponseOfSecurityToken6aJH8QNC.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\MHEditServiceReference\mhedit.MHEditServiceReference.ClientResponseOfstring.datasource">
@@ -254,6 +193,9 @@
     <None Include="Service References\MHEditServiceReference\MHEdit2.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\MHEditServiceReference\MHEdit3.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\MHEditServiceReference\MHEditService.wsdl" />
   </ItemGroup>
   <ItemGroup>
@@ -261,46 +203,18 @@
     </Content>
     <Content Include="app2.ico">
     </Content>
-    <EmbeddedResource Include="MazeEnemies\CannonMovementEditor.resx">
-      <DependentUpon>CannonMovementEditor.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\DialogConfiguration.resx">
       <DependentUpon>DialogConfiguration.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="images\buttons\trippad_32.ico" />
-    <EmbeddedResource Include="images\objects\trippad_obj.ico" />
-    <EmbeddedResource Include="images\objects\lightning_obj.ico" />
     <EmbeddedResource Include="images\buttons\lock_32.ico" />
-    <EmbeddedResource Include="images\objects\lock_obj.ico" />
-    <EmbeddedResource Include="images\objects\key_obj.ico" />
-    <EmbeddedResource Include="images\objects\clock_obj.ico" />
     <EmbeddedResource Include="images\buttons\hand_32.ico" />
-    <EmbeddedResource Include="images\objects\hand_obj.ico" />
     <EmbeddedResource Include="images\buttons\spikes_32.ico" />
-    <EmbeddedResource Include="images\objects\spikes_obj.ico" />
     <EmbeddedResource Include="images\buttons\booties_32.ico" />
-    <EmbeddedResource Include="images\objects\booties_obj.ico" />
     <EmbeddedResource Include="images\buttons\transporter_32.ico" />
-    <EmbeddedResource Include="images\objects\transporter_obj.ico" />
-    <EmbeddedResource Include="images\objects\arrow_question_obj.ico" />
-    <EmbeddedResource Include="images\objects\cannon_obj.ico" />
     <EmbeddedResource Include="images\buttons\pod_32.ico" />
-    <EmbeddedResource Include="images\objects\pod_obj.ico" />
-    <EmbeddedResource Include="images\objects\wallc_empty_64.ico" />
-    <EmbeddedResource Include="images\objects\wallc_horizontal_64.ico" />
-    <EmbeddedResource Include="images\objects\wallc_leftdown_64.ico" />
-    <EmbeddedResource Include="images\objects\wallc_leftup_64.ico" />
-    <EmbeddedResource Include="images\objects\wallc_rightdown_64.ico" />
-    <EmbeddedResource Include="images\objects\wallc_rightup_64.ico" />
-    <EmbeddedResource Include="images\objects\wallc_vertical_64.ico" />
     <EmbeddedResource Include="images\buttons\lightning_v_32.ico" />
-    <Content Include="images\objects\cannon_barrel_right.ico" />
-    <EmbeddedResource Include="images\objects\pyroidr_obj.ico" />
-    <EmbeddedResource Include="images\objects\lightning_v_obj.ico" />
-    <EmbeddedResource Include="images\objects\oneway_l_obj.ico" />
-    <EmbeddedResource Include="images\objects\roboid_obj.ico" />
     <Content Include="images\toolbarbuttons\ActionRequired_03.bmp" />
     <Content Include="images\toolbarbuttons\BuilderDialog_delete.bmp" />
     <Content Include="images\toolbarbuttons\BuilderDialog_movedown.bmp" />
@@ -378,12 +292,6 @@
     <Content Include="template\havoc.exp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="images\objects\oneway_obj.ico" />
-    <EmbeddedResource Include="images\objects\arrow_angle_obj.ico" />
-    <EmbeddedResource Include="images\objects\arrow_square_obj.ico" />
-    <EmbeddedResource Include="images\objects\oxoid_obj.ico" />
-    <EmbeddedResource Include="images\objects\perkoid_obj.ico" />
-    <EmbeddedResource Include="images\objects\reactoid_obj.ico" />
     <EmbeddedResource Include="images\buttons\arrow_32.ico" />
     <EmbeddedResource Include="images\buttons\cannon_32.ico" />
     <EmbeddedResource Include="images\buttons\clock_32.ico" />
@@ -403,18 +311,6 @@
     <EmbeddedResource Include="images\buttons\wall_rightdown_32.ico" />
     <EmbeddedResource Include="images\buttons\wall_rightup_32.ico" />
     <EmbeddedResource Include="images\buttons\wall_vertical_32.ico" />
-    <EmbeddedResource Include="images\objects\pyroid_obj.ico" />
-    <EmbeddedResource Include="images\objects\wall_empty_64.ico" />
-    <EmbeddedResource Include="images\objects\wall_horizontal_64.ico" />
-    <EmbeddedResource Include="images\objects\wall_leftdown_64.ico" />
-    <EmbeddedResource Include="images\objects\wall_leftup_64.ico" />
-    <EmbeddedResource Include="images\objects\wall_rightdown_64.ico" />
-    <EmbeddedResource Include="images\objects\wall_rightup_64.ico" />
-    <EmbeddedResource Include="images\objects\wall_vertical_64.ico" />
-    <EmbeddedResource Include="MazeEnemies\CannonMovementPreview.resx">
-      <DependentUpon>CannonMovementPreview.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -473,6 +369,10 @@
     <Folder Include="exports\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\mhedit.Containers\mhedit.Containers.csproj">
+      <Project>{56f50c8e-1406-4888-89a2-575abf86721e}</Project>
+      <Name>mhedit.Containers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Silver.UI.ToolBox\Silver.UI.ToolBox.csproj">
       <Project>{d937e1f4-1b9f-4567-b28e-eed24aa31c9c}</Project>
       <Name>Silver.UI.ToolBox</Name>
