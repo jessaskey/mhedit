@@ -321,9 +321,185 @@ namespace mhedit.MHEditServiceReference {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ClientResponseOfArrayOfMazeItem6aJH8QNC", Namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models")]
+    [System.SerializableAttribute()]
+    public partial class ClientResponseOfArrayOfMazeItem6aJH8QNC : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ErrorMessageField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool IsSuccessfulField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private mhedit.MHEditServiceReference.MazeItem[] PayloadField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string ErrorMessage {
+            get {
+                return this.ErrorMessageField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ErrorMessageField, value) != true)) {
+                    this.ErrorMessageField = value;
+                    this.RaisePropertyChanged("ErrorMessage");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool IsSuccessful {
+            get {
+                return this.IsSuccessfulField;
+            }
+            set {
+                if ((this.IsSuccessfulField.Equals(value) != true)) {
+                    this.IsSuccessfulField = value;
+                    this.RaisePropertyChanged("IsSuccessful");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public mhedit.MHEditServiceReference.MazeItem[] Payload {
+            get {
+                return this.PayloadField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PayloadField, value) != true)) {
+                    this.PayloadField = value;
+                    this.RaisePropertyChanged("Payload");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="MazeItem", Namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Containers")]
+    [System.SerializableAttribute()]
+    public partial class MazeItem : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Guid IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string MazeNameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.DateTime UploadedOnField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string UsernameField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Guid Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string MazeName {
+            get {
+                return this.MazeNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.MazeNameField, value) != true)) {
+                    this.MazeNameField = value;
+                    this.RaisePropertyChanged("MazeName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.DateTime UploadedOn {
+            get {
+                return this.UploadedOnField;
+            }
+            set {
+                if ((this.UploadedOnField.Equals(value) != true)) {
+                    this.UploadedOnField = value;
+                    this.RaisePropertyChanged("UploadedOn");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Username {
+            get {
+                return this.UsernameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.UsernameField, value) != true)) {
+                    this.UsernameField = value;
+                    this.RaisePropertyChanged("Username");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="MHEditServiceReference.IMHEdit")]
     public interface IMHEdit {
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/Ping", ReplyAction="http://tempuri.org/IMHEdit/PingResponse")]
+        string Ping();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/Ping", ReplyAction="http://tempuri.org/IMHEdit/PingResponse")]
+        System.Threading.Tasks.Task<string> PingAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/Login", ReplyAction="http://tempuri.org/IMHEdit/LoginResponse")]
         mhedit.MHEditServiceReference.ClientResponseOfSecurityToken6aJH8QNC Login(string username, string password);
@@ -342,6 +518,12 @@ namespace mhedit.MHEditServiceReference {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/LogException", ReplyAction="http://tempuri.org/IMHEdit/LogExceptionResponse")]
         System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfstring> LogExceptionAsync(string message, string source, string stackTrace, string username, string version);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/GetMazes", ReplyAction="http://tempuri.org/IMHEdit/GetMazesResponse")]
+        mhedit.MHEditServiceReference.ClientResponseOfArrayOfMazeItem6aJH8QNC GetMazes(string sortColumn, string descending, string userFilter);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IMHEdit/GetMazes", ReplyAction="http://tempuri.org/IMHEdit/GetMazesResponse")]
+        System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfArrayOfMazeItem6aJH8QNC> GetMazesAsync(string sortColumn, string descending, string userFilter);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -371,6 +553,14 @@ namespace mhedit.MHEditServiceReference {
                 base(binding, remoteAddress) {
         }
         
+        public string Ping() {
+            return base.Channel.Ping();
+        }
+        
+        public System.Threading.Tasks.Task<string> PingAsync() {
+            return base.Channel.PingAsync();
+        }
+        
         public mhedit.MHEditServiceReference.ClientResponseOfSecurityToken6aJH8QNC Login(string username, string password) {
             return base.Channel.Login(username, password);
         }
@@ -393,6 +583,14 @@ namespace mhedit.MHEditServiceReference {
         
         public System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfstring> LogExceptionAsync(string message, string source, string stackTrace, string username, string version) {
             return base.Channel.LogExceptionAsync(message, source, stackTrace, username, version);
+        }
+        
+        public mhedit.MHEditServiceReference.ClientResponseOfArrayOfMazeItem6aJH8QNC GetMazes(string sortColumn, string descending, string userFilter) {
+            return base.Channel.GetMazes(sortColumn, descending, userFilter);
+        }
+        
+        public System.Threading.Tasks.Task<mhedit.MHEditServiceReference.ClientResponseOfArrayOfMazeItem6aJH8QNC> GetMazesAsync(string sortColumn, string descending, string userFilter) {
+            return base.Channel.GetMazesAsync(sortColumn, descending, userFilter);
         }
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="fe2660da-d922-460b-be03-21f9aa3ea871" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="ed7e8ec1-d952-4561-ac47-07e2a68f18c1" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -19,15 +19,15 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://mhp.askey.org/MHEdit.svc" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://localhost:52484/mhedit.svc" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="MHEditService.wsdl" MetadataType="Wsdl" ID="a9b9f321-bf7f-499c-bc2d-e5b09fa100c0" SourceId="1" SourceUrl="http://mhp.askey.org/MHEdit.svc?wsdl" />
-    <MetadataFile FileName="MHEdit3.xsd" MetadataType="Schema" ID="448e97c2-ab17-431b-9809-6cf0d5bcf9f0" SourceId="1" SourceUrl="http://mhp.askey.org/MHEdit.svc?xsd=xsd3" />
-    <MetadataFile FileName="MHEdit2.xsd" MetadataType="Schema" ID="54f52caa-bf53-4657-ac9c-0d68eacf27a6" SourceId="1" SourceUrl="http://mhp.askey.org/MHEdit.svc?xsd=xsd1" />
-    <MetadataFile FileName="MHEdit.xsd" MetadataType="Schema" ID="a77eeed0-8ab3-4d51-8038-a84cab6181a4" SourceId="1" SourceUrl="http://mhp.askey.org/MHEdit.svc?xsd=xsd2" />
-    <MetadataFile FileName="MHEdit1.xsd" MetadataType="Schema" ID="ad6582cf-0f2d-4b21-89a6-ae371bf0a8ef" SourceId="1" SourceUrl="http://mhp.askey.org/MHEdit.svc?xsd=xsd0" />
-    <MetadataFile FileName="MHEdit.disco" MetadataType="Disco" ID="66001e17-87e1-4c2c-a157-399c477e7ce9" SourceId="1" SourceUrl="http://mhp.askey.org/MHEdit.svc?disco" />
+    <MetadataFile FileName="MHEdit.xsd" MetadataType="Schema" ID="035dbd2d-9743-45b2-9c4a-4e309b467c00" SourceId="1" SourceUrl="http://localhost:52484/MHEdit.svc?xsd=xsd0" />
+    <MetadataFile FileName="MHEditService.wsdl" MetadataType="Wsdl" ID="155f5124-31c7-4277-b1c9-925422090d45" SourceId="1" SourceUrl="http://localhost:52484/MHEdit.svc?wsdl" />
+    <MetadataFile FileName="MHEdit1.xsd" MetadataType="Schema" ID="dc03dcc1-3e38-4741-9013-2898e2f68bf2" SourceId="1" SourceUrl="http://localhost:52484/MHEdit.svc?xsd=xsd1" />
+    <MetadataFile FileName="MHEdit.disco" MetadataType="Disco" ID="e24b6625-53be-45b9-a92b-528037bf9179" SourceId="1" SourceUrl="http://localhost:52484/MHEdit.svc?disco" />
+    <MetadataFile FileName="MHEdit2.xsd" MetadataType="Schema" ID="cdeedd7c-d535-4f44-8a81-b2d19c96937b" SourceId="1" SourceUrl="http://localhost:52484/MHEdit.svc?xsd=xsd2" />
+    <MetadataFile FileName="MHEdit3.xsd" MetadataType="Schema" ID="a829a296-6011-4e12-964d-bfe72c5659eb" SourceId="1" SourceUrl="http://localhost:52484/MHEdit.svc?xsd=xsd3" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

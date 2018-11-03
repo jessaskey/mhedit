@@ -314,115 +314,116 @@ namespace mhedit
                     {
                         if (node.Tag != null)
                         {
-                            switch (node.Tag.GetType().ToString())
+                            if (node.Tag.GetType() == typeof(MazeCollection))
                             {
-                                case "mhedit.MazeCollection":
-                                    MazeCollection collection = (MazeCollection)node.Tag;
-                                    if (collection.IsDirty)
+
+                                MazeCollection collection = (MazeCollection)node.Tag;
+                                if (collection.IsDirty)
+                                {
+                                    DialogResult dr = MessageBox.Show("Would you like to save changes to the '" + collection.Name + "' collection before closing?", "Confirm Exit", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                                    if (dr == DialogResult.Yes)
                                     {
-                                        DialogResult dr = MessageBox.Show("Would you like to save changes to the '" + collection.Name + "' collection before closing?", "Confirm Exit", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                                        if (dr == DialogResult.Yes)
+                                        FileStream fStream = null;
+                                        MemoryStream mStream = null;
+                                        if (collection.FileName == null)
                                         {
-                                            FileStream fStream = null;
-                                            MemoryStream mStream = null;
-                                            if (collection.FileName == null)
+                                            SaveFileDialog sd = new SaveFileDialog();
+                                            sd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                                            sd.Filter = "Maze Files (*.mhc)|*.mhc|All files (*.*)|*.*";
+                                            sd.AddExtension = true;
+                                            sd.ShowDialog();
+                                            collection.FileName = sd.FileName;
+                                        }
+                                        Cursor.Current = Cursors.WaitCursor;
+                                        Application.DoEvents();
+                                        try
+                                        {
+                                            using (fStream = new FileStream(collection.FileName, FileMode.Create))
                                             {
-                                                SaveFileDialog sd = new SaveFileDialog();
-                                                sd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                                                sd.Filter = "Maze Files (*.mhc)|*.mhc|All files (*.*)|*.*";
-                                                sd.AddExtension = true;
-                                                sd.ShowDialog();
-                                                collection.FileName = sd.FileName;
-                                            }
-                                            Cursor.Current = Cursors.WaitCursor;
-                                            Application.DoEvents();
-                                            try
-                                            {
-                                                using (fStream = new FileStream(collection.FileName, FileMode.Create))
+                                                using (mStream = new MemoryStream())
                                                 {
-                                                    using (mStream = new MemoryStream())
-                                                    {
-                                                        BinaryFormatter b = new BinaryFormatter();
-                                                        b.Serialize(mStream, collection);
-                                                        mStream.Position = 0;
-                                                        BZip2.Compress(mStream, fStream, true, 4096);
-                                                    }
+                                                    BinaryFormatter b = new BinaryFormatter();
+                                                    b.Serialize(mStream, collection);
+                                                    mStream.Position = 0;
+                                                    BZip2.Compress(mStream, fStream, true, 4096);
                                                 }
                                             }
-                                            catch (Exception ex)
-                                            {
-                                                Cursor.Current = Cursors.Default;
-                                                MessageBox.Show("Maze could not be saved: " + ex.Message, "File Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                            }
-                                            finally
-                                            {
-                                                if (mStream != null) mStream.Close();
-                                                if (fStream != null) fStream.Close();
-                                            }
-                                            Cursor.Current = Cursors.Default;
                                         }
-                                        else if (dr == DialogResult.Cancel)
+                                        catch (Exception ex)
                                         {
-                                            //dont close
-                                            e.Cancel = true;
-                                            return;
+                                            Cursor.Current = Cursors.Default;
+                                            MessageBox.Show("Maze could not be saved: " + ex.Message, "File Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                         }
+                                        finally
+                                        {
+                                            if (mStream != null) mStream.Close();
+                                            if (fStream != null) fStream.Close();
+                                        }
+                                        Cursor.Current = Cursors.Default;
                                     }
-                                    break;
-                                case "mhedit.Maze":
-                                    Maze maze = (Maze)node.Tag;
-                                    if (maze.IsDirty)
+                                    else if (dr == DialogResult.Cancel)
                                     {
-                                        DialogResult dr = MessageBox.Show("Would you like to save changes to '" + maze.Name + " ' before closing?", "Confirm Exit", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                                        if (dr == DialogResult.Yes)
-                                        {
-                                            FileStream fStream = null;
-                                            MemoryStream mStream = null;
-                                            if (maze.FileName == null)
-                                            {
-                                                SaveFileDialog sd = new SaveFileDialog();
-                                                sd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                                                sd.Filter = "Maze Files (*.mhz)|*.mhz|All files (*.*)|*.*";
-                                                sd.AddExtension = true;
-                                                sd.ShowDialog();
-                                                maze.FileName = sd.FileName;
-                                            }
-                                            Cursor.Current = Cursors.WaitCursor;
-                                            Application.DoEvents();
-                                            try
-                                            {
-                                                using (fStream = new FileStream(maze.FileName, FileMode.Create))
-                                                {
-                                                    using (mStream = new MemoryStream())
-                                                    {
-                                                        BinaryFormatter b = new BinaryFormatter();
-                                                        b.Serialize(mStream, maze);
-                                                        mStream.Position = 0;
-                                                        BZip2.Compress(mStream, fStream, true, 4096);
-                                                    }
-                                                }
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                Cursor.Current = Cursors.Default;
-                                                MessageBox.Show("Maze could not be saved: " + ex.Message, "File Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                            }
-                                            finally
-                                            {
-                                                if (mStream != null) mStream.Close();
-                                                if (fStream != null) fStream.Close();
-                                            }
-                                            Cursor.Current = Cursors.Default;
-                                        }
-                                        else if (dr == DialogResult.Cancel)
-                                        {
-                                            //dont close
-                                            e.Cancel = true;
-                                            return;
-                                        }
+                                        //dont close
+                                        e.Cancel = true;
+                                        return;
                                     }
-                                    break;
+                                }
                             }
+                            else if (node.GetType() == typeof(Maze))
+                            {
+                                Maze maze = (Maze)node.Tag;
+                                if (maze.IsDirty)
+                                {
+                                    DialogResult dr = MessageBox.Show("Would you like to save changes to '" + maze.Name + " ' before closing?", "Confirm Exit", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                                    if (dr == DialogResult.Yes)
+                                    {
+                                        FileStream fStream = null;
+                                        MemoryStream mStream = null;
+                                        if (maze.FileName == null)
+                                        {
+                                            SaveFileDialog sd = new SaveFileDialog();
+                                            sd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                                            sd.Filter = "Maze Files (*.mhz)|*.mhz|All files (*.*)|*.*";
+                                            sd.AddExtension = true;
+                                            sd.ShowDialog();
+                                            maze.FileName = sd.FileName;
+                                        }
+                                        Cursor.Current = Cursors.WaitCursor;
+                                        Application.DoEvents();
+                                        try
+                                        {
+                                            using (fStream = new FileStream(maze.FileName, FileMode.Create))
+                                            {
+                                                using (mStream = new MemoryStream())
+                                                {
+                                                    BinaryFormatter b = new BinaryFormatter();
+                                                    b.Serialize(mStream, maze);
+                                                    mStream.Position = 0;
+                                                    BZip2.Compress(mStream, fStream, true, 4096);
+                                                }
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Cursor.Current = Cursors.Default;
+                                            MessageBox.Show("Maze could not be saved: " + ex.Message, "File Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
+                                        finally
+                                        {
+                                            if (mStream != null) mStream.Close();
+                                            if (fStream != null) fStream.Close();
+                                        }
+                                        Cursor.Current = Cursors.Default;
+                                    }
+                                    else if (dr == DialogResult.Cancel)
+                                    {
+                                        //dont close
+                                        e.Cancel = true;
+                                        return;
+                                    }
+                                }
+                            }
+     
                         }
                     }
                 }
@@ -446,16 +447,10 @@ namespace mhedit
             {
                 if (treeView.SelectedNode.Tag != null)
                 {
-                    switch (grid.SelectedObject.GetType().ToString())
+                    ITreeObject treeObject = grid.SelectedObject as ITreeObject;
+                    if (treeObject != null)
                     {
-                        case "mhedit.MazeCollection":
-                        case "mhedit.Maze":
-                            ((ITreeObject)grid.SelectedObject).TreeRender(treeView, treeView.SelectedNode);
-                            break;
-                        default:
-                            //zoomPanImageBox.Image = ((ITreeObject)treeView.SelectedNode.Tag).GetImage();
-                            //zoomPanImageBox.Invalidate();
-                            break;
+                        treeObject.TreeRender(treeView, treeView.SelectedNode);
                     }
                 }
             }
@@ -604,13 +599,13 @@ namespace mhedit
                 if (treeView.SelectedNode.Tag != null)
                 {
                     MazeCollection collection = null;
-                    if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.MazeCollection")
+                    if (treeView.SelectedNode.Tag.GetType() == typeof(MazeCollection))
                     {
                         collection = (MazeCollection)treeView.SelectedNode.Tag;
                     }
                     if (treeView.SelectedNode.Parent != null)
                     {
-                        if (treeView.SelectedNode.Parent.Tag.GetType().ToString() == "mhedit.MazeCollection")
+                        if (treeView.SelectedNode.Parent.Tag.GetType() == typeof(MazeCollection))
                         {
                             collection = (MazeCollection)treeView.SelectedNode.Parent.Tag;
                         }
@@ -777,7 +772,7 @@ namespace mhedit
             {
                 if (treeView.SelectedNode.Tag != null)
                 {
-                    if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.Maze")
+                    if (treeView.SelectedNode.Tag.GetType() == typeof(Maze))
                     {
                         Maze maze = (Maze)treeView.SelectedNode.Tag;
                         SaveMaze(maze);
@@ -792,12 +787,12 @@ namespace mhedit
             {
                 if (treeView.SelectedNode.Tag != null)
                 {
-                    if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.Maze")
+                    if (treeView.SelectedNode.Tag.GetType() == typeof(Maze))
                     {
                         Maze maze = (Maze)treeView.SelectedNode.Tag;
                         SaveMaze(maze);
                     }
-                    if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.MazeCollection")
+                    if (treeView.SelectedNode.Tag.GetType()== typeof(MazeCollection))
                     {
                         MazeCollection collection = (MazeCollection)treeView.SelectedNode.Tag;
                         SaveCollection(collection);
@@ -940,14 +935,14 @@ namespace mhedit
                 {
                     if (treeView.SelectedNode.Parent == null)
                     {
-                        if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.Maze")
+                        if (treeView.SelectedNode.Tag.GetType() == typeof(Maze))
                         {
                             Maze maze = (Maze)treeView.SelectedNode.Tag;
                             CloseMaze(maze);
                             treeView.SelectedNode.Remove();
                             RefreshTree();
                         }
-                        else if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.MazeCollection")
+                        else if (treeView.SelectedNode.Tag.GetType() == typeof(MazeCollection))
                         {
                             MazeCollection collection = (MazeCollection)treeView.SelectedNode.Tag;
                             CloseCollection(collection);
@@ -958,7 +953,7 @@ namespace mhedit
                     else
                     {
                         //this node has a parent... which should be a collection, so save that
-                        if (treeView.SelectedNode.Parent.Tag.GetType().ToString() == "mhedit.MazeCollection")
+                        if (treeView.SelectedNode.Parent.Tag.GetType() == typeof(MazeCollection))
                         {
                             MazeCollection collection = (MazeCollection)treeView.SelectedNode.Parent.Tag;
                             CloseCollection(collection);
@@ -977,7 +972,7 @@ namespace mhedit
             {
                 if (treeView.SelectedNode.Tag != null)
                 {
-                    if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.Maze")
+                    if (treeView.SelectedNode.Tag.GetType() == typeof(Maze))
                     {
                         Maze maze = (Maze)treeView.SelectedNode.Tag;
                         SaveMaze(maze);
@@ -1653,7 +1648,7 @@ namespace mhedit
         private void toolStripButtonLoadFromROM_Click(object sender, EventArgs e)
         {
 
-            string romPath = "Z:\\Files\\ROM Archive\\Vid ROM's\\Atari\\MajorHavoc\\";
+            string romPath = @"C:\SVN\havoc\mame\roms\mhavoc\";
 
             if (!Directory.Exists(romPath))
             {

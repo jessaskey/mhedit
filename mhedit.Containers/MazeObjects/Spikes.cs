@@ -19,8 +19,8 @@ namespace mhedit.Containers.MazeObjects
         public Spikes()
         {
             LoadDefaultImage();
-            renderOffset.X = 0;
-            renderOffset.Y = 32;
+            renderOffset.X = 32;
+            renderOffset.Y = 64;
             staticLsb = new Point(0x80, 0x0b);
         }
 

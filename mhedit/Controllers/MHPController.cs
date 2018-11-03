@@ -17,6 +17,12 @@ namespace mhedit
 #endif
             return client;
         }
+
+        public static string Ping()
+        {
+            MHEditServiceReference.MHEditClient _client = GetClient();
+            return _client.Ping();
+        }
         public static MHEditServiceReference.SecurityToken Login(string username, string password)
         {
             MHEditServiceReference.MHEditClient _client = GetClient();
@@ -33,6 +39,13 @@ namespace mhedit
             MHEditServiceReference.MHEditClient _client = GetClient();
             MHEditServiceReference.ClientResponseOfboolean result =_client.SubmitMaze(token, mazeDefinition, screenshot);
             return result.Payload;
+        }
+
+        public static List<string> GetMazes()
+        {
+            MHEditServiceReference.MHEditClient _client = GetClient();
+            var result = _client.GetMazes("date", "", "");
+            return null;
         }
     }
 }

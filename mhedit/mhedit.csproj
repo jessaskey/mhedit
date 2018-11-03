@@ -55,11 +55,12 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>mhedit.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -159,8 +160,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="app.config" />
-    <None Include="ClassDiagram.cd" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="mhedit_1_TemporaryKey.pfx" />
     <None Include="mhedit_2_TemporaryKey.pfx" />
     <None Include="mhedit_TemporaryKey.pfx" />
@@ -175,6 +177,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="ROMDump.cs" />
+    <None Include="Service References\MHEditServiceReference\mhedit.MHEditServiceReference.ClientResponseOfArrayOfMazeItem6aJH8QNC.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Service References\MHEditServiceReference\mhedit.MHEditServiceReference.ClientResponseOfboolean.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

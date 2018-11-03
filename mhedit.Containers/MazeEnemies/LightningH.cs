@@ -23,9 +23,9 @@ namespace mhedit.Containers.MazeEnemies
         public LightningH()
         {
             LoadDefaultImage();
-            renderOffset.X = 32;
-            renderOffset.Y = 32;
-            staticLsb = new Point(0x00, 0x80);
+            renderOffset.X =32;
+            renderOffset.Y = 64;
+            staticLsb = new Point(0x00, 0x00);  //offset of 128d is in vectors
         }
 
         [BrowsableAttribute(false)]

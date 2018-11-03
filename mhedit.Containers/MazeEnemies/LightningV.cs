@@ -24,8 +24,8 @@ namespace mhedit.Containers.MazeEnemies
         {
             LoadDefaultImage();
             //renderOffset.X = 32;
-            renderOffset.Y = 32;
-            staticLsb = new Point(0x80, 0x80);
+            renderOffset.Y = 64;
+            staticLsb = new Point(0x00, 0x00); //128d offset is in vector positioning
         }
 
         [BrowsableAttribute(false)]

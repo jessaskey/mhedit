@@ -178,5 +178,13 @@ namespace mhedit
         {
             System.Diagnostics.Process.Start("http://mhp.askey.org");
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string result = MHPController.Ping();
+            MessageBox.Show(result);
+
+            MHPController.GetMazes();
+        }
     }
 }

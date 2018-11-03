@@ -24,7 +24,9 @@ namespace mhedit.Containers.MazeEnemies
         public TripPad()
         {
             LoadDefaultImage();
-            staticLsb = new Point(0x80, 0x08);
+            renderOffset.X = 0;
+            renderOffset.Y = 32;
+            staticLsb = new Point(0x00, 0x08);
         }
 
         [BrowsableAttribute(false)]

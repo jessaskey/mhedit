@@ -345,8 +345,8 @@ namespace mhedit
             // toolStripLabel1
             // 
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(82, 22);
-            this.toolStripLabel1.Text = "Contest Tools:";
+            this.toolStripLabel1.Size = new System.Drawing.Size(118, 22);
+            this.toolStripLabel1.Text = "Major Havoc Project:";
             // 
             // toolStripButtonContestUpload
             // 
@@ -355,7 +355,7 @@ namespace mhedit
             this.toolStripButtonContestUpload.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonContestUpload.Name = "toolStripButtonContestUpload";
             this.toolStripButtonContestUpload.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonContestUpload.Text = "Upload Maze";
+            this.toolStripButtonContestUpload.Text = "Upload Maze to Major Havoc Project";
             this.toolStripButtonContestUpload.Click += new System.EventHandler(this.toolStripButtonContestUpload_Click);
             // 
             // toolStripSeparator6

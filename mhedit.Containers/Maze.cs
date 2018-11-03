@@ -12,6 +12,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Windows.Forms;
 using Silver.UI;
+using mhedit.Containers.MazeObjects;
 
 namespace mhedit.Containers
 {
@@ -633,7 +634,7 @@ namespace mhedit.Containers
 
                 if (null != dragItem && null != dragItem.Object)
                 {
-                    if (this.mazeType != MazeType.TypeB && dragItem.Object.GetType().ToString() == "mhedit.MazeObjects.EscapePod")
+                    if (this.mazeType != MazeType.TypeB && dragItem.Object.GetType() == typeof(EscapePod))
                     {
                         MessageBox.Show("The Escape pod can only be added to 'B' Type mazes.");
                     }
@@ -652,7 +653,7 @@ namespace mhedit.Containers
                 MoveSelectedObject(panelXY);
                 RefreshMaze();
             }
-            //this.Focus();
+            this.Focus();   //this is required so that when dropping an object, the maze panel gets focus so keys work immediately with out clicking on the maze first.
             base.OnDragDrop(drgevent);
         }
 
@@ -688,23 +689,92 @@ namespace mhedit.Containers
             {
                 Application.DoEvents();
             }
-    
+
+            SuspendLayout();
+            // reverse control z-index
+            ReverseControlZIndex(this);
+
+            int xTrim = 200;
             Bitmap bitmap = new Bitmap(this.Width, this.Height);
-            using (Graphics graphics = Graphics.FromImage(bitmap))
+
+            this.DrawToBitmap(bitmap, new Rectangle(0, 0, this.Width, this.Height));
+
+            Bitmap trimmedBitmap = new Bitmap(bitmap.Width - xTrim, bitmap.Height);
+            Rectangle cropRect = new Rectangle(xTrim, 0, bitmap.Width - xTrim, bitmap.Height);
+            using (Graphics g = Graphics.FromImage(trimmedBitmap))
             {
-                int mazeHeight = (int)(GRIDUNITS * mazeStampsY * GRIDUNITSTAMPS * zoom);
-                int mazeWidth = (int)(GRIDUNITS * mazeStampsX * GRIDUNITSTAMPS * zoom);
-
-                Point mazePosition = new Point((Parent.Width-Width)/4, (Parent.Height-this.Height)/4);
-
-                Size tempSize = new Size(this.Size.Width - 200, this.Size.Height);
-                Point tempPoint = new Point(200, 000);
-                graphics.CopyFromScreen(this.PointToScreen(tempPoint), new Point(0,0), tempSize);
+                g.DrawImage(bitmap, new Rectangle(0, 0, trimmedBitmap.Width, trimmedBitmap.Height),cropRect,GraphicsUnit.Pixel);
             }
+
+            // reverse control z-index back
+            ReverseControlZIndex(this);
+            ResumeLayout(true);
 
             GridLines = gridLineState;
             Invalidate(true);
-            return bitmap;
+
+            return AdjustContrast(trimmedBitmap, (ushort) 100);
+        }
+
+        public static Bitmap AdjustContrast(Bitmap Image, ushort increase)
+        {
+
+            Bitmap NewBitmap = (Bitmap)Image.Clone();
+            BitmapData data = NewBitmap.LockBits(
+                new Rectangle(0, 0, NewBitmap.Width, NewBitmap.Height),
+                ImageLockMode.ReadWrite,
+                NewBitmap.PixelFormat);
+            int Height = NewBitmap.Height;
+            int Width = NewBitmap.Width;
+
+            unsafe
+            {
+                for (int y = 0; y < Height; ++y)
+                {
+                    byte* row = (byte*)data.Scan0 + (y * data.Stride);
+                    int columnOffset = 0;
+                    for (int x = 0; x < Width; ++x)
+                    {
+                        int B = row[columnOffset];
+                        int G = row[columnOffset + 1];
+                        int R = row[columnOffset + 2];
+
+                        if (R > 0) R += increase;
+                        if (G > 0) G += increase;
+                        if (B > 0) B += increase;
+
+                        if (R > 255) R = 255;
+                        if (G > 255) G = 255;
+                        if (B > 255) B = 255;
+
+                        row[columnOffset] = (byte)B;
+                        row[columnOffset + 1] = (byte)G;
+                        row[columnOffset + 2] = (byte)R;
+
+                        columnOffset += 4;
+                    }
+                }
+            }
+            NewBitmap.UnlockBits(data);
+            return NewBitmap;
+        }
+
+        private void ReverseControlZIndex(Control parentControl)
+        {
+            var list = new List<Control>();
+            foreach (Control i in parentControl.Controls)
+            {
+                list.Add(i);
+            }
+            var total = list.Count;
+            for (int i = 0; i < total / 2; i++)
+            {
+                var left = parentControl.Controls.GetChildIndex(list[i]);
+                var right = parentControl.Controls.GetChildIndex(list[total - 1 - i]);
+
+                parentControl.Controls.SetChildIndex(list[i], right);
+                parentControl.Controls.SetChildIndex(list[total - 1 - i], left);
+            }
         }
 
         public ContextMenu GetTreeContextMenu()
@@ -810,38 +880,39 @@ namespace mhedit.Containers
         public bool AddObject(object obj)
         {
             bool wasAdded = false;
-            if (((MazeObject)obj).MaxObjects > GetObjectTypeCount(obj.GetType()))
-            {
-                ClearSelectedObjects();
-                string type = obj.GetType().ToString();
-                string[] typeString = type.Split('.');
+            MazeObject mazeObject = obj as MazeObject;
 
-                switch (type)
+            if (mazeObject != null)
+            {
+                if (((MazeObject)obj).MaxObjects > GetObjectTypeCount(obj.GetType()))
                 {
-                    case "mhedit.MazeWall":
-                        MazeWall wall = obj as MazeWall;
-                        if (wall != null)
-                        {
-                            wall.Name = GetNextName(typeString[typeString.Length - 1].ToLower());
-                            wall.Position = GetAdjustedPosition((MazeObject)wall, wall.Position);
-                            mazeObjects.Add((MazeObject)obj);
-                            BindComboBoxObjects((MazeObject)obj);
-                            if (propertyGrid != null) propertyGrid.SelectedObject = (MazeObject)obj;
-                            wasAdded = true;
-                        }
-                        break;
-                    default:
-                        ((MazeObject)obj).Name = GetNextName(typeString[typeString.Length - 1].ToLower());
+                    ClearSelectedObjects();
+                    string type = obj.GetType().ToString();
+                    string[] typeString = type.Split('.');
+
+                    MazeWall wall = obj as MazeWall;
+                    if (wall != null)
+                    {
+                        wall.Name = GetNextName(typeString[typeString.Length - 1].ToLower());
+                        wall.Position = GetAdjustedPosition((MazeObject)wall, wall.Position);
                         mazeObjects.Add((MazeObject)obj);
                         BindComboBoxObjects((MazeObject)obj);
                         if (propertyGrid != null) propertyGrid.SelectedObject = (MazeObject)obj;
                         wasAdded = true;
-                        break;
+                    }
+                    else
+                    {
+                        mazeObject.Name = GetNextName(typeString[typeString.Length - 1].ToLower());
+                        mazeObjects.Add((MazeObject)obj);
+                        BindComboBoxObjects((MazeObject)obj);
+                        if (propertyGrid != null) propertyGrid.SelectedObject = (MazeObject)obj;
+                        wasAdded = true;
+                    }
                 }
-            }
-            else
-            {
-                MessageBox.Show("You can't add any more objects of this type.", "The Homeworld is near", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                else
+                {
+                    MessageBox.Show("You can't add any more objects of this type.", "The Homeworld is near", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             return wasAdded;
         }
@@ -854,207 +925,43 @@ namespace mhedit.Containers
             {
                 ClearSelectedObjects();
                 string type = obj.GetType().ToString();
-                
-                switch (type)
+
+                MazeWall mazeWall = obj as MazeWall;
+                if (mazeWall != null)
                 {
-                    case "mhedit.MazeWall":
-                        MazeWall wall = new MazeWall(((MazeWall)obj).WallType);
-                        wall.UserWall = true;
-                        wall.Selected = true;
-                        wall.Position = GetAdjustedPosition((MazeObject)wall, point);
-                        wall.Name = GetNextName("wall");
-                        mazeObjects.Add(wall);
-                        BindComboBoxObjects(wall);
-                        if (propertyGrid != null) propertyGrid.SelectedObject = wall;    
-                        wasAdded = true;
-                        break;
-                    default:
-                        MazeObject mazeObject = (MazeObject)Activator.CreateInstance(obj.GetType(), true);
-                        mazeObject.Position = GetAdjustedPosition((MazeObject)mazeObject, point);
-                        mazeObject.Selected = true;
-                        string[] typeString = type.Split('.');
-                        mazeObject.Name = GetNextName(typeString[typeString.Length - 1].ToLower());
-                        mazeObjects.Add(mazeObject);
-                        if (mazeObject is MazeEnemies.TripPad)
-                        {
-                            //special case for Trip Pads, must create a pyroid too
-                            MazeEnemies.TripPadPyroid tripPyroid = new MazeEnemies.TripPadPyroid();
-                            tripPyroid.Position = GetAdjustedPosition(tripPyroid, mazeObject.Position);
-                            tripPyroid.TripPad = (MazeEnemies.TripPad)mazeObject;
-                            tripPyroid.Name = GetNextName("trippyroid");
-                            mazeObjects.Add(tripPyroid);
-                            ((MazeEnemies.TripPad)mazeObject).Pyroid = tripPyroid;
-                        }
-                        BindComboBoxObjects(mazeObject);
-                        if (propertyGrid != null) propertyGrid.SelectedObject = mazeObject;
 
-                        wasAdded = true;
-                        break;
+                    MazeWall wall = new MazeWall(((MazeWall)obj).WallType);
+                    wall.UserWall = true;
+                    wall.Selected = true;
+                    wall.Position = GetAdjustedPosition((MazeObject)wall, point);
+                    wall.Name = GetNextName("wall");
+                    mazeObjects.Add(wall);
+                    BindComboBoxObjects(wall);
+                    if (propertyGrid != null) propertyGrid.SelectedObject = wall;
+                    wasAdded = true;
                 }
-
-                #region Old Big Code
-
-                //switch (((MazeObject)obj).Type)
-                //{
-                //    case MazeObjectType.Wall:
-                //        MazeWall wall = new MazeWall(((MazeWall)obj).WallType);
-                //        wall.UserWall = true;
-                //        wall.Selected = true;
-                //        wall.Position = GetAdjustedPosition((MazeObject)wall, point);
-                //        wall.Name = GetNextName("wall");
-                //        mazeObjects.Add(wall);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = wall;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.Pyroid:
-                //        MazeEnemies.Pyroid pyroid = new MazeEnemies.Pyroid();
-                //        pyroid.Position = GetAdjustedPosition((MazeObject)pyroid, point);
-                //        pyroid.Selected = true;
-                //        pyroid.Name = GetNextName("pyroid");
-                //        mazeObjects.Add(pyroid);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = pyroid;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.Reactoid:
-                //        MazeObjects.Reactoid reactoid = new MazeObjects.Reactoid();
-                //        reactoid.Position = GetAdjustedPosition((MazeObject)reactoid, point);
-                //        reactoid.Selected = true;
-                //        reactoid.Name = GetNextName("reactoid");
-                //        mazeObjects.Add(reactoid);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = reactoid;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.Perkoid:
-                //        MazeEnemies.Perkoid perkoid = new MazeEnemies.Perkoid();
-                //        perkoid.Position = GetAdjustedPosition((MazeObject)perkoid, point);
-                //        perkoid.Selected = true;
-                //        perkoid.Name = GetNextName("perkoid");
-                //        mazeObjects.Add(perkoid);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = perkoid;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.Oxoid:
-                //        MazeObjects.Oxoid oxoid = new MazeObjects.Oxoid();
-                //        oxoid.Position = GetAdjustedPosition((MazeObject)oxoid, point);
-                //        oxoid.Selected = true;
-                //        oxoid.Name = GetNextName("oxoid");
-                //        mazeObjects.Add(oxoid);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = oxoid;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.Arrow:
-                //        MazeObjects.Arrow arrow = new MazeObjects.Arrow();
-                //        arrow.Position = GetAdjustedPosition((MazeObject)arrow, point);
-                //        arrow.Selected = true;
-                //        arrow.Name = GetNextName("arrow");
-                //        mazeObjects.Add(arrow);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = arrow;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.OneWay:
-                //        MazeObjects.OneWay oneway = new MazeObjects.OneWay();
-                //        oneway.Position = GetAdjustedPosition((MazeObject)oneway, point);
-                //        oneway.Selected = true;
-                //        oneway.Name = GetNextName("oneway");
-                //        mazeObjects.Add(oneway);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = oneway;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.TripPad:
-                //        MazeEnemies.TripPad trip = new MazeEnemies.TripPad();
-                //        trip.Position = GetAdjustedPosition((MazeObject)trip, point);
-                //        trip.Selected = true;
-                //        trip.Name = GetNextName("trippad");
-                //        mazeObjects.Add(trip);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = trip;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.Lightning:
-                //        MazeEnemies.Lightning lightning = new MazeEnemies.Lightning();
-                //        lightning.Position = GetAdjustedPosition((MazeObject)lightning, point);
-                //        lightning.Selected = true;
-                //        lightning.Name = GetNextName("lightning");
-                //        mazeObjects.Add(lightning);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = lightning;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.Lock:
-                //        MazeObjects.Lock mazelock = new MazeObjects.Lock();
-                //        mazelock.Position = GetAdjustedPosition((MazeObject)mazelock, point);
-                //        mazelock.Selected = true;
-                //        mazelock.Name = GetNextName("lock");
-                //        mazeObjects.Add(mazelock);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = mazelock;
-                //        wasAdded = true; 
-                //        break;
-                //    case MazeObjectType.Key:
-                //        MazeObjects.Key mazekey = new MazeObjects.Key();
-                //        mazekey.Position = GetAdjustedPosition((MazeObject)mazekey, point);
-                //        mazekey.Selected = true;
-                //        mazekey.Name = GetNextName("key");
-                //        mazeObjects.Add(mazekey);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = mazekey;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.Clock:
-                //        MazeObjects.Clock clock = new MazeObjects.Clock();
-                //        clock.Position = GetAdjustedPosition((MazeObject)clock, point);
-                //        clock.Selected = true;
-                //        clock.Name = GetNextName("clock");
-                //        mazeObjects.Add(clock);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = clock;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.Hand:
-                //        MazeObjects.Hand hand = new MazeObjects.Hand();
-                //        hand.Position = GetAdjustedPosition((MazeObject)hand, point);
-                //        hand.Selected = true;
-                //        hand.Name = GetNextName("hand");
-                //        mazeObjects.Add(hand);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = hand;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.Spikes:
-                //        MazeObjects.Spikes spikes = new MazeObjects.Spikes();
-                //        spikes.Position = GetAdjustedPosition((MazeObject)spikes, point);
-                //        spikes.Selected = true;
-                //        spikes.Name = GetNextName("spikes");
-                //        mazeObjects.Add(spikes);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = spikes;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.Boots:
-                //        MazeObjects.Boots boots = new MazeObjects.Boots();
-                //        boots.Position = GetAdjustedPosition((MazeObject)boots, point);
-                //        boots.Selected = true;
-                //        boots.Name = GetNextName("boots");
-                //        mazeObjects.Add(boots);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = boots;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.Transporter:
-                //        MazeObjects.Transporter transporter = new MazeObjects.Transporter();
-                //        transporter.Position = GetAdjustedPosition((MazeObject)transporter, point);
-                //        transporter.Selected = true;
-                //        transporter.Name = GetNextName("transporter");
-                //        mazeObjects.Add(transporter);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = transporter;
-                //        wasAdded = true;
-                //        break;
-                //    case MazeObjectType.Cannon:
-                //        MazeEnemies.Cannon cannon = new MazeEnemies.Cannon();
-                //        cannon.Position = GetAdjustedPosition((MazeObject)cannon, point);
-                //        cannon.Selected = true;
-                //        cannon.Name = GetNextName("cannon");
-                //        mazeObjects.Add(cannon);
-                //        if (propertyGrid != null) propertyGrid.SelectedObject = cannon;
-                //        wasAdded = true;
-                //        break;
-                //    default:
-                //        wasAdded = false;
-                //        break;
-                //}
-                #endregion
+                else
+                {
+                    MazeObject mazeObject = (MazeObject)Activator.CreateInstance(obj.GetType(), true);
+                    mazeObject.Position = GetAdjustedPosition((MazeObject)mazeObject, point);
+                    mazeObject.Selected = true;
+                    string[] typeString = type.Split('.');
+                    mazeObject.Name = GetNextName(typeString[typeString.Length - 1].ToLower());
+                    mazeObjects.Add(mazeObject);
+                    if (mazeObject is MazeEnemies.TripPad)
+                    {
+                        //special case for Trip Pads, must create a pyroid too
+                        MazeEnemies.TripPadPyroid tripPyroid = new MazeEnemies.TripPadPyroid();
+                        tripPyroid.Position = GetAdjustedPosition(tripPyroid, mazeObject.Position);
+                        tripPyroid.TripPad = (MazeEnemies.TripPad)mazeObject;
+                        tripPyroid.Name = GetNextName("trippyroid");
+                        mazeObjects.Add(tripPyroid);
+                        ((MazeEnemies.TripPad)mazeObject).Pyroid = tripPyroid;
+                    }
+                    BindComboBoxObjects(mazeObject);
+                    if (propertyGrid != null) propertyGrid.SelectedObject = mazeObject;
+                    wasAdded = true;
+                }
             }
             else
             {

@@ -41,6 +41,7 @@
             this.checkBoxSavePassword = new System.Windows.Forms.CheckBox();
             this.linkLabelWebLink = new System.Windows.Forms.LinkLabel();
             this.label5 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMaze)).BeginInit();
             this.SuspendLayout();
             // 
@@ -157,11 +158,22 @@
             this.label5.TabIndex = 14;
             this.label5.Text = "<- Create an account here to enter below";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(373, 64);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 15;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // DialogMHPLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(473, 386);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.linkLabelWebLink);
             this.Controls.Add(this.checkBoxSavePassword);
@@ -202,5 +214,6 @@
         private System.Windows.Forms.CheckBox checkBoxSavePassword;
         private System.Windows.Forms.LinkLabel linkLabelWebLink;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button button1;
     }
 }
