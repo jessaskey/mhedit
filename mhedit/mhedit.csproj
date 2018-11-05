@@ -105,6 +105,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\MAMEHelper.cs" />
     <Compile Include="Controllers\MHPController.cs" />
     <Compile Include="Crc32.cs" />
     <Compile Include="Dialogs\DialogMHPLogin.cs">

@@ -31,27 +31,27 @@ namespace mhedit.Containers
         private const int GRIDUNITSTAMPS = 8;
         //private Point objectOffset = new Point(-16, 16);
 
-        private string mazeName = null;
-        private string fileName = null;
-        private bool isDirty = false;
-        private bool isValid = false;
-        private List<string> validationMessage = new List<string>();
-        private MazeType mazeType;
-        private bool error = false;
-        private bool gridLines = true;
-        private string lastError = "";
-        private int mazeStampsX = 0;
-        private int mazeStampsY = 0;
-        private decimal zoom = 1;
+        private string _mazeName = null;
+        private string _fileName = null;
+        private bool _isDirty = false;
+        private bool _isValid = false;
+        private List<string> _validationMessage = new List<string>();
+        private MazeType _mazeType;
+        private bool _error = false;
+        private bool _gridLines = true;
+        private string _lastError = "";
+        private int _mazeStampsX = 0;
+        private int _mazeStampsY = 0;
+        private decimal _zoom = 1;
         private string _mazeHint = String.Empty;
         private bool _repainted = false;
 
-        private PropertyGrid propertyGrid = null;
-        private ComboBox comboBoxObjects = null;
+        private PropertyGrid _propertyGrid = null;
+        private ComboBox _comboBoxObjects = null;
 
         //maze objects
-        private MazeWall[] mazeWallBase;
-        private List<MazeObject> mazeObjects;
+        private MazeWall[] _mazeWallBase;
+        private List<MazeObject> _mazeObjects;
 
         #endregion
 
@@ -71,21 +71,21 @@ namespace mhedit.Containers
 
         public Maze()
         {
-            mazeType = MazeType.TypeA;
+            _mazeType = MazeType.TypeA;
             Init();
         }
 
         public Maze(string name)
         {
-            mazeName = name;
-            mazeType = MazeType.TypeA;
+            _mazeName = name;
+            _mazeType = MazeType.TypeA;
             Init();
         }
 
         public Maze(MazeType type, string name)
         {
-            mazeType = type;
-            mazeName = name;
+            _mazeType = type;
+            _mazeName = name;
             Init();
         }
 
@@ -98,7 +98,7 @@ namespace mhedit.Containers
         {
             get
             {
-                return mazeObjects;
+                return _mazeObjects;
             }
         }
 
@@ -108,72 +108,72 @@ namespace mhedit.Containers
         [BrowsableAttribute(false)]
         public bool IsDirty
         {
-            get {return isDirty;}
-            set { isDirty = value; }
+            get {return _isDirty;}
+            set { _isDirty = value; }
         }
 
         [BrowsableAttribute(false)]
         public bool IsValid
         {
-            get { return isValid; }
-            set { isValid = value; }
+            get { return _isValid; }
+            set { _isValid = value; }
         }
 
         [BrowsableAttribute(false)]
         public List<string> ValidationMessage
         {
-            get { return validationMessage; }
-            set { validationMessage = value; }
+            get { return _validationMessage; }
+            set { _validationMessage = value; }
         }
 
         [ReadOnly(true)]
         [DescriptionAttribute("The filename of this maze on disk.")]
         public string FileName
         {
-            get { return fileName; }
-            set { fileName = value; }
+            get { return _fileName; }
+            set { _fileName = value; }
         }
 
         [BrowsableAttribute(false)]
         public bool GridLines
         {
-            get { return gridLines; }
-            set { gridLines = value; }
+            get { return _gridLines; }
+            set { _gridLines = value; }
         }
 
         [BrowsableAttribute(false)]
         public PropertyGrid PropertyGrid
         {
-            get { return propertyGrid; }
-            set { propertyGrid = value; }
+            get { return _propertyGrid; }
+            set { _propertyGrid = value; }
         }
 
         [BrowsableAttribute(false)]
         public ComboBox ComboBoxObjects
         {
-            get { return comboBoxObjects; }
+            get { return _comboBoxObjects; }
             set 
             { 
-                comboBoxObjects = value;
+                _comboBoxObjects = value;
                 BindComboBoxObjects(null);
-                comboBoxObjects.SelectedIndexChanged += new EventHandler(comboBoxObjects_SelectedIndexChanged);
+                _comboBoxObjects.SelectedIndexChanged += new EventHandler(comboBoxObjects_SelectedIndexChanged);
             }
         }
 
         [BrowsableAttribute(false)]
         public decimal Zoom
         {
-            get { return zoom; }
-            set { zoom = value; }
+            get { return _zoom; }
+            set { _zoom = value; }
         }
 
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The name of the maze.")]
         public new string Name
         {
-            get { return mazeName; }
+            get { return _mazeName; }
             set {
-                mazeName = value;
+                _mazeName = value;
                 DataChanged();
             }
         }
@@ -189,10 +189,10 @@ namespace mhedit.Containers
         [DescriptionAttribute("The structure type of the maze.")]
         public MazeType MazeType
         {
-            get { return mazeType; }
+            get { return _mazeType; }
             set 
             { 
-                mazeType = value;
+                _mazeType = value;
                 InitBaseMap();
                 DataChanged();
             }
@@ -206,8 +206,8 @@ namespace mhedit.Containers
 
         public void SetGridlines(bool grid)
         {
-            isDirty = true;
-            gridLines = grid;
+            _isDirty = true;
+            _gridLines = grid;
         }
 
         #endregion
@@ -217,39 +217,39 @@ namespace mhedit.Containers
         //Deserialization constructor.
         public Maze(SerializationInfo info, StreamingContext ctxt)
         {
-            mazeName = (string)info.GetValue("Name", typeof(string));
+            _mazeName = (string)info.GetValue("Name", typeof(string));
             try
             {
                 _mazeHint = (string)info.GetValue("Hint", typeof(string));
             }
             catch { };
-            fileName = (string)info.GetValue("FileName", typeof(string));
+            _fileName = (string)info.GetValue("FileName", typeof(string));
             base.Width = (int)info.GetValue("Width", typeof(int));
             base.Height = (int)info.GetValue("Height", typeof(int));
             base.AllowDrop = (bool)info.GetValue("AllowDrop", typeof(bool));
-            isDirty = (bool)info.GetValue("IsDirty", typeof(bool));
-            mazeType = (MazeType)info.GetValue("MazeType", typeof(MazeType));
-            mazeStampsX = (int)info.GetValue("MazeStampsX", typeof(int));
-            mazeStampsY = (int)info.GetValue("MazeStampsY", typeof(int));
-            mazeWallBase = (MazeWall[])info.GetValue("MazeWallBase", typeof(MazeWall[]));
-            mazeObjects = (List<MazeObject>)info.GetValue("MazeObjects", typeof(List<MazeObject>));
+            _isDirty = (bool)info.GetValue("IsDirty", typeof(bool));
+            _mazeType = (MazeType)info.GetValue("MazeType", typeof(MazeType));
+            _mazeStampsX = (int)info.GetValue("MazeStampsX", typeof(int));
+            _mazeStampsY = (int)info.GetValue("MazeStampsY", typeof(int));
+            _mazeWallBase = (MazeWall[])info.GetValue("MazeWallBase", typeof(MazeWall[]));
+            _mazeObjects = (List<MazeObject>)info.GetValue("MazeObjects", typeof(List<MazeObject>));
         }
                 
         //Serialization function.
         public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
         {
-            info.AddValue("Name", mazeName);
+            info.AddValue("Name", _mazeName);
             info.AddValue("Hint", _mazeHint);
-            info.AddValue("FileName", fileName);
+            info.AddValue("FileName", _fileName);
             info.AddValue("Width", base.Width);
             info.AddValue("Height", base.Height);
             info.AddValue("AllowDrop", base.AllowDrop);
             info.AddValue("IsDirty", false);
-            info.AddValue("MazeType", mazeType);
-            info.AddValue("MazeStampsX", mazeStampsX);
-            info.AddValue("MazeStampsY", mazeStampsY);
-            info.AddValue("MazeWallBase", mazeWallBase);
-            info.AddValue("MazeObjects", mazeObjects);
+            info.AddValue("MazeType", _mazeType);
+            info.AddValue("MazeStampsX", _mazeStampsX);
+            info.AddValue("MazeStampsY", _mazeStampsY);
+            info.AddValue("MazeWallBase", _mazeWallBase);
+            info.AddValue("MazeObjects", _mazeObjects);
         }
 
         #endregion
@@ -355,8 +355,8 @@ namespace mhedit.Containers
             int currentStamp;
 
             //base.DisplayRectangle = new Rectangle(base.Left, base.Top,(int)(base.Width * zoom),(int)(base.Height * zoom));
-            base.Height = (int)(GRIDUNITS * mazeStampsY * GRIDUNITSTAMPS * zoom);
-            base.Width = (int)(GRIDUNITS * mazeStampsX * GRIDUNITSTAMPS * zoom);
+            base.Height = (int)(GRIDUNITS * _mazeStampsY * GRIDUNITSTAMPS * _zoom);
+            base.Width = (int)(GRIDUNITS * _mazeStampsX * GRIDUNITSTAMPS * _zoom);
 
             mazeHeight = (int)(base.Height);
             mazeWidth = (int)(base.Width);
@@ -373,12 +373,12 @@ namespace mhedit.Containers
             {
                 //now draw the major grid lines
                 //vertical
-                for (int i = (int)(GRIDUNITS * GRIDUNITSTAMPS * zoom); i <= mazeWidth; i += (int)(GRIDUNITS * GRIDUNITSTAMPS * zoom))
+                for (int i = (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom); i <= mazeWidth; i += (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom))
                 {
                     g.DrawLine(bigGridPen, (int)(i), 0, (int)(i), mazeHeight);
                 }
                 //horizontal
-                for (int i = (int)(GRIDUNITS * GRIDUNITSTAMPS * zoom); i <= mazeHeight; i += (int)(GRIDUNITS * GRIDUNITSTAMPS * zoom))
+                for (int i = (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom); i <= mazeHeight; i += (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom))
                 {
                     g.DrawLine(bigGridPen, 0, (int)(i), mazeWidth, (int)(i));
                 }
@@ -389,16 +389,16 @@ namespace mhedit.Containers
                 //now draw the major grid lines
                 //X
                 int xOffset = -3;
-                for (int i = Math.Abs(xOffset); i <= mazeStampsX; i++)
+                for (int i = Math.Abs(xOffset); i <= _mazeStampsX; i++)
                 {
                     int gridValue = i + xOffset;
-                    g.DrawString(gridValue.ToString("X"), Font, referenceBrush, new Point(i * (int)(GRIDUNITS * GRIDUNITSTAMPS * zoom), 1));
+                    g.DrawString(gridValue.ToString("X"), Font, referenceBrush, new Point(i * (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom), 1));
                 }
                 //Y
-                for (int i = 0; i <= mazeStampsY; i ++)
+                for (int i = 0; i <= _mazeStampsY; i ++)
                 {
                     int gridValue = ((-i) + 12);
-                    g.DrawString(gridValue.ToString("X"), Font, referenceBrush, new Point(1, i * (int)(GRIDUNITS * GRIDUNITSTAMPS * zoom)));
+                    g.DrawString(gridValue.ToString("X"), Font, referenceBrush, new Point(1, i * (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom)));
                 }
             }
 
@@ -413,48 +413,48 @@ namespace mhedit.Containers
             //first reset all 'selected properties to 0
             for (int i = 0; i < MAXWALLS; i++)
             {
-                if (mazeWallBase[i] != null)
+                if (_mazeWallBase[i] != null)
                 {
-                    mazeWallBase[i].Selected = false;
+                    _mazeWallBase[i].Selected = false;
                 }
             }
             //set wall to 'selected' of there is a user defined wall at that location
-            for (int i = 0; i < mazeObjects.Count; i++)
+            for (int i = 0; i < _mazeObjects.Count; i++)
             {
-                MazeObject mazeObject = (MazeObject)mazeObjects[i];
+                MazeObject mazeObject = (MazeObject)_mazeObjects[i];
                 if (mazeObject.GetType() == typeof(MazeWall))
                 {
                     currentStamp = PointToStamp(mazeObject.Position);
-                    if (currentStamp >= 0 && currentStamp < mazeWallBase.Length)
+                    if (currentStamp >= 0 && currentStamp < _mazeWallBase.Length)
                     {
-                        if (mazeWallBase[currentStamp] != null)
+                        if (_mazeWallBase[currentStamp] != null)
                         {
-                            mazeWallBase[currentStamp].Selected = true;
+                            _mazeWallBase[currentStamp].Selected = true;
                         }
                     }
                 }
             }
             //now draw all walls that don't have a user defined wall at that location
-            for (int rows = 0; rows < mazeStampsY; rows++)
+            for (int rows = 0; rows < _mazeStampsY; rows++)
             {
-                for (int cols = 0; cols < mazeStampsX; cols++)
+                for (int cols = 0; cols < _mazeStampsX; cols++)
                 {
-                    currentStamp = (rows * mazeStampsX) + cols;
+                    currentStamp = (rows * _mazeStampsX) + cols;
                     if (currentStamp < MAXWALLS)
                     {
-                        if (mazeWallBase[currentStamp] != null)
+                        if (_mazeWallBase[currentStamp] != null)
                         {
-                            if (mazeWallBase[currentStamp].Selected == false)
+                            if (_mazeWallBase[currentStamp].Selected == false)
                             {
-                                if (mazeWallBase[currentStamp].WallType != MazeWallType.Empty)
+                                if (_mazeWallBase[currentStamp].WallType != MazeWallType.Empty)
                                 {
-                                    Image currentImage = mazeWallBase[currentStamp].Image;
+                                    Image currentImage = _mazeWallBase[currentStamp].Image;
                                     if (currentImage != null)
                                     {
-                                        Image scaledImage = currentImage.GetThumbnailImage((int)(currentImage.Width * zoom), (int)(currentImage.Height * zoom), null, System.IntPtr.Zero);
+                                        Image scaledImage = currentImage.GetThumbnailImage((int)(currentImage.Width * _zoom), (int)(currentImage.Height * _zoom), null, System.IntPtr.Zero);
                                         if (scaledImage != null)
                                         {
-                                            g.DrawImage(scaledImage, new Point((int)((cols * GRIDUNITS * GRIDUNITSTAMPS * zoom)), (int)((rows * GRIDUNITS * GRIDUNITSTAMPS * zoom))));
+                                            g.DrawImage(scaledImage, new Point((int)((cols * GRIDUNITS * GRIDUNITSTAMPS * _zoom)), (int)((rows * GRIDUNITS * GRIDUNITSTAMPS * _zoom))));
                                         }
                                     }
                                 }
@@ -471,13 +471,13 @@ namespace mhedit.Containers
             //stopwatch.Start();
 
             //draw all wall objects
-            for (int i = 0; i < mazeObjects.Count; i++)
+            for (int i = 0; i < _mazeObjects.Count; i++)
             {
-                MazeObject mazeObject = (MazeObject)mazeObjects[i];
+                MazeObject mazeObject = (MazeObject)_mazeObjects[i];
                 if (mazeObject.GetType() == typeof(MazeWall))
                 {
-                    Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * zoom), (int)(mazeObject.Image.Height * zoom), null, System.IntPtr.Zero);
-                    g.DrawImage(scaledImage, new Point((int)((mazeObject.Position.X * zoom)), (int)((mazeObject.Position.Y * zoom))));
+                    Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * _zoom), (int)(mazeObject.Image.Height * _zoom), null, System.IntPtr.Zero);
+                    g.DrawImage(scaledImage, new Point((int)((mazeObject.Position.X * _zoom)), (int)((mazeObject.Position.Y * _zoom))));
                 }
             }
 
@@ -486,13 +486,13 @@ namespace mhedit.Containers
             //stopwatch.Start();
 
             //draw all non-wall objects
-            for (int i = 0; i < mazeObjects.Count; i++)
+            for (int i = 0; i < _mazeObjects.Count; i++)
             {
-                MazeObject mazeObject = (MazeObject)mazeObjects[i];
+                MazeObject mazeObject = (MazeObject)_mazeObjects[i];
                 if (mazeObject.GetType() != typeof(MazeWall))
                 {
-                    Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * zoom), (int)(mazeObject.Image.Height * zoom), null, System.IntPtr.Zero);
-                    g.DrawImage(scaledImage, new Point((int)(mazeObject.RenderPosition.X * zoom), (int)(mazeObject.RenderPosition.Y * zoom)));
+                    Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * _zoom), (int)(mazeObject.Image.Height * _zoom), null, System.IntPtr.Zero);
+                    g.DrawImage(scaledImage, new Point((int)(mazeObject.RenderPosition.X * _zoom), (int)(mazeObject.RenderPosition.Y * _zoom)));
                 }
             }
 
@@ -515,7 +515,7 @@ namespace mhedit.Containers
                 case Keys.Tab:
                     int selectedIndex = GetSelectedObjectIndex();
                     selectedIndex++;
-                    selectedIndex %= mazeObjects.Count;
+                    selectedIndex %= _mazeObjects.Count;
                     SetSelectedObject(selectedIndex);
                     RefreshMaze();
                     break;
@@ -533,32 +533,32 @@ namespace mhedit.Containers
                         {
                             if (obj is MazeEnemies.TripPad && ((MazeEnemies.TripPad)obj).Pyroid != null)
                             {
-                                mazeObjects.Remove(((MazeEnemies.TripPad)obj).Pyroid); 
+                                _mazeObjects.Remove(((MazeEnemies.TripPad)obj).Pyroid); 
                             }
-                            mazeObjects.Remove(obj);
-                            isDirty = true;
+                            _mazeObjects.Remove(obj);
+                            _isDirty = true;
                             RefreshMaze();
                         }
                     }
                     break;
                 case Keys.Up:
                     MoveSelectedObject(0, -1);
-                    isDirty = true;
+                    _isDirty = true;
                     RefreshMaze();
                     break;
                 case Keys.Down:
                     MoveSelectedObject(0, 1);
-                    isDirty = true;
+                    _isDirty = true;
                     RefreshMaze();
                     break;
                 case Keys.Left:
                     MoveSelectedObject(-1, 0);
-                    isDirty = true;
+                    _isDirty = true;
                     RefreshMaze();
                     break;
                 case Keys.Right:
                     MoveSelectedObject(1, 0);
-                    isDirty = true;
+                    _isDirty = true;
                     RefreshMaze();
                     break;
 
@@ -634,7 +634,7 @@ namespace mhedit.Containers
 
                 if (null != dragItem && null != dragItem.Object)
                 {
-                    if (this.mazeType != MazeType.TypeB && dragItem.Object.GetType() == typeof(EscapePod))
+                    if (this._mazeType != MazeType.TypeB && dragItem.Object.GetType() == typeof(EscapePod))
                     {
                         MessageBox.Show("The Escape pod can only be added to 'B' Type mazes.");
                     }
@@ -642,7 +642,7 @@ namespace mhedit.Containers
                     {
                         if (AddObjectClone(dragItem.Object, panelXY))
                         {
-                            isDirty = true; 
+                            _isDirty = true; 
                             RefreshMaze();
                         }
                     }
@@ -663,19 +663,19 @@ namespace mhedit.Containers
 
         public void Validate()
         {
-            isValid = false;
-            validationMessage.Clear();
+            _isValid = false;
+            _validationMessage.Clear();
 
             //
             //validate here...
 
-            if (mazeObjects.Where(o => o is MazeObjects.Reactoid).FirstOrDefault() == null)
+            if (_mazeObjects.Where(o => o is MazeObjects.Reactoid).FirstOrDefault() == null)
             {
-                validationMessage.Add("ERROR/REQUIRED: Maze does not contain a reactor");
+                _validationMessage.Add("ERROR/REQUIRED: Maze does not contain a reactor");
             }
 
 
-            isValid = (validationMessage.Count == 0);
+            _isValid = (_validationMessage.Count == 0);
         }
 
         public Image GetImage()
@@ -815,15 +815,15 @@ namespace mhedit.Containers
                         mazeNode = treeView.Nodes.Add(this.Name);
                     }
                     mazeNode.Name = this.Name;
-                    mazeNode.ImageIndex = ((int)mazeType) + 1;
+                    mazeNode.ImageIndex = ((int)_mazeType) + 1;
                     mazeNode.SelectedImageIndex = mazeNode.ImageIndex;
                     mazeNode.Tag = this;
 
                 }
                 catch (Exception ex)
                 {
-                    error = true;
-                    lastError = ex.Message;
+                    _error = true;
+                    _lastError = ex.Message;
                 }
                 finally
                 {
@@ -832,8 +832,8 @@ namespace mhedit.Containers
             }
             else
             {
-                error = true;
-                lastError = "Tree not defined.";
+                _error = true;
+                _lastError = "Tree not defined.";
             }
             return mazeNode;
         }
@@ -844,8 +844,8 @@ namespace mhedit.Containers
 
         private void Init()
         {
-            mazeWallBase = new MazeWall[MAXWALLS];
-            mazeObjects = new List<MazeObject>();
+            _mazeWallBase = new MazeWall[MAXWALLS];
+            _mazeObjects = new List<MazeObject>();
 
             DoubleBuffered = true;
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
@@ -863,13 +863,13 @@ namespace mhedit.Containers
         private void InitBaseMap()
         {
             //initialize our base maze maps
-            mazeWallBase = null;
-            MazeFactory.MazeBaseData mazeBaseData = MazeFactory.GetBaseMap(mazeType);
-            mazeStampsX = mazeBaseData.mazeStampsX;
-            mazeStampsY = mazeBaseData.mazeStampsY;
-            mazeWallBase = mazeBaseData.mazeWallBase;
-            base.Height = GRIDUNITS * mazeStampsY * GRIDUNITSTAMPS;
-            base.Width = GRIDUNITS * mazeStampsX * GRIDUNITSTAMPS;
+            _mazeWallBase = null;
+            MazeFactory.MazeBaseData mazeBaseData = MazeFactory.GetBaseMap(_mazeType);
+            _mazeStampsX = mazeBaseData.mazeStampsX;
+            _mazeStampsY = mazeBaseData.mazeStampsY;
+            _mazeWallBase = mazeBaseData.mazeWallBase;
+            base.Height = GRIDUNITS * _mazeStampsY * GRIDUNITSTAMPS;
+            base.Width = GRIDUNITS * _mazeStampsX * GRIDUNITSTAMPS;
         }
 
         private void DataChanged()
@@ -895,17 +895,17 @@ namespace mhedit.Containers
                     {
                         wall.Name = GetNextName(typeString[typeString.Length - 1].ToLower());
                         wall.Position = GetAdjustedPosition((MazeObject)wall, wall.Position);
-                        mazeObjects.Add((MazeObject)obj);
+                        _mazeObjects.Add((MazeObject)obj);
                         BindComboBoxObjects((MazeObject)obj);
-                        if (propertyGrid != null) propertyGrid.SelectedObject = (MazeObject)obj;
+                        if (_propertyGrid != null) _propertyGrid.SelectedObject = (MazeObject)obj;
                         wasAdded = true;
                     }
                     else
                     {
                         mazeObject.Name = GetNextName(typeString[typeString.Length - 1].ToLower());
-                        mazeObjects.Add((MazeObject)obj);
+                        _mazeObjects.Add((MazeObject)obj);
                         BindComboBoxObjects((MazeObject)obj);
-                        if (propertyGrid != null) propertyGrid.SelectedObject = (MazeObject)obj;
+                        if (_propertyGrid != null) _propertyGrid.SelectedObject = (MazeObject)obj;
                         wasAdded = true;
                     }
                 }
@@ -935,9 +935,9 @@ namespace mhedit.Containers
                     wall.Selected = true;
                     wall.Position = GetAdjustedPosition((MazeObject)wall, point);
                     wall.Name = GetNextName("wall");
-                    mazeObjects.Add(wall);
+                    _mazeObjects.Add(wall);
                     BindComboBoxObjects(wall);
-                    if (propertyGrid != null) propertyGrid.SelectedObject = wall;
+                    if (_propertyGrid != null) _propertyGrid.SelectedObject = wall;
                     wasAdded = true;
                 }
                 else
@@ -947,7 +947,7 @@ namespace mhedit.Containers
                     mazeObject.Selected = true;
                     string[] typeString = type.Split('.');
                     mazeObject.Name = GetNextName(typeString[typeString.Length - 1].ToLower());
-                    mazeObjects.Add(mazeObject);
+                    _mazeObjects.Add(mazeObject);
                     if (mazeObject is MazeEnemies.TripPad)
                     {
                         //special case for Trip Pads, must create a pyroid too
@@ -955,11 +955,11 @@ namespace mhedit.Containers
                         tripPyroid.Position = GetAdjustedPosition(tripPyroid, mazeObject.Position);
                         tripPyroid.TripPad = (MazeEnemies.TripPad)mazeObject;
                         tripPyroid.Name = GetNextName("trippyroid");
-                        mazeObjects.Add(tripPyroid);
+                        _mazeObjects.Add(tripPyroid);
                         ((MazeEnemies.TripPad)mazeObject).Pyroid = tripPyroid;
                     }
                     BindComboBoxObjects(mazeObject);
-                    if (propertyGrid != null) propertyGrid.SelectedObject = mazeObject;
+                    if (_propertyGrid != null) _propertyGrid.SelectedObject = mazeObject;
                     wasAdded = true;
                 }
             }
@@ -972,18 +972,18 @@ namespace mhedit.Containers
 
         private void BindComboBoxObjects(MazeObject obj)
         {
-            if (comboBoxObjects != null)
+            if (_comboBoxObjects != null)
             {
-                comboBoxObjects.DataSource = mazeObjects.OrderBy(o => o.Name).ToList();
-                comboBoxObjects.DisplayMember = "Name";
-                comboBoxObjects.ValueMember = "Name";
+                _comboBoxObjects.DataSource = _mazeObjects.OrderBy(o => o.Name).ToList();
+                _comboBoxObjects.DisplayMember = "Name";
+                _comboBoxObjects.ValueMember = "Name";
                 if (obj != null)
                 {
-                    comboBoxObjects.SelectedIndex = comboBoxObjects.FindStringExact(obj.Name);
+                    _comboBoxObjects.SelectedIndex = _comboBoxObjects.FindStringExact(obj.Name);
                 }
-                else if (comboBoxObjects.Items.Count > 0)
+                else if (_comboBoxObjects.Items.Count > 0)
                 {
-                    comboBoxObjects.SelectedIndex = 0;
+                    _comboBoxObjects.SelectedIndex = 0;
                 }
             }
         }
@@ -1015,7 +1015,7 @@ namespace mhedit.Containers
                             {
                                 if (new_x != obj.Position.X || new_y != obj.Position.Y)
                                 {
-                                    isDirty = true;
+                                    _isDirty = true;
                                     obj.Position = new Point(new_x, new_y);
                                 }
                             }
@@ -1052,24 +1052,24 @@ namespace mhedit.Containers
         {
             int row = point.X / (GRIDUNITS * GRIDUNITSTAMPS);
             int col = point.Y / (GRIDUNITS * GRIDUNITSTAMPS);
-            return Math.Max(Math.Min((col * mazeStampsX) + row, MAXWALLS), 0);
+            return Math.Max(Math.Min((col * _mazeStampsX) + row, MAXWALLS), 0);
         }
 
         public Point PointFromStamp(int stamp)
         {
-            int col = stamp % mazeStampsX;
-            int row = stamp / mazeStampsX;
+            int col = stamp % _mazeStampsX;
+            int row = stamp / _mazeStampsX;
             return new Point(col * GRIDUNITS * GRIDUNITSTAMPS, row * GRIDUNITS * GRIDUNITSTAMPS);
         }
 
         private void RefreshMaze()
         {
-            if (propertyGrid != null)
+            if (_propertyGrid != null)
             {
                 MazeObject obj = GetSelectedObject();
-                propertyGrid.SelectedObject = obj;
+                _propertyGrid.SelectedObject = obj;
                 //BindComboBoxObjects(null);
-                if (comboBoxObjects != null)
+                if (_comboBoxObjects != null)
                 {
                     if (obj != null)
                     {
@@ -1081,7 +1081,7 @@ namespace mhedit.Containers
                     }
                     else
                     {
-                        comboBoxObjects.SelectedIndex = 0;
+                        _comboBoxObjects.SelectedIndex = 0;
                     }
                 }
             }
@@ -1102,9 +1102,9 @@ namespace mhedit.Containers
 
         private MazeObject FindObject(string name)
         {
-            for (int i = 0; i < mazeObjects.Count; i++)
+            for (int i = 0; i < _mazeObjects.Count; i++)
             {
-                if (mazeObjects[i].Name == name) return mazeObjects[i];
+                if (_mazeObjects[i].Name == name) return _mazeObjects[i];
             }
             return null;
         }
@@ -1113,16 +1113,16 @@ namespace mhedit.Containers
         {
             //go through each object from the top down
             //and see if we clicked on it's area...
-            for (int i = mazeObjects.Count - 1; i >= 0; i--)
+            for (int i = _mazeObjects.Count - 1; i >= 0; i--)
             {
-                if (PointInObject((MazeObject)mazeObjects[i],location))
+                if (PointInObject((MazeObject)_mazeObjects[i],location))
                 {
-                    if (((MazeObject)mazeObjects[i]).Selected == false)
+                    if (((MazeObject)_mazeObjects[i]).Selected == false)
                     {
                         ClearSelectedObjects();
                         //SetSelectedWall(-1);
-                        ((MazeObject)mazeObjects[i]).Selected = true;
-                        return (MazeObject)mazeObjects[i];
+                        ((MazeObject)_mazeObjects[i]).Selected = true;
+                        return (MazeObject)_mazeObjects[i];
                     }
                 }
             }
@@ -1144,9 +1144,9 @@ namespace mhedit.Containers
         private MazeObject GetSelectedObject()
         {
             //unselect all other walls
-            for (int i = 0; i < mazeObjects.Count; i++)
+            for (int i = 0; i < _mazeObjects.Count; i++)
             {
-                if (mazeObjects[i].Selected) return mazeObjects[i];
+                if (_mazeObjects[i].Selected) return _mazeObjects[i];
             }
             return null;
         }
@@ -1154,18 +1154,18 @@ namespace mhedit.Containers
         private int GetSelectedObjectIndex()
         {
             //unselect all other walls
-            for (int i = 0; i < mazeObjects.Count; i++)
+            for (int i = 0; i < _mazeObjects.Count; i++)
             {
-                if (mazeObjects[i].Selected) return i;
+                if (_mazeObjects[i].Selected) return i;
             }
             return -1;
         }
 
         private void ClearSelectedObjects()
         {
-            for (int i = 0; i < mazeObjects.Count; i++)
+            for (int i = 0; i < _mazeObjects.Count; i++)
             {
-                MazeObject mazeObject = (MazeObject)mazeObjects[i];
+                MazeObject mazeObject = (MazeObject)_mazeObjects[i];
                 mazeObject.Selected = false;
             }
         }
@@ -1173,19 +1173,19 @@ namespace mhedit.Containers
         private int GetObjectTypeCount(Type type)
         {
             int count = 0;
-            for (int i = 0; i < mazeObjects.Count; i++)
+            for (int i = 0; i < _mazeObjects.Count; i++)
             {
-                if (mazeObjects[i].GetType() == type) count++;
+                if (_mazeObjects[i].GetType() == type) count++;
             }
             return count;
         }
 
         private void SetSelectedObject(int index)
         {
-            if (index < mazeObjects.Count && index >= 0)
+            if (index < _mazeObjects.Count && index >= 0)
             {
                 ClearSelectedObjects();
-                mazeObjects[index].Selected = true;
+                _mazeObjects[index].Selected = true;
             }
         }
 
@@ -1193,14 +1193,14 @@ namespace mhedit.Containers
         {
             //go through each object from the top down
             //and see if we clicked on it's area...
-            for (int i = mazeObjects.Count - 1; i >= 0; i--)
+            for (int i = _mazeObjects.Count - 1; i >= 0; i--)
             {
-                if (comboBoxObjects.SelectedValue != null)
+                if (_comboBoxObjects.SelectedValue != null)
                 {
-                    if (comboBoxObjects.SelectedValue.ToString() == mazeObjects[i].Name)
+                    if (_comboBoxObjects.SelectedValue.ToString() == _mazeObjects[i].Name)
                     {
                         ClearSelectedObjects();
-                        mazeObjects[i].Selected = true;
+                        _mazeObjects[i].Selected = true;
                         RefreshMaze();
                         return;
                     }
