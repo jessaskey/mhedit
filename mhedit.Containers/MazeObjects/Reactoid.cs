@@ -20,8 +20,9 @@ namespace mhedit.Containers.MazeObjects
         public Reactoid()
         {
             LoadDefaultImage();
-            renderOffset.X = 12;
-            renderOffset.Y = 16;
+            renderOffset.X = 15; //12;
+            renderOffset.Y = 24; // 16; // 16;
+
         }
 
         [BrowsableAttribute(false)]

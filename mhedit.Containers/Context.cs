@@ -61,7 +61,7 @@ namespace mhedit.Containers
         {
             Point vector = new Point();
             vector.X = (pixels.X - (_canvasGridOffsetX * _canvasGridSize)) * _scaleFactor;
-            vector.Y = -1 * ((pixels.Y - (_canvasGridOffsetY * _canvasGridSize)) * _scaleFactor);
+            vector.Y = -1 * ((pixels.Y + 32 - (_canvasGridOffsetY * _canvasGridSize)) * _scaleFactor);
             return vector;
         }
 
