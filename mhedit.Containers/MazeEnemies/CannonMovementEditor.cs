@@ -9,6 +9,9 @@ using System.Windows.Forms;
 
 using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
+using System.IO;
+using Microsoft.VisualBasic;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace mhedit.Containers
 {
@@ -32,6 +35,24 @@ namespace mhedit.Containers
         public CannonMovementEditor()
         {
             InitializeComponent();
+            LoadPresets();
+        }
+
+        public void LoadPresets()
+        {
+            string applicationPath = Path.GetDirectoryName(Application.ExecutablePath);
+            string cannonMovementsPath = Path.Combine(applicationPath, "cannonMovements");
+
+            toolStripComboBoxLoadPreset.Items.Clear();
+
+            if (Directory.Exists(cannonMovementsPath))
+            {
+                foreach(string filename in Directory.GetFiles(cannonMovementsPath))
+                {
+                    string name = Path.GetFileNameWithoutExtension(filename);
+                    toolStripComboBoxLoadPreset.Items.Add(name);
+                }
+            }
         }
 
         private void listBoxMovements_SelectedIndexChanged(object sender, EventArgs e)
@@ -134,9 +155,79 @@ namespace mhedit.Containers
 
         private void toolStripButtonPreview_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Preview no workie. Preview in MAME.");
+            MessageBox.Show("Preview no workie. Preview in MAME please!");
             //CannonMovementPreview pd = new CannonMovementPreview(_movements);
             //pd.ShowDialog();
+        }
+
+        private void toolStripButtonSaveMovements_Click(object sender, EventArgs e)
+        {
+            string applicationPath = Path.GetDirectoryName(Application.ExecutablePath);
+            string cannonMovementsPath = Path.Combine(applicationPath, "cannonMovements");
+
+            if (!Directory.Exists(cannonMovementsPath))
+            {
+                Directory.CreateDirectory(cannonMovementsPath);
+            }
+
+            string name = Microsoft.VisualBasic.Interaction.InputBox("Give a unique name to the Cannon movement sequence...", "Save Cannon Movement", " ", 0, 0);
+
+            if (!String.IsNullOrEmpty(name))
+            {
+                string pathFielName = Path.Combine(cannonMovementsPath, name + ".can");
+                if (File.Exists(pathFielName))
+                {
+                    MessageBox.Show("This movement name already exists, you can't overwrite existing cannon movement sequences.", "Name Error");
+                }
+                else
+                {
+                    if (MovementsValid(_movements))
+                    {
+                        using (FileStream fStream = new FileStream(pathFielName, FileMode.Create))
+                        {
+                            BinaryFormatter b = new BinaryFormatter();
+                            b.Serialize(fStream, _movements);
+                        }
+                        LoadPresets();
+                    }
+                }
+            }
+        }
+
+        private bool MovementsValid(List<iCannonMovement> movements)
+        {
+            bool movementsValid = false;
+
+            if (movements.Count > 0)
+            {
+                if (movements[movements.Count - 1] is CannonMovementReturn)
+                {
+                    movementsValid = true;
+                }
+                else
+                {
+                    MessageBox.Show("Movement is missing a Return/Loop step at the end. This is required.");
+                }
+            }
+            return movementsValid;
+        }
+
+        private void toolStripComboBoxLoadPreset_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //load a preset
+            string applicationPath = Path.GetDirectoryName(Application.ExecutablePath);
+            string cannonMovementsPath = Path.Combine(applicationPath, "cannonMovements");
+
+            string movementFile = Path.Combine(cannonMovementsPath, toolStripComboBoxLoadPreset.Text + ".can");
+            if (File.Exists(movementFile))
+            {
+                using (FileStream fStream = new FileStream(movementFile, FileMode.Open))
+                {
+                    BinaryFormatter b = new BinaryFormatter();
+                    _movements= (List<iCannonMovement>)b.Deserialize(fStream);
+                    BindListBox();
+                }
+            }
         }
     }
 }

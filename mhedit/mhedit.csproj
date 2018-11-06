@@ -164,6 +164,36 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="cannonMovements\Atari Level 02 Cannon.can">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cannonMovements\Atari Level 13 Cannon.can">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cannonMovements\Atari Level 14 Cannon 1.can">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cannonMovements\Atari Level 14 Cannon 2.can">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cannonMovements\Atari Level 15 Cannon 1.can">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cannonMovements\Atari Level 15 Cannon 2.can">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cannonMovements\Atari Level 16 Cannon 1.can">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cannonMovements\Atari Level 16 Cannon 2.can">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cannonMovements\Atari Level 16 Cannon 3.can">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="cannonMovements\Atari Level 16 Cannon 4.can">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="mhedit_1_TemporaryKey.pfx" />
     <None Include="mhedit_2_TemporaryKey.pfx" />
     <None Include="mhedit_TemporaryKey.pfx" />
