@@ -218,7 +218,7 @@ namespace mhedit.Controllers
                 }
 
                 //then dynamic walls
-
+                //TODO: Dyanamic Walls loading from ROM
 
 
 
@@ -356,6 +356,56 @@ namespace mhedit.Controllers
                     {
                         Cannon cannon = new Cannon();
                         cannon.LoadPosition(rom.ReadBytes(cannonPointerAddress, 4));
+                        //now read data until we hit a cannon_end byte ($00)
+                        int cannonCommandOffset = 4;
+                        byte commandStartByte = commandStartByte = rom.ReadByte(cannonPointerAddress, cannonCommandOffset);
+                        bool hasData = true;
+                        while (hasData)
+                        {
+                            int cannonCommand = commandStartByte >> 6;
+                            switch (cannonCommand)
+                            {
+                                case 0:     //loop
+                                    cannon.Movements.Add(new CannonMovementReturn());
+                                    hasData = false;
+                                    break;
+                                case 1:     //Move Gun
+                                    CannonMovementPosition cannonPosition = new CannonMovementPosition();
+                                    int gunAngle = (commandStartByte & 0x38) >> 3;
+                                    cannonPosition.Position = (CannonGunPosition)gunAngle;
+                                    int rotationSpeed = (commandStartByte & 0x06) >> 1;
+                                    cannonPosition.Speed = (CannonGunSpeed)rotationSpeed;
+                                    int fireBit = (commandStartByte & 0x01);
+                                    if (fireBit > 0)
+                                    {
+                                        cannonCommandOffset++;
+                                        cannonPosition.ShotSpeed = (byte)rom.ReadByte(cannonPointerAddress, cannonCommandOffset);
+                                    }
+                                    cannon.Movements.Add(cannonPosition);
+                                    break;
+                                case 2:     //Move Position
+                                    CannonMovementMove cannonMovement = new CannonMovementMove();
+                                    int waitFrames = (commandStartByte & 0x3F) << 2;
+                                    cannonMovement.WaitFrames = waitFrames;
+                                    if (waitFrames > 0)
+                                    {
+                                        cannonCommandOffset++;
+                                        cannonMovement.Velocity.X = (sbyte)rom.ReadByte(cannonPointerAddress, cannonCommandOffset);
+                                        cannonCommandOffset++;
+                                        cannonMovement.Velocity.Y = (sbyte)rom.ReadByte(cannonPointerAddress, cannonCommandOffset);
+                                    }
+                                    //cannonMovement.
+                                    cannon.Movements.Add(cannonMovement);
+                                    break;
+                                case 3:     //Pause
+                                    CannonMovementPause cannonPause = new CannonMovementPause();
+                                    cannonPause.WaitFrames = (commandStartByte & 0x3F) << 2;
+                                    cannon.Movements.Add(cannonPause);
+                                    break;
+                            }
+                            cannonCommandOffset++;
+                            commandStartByte = commandStartByte = rom.ReadByte(cannonPointerAddress, cannonCommandOffset);
+                        }
                         maze.AddObject(cannon);
 
                         cannonBaseAddress += 2;
