@@ -57,10 +57,12 @@ namespace mhedit.Containers
         private int _dynamicWallTimeout;
         private MazeWallType _wallTypeDynamic = MazeWallType.Empty;
         private int _alternateWallTimeout;
+        private int _wallIndex;
 
-        public MazeWall(MazeWallType type, Point position)
+        public MazeWall(MazeWallType type, Point position, int wallIndex)
         {
             InitWall(type, position);
+            _wallIndex = wallIndex;
         }
 
         public MazeWall(MazeWallType type)
@@ -86,6 +88,7 @@ namespace mhedit.Containers
         public MazeWallType WallType
         {
             get { return _wallType; }
+            set { _wallType = value; }
         }
 
         [BrowsableAttribute(false)]
@@ -94,6 +97,19 @@ namespace mhedit.Containers
             get 
             {
                 return _img.Size;
+            }
+        }
+
+        [BrowsableAttribute(false)]
+        public int WallIndex
+        {
+            get
+            {
+                return _wallIndex;
+            }
+            set
+            {
+                _wallIndex = value;
             }
         }
 

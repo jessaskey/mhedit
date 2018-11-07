@@ -194,23 +194,11 @@ namespace mhedit.Controllers
 
                 while (wallValue != 0x00)
                 {
-                    int relativeWallValue = wallValue - 1;
-                    if (mazeType == 0x01)
-                    {
-                        relativeWallValue = wallValue + 4;
-                    }
-                    else if (mazeType == 0x02)
-                    {
-                        relativeWallValue = wallValue + 4;
-                    }
-                    else if (mazeType == 0x03)
-                    {
-                        relativeWallValue = wallValue + 2;
-                    }
+                    int relativeWallValue = GetRelativeWallIndex(maze.MazeType, wallValue);
                     Point stampPoint = maze.PointFromStamp(relativeWallValue);
                     wallBaseAddress++;
                     wallValue = rom.ReadByte(wallBaseAddress, 0);
-                    MazeWall wall = new MazeWall((MazeWallType)(wallValue & 0x07), stampPoint);
+                    MazeWall wall = new MazeWall((MazeWallType)(wallValue & 0x07), stampPoint, relativeWallValue);
                     wall.UserWall = true;
                     maze.AddObject(wall);
                     wallBaseAddress++;
@@ -219,8 +207,43 @@ namespace mhedit.Controllers
 
                 //then dynamic walls
                 //TODO: Dyanamic Walls loading from ROM
-
-
+                //only level 9 and higher
+                if (i > 7)
+                {
+                    ushort dynamicWallBaseAddress = rom.ReadWord(0x2667, (i-8) * 2);
+                    byte dynamicWallIndex = rom.ReadByte(dynamicWallBaseAddress, 0);
+                    while(dynamicWallIndex != 0x00)
+                    {
+                        int relativeWallIndex = GetRelativeWallIndex(maze.MazeType, dynamicWallIndex);
+                        int baseTimer = rom.ReadByte(dynamicWallBaseAddress, 1);
+                        int altTimer = rom.ReadByte(dynamicWallBaseAddress, 2);
+                        MazeWallType baseType = (MazeWallType)rom.ReadByte(dynamicWallBaseAddress, 3);
+                        MazeWallType altType = (MazeWallType)rom.ReadByte(dynamicWallBaseAddress, 4);
+                        MazeWall wall = maze.MazeObjects.Where(o => o.GetType() == typeof(MazeWall) && ((MazeWall)o).WallIndex == relativeWallIndex).FirstOrDefault() as MazeWall;
+                        if (wall == null)
+                        {
+                            //make a new one
+                            wall = new MazeWall(baseType, maze.PointFromStamp(relativeWallIndex), relativeWallIndex);
+                            wall.DynamicWallTimout = baseTimer;
+                            wall.AlternateWallTimeout = altTimer;
+                            wall.WallType = baseType;
+                            wall.AlternateWallType = altType;
+                            wall.IsDynamicWall = true;
+                            maze.AddObject(wall);
+                        }
+                        else
+                        {
+                            //we found a wall at this position, fill in the details...
+                            wall.DynamicWallTimout = baseTimer;
+                            wall.AlternateWallTimeout = altTimer;
+                            wall.WallType = baseType;
+                            wall.AlternateWallType = altType;
+                            wall.IsDynamicWall = true;
+                        }
+                        dynamicWallBaseAddress += 5;
+                        dynamicWallIndex = rom.ReadByte(dynamicWallBaseAddress, 0);
+                    }
+                }
 
                 //one way walls
                 ushort onewayBaseAddress = rom.ReadWord(0x2677, i * 2);
@@ -246,7 +269,7 @@ namespace mhedit.Controllers
                     onewayValue = rom.ReadByte(onewayBaseAddress, 0);
                 }
 
-                // Stalactite Level 6 and up
+                // Stalactite Level 5 and up
                 if (i > 4)
                 {
                     ushort stalactiteBaseAddress = rom.ReadWord(0x26B3, (i - 5) * 2);
@@ -484,6 +507,24 @@ namespace mhedit.Controllers
                 mazeCollection.InsertMaze(i, maze);
             }
             return mazeCollection;
+        }
+
+        private static int GetRelativeWallIndex(MazeType mazeType, int absoluteWallIndex)
+        {
+            int relativeWallIndex = absoluteWallIndex - 1;
+            if (mazeType == MazeType.TypeB)
+            {
+                relativeWallIndex = absoluteWallIndex + 4;
+            }
+            else if (mazeType == MazeType.TypeC)
+            {
+                relativeWallIndex = absoluteWallIndex + 4;
+            }
+            else if (mazeType == MazeType.TypeD)
+            {
+                relativeWallIndex = absoluteWallIndex + 2;
+            }
+            return relativeWallIndex;
         }
 
         public static bool CreateMAMERom(Maze maze)

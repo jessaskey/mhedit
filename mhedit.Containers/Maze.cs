@@ -933,6 +933,7 @@ namespace mhedit.Containers
                     MazeWall wall = new MazeWall(((MazeWall)obj).WallType);
                     wall.UserWall = true;
                     wall.Selected = true;
+                    wall.WallIndex = PointToStamp(point);
                     wall.Position = GetAdjustedPosition((MazeObject)wall, point);
                     wall.Name = GetNextName("wall");
                     _mazeObjects.Add(wall);
