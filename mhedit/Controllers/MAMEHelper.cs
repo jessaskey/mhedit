@@ -727,9 +727,6 @@ namespace mhedit.Controllers
                 {
                     byte[] oxoidPositionBytes = Context.PointToByteArrayPacked(oxoid.Position);
                     offset += rom.Write(ROMAddress.mzdc0, oxoidPositionBytes, offset);
-                    //offset += rom.Write(ROMAddress.mzdc0, (byte)oxoid.OxoidType, offset);
-                    //Point oxoidVectorPoint2 = rom.ByteArrayPackedToPoint(oxoidPositionBytes[0]);
-                    //Point oxoidPixelPoint2 = rom.ConvertVectorToPixels(oxoidVectorPoint2);
                 }
                 rom.Write(ROMAddress.mzdc0, 0, offset);
 
@@ -739,17 +736,16 @@ namespace mhedit.Controllers
                 {
                     foreach (LightningH lightning in lightningHorizontal)
                     {
-                        Point fixedPosition = new Point(lightning.Position.X + 64, lightning.Position.Y + 64);
-                        offset += rom.Write(ROMAddress.mzlg0, Context.PointToByteArrayPacked(fixedPosition), offset);
+                        offset += rom.Write(ROMAddress.mzlg0, Context.PointToByteArrayPacked(lightning.Position), offset);
                     }
+                    //end horizontal with 0xff
                     offset += rom.Write(ROMAddress.mzlg0, (byte)0xff, offset);
                 }
                 foreach (LightningV lightning in lightningVertical)
                 {
-                    //lighning has a weird positioning issue, lets kludge
-                    Point fixedPosition = new Point(lightning.Position.X, lightning.Position.Y + 64);
-                    offset += rom.Write(ROMAddress.mzlg0, Context.PointToByteArrayPacked(fixedPosition), offset);
+                    offset += rom.Write(ROMAddress.mzlg0, Context.PointToByteArrayPacked(lightning.Position), offset);
                 }
+                //end all with 0x00
                 rom.Write(ROMAddress.mzlg0, (byte)0, offset);
 
                 //build arrows now
@@ -766,7 +762,7 @@ namespace mhedit.Controllers
                 offset = 0;
                 foreach (MazeWall wall in staticWalls)
                 {
-                    offset += rom.Write(ROMAddress.mzta0, (byte)maze.PointToStamp(new Point(wall.Position.X + 128, wall.Position.Y + 64)), offset);
+                    offset += rom.Write(ROMAddress.mzta0, (byte)maze.PointToStamp(wall.Position), offset);
                     offset += rom.Write(ROMAddress.mzta0, (byte)wall.WallType, offset);
                 }
                 rom.Write(ROMAddress.mzta0, (byte)0, offset);
@@ -775,7 +771,7 @@ namespace mhedit.Controllers
                 offset = 0;
                 foreach (MazeWall wall in dynamicWalls)
                 {
-                    offset += rom.Write(ROMAddress.mztd0, (byte)maze.PointToStamp(new Point(wall.Position.X + 128, wall.Position.Y + 64)), offset);
+                    offset += rom.Write(ROMAddress.mztd0, (byte)maze.PointToStamp(wall.Position), offset);
                     offset += rom.Write(ROMAddress.mztd0, (byte)wall.DynamicWallTimout, offset);
                     offset += rom.Write(ROMAddress.mztd0, (byte)wall.AlternateWallTimeout, offset);
                     offset += rom.Write(ROMAddress.mztd0, (byte)wall.WallType, offset);
@@ -789,13 +785,13 @@ namespace mhedit.Controllers
                 {
                     foreach (OneWay oneway in oneWayRights)
                     {
-                        offset += rom.Write(ROMAddress.mone0, Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
+                        offset += rom.Write(ROMAddress.mone0, Context.PointToByteArrayPacked(oneway.Position), offset);
                     }
                     offset += rom.Write(ROMAddress.mone0, (byte)0xff, offset);
                 }
                 foreach (OneWay oneway in oneWayLefts)
                 {
-                    offset += rom.Write(ROMAddress.mone0, Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
+                    offset += rom.Write(ROMAddress.mone0, Context.PointToByteArrayPacked(oneway.Position), offset);
                 }
                 rom.Write(ROMAddress.mone0, (byte)0, offset);
 
@@ -803,7 +799,7 @@ namespace mhedit.Controllers
                 offset = 0;
                 foreach (Spikes spike in spikes)
                 {
-                    offset += rom.Write(ROMAddress.tite0, Context.PointToByteArrayPacked(new Point(spike.Position.X, spike.Position.Y + 64)), offset);
+                    offset += rom.Write(ROMAddress.tite0, Context.PointToByteArrayPacked(spike.Position), offset);
                 }
                 rom.Write(ROMAddress.tite0, (byte)0, offset);
 
@@ -817,7 +813,7 @@ namespace mhedit.Controllers
                     {
                         offset += rom.Write(ROMAddress.lock0, (byte)thisLock.LockColor, offset);
                         offset += rom.Write(ROMAddress.lock0, Context.PointToByteArrayPacked(thisKey.Position), offset);
-                        offset += rom.Write(ROMAddress.lock0, Context.PointToByteArrayPacked(new Point(thisLock.Position.X, thisLock.Position.Y + 64)), offset);
+                        offset += rom.Write(ROMAddress.lock0, Context.PointToByteArrayPacked(thisLock.Position), offset);
                     }
                 }
                 rom.Write(ROMAddress.lock0, (byte)0, offset);
@@ -831,7 +827,7 @@ namespace mhedit.Controllers
                 //clock & boots
                 if (clock != null)
                 {
-                    rom.Write(ROMAddress.mclock, Context.PointToByteArrayPacked(new Point(clock.Position.X + 64, clock.Position.Y + 64)), 0);
+                    rom.Write(ROMAddress.mclock, Context.PointToByteArrayPacked(clock.Position), 0);
                 }
                 if (boots != null)
                 {
@@ -857,7 +853,7 @@ namespace mhedit.Controllers
                                     colorByte += 0x10;
                                 }
                                 offset += rom.Write(ROMAddress.tran0, colorByte, offset);
-                                offset += rom.Write(ROMAddress.tran0, Context.PointToByteArrayPacked(new Point(t.Position.X, t.Position.Y + 64)), offset);
+                                offset += rom.Write(ROMAddress.tran0, Context.PointToByteArrayPacked(t.Position), offset);
                             }
                         }
                     }
@@ -952,8 +948,8 @@ namespace mhedit.Controllers
                 int tripoffset = 0;
                 foreach (TripPad trip in tripPads)
                 {
-                    offset += rom.Write(ROMAddress.mztr0, Context.PointToByteArrayPacked(new Point(trip.Position.X, trip.Position.Y + 64)), offset);
-                    byte[] position = Context.PointToByteArrayShort(new Point(trip.Pyroid.Position.X, trip.Pyroid.Position.Y + 64));
+                    offset += rom.Write(ROMAddress.mztr0, Context.PointToByteArrayPacked(trip.Position), offset);
+                    byte[] position = Context.PointToByteArrayShort(trip.Pyroid.Position);
                     if (trip.Pyroid.PyroidStyle == PyroidStyle.Single)
                     {
                         position[0] += 0x80;
@@ -974,9 +970,9 @@ namespace mhedit.Controllers
                 offset = 0;
                 if (hand != null)
                 {
-                    byte[] handLocation = Context.PointToByteArrayShort(new Point(hand.Position.X + 64, hand.Position.Y));
+                    byte[] handLocation = Context.PointToByteArrayShort(hand.Position);
                     offset += rom.Write(ROMAddress.hand0, handLocation, offset);
-                    byte[] reactoidLocation = Context.PointToByteArrayShort(new Point(reactor.Position.X, reactor.Position.Y + 64));
+                    byte[] reactoidLocation = Context.PointToByteArrayShort(reactor.Position);
                     int xAccordians = Math.Abs(reactoidLocation[0] - handLocation[0]);
                     int yAccordians = Math.Abs(handLocation[1] - reactoidLocation[1]);
                     offset += rom.Write(ROMAddress.hand0, new byte[] { (byte)((xAccordians * 2) + 1), (byte)(yAccordians * 2), 0x3F, 0x0B, 0x1F, 0x05, 0x03 }, offset);

@@ -8,8 +8,6 @@ using System.Windows.Forms;
 
 namespace mhedit
 {
-
-
     public enum ROMAddress
     {
         levelst,
@@ -87,64 +85,32 @@ namespace mhedit
             _alphaLowFileNameMame = _mamePath + _alphaLowROM;
             _page01FileNameMame = _mamePath + _page01ROM;
 
-
-            FileStream alphaHighStream = null;
             try
             {
-                alphaHighStream = File.Open(alphaHighFileName, FileMode.Open);
-                if (alphaHighStream != null)
-                {
-                    alphaHighStream.Read(_alphaHigh, 0, 0x4000);
-                }
+                _alphaHigh = File.ReadAllBytes(alphaHighFileName);
             }
             catch (Exception Exception)
             {
                 throw new Exception("ROM Load Error - Alpha High: " + Exception.Message);
             }
-            finally
-            {
-                alphaHighStream.Close();
-                alphaHighStream.Dispose();
-            }
 
-            FileStream alphaLowStream = null;
             try
             {
-                alphaLowStream = File.Open(alphaLowFileName, FileMode.Open);
-                if (alphaLowStream != null)
-                {
-                    alphaLowStream.Read(_alphaLow, 0, 0x4000);
-                }
+                _alphaLow = File.ReadAllBytes(alphaLowFileName);
             }
             catch (Exception Exception)
             {
                 throw new Exception("ROM Load Error - Alpha Low: " + Exception.Message);
             }
-            finally
-            {
-                alphaLowStream.Close();
-                alphaLowStream.Dispose();
-            }
 
-            FileStream page01Stream = null;
             try
             {
-                page01Stream = File.Open(page01FileName, FileMode.Open);
-                if (page01Stream != null)
-                {
-                    page01Stream.Read(_page01, 0, 0x4000);
-                }
+                _page01 = File.ReadAllBytes(page01FileName);
             }
             catch (Exception Exception)
             {
                 throw new Exception("ROM Load Error - Page0/1: " + Exception.Message);
             }
-            finally
-            {
-                page01Stream.Close();
-                page01Stream.Dispose();
-            }
-
         }
 
         public byte[] GetText(string text)
