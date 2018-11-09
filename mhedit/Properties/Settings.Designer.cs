@@ -118,5 +118,17 @@ namespace mhedit.Properties {
                 this["MHPSavePassword"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MameWindow {
+            get {
+                return ((bool)(this["MameWindow"]));
+            }
+            set {
+                this["MameWindow"] = value;
+            }
+        }
     }
 }

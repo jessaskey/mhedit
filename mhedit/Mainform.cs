@@ -1119,6 +1119,11 @@ namespace mhedit
                             args += "-debug ";
                         }
 
+                        if (Properties.Settings.Default.MameWindow)
+                        {
+                            args += "-window ";
+                        }
+
                         args += Properties.Settings.Default.MameDriver;
 
                         ProcessStartInfo info = new ProcessStartInfo(mameExe, args);

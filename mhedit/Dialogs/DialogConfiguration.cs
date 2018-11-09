@@ -20,6 +20,7 @@ namespace mhedit
             //textBoxPassword.Text = Properties.Settings.Default.MHPPassword;
             checkBoxDebug.Checked = Properties.Settings.Default.MameDebug;
             checkBoxShowGridCoordinateReferences.Checked = Properties.Settings.Default.ShowGridReferences;
+            checkBoxMAMEWindow.Checked = Properties.Settings.Default.MameWindow;
         }
 
         private void linkLabelMHP_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -36,6 +37,7 @@ namespace mhedit
             //Properties.Settings.Default.MHPPassword = textBoxPassword.Text;
             Properties.Settings.Default.MameDebug = checkBoxDebug.Checked;
             Properties.Settings.Default.ShowGridReferences = checkBoxShowGridCoordinateReferences.Checked;
+            Properties.Settings.Default.MameWindow = checkBoxMAMEWindow.Checked;
             Properties.Settings.Default.Save();
             Close();
         }

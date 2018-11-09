@@ -118,7 +118,7 @@ namespace mhedit.Containers
 
         public static byte[] PointToByteArrayPacked(Point point)
         {
-            Point vector = new Point((int)(point.X << 2) - 0x400, (0xFD00 - ((int)(point.Y << 2))));
+            Point vector = new Point((int)(point.X << 2) - 0x400, (0xfd00 - ((int)(point.Y << 2))));
             byte xh = (byte)((vector.X & 0x0f00) >> 8);
             byte yh = (byte)((vector.Y & 0x0f00) >> 4);
             return new byte[] { (byte)(xh | yh) };

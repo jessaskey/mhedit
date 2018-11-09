@@ -786,13 +786,13 @@ namespace mhedit.Controllers
                 {
                     foreach (OneWay oneway in oneWayRights)
                     {
-                        offset += rom.Write(ROMAddress.mone0, Context.PointToByteArrayPacked(oneway.Position), offset);
+                        offset += rom.Write(ROMAddress.mone0, Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
                     }
                     offset += rom.Write(ROMAddress.mone0, (byte)0xff, offset);
                 }
                 foreach (OneWay oneway in oneWayLefts)
                 {
-                    offset += rom.Write(ROMAddress.mone0, Context.PointToByteArrayPacked(oneway.Position), offset);
+                    offset += rom.Write(ROMAddress.mone0, Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
                 }
                 rom.Write(ROMAddress.mone0, (byte)0, offset);
 
@@ -891,7 +891,7 @@ namespace mhedit.Controllers
                             }
                             else
                             {
-                                command += (byte)(move.WaitFrames & 0x3F);
+                                command += (byte)((move.WaitFrames & 0x3F)>>2);
                                 offset += rom.Write(ROMAddress.mcand, command, offset);
                                 //write velocities
                                 if (move.Velocity.X >= 0)
