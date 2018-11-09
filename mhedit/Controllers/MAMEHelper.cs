@@ -760,9 +760,10 @@ namespace mhedit.Controllers
                 //maze walls
                 //static first
                 offset = 0;
+                int wallDataOffset = 18; //this is a set of blank data offsets defined in the mhavoc source for some reason
                 foreach (MazeWall wall in staticWalls)
                 {
-                    offset += rom.Write(ROMAddress.mzta0, (byte)maze.PointToStamp(wall.Position), offset);
+                    offset += rom.Write(ROMAddress.mzta0, (byte)(wallDataOffset + (maze.PointToStamp(wall.Position))), offset);
                     offset += rom.Write(ROMAddress.mzta0, (byte)wall.WallType, offset);
                 }
                 rom.Write(ROMAddress.mzta0, (byte)0, offset);
@@ -771,7 +772,7 @@ namespace mhedit.Controllers
                 offset = 0;
                 foreach (MazeWall wall in dynamicWalls)
                 {
-                    offset += rom.Write(ROMAddress.mztd0, (byte)maze.PointToStamp(wall.Position), offset);
+                    offset += rom.Write(ROMAddress.mztd0, (byte)(wallDataOffset + (maze.PointToStamp(wall.Position))), offset);
                     offset += rom.Write(ROMAddress.mztd0, (byte)wall.DynamicWallTimout, offset);
                     offset += rom.Write(ROMAddress.mztd0, (byte)wall.AlternateWallTimeout, offset);
                     offset += rom.Write(ROMAddress.mztd0, (byte)wall.WallType, offset);
