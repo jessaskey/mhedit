@@ -837,32 +837,26 @@ namespace mhedit.Controllers
 
                 //transporters
                 offset = 0;
-                var tpairs = transporters.GroupBy(t => t.Color).Select(group => new { Color = group.Key, Count = keys.Count() });
-                if (tpairs.Count() > 0)
-                {
-                    foreach (var i in tpairs)
+                var transporterPairs = transporters.GroupBy(t => t.Color).Select(group => new { Key = group.Key, Count = group.Count() });
+
+                foreach (var transporterPair in transporterPairs)
+                { 
+                    List<Transporter> coloredTranporterMatches = transporters.Where(t => t.Color == transporterPair.Key).ToList();
+                    foreach (Transporter t in coloredTranporterMatches)
                     {
-                        if (i.Count == 2)
+                        byte colorByte = (byte)(((byte)t.Color) & 0x0F);
+                        if (t.Direction == OneWayDirection.Right)
                         {
-                            //there are two... move ahead
-                            List<Transporter> colorT = transporters.Where(t => t.Color == i.Color).ToList();
-                            foreach (Transporter t in colorT)
-                            {
-                                byte colorByte = (byte)(((byte)t.Color) & 0x0F);
-                                if (t.Direction == OneWayDirection.Right)
-                                {
-                                    colorByte += 0x10;
-                                }
-                                offset += rom.Write(ROMAddress.tran0, colorByte, offset);
-                                offset += rom.Write(ROMAddress.tran0, Context.PointToByteArrayPacked(t.Position), offset);
-                            }
+                            colorByte += 0x10;
                         }
-                    }
-                    //write end of transports
-                    offset += rom.Write(ROMAddress.tran0, 0, offset);
-                    //write transportability data
-                    offset += rom.Write(ROMAddress.tran0, new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xee }, offset);
+                        offset += rom.Write(ROMAddress.tran0, colorByte, offset);
+                        offset += rom.Write(ROMAddress.tran0, Context.PointToByteArrayPacked(new Point(t.Position.X, t.Position.Y + 64)), offset);
+                    }                 
                 }
+                //write end of transports
+                offset += rom.Write(ROMAddress.tran0, 0, offset);
+                //write transportability data
+                offset += rom.Write(ROMAddress.tran0, new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xee }, offset);
 
                 //Laser Cannon
                 offset = 0;
@@ -891,7 +885,7 @@ namespace mhedit.Controllers
                             }
                             else
                             {
-                                command += (byte)((move.WaitFrames & 0x3F)>>2);
+                                command += (byte)(0x3F & ((move.WaitFrames)>>2));
                                 offset += rom.Write(ROMAddress.mcand, command, offset);
                                 //write velocities
                                 if (move.Velocity.X >= 0)
