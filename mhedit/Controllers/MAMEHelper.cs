@@ -814,7 +814,7 @@ namespace mhedit.Controllers
                     {
                         offset += rom.Write(ROMAddress.lock0, (byte)thisLock.LockColor, offset);
                         offset += rom.Write(ROMAddress.lock0, Context.PointToByteArrayPacked(thisKey.Position), offset);
-                        offset += rom.Write(ROMAddress.lock0, Context.PointToByteArrayPacked(thisLock.Position), offset);
+                        offset += rom.Write(ROMAddress.lock0, Context.PointToByteArrayPacked(new Point(thisLock.Position.X, thisLock.Position.Y + 64)), offset);
                     }
                 }
                 rom.Write(ROMAddress.lock0, (byte)0, offset);
@@ -828,11 +828,19 @@ namespace mhedit.Controllers
                 //clock & boots
                 if (clock != null)
                 {
+                    //write these on all 4 level options
                     rom.Write(ROMAddress.mclock, Context.PointToByteArrayPacked(clock.Position), 0);
+                    rom.Write(ROMAddress.mclock, Context.PointToByteArrayPacked(clock.Position), 1);
+                    rom.Write(ROMAddress.mclock, Context.PointToByteArrayPacked(clock.Position), 2);
+                    rom.Write(ROMAddress.mclock, Context.PointToByteArrayPacked(clock.Position), 3);
                 }
                 if (boots != null)
                 {
-                    rom.Write(ROMAddress.mclock, Context.PointToByteArrayPacked(boots.Position), 0x10);
+                    //write these on all 4 level options
+                    rom.Write(ROMAddress.mboots, Context.PointToByteArrayPacked(boots.Position), 0);
+                    rom.Write(ROMAddress.mboots, Context.PointToByteArrayPacked(boots.Position), 1);
+                    rom.Write(ROMAddress.mboots, Context.PointToByteArrayPacked(boots.Position), 2);
+                    rom.Write(ROMAddress.mboots, Context.PointToByteArrayPacked(boots.Position), 3);
                 }
 
                 //transporters
@@ -961,6 +969,7 @@ namespace mhedit.Controllers
 
                 }
                 rom.Write(ROMAddress.mztr0, (byte)0, offset);
+
                 //de hand finally
                 offset = 0;
                 if (hand != null)

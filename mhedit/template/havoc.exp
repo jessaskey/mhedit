@@ -56,6 +56,7 @@ mcan2            .EQU  $27ba
 mcan3            .EQU  $27ba
 mcand            .EQU  $27c4
 mclock           .EQU  $2a6c
+mboots           .EQU  $2a7c
 mpod             .EQU  $2a9c
 map              .EQU  $30c4
 newarrow         .EQU  $2f06

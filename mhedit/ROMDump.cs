@@ -26,6 +26,7 @@ namespace mhedit
         cksumah,
         cksump01,
         mclock,
+        mboots,
         tran0,
         mzh0,
         mcan,
