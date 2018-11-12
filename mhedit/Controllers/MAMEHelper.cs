@@ -39,11 +39,9 @@ namespace mhedit.Controllers
                 Reactoid reactor = new Reactoid();
                 reactor.LoadPosition(rom.ReadBytes(mazeInitIndex, 4));
                 mazeInitIndex += 4;
-                int timer = rom.HexToDecimal((int)rom.ReadByte(0x3355, i));
+                int timer = rom.FromDecimal((int)rom.ReadByte(0x3355, i));
                 reactor.Timer = timer;
                 maze.AddObject(reactor);
-
-
 
                 //pyroids
                 byte firstValue = rom.ReadByte(mazeInitIndex, 0);
@@ -719,7 +717,7 @@ namespace mhedit.Controllers
                 }
                 rom.Write(ROMAddress.mzsc0, (byte)0xff, offset);
                 //reactor timer, we will write all 4 entries for now...
-                rom.Write(ROMAddress.outime, new byte[] { GetDecimalByte(reactor.Timer), GetDecimalByte(reactor.Timer), GetDecimalByte(reactor.Timer), GetDecimalByte(reactor.Timer) }, 0);
+                rom.Write(ROMAddress.outime, new byte[] { (byte)rom.ToDecimal(reactor.Timer), (byte)rom.ToDecimal(reactor.Timer), (byte)rom.ToDecimal(reactor.Timer), (byte)rom.ToDecimal(reactor.Timer) }, 0);
 
                 //do oxygens now
                 offset = 0;
@@ -997,16 +995,16 @@ namespace mhedit.Controllers
         }
 
 
-        public static byte GetDecimalByte(int value)
-        {
-            byte outValue = 0;
-            string valueString = value.ToString();
-            for (int i = 0; i < valueString.Length; i++)
-            {
-                if (i > 0) outValue = (byte)(outValue << 4);
-                outValue += (byte)(((byte)0xF) & byte.Parse(valueString[i].ToString()));
-            }
-            return outValue;
-        }
+        //public static byte GetDecimalByte(int value)
+        //{
+        //    byte outValue = 0;
+        //    string valueString = value.ToString();
+        //    for (int i = 0; i < valueString.Length; i++)
+        //    {
+        //        if (i > 0) outValue = (byte)(outValue << 4);
+        //        outValue += (byte)(((byte)0xF) & byte.Parse(valueString[i].ToString()));
+        //    }
+        //    return outValue;
+        //}
     }
 }

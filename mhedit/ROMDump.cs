@@ -355,14 +355,14 @@ namespace mhedit
             return "";
         }
 
-        public int HexToDecimal(int value)
+        public int ToDecimal(int value)
         {
-            return Convert.ToInt16(value.ToString(), 16);
+            return Convert.ToInt16(("0x" + value.ToString()), 16);
         }
 
-        public int DecimalToHex(int value)
+        public int FromDecimal(int value)
         {
-            return Convert.ToInt16(value.ToString(), 10);
+            return Convert.ToInt16(value.ToString("X2"), 10);
         }
     }
 }
