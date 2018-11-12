@@ -22,10 +22,10 @@ mzdc0            .EQU  $2649
 mzdc1            .EQU  $2649
 mzdc2            .EQU  $2649
 mzdc3            .EQU  $2649
-mzlg0            .EQU  $2659
-mzlg1            .EQU  $2659
-mzlg2            .EQU  $2659
-mzlg3            .EQU  $2659
+mzlg0            .EQU  $2a5e
+mzlg1            .EQU  $2a5e
+mzlg2            .EQU  $2a5e
+mzlg3            .EQU  $2a5e
 mzar0            .EQU  $2667
 mzar1            .EQU  $2667
 mzar2            .EQU  $2667

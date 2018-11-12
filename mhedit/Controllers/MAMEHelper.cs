@@ -738,9 +738,9 @@ namespace mhedit.Controllers
                     {
                         offset += rom.Write(ROMAddress.mzlg0, Context.PointToByteArrayPacked(lightning.Position), offset);
                     }
-                    //end horizontal with 0xff
-                    offset += rom.Write(ROMAddress.mzlg0, (byte)0xff, offset);
                 }
+                //end horizontal with 0xff
+                offset += rom.Write(ROMAddress.mzlg0, (byte)0xff, offset);
                 foreach (LightningV lightning in lightningVertical)
                 {
                     offset += rom.Write(ROMAddress.mzlg0, Context.PointToByteArrayPacked(lightning.Position), offset);
