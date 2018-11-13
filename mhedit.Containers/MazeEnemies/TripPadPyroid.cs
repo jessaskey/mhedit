@@ -33,7 +33,7 @@ namespace mhedit.Containers.MazeEnemies
         public TripPadPyroid()
         {
             LoadDefaultImage();
-            renderOffset.X = 32;
+            renderOffset.X = 0;
         }
 
         [DescriptionAttribute("Maximum number of pyroids allowed in this maze.")]

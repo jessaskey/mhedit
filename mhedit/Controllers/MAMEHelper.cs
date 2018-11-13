@@ -140,11 +140,11 @@ namespace mhedit.Controllers
                 {
                     isHorizontal = false;
                     lightningBaseAddress++;
+                    lightningValue = rom.ReadByte(lightningBaseAddress, 0);
                 }
 
                 while (lightningValue != 0x00)
                 {
-
                     if (isHorizontal)
                     {
                         LightningH lightningh = new LightningH();
@@ -461,19 +461,37 @@ namespace mhedit.Controllers
 
                         /// level 8 has 2 pyroids per trip pad.
                         //trip pyroid too
-                        byte bx = (byte)(0x7f & rom.ReadByte(tripPyroidBaseAddress++, 0));
-                        byte by = rom.ReadByte(tripPyroidBaseAddress++, 0);
-                        byte bv = rom.ReadByte(tripPyroidBaseAddress++, 0);
+
+                        byte xdata = rom.ReadByte(tripPyroidBaseAddress++, 0);
+                        byte xh = (byte)(0x7f & xdata);
+                        byte styleFlag = (byte)(0x80 & xdata);
+                        byte yh = rom.ReadByte(tripPyroidBaseAddress++, 0);
+                        byte vdata = rom.ReadByte(tripPyroidBaseAddress++, 0);
 
                         byte[] longBytes = new byte[4];
 
-                        longBytes[0] = 0;
-                        longBytes[1] = (byte)((bx & 0x1f) + 1);
+                        int velocity = (byte)(vdata & 0x7f);
+                        if ((vdata & 0x80) == 0)
+                        {
+                            longBytes[0] = 0x80;
+                        }
+                        else
+                        {
+                            velocity = velocity * -1;
+                            longBytes[0] = 0x40;
+                        }
+
+                        longBytes[1] = (byte)((xh & 0x1f));
                         longBytes[2] = 0x80;
-                        longBytes[3] = by;
+                        longBytes[3] = yh;
 
                         TripPadPyroid tpp = new TripPadPyroid();
                         tpp.LoadPosition(longBytes);
+                        tpp.Velocity = velocity;
+                        if (styleFlag != 0)
+                        {
+                            tpp.PyroidStyle = PyroidStyle.Single;
+                        }
                         maze.AddObject(tpp);
 
                         trip.Pyroid = tpp;
@@ -730,12 +748,9 @@ namespace mhedit.Controllers
 
                 //do lightning (Force Fields)
                 offset = 0;
-                if (lightningHorizontal.Count > 0)
+                foreach (LightningH lightning in lightningHorizontal)
                 {
-                    foreach (LightningH lightning in lightningHorizontal)
-                    {
-                        offset += rom.Write(ROMAddress.mzlg0, Context.PointToByteArrayPacked(lightning.Position), offset);
-                    }
+                    offset += rom.Write(ROMAddress.mzlg0, Context.PointToByteArrayPacked(lightning.Position), offset);
                 }
                 //end horizontal with 0xff
                 offset += rom.Write(ROMAddress.mzlg0, (byte)0xff, offset);
@@ -950,20 +965,26 @@ namespace mhedit.Controllers
                 foreach (TripPad trip in tripPads)
                 {
                     offset += rom.Write(ROMAddress.mztr0, Context.PointToByteArrayPacked(trip.Position), offset);
-                    byte[] position = Context.PointToByteArrayShort(trip.Pyroid.Position);
+                    byte[] position = Context.PointToByteArrayShort(new Point(trip.Pyroid.Position.X, trip.Pyroid.Position.Y + 64));
                     if (trip.Pyroid.PyroidStyle == PyroidStyle.Single)
                     {
-                        position[0] += 0x80;
+                        position[0] |= 0x80;
                     }
                     rom.Write(ROMAddress.trtbl, position, tripoffset + 0x18);
                     rom.Write(ROMAddress.trtbl, position, tripoffset + 0x30);
                     rom.Write(ROMAddress.trtbl, position, tripoffset + 0x48);
                     tripoffset += rom.Write(ROMAddress.trtbl, position, tripoffset);
 
-                    rom.Write(ROMAddress.trtbl, new byte[] { (byte)trip.Pyroid.Velocity }, tripoffset + 0x18);
-                    rom.Write(ROMAddress.trtbl, new byte[] { (byte)trip.Pyroid.Velocity }, tripoffset + 0x30);
-                    rom.Write(ROMAddress.trtbl, new byte[] { (byte)trip.Pyroid.Velocity }, tripoffset + 0x48);
-                    tripoffset += rom.Write(ROMAddress.trtbl, new byte[] { (byte)trip.Pyroid.Velocity }, tripoffset);
+                    byte velocity = (byte)Math.Abs(trip.Pyroid.Velocity);
+                    if (trip.Pyroid.Velocity < 0)
+                    {
+                        velocity |= 0x80;
+                    }
+
+                    rom.Write(ROMAddress.trtbl, velocity, tripoffset + 0x18);
+                    rom.Write(ROMAddress.trtbl, velocity, tripoffset + 0x30);
+                    rom.Write(ROMAddress.trtbl, velocity, tripoffset + 0x48);
+                    tripoffset += rom.Write(ROMAddress.trtbl, velocity, tripoffset);
 
                 }
                 rom.Write(ROMAddress.mztr0, (byte)0, offset);
