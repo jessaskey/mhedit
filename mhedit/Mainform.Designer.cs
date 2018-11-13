@@ -455,14 +455,14 @@ namespace mhedit
             this.panelContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelContent.Location = new System.Drawing.Point(0, 0);
             this.panelContent.Name = "panelContent";
-            this.panelContent.Size = new System.Drawing.Size(652, 663);
+            this.panelContent.Size = new System.Drawing.Size(632, 663);
             this.panelContent.TabIndex = 3;
             this.panelContent.Paint += new System.Windows.Forms.PaintEventHandler(this.panelContent_Paint);
             // 
             // splitterRight
             // 
             this.splitterRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitterRight.Location = new System.Drawing.Point(652, 0);
+            this.splitterRight.Location = new System.Drawing.Point(632, 0);
             this.splitterRight.Name = "splitterRight";
             this.splitterRight.Size = new System.Drawing.Size(3, 663);
             this.splitterRight.TabIndex = 1;
@@ -473,9 +473,9 @@ namespace mhedit
             this.panelRight.Controls.Add(this.splitContainerRight);
             this.panelRight.Controls.Add(this.splitterUpDown);
             this.panelRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelRight.Location = new System.Drawing.Point(655, 0);
+            this.panelRight.Location = new System.Drawing.Point(635, 0);
             this.panelRight.Name = "panelRight";
-            this.panelRight.Size = new System.Drawing.Size(230, 663);
+            this.panelRight.Size = new System.Drawing.Size(250, 663);
             this.panelRight.TabIndex = 0;
             // 
             // splitContainerRight
@@ -495,7 +495,7 @@ namespace mhedit
             this.splitContainerRight.Panel2.Controls.Add(this.propertyGrid);
             this.splitContainerRight.Panel2.Controls.Add(this.comboBoxMazeObjects);
             this.splitContainerRight.Panel2MinSize = 50;
-            this.splitContainerRight.Size = new System.Drawing.Size(230, 660);
+            this.splitContainerRight.Size = new System.Drawing.Size(250, 660);
             this.splitContainerRight.SplitterDistance = 400;
             this.splitContainerRight.TabIndex = 4;
             // 
@@ -523,7 +523,7 @@ namespace mhedit
             this.toolBox.SelectAllTextWhileRenaming = true;
             this.toolBox.SelectedTabIndex = -1;
             this.toolBox.ShowOnlyOneItemPerRow = false;
-            this.toolBox.Size = new System.Drawing.Size(230, 400);
+            this.toolBox.Size = new System.Drawing.Size(250, 400);
             this.toolBox.SmallItemSize = new System.Drawing.Size(32, 32);
             this.toolBox.TabHeight = 18;
             this.toolBox.TabHoverTextColor = System.Drawing.SystemColors.ControlText;
@@ -539,9 +539,8 @@ namespace mhedit
             this.propertyGrid.LineColor = System.Drawing.SystemColors.ControlDark;
             this.propertyGrid.Location = new System.Drawing.Point(0, 21);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(230, 235);
+            this.propertyGrid.Size = new System.Drawing.Size(250, 235);
             this.propertyGrid.TabIndex = 5;
-            this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
             // comboBoxMazeObjects
             // 
@@ -549,7 +548,7 @@ namespace mhedit
             this.comboBoxMazeObjects.FormattingEnabled = true;
             this.comboBoxMazeObjects.Location = new System.Drawing.Point(0, 0);
             this.comboBoxMazeObjects.Name = "comboBoxMazeObjects";
-            this.comboBoxMazeObjects.Size = new System.Drawing.Size(230, 21);
+            this.comboBoxMazeObjects.Size = new System.Drawing.Size(250, 21);
             this.comboBoxMazeObjects.TabIndex = 4;
             // 
             // splitterUpDown
@@ -557,7 +556,7 @@ namespace mhedit
             this.splitterUpDown.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.splitterUpDown.Location = new System.Drawing.Point(0, 660);
             this.splitterUpDown.Name = "splitterUpDown";
-            this.splitterUpDown.Size = new System.Drawing.Size(230, 3);
+            this.splitterUpDown.Size = new System.Drawing.Size(250, 3);
             this.splitterUpDown.TabIndex = 1;
             this.splitterUpDown.TabStop = false;
             // 

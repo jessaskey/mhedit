@@ -143,7 +143,7 @@ namespace mhedit.Containers
         }
 
         [CategoryAttribute("Dynamic Wall")]
-        [DescriptionAttribute("Alternate Wall Type")]
+        [DescriptionAttribute("Alternate Wall Type, this is the wall style that will show when the Dynamic Wall Timeout expires.")]
         public MazeWallType AlternateWallType
         {
             get { return _wallTypeDynamic; }
@@ -151,7 +151,7 @@ namespace mhedit.Containers
         }
 
         [CategoryAttribute("Dynamic Wall")]
-        [DescriptionAttribute("Dynamic Wall Timeout")]
+        [DescriptionAttribute("Dynamic Wall Timeout. This value is in game 'frames' with 0 being a valid value and equal to about 2-3 seconds.")]
         public int DynamicWallTimout
         {
             get { return _dynamicWallTimeout; }
@@ -159,7 +159,7 @@ namespace mhedit.Containers
         }
 
         [CategoryAttribute("Dynamic Wall")]
-        [DescriptionAttribute("Alternate Wall Timeout")]
+        [DescriptionAttribute("Alternate Wall Timeout. This value is in game 'frames' with 0 being a valid value and equal to about 2-3 seconds.")]
         public int AlternateWallTimeout
         {
             get { return _alternateWallTimeout; }

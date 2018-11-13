@@ -439,26 +439,6 @@ namespace mhedit
 
         #endregion
 
-        #region PropertyGrid Methods
-
-        private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-        {
-            //PropertyGrid grid = (PropertyGrid)s;
-            //if (treeView.SelectedNode != null)
-            //{
-            //    if (treeView.SelectedNode.Tag != null)
-            //    {
-            //        ITreeObject treeObject = grid.SelectedObject as ITreeObject;
-            //        if (treeObject != null)
-            //        {
-            //            treeObject.TreeRender(treeView, treeView.SelectedNode);
-            //        }
-            //    }
-            //}
-        }
-
-        #endregion
-
         #region ToolStrip Methods
 
         private void toolStripButtonNewCollection_Click(object sender, EventArgs e)
