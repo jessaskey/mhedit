@@ -129,7 +129,6 @@ namespace mhedit.Controllers
                     oxoidValue = rom.ReadByte(oxygenBaseAddress, 0);
                 }
 
-
                 //do lightning (Force Fields)
                 ushort lightningBaseAddress = rom.ReadWord(0x25D1, i * 2);
 
@@ -801,10 +800,10 @@ namespace mhedit.Controllers
                     {
                         offset += rom.Write(ROMAddress.mone0, Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
                     }
-                    offset += rom.Write(ROMAddress.mone0, (byte)0xff, offset);
                 }
                 foreach (OneWay oneway in oneWayLefts)
                 {
+                    offset += rom.Write(ROMAddress.mone0, (byte)0xff, offset);
                     offset += rom.Write(ROMAddress.mone0, Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
                 }
                 rom.Write(ROMAddress.mone0, (byte)0, offset);

@@ -443,18 +443,18 @@ namespace mhedit
 
         private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
         {
-            PropertyGrid grid = (PropertyGrid)s;
-            if (treeView.SelectedNode != null)
-            {
-                if (treeView.SelectedNode.Tag != null)
-                {
-                    ITreeObject treeObject = grid.SelectedObject as ITreeObject;
-                    if (treeObject != null)
-                    {
-                        treeObject.TreeRender(treeView, treeView.SelectedNode);
-                    }
-                }
-            }
+            //PropertyGrid grid = (PropertyGrid)s;
+            //if (treeView.SelectedNode != null)
+            //{
+            //    if (treeView.SelectedNode.Tag != null)
+            //    {
+            //        ITreeObject treeObject = grid.SelectedObject as ITreeObject;
+            //        if (treeObject != null)
+            //        {
+            //            treeObject.TreeRender(treeView, treeView.SelectedNode);
+            //        }
+            //    }
+            //}
         }
 
         #endregion
