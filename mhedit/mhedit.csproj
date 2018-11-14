@@ -22,10 +22,10 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <ManifestCertificateThumbprint>9D5352BA38D140747E15A84867A69CCA6817442E</ManifestCertificateThumbprint>
-    <ManifestKeyFile>mhedit_2_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestCertificateThumbprint>2528308A59C82A174A13FE6C1F54AD987D845C1E</ManifestCertificateThumbprint>
+    <ManifestKeyFile>Havoc.pfx</ManifestKeyFile>
     <GenerateManifests>true</GenerateManifests>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
     <TargetFrameworkProfile />
     <PublishUrl>c:\publish\mhedit\app\</PublishUrl>
     <Install>true</Install>
@@ -73,10 +73,11 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>mhedit_2_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accessibility" />
@@ -194,9 +195,7 @@
     <Content Include="cannonMovements\Atari Level 16 Cannon 4.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="mhedit_1_TemporaryKey.pfx" />
-    <None Include="mhedit_2_TemporaryKey.pfx" />
-    <None Include="mhedit_TemporaryKey.pfx" />
+    <None Include="Havoc.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
