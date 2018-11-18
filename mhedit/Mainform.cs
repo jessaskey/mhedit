@@ -1220,25 +1220,9 @@ namespace mhedit
                     if (treeView.SelectedNode.Tag.GetType() == typeof(Maze))
                     {
                         Maze maze = (Maze)treeView.SelectedNode.Tag;
-                        byte[] mazeBytes = null;
                         Image mazeImage = maze.GetImage();
-                        
-                        using (MemoryStream oStream = new MemoryStream())
-                        {
-                            using (MemoryStream mStream = new MemoryStream())
-                            {
-                                BinaryFormatter b = new BinaryFormatter();
-                                b.Serialize(mStream, maze);
-                                mStream.Position = 0;
-                                BZip2.Compress(mStream, oStream, false, 4096);
 
-                                oStream.Position = 0;
-                                mazeBytes = new byte[oStream.Length];
-                                oStream.Read(mazeBytes, 0, (int)oStream.Length);
-                            }
-                        }
-
-                        if (mazeBytes != null && mazeImage != null)
+                        if (maze != null && mazeImage != null)
                         {
                             DialogMHPLogin mhpDialog = new DialogMHPLogin();
                             if (!String.IsNullOrEmpty(Properties.Settings.Default.MHPUsername))
@@ -1253,7 +1237,8 @@ namespace mhedit
                             }
                             mhpDialog.SavePassword = Properties.Settings.Default.MHPSavePassword;
                             mhpDialog.MazePreview = mazeImage;
-                            mhpDialog.MazeBytes = mazeBytes;
+                            mhpDialog.Maze = maze;
+                            mhpDialog.Description = maze.Description;
                             mhpDialog.MazeName = maze.Name;
                             mhpDialog.ShowDialog();
                         }

@@ -45,6 +45,7 @@ namespace mhedit.Containers
         private decimal _zoom = 1;
         private string _mazeHint = String.Empty;
         private bool _repainted = false;
+        private string _synopsis = String.Empty;
 
         private PropertyGrid _propertyGrid = null;
         private ComboBox _comboBoxObjects = null;
@@ -184,6 +185,14 @@ namespace mhedit.Containers
         {
             get { return _mazeHint; }
             set { _mazeHint = value; }
+        }
+
+        [BrowsableAttribute(true)]
+        [DescriptionAttribute("A description of gameplay and strategy for this maze.")]
+        public string Description
+        {
+            get { return _synopsis; }
+            set { _synopsis = value; }
         }
 
         [DescriptionAttribute("The structure type of the maze.")]
@@ -718,7 +727,6 @@ namespace mhedit.Containers
 
         public static Bitmap AdjustContrast(Bitmap Image, ushort increase)
         {
-
             Bitmap NewBitmap = (Bitmap)Image.Clone();
             BitmapData data = NewBitmap.LockBits(
                 new Rectangle(0, 0, NewBitmap.Width, NewBitmap.Height),

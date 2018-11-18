@@ -1,10 +1,13 @@
-﻿using System;
+﻿using ICSharpCode.SharpZipLib.BZip2;
+using mhedit.Containers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -33,6 +36,12 @@ namespace mhedit
             set { textBoxPassword.Text = value; }
         }
 
+        public string Description
+        {
+            get { return textBoxDescription.Text; }
+            set { textBoxDescription.Text = value; }
+        }
+
         public string PasswordKey
         {
             get { return _savedPasswordKey; }
@@ -59,7 +68,7 @@ namespace mhedit
             set { labelMazeName.Text = value; }
         }
 
-        public byte[] MazeBytes { get; set; }
+        public Maze Maze { get;set; }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
@@ -76,6 +85,7 @@ namespace mhedit
                     try
                     {
                         Cursor.Current = Cursors.WaitCursor;
+                        Maze.Description = textBoxDescription.Text;
 
                         MHEditServiceReference.SecurityToken token = null;
                         if (String.IsNullOrEmpty(_savedPasswordKey))
@@ -103,6 +113,23 @@ namespace mhedit
 
                             try
                             {
+                                byte[] mazeBytes = null;
+
+                                using (MemoryStream oStream = new MemoryStream())
+                                {
+                                    using (MemoryStream mStream = new MemoryStream())
+                                    {
+                                        BinaryFormatter b = new BinaryFormatter();
+                                        b.Serialize(mStream, Maze);
+                                        mStream.Position = 0;
+                                        BZip2.Compress(mStream, oStream, false, 4096);
+
+                                        oStream.Position = 0;
+                                        mazeBytes = new byte[oStream.Length];
+                                        oStream.Read(mazeBytes, 0, (int)oStream.Length);
+                                    }
+                                }
+
                                 byte[] imageBytes = null;
                                 using (MemoryStream memoryStream = new MemoryStream())
                                 {
@@ -112,9 +139,9 @@ namespace mhedit
                                     memoryStream.Read(imageBytes, 0, imageBytes.Length);
                                     memoryStream.Close();
                                 }
-                                if (MazeBytes != null && imageBytes != null && token != null)
+                                if (mazeBytes != null && imageBytes != null && token != null)
                                 {
-                                    if (MHPController.UploadMazeDefinition(token, MazeBytes, imageBytes))
+                                    if (MHPController.UploadMazeDefinition(token, mazeBytes, imageBytes))
                                     {
                                         MessageBox.Show("Maze has been uploaded sucessfully!", "Major Havoc Project", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     }
@@ -169,6 +196,11 @@ namespace mhedit
             {
                 //not good, they have to give it a better name.
                 MessageBox.Show("Your maze name of '" + labelMazeName.Text + "' seems to be pretty generic. You have to go edit the maze name to something more descriptive as this will be how we label the maze on the gallery.", "Crappy Maze Name", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+            if (!String.IsNullOrEmpty(textBoxDescription.Text))
+            {
+                MessageBox.Show("Maze description is required. Describe the features and play of the maze.", "Missing Description", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
             return true;
