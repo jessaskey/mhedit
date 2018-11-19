@@ -15,7 +15,8 @@
         <MemoryMap Id="AlphaProcessor"
                    AddressWidth="16"
                    AddressBase="0x0000"
-                   DataWidth="8">
+                   DataWidth="8"
+                   Endianness="little">
             <ROM Id="PagedProgramRom"
                  Address="0x2000"
                  Size="0x2000">
