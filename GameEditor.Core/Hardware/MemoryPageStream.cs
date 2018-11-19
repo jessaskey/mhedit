@@ -198,7 +198,7 @@ namespace GameEditor.Core.Hardware
             }
 
             /// Only supporting 16 bit addressing ATM...
-            int bytesWritten = this._page.Read( (uint)this._address, buffer, offset, count );
+            int bytesWritten = this._page.Write( (uint)this._address, buffer, offset, count );
 
             /// Should we be throwing if the write fails?? I'm trying to force a write to
             /// be the width of the databus, or it doesn't occur.
