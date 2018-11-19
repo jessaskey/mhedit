@@ -63,6 +63,15 @@
     <Compile Include="Extensions\HexExtensions.cs" />
     <None Include="ProductionOffsets.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\CollectionTerminationAttribute.cs" />
+    <Compile Include="Serialization\ConcreteTypeAttribute.cs" />
+    <Compile Include="Serialization\DeserializationEvents.cs" />
+    <Compile Include="Serialization\IRomSerializable.cs" />
+    <Compile Include="Serialization\ObjectReader.cs" />
+    <Compile Include="Serialization\ObjectWriter.cs" />
+    <Compile Include="Serialization\RomSerializationInfo.cs" />
+    <Compile Include="Serialization\RomSerializer.cs" />
+    <Compile Include="Serialization\SerializationEntry.cs" />
     <Compile Include="Xml\Array.cs" />
     <Compile Include="Xml\ArrayType.cs" />
     <Compile Include="Xml\ArrayStorage.cs" />
