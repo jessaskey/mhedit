@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mhedit", "mhedit\mhedit.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silver.UI.ToolBox", "Silver.UI.ToolBox\Silver.UI.ToolBox.csproj", "{D937E1F4-1B9F-4567-B28E-EED24AA31C9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mhedit.Containers", "mhedit.Containers\mhedit.Containers.csproj", "{56F50C8E-1406-4888-89A2-575ABF86721E}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameEditor.Atari.MajorHavoc", "GameEditor.Atari.MajorHavoc\GameEditor.Atari.MajorHavoc.csproj", "{3ED1BDB1-F8B6-4876-BC52-78A0FA4BB2F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameEditor.Core", "GameEditor.Core\GameEditor.Core.csproj", "{834A05F0-F058-4D30-98D0-B4936BE09C7C}"
@@ -33,6 +35,10 @@ Global
 		{834A05F0-F058-4D30-98D0-B4936BE09C7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{834A05F0-F058-4D30-98D0-B4936BE09C7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{834A05F0-F058-4D30-98D0-B4936BE09C7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56F50C8E-1406-4888-89A2-575ABF86721E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56F50C8E-1406-4888-89A2-575ABF86721E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56F50C8E-1406-4888-89A2-575ABF86721E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56F50C8E-1406-4888-89A2-575ABF86721E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

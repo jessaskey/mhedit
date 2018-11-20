@@ -13,9 +13,14 @@ using System.Windows.Forms;
 using Silver.UI;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.BZip2;
 using ICSharpCode.SharpZipLib.Zip;
+
+using mhedit.Containers;
+using mhedit.Containers.MazeEnemies;
+using mhedit.Containers.MazeObjects;
+using mhedit.Containers.TypeConverters;
+using mhedit.Controllers;
 
 namespace mhedit
 {
@@ -85,33 +90,33 @@ namespace mhedit
             ImageList toolboxImageList = new ImageList();
             Size iconSize = new Size(32,32);
             toolboxImageList.ImageSize = iconSize;
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.wall_horizontal_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.wall_leftup_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.wall_rightup_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.wall_leftdown_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.wall_rightdown_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.wall_vertical_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.wall_empty_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.pyroid_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.reactoid_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.perkoid_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.roboid_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.oxoid_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.key_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.arrow_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.lightning_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.lightning_v_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.clock_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.cannon_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.oneway_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.trippad_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.lock_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.hand_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.spikes_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.booties_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.transporter_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.pod_32.ico"));
-            toolboxImageList.Images.Add(Resource.GetResourceImage("images.buttons.roboid_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.wall_horizontal_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.wall_leftup_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.wall_rightup_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.wall_leftdown_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.wall_rightdown_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.wall_vertical_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.wall_empty_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.pyroid_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.reactoid_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.perkoid_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.roboid_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.oxoid_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.key_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.arrow_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.lightning_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.lightning_v_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.clock_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.cannon_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.oneway_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.trippad_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.lock_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.hand_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.spikes_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.booties_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.transporter_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.pod_32.ico"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.roboid_32.ico"));
             toolBox.SmallImageList = toolboxImageList;
 
             int tabIndex;
@@ -125,27 +130,27 @@ namespace mhedit
             itemIndex = toolBox[tabIndex].AddItem("Vertical", 5, true, new MazeWall(MazeWallType.Vertical));
             itemIndex = toolBox[tabIndex].AddItem("Empty", 6, true, new MazeWall(MazeWallType.Empty));
             tabIndex = toolBox.AddTab("Maze Enemies", -1);
-            itemIndex = toolBox[tabIndex].AddItem("Pyroid", 7, true, new MazeEnemies.Pyroid());
-            itemIndex = toolBox[tabIndex].AddItem("Perkoid", 9, true, new MazeEnemies.Perkoid());
-            itemIndex = toolBox[tabIndex].AddItem("Maxoid", 26, true, new MazeEnemies.Maxoid());
-            itemIndex = toolBox[tabIndex].AddItem("Force Field", 14, true, new MazeEnemies.LightningH());
-            itemIndex = toolBox[tabIndex].AddItem("Force Field", 15, true, new MazeEnemies.LightningV());
-            itemIndex = toolBox[tabIndex].AddItem("Ion Cannon", 17, true, new MazeEnemies.Cannon());
-            itemIndex = toolBox[tabIndex].AddItem("Trip Pad", 19, true, new MazeEnemies.TripPad());
+            itemIndex = toolBox[tabIndex].AddItem("Pyroid", 7, true, new Pyroid());
+            itemIndex = toolBox[tabIndex].AddItem("Perkoid", 9, true, new Perkoid());
+            itemIndex = toolBox[tabIndex].AddItem("Maxoid", 26, true, new Maxoid());
+            itemIndex = toolBox[tabIndex].AddItem("Force Field", 14, true, new LightningH());
+            itemIndex = toolBox[tabIndex].AddItem("Force Field", 15, true, new LightningV());
+            itemIndex = toolBox[tabIndex].AddItem("Ion Cannon", 17, true, new Cannon());
+            itemIndex = toolBox[tabIndex].AddItem("Trip Pad", 19, true, new TripPad());
             //toolBox[tabIndex].AddItem("Roboid", 10, true, null);
             tabIndex = toolBox.AddTab("Maze Objects", -1);
-            itemIndex = toolBox[tabIndex].AddItem("Reactoid", 8, true, new MazeObjects.Reactoid());
-            itemIndex = toolBox[tabIndex].AddItem("Arrow", 13, true, new MazeObjects.Arrow());
-            itemIndex = toolBox[tabIndex].AddItem("Oxoid", 11, true, new MazeObjects.Oxoid());
-            itemIndex = toolBox[tabIndex].AddItem("One Way", 18, true, new MazeObjects.OneWay());
-            itemIndex = toolBox[tabIndex].AddItem("Stalactites", 22, true, new MazeObjects.Spikes());
-            itemIndex = toolBox[tabIndex].AddItem("Transporter", 24, true, new MazeObjects.Transporter());
-            itemIndex = toolBox[tabIndex].AddItem("Booties", 23, true, new MazeObjects.Boots());
-            itemIndex = toolBox[tabIndex].AddItem("Lock", 20, true, new MazeObjects.Lock());
-            itemIndex = toolBox[tabIndex].AddItem("Key", 12, true, new MazeObjects.Key());
-            itemIndex = toolBox[tabIndex].AddItem("De Hand", 21, true, new MazeObjects.Hand());
-            itemIndex = toolBox[tabIndex].AddItem("Clock", 16, true, new MazeObjects.Clock());
-            itemIndex = toolBox[tabIndex].AddItem("Escape Pod", 25, true, new MazeObjects.EscapePod());
+            itemIndex = toolBox[tabIndex].AddItem("Reactoid", 8, true, new Reactoid());
+            itemIndex = toolBox[tabIndex].AddItem("Arrow", 13, true, new Arrow());
+            itemIndex = toolBox[tabIndex].AddItem("Oxoid", 11, true, new Oxoid());
+            itemIndex = toolBox[tabIndex].AddItem("One Way", 18, true, new OneWay());
+            itemIndex = toolBox[tabIndex].AddItem("Stalactites", 22, true, new Spikes());
+            itemIndex = toolBox[tabIndex].AddItem("Transporter", 24, true, new Transporter());
+            itemIndex = toolBox[tabIndex].AddItem("Booties", 23, true, new Boots());
+            itemIndex = toolBox[tabIndex].AddItem("Lock", 20, true, new Lock());
+            itemIndex = toolBox[tabIndex].AddItem("Key", 12, true, new Key());
+            itemIndex = toolBox[tabIndex].AddItem("De Hand", 21, true, new Hand());
+            itemIndex = toolBox[tabIndex].AddItem("Clock", 16, true, new Clock());
+            itemIndex = toolBox[tabIndex].AddItem("Escape Pod", 25, true, new EscapePod());
 
             toolBox.SelectedTabIndex = 2;
         }
@@ -182,33 +187,32 @@ namespace mhedit
             {
                 if (treeView.SelectedNode.Tag != null)
                 {
-                    switch (treeView.SelectedNode.Tag.GetType().ToString())
+                    if (treeView.SelectedNode.Tag.GetType() == typeof(Maze))
                     {
-                        case "mhedit.Maze":
-                            Maze maze = (Maze)treeView.SelectedNode.Tag;
-                            if (maze != null)
-                            {
-                                treeView.ContextMenu = null;
-                                treeView.ContextMenu = maze.GetTreeContextMenu();
-                                propertyGrid.SelectedObject = maze;
-                                panelContent.Controls.Clear();
-                                panelContent.Controls.Add(maze);
-                                maze.Left = Math.Max((panelContent.Width - maze.Width) / 2, 0);
-                                maze.Top = (panelContent.Height - maze.Height) / 2;
-                            }
-                            toolStripButtonSaveMaze.Enabled = true;
-                            if (treeView.SelectedNode.Parent != null)
-                            {
-                                toolStripButtonSaveCollection.Enabled = true;
-                                toolStripButtonConfiguration.Enabled = true;
-                            }
-                            break;
-                        case "mhedit.MazeCollection":
+                        Maze maze = (Maze)treeView.SelectedNode.Tag;
+                        if (maze != null)
+                        {
+                            treeView.ContextMenu = null;
+                            treeView.ContextMenu = maze.GetTreeContextMenu();
+                            propertyGrid.SelectedObject = maze;
+                            panelContent.Controls.Clear();
+                            panelContent.Controls.Add(maze);
+                            maze.Left = Math.Max((panelContent.Width - maze.Width) / 2, 0);
+                            maze.Top = (panelContent.Height - maze.Height) / 2;
+                        }
+                        toolStripButtonSaveMaze.Enabled = true;
+                        if (treeView.SelectedNode.Parent != null)
+                        {
+                            toolStripButtonSaveCollection.Enabled = true;
+                            toolStripButtonConfiguration.Enabled = true;
+                        }
+                    }
+                    else if (treeView.SelectedNode.Tag.GetType() == typeof(MazeCollection))
+                    { 
                             MazeCollection collection = (MazeCollection)treeView.SelectedNode.Tag;
                             propertyGrid.SelectedObject = collection;
                             toolStripButtonSaveCollection.Enabled = true;
                             toolStripButtonConfiguration.Enabled = true;
-                            break;
                     }
                 }
             }
@@ -311,115 +315,116 @@ namespace mhedit
                     {
                         if (node.Tag != null)
                         {
-                            switch (node.Tag.GetType().ToString())
+                            if (node.Tag.GetType() == typeof(MazeCollection))
                             {
-                                case "mhedit.MazeCollection":
-                                    MazeCollection collection = (MazeCollection)node.Tag;
-                                    if (collection.IsDirty)
+
+                                MazeCollection collection = (MazeCollection)node.Tag;
+                                if (collection.IsDirty)
+                                {
+                                    DialogResult dr = MessageBox.Show("Would you like to save changes to the '" + collection.Name + "' collection before closing?", "Confirm Exit", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                                    if (dr == DialogResult.Yes)
                                     {
-                                        DialogResult dr = MessageBox.Show("Would you like to save changes to the '" + collection.Name + "' collection before closing?", "Confirm Exit", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                                        if (dr == DialogResult.Yes)
+                                        FileStream fStream = null;
+                                        MemoryStream mStream = null;
+                                        if (collection.FileName == null)
                                         {
-                                            FileStream fStream = null;
-                                            MemoryStream mStream = null;
-                                            if (collection.FileName == null)
+                                            SaveFileDialog sd = new SaveFileDialog();
+                                            sd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                                            sd.Filter = "Maze Files (*.mhc)|*.mhc|All files (*.*)|*.*";
+                                            sd.AddExtension = true;
+                                            sd.ShowDialog();
+                                            collection.FileName = sd.FileName;
+                                        }
+                                        Cursor.Current = Cursors.WaitCursor;
+                                        Application.DoEvents();
+                                        try
+                                        {
+                                            using (fStream = new FileStream(collection.FileName, FileMode.Create))
                                             {
-                                                SaveFileDialog sd = new SaveFileDialog();
-                                                sd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                                                sd.Filter = "Maze Files (*.mhc)|*.mhc|All files (*.*)|*.*";
-                                                sd.AddExtension = true;
-                                                sd.ShowDialog();
-                                                collection.FileName = sd.FileName;
-                                            }
-                                            Cursor.Current = Cursors.WaitCursor;
-                                            Application.DoEvents();
-                                            try
-                                            {
-                                                using (fStream = new FileStream(collection.FileName, FileMode.Create))
+                                                using (mStream = new MemoryStream())
                                                 {
-                                                    using (mStream = new MemoryStream())
-                                                    {
-                                                        BinaryFormatter b = new BinaryFormatter();
-                                                        b.Serialize(mStream, collection);
-                                                        mStream.Position = 0;
-                                                        BZip2.Compress(mStream, fStream, true, 4096);
-                                                    }
+                                                    BinaryFormatter b = new BinaryFormatter();
+                                                    b.Serialize(mStream, collection);
+                                                    mStream.Position = 0;
+                                                    BZip2.Compress(mStream, fStream, true, 4096);
                                                 }
                                             }
-                                            catch (Exception ex)
-                                            {
-                                                Cursor.Current = Cursors.Default;
-                                                MessageBox.Show("Maze could not be saved: " + ex.Message, "File Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                            }
-                                            finally
-                                            {
-                                                if (mStream != null) mStream.Close();
-                                                if (fStream != null) fStream.Close();
-                                            }
-                                            Cursor.Current = Cursors.Default;
                                         }
-                                        else if (dr == DialogResult.Cancel)
+                                        catch (Exception ex)
                                         {
-                                            //dont close
-                                            e.Cancel = true;
-                                            return;
+                                            Cursor.Current = Cursors.Default;
+                                            MessageBox.Show("Maze could not be saved: " + ex.Message, "File Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                         }
+                                        finally
+                                        {
+                                            if (mStream != null) mStream.Close();
+                                            if (fStream != null) fStream.Close();
+                                        }
+                                        Cursor.Current = Cursors.Default;
                                     }
-                                    break;
-                                case "mhedit.Maze":
-                                    Maze maze = (Maze)node.Tag;
-                                    if (maze.IsDirty)
+                                    else if (dr == DialogResult.Cancel)
                                     {
-                                        DialogResult dr = MessageBox.Show("Would you like to save changes to '" + maze.Name + " ' before closing?", "Confirm Exit", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                                        if (dr == DialogResult.Yes)
-                                        {
-                                            FileStream fStream = null;
-                                            MemoryStream mStream = null;
-                                            if (maze.FileName == null)
-                                            {
-                                                SaveFileDialog sd = new SaveFileDialog();
-                                                sd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                                                sd.Filter = "Maze Files (*.mhz)|*.mhz|All files (*.*)|*.*";
-                                                sd.AddExtension = true;
-                                                sd.ShowDialog();
-                                                maze.FileName = sd.FileName;
-                                            }
-                                            Cursor.Current = Cursors.WaitCursor;
-                                            Application.DoEvents();
-                                            try
-                                            {
-                                                using (fStream = new FileStream(maze.FileName, FileMode.Create))
-                                                {
-                                                    using (mStream = new MemoryStream())
-                                                    {
-                                                        BinaryFormatter b = new BinaryFormatter();
-                                                        b.Serialize(mStream, maze);
-                                                        mStream.Position = 0;
-                                                        BZip2.Compress(mStream, fStream, true, 4096);
-                                                    }
-                                                }
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                Cursor.Current = Cursors.Default;
-                                                MessageBox.Show("Maze could not be saved: " + ex.Message, "File Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                            }
-                                            finally
-                                            {
-                                                if (mStream != null) mStream.Close();
-                                                if (fStream != null) fStream.Close();
-                                            }
-                                            Cursor.Current = Cursors.Default;
-                                        }
-                                        else if (dr == DialogResult.Cancel)
-                                        {
-                                            //dont close
-                                            e.Cancel = true;
-                                            return;
-                                        }
+                                        //dont close
+                                        e.Cancel = true;
+                                        return;
                                     }
-                                    break;
+                                }
                             }
+                            else if (node.GetType() == typeof(Maze))
+                            {
+                                Maze maze = (Maze)node.Tag;
+                                if (maze.IsDirty)
+                                {
+                                    DialogResult dr = MessageBox.Show("Would you like to save changes to '" + maze.Name + " ' before closing?", "Confirm Exit", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                                    if (dr == DialogResult.Yes)
+                                    {
+                                        FileStream fStream = null;
+                                        MemoryStream mStream = null;
+                                        if (maze.FileName == null)
+                                        {
+                                            SaveFileDialog sd = new SaveFileDialog();
+                                            sd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                                            sd.Filter = "Maze Files (*.mhz)|*.mhz|All files (*.*)|*.*";
+                                            sd.AddExtension = true;
+                                            sd.ShowDialog();
+                                            maze.FileName = sd.FileName;
+                                        }
+                                        Cursor.Current = Cursors.WaitCursor;
+                                        Application.DoEvents();
+                                        try
+                                        {
+                                            using (fStream = new FileStream(maze.FileName, FileMode.Create))
+                                            {
+                                                using (mStream = new MemoryStream())
+                                                {
+                                                    BinaryFormatter b = new BinaryFormatter();
+                                                    b.Serialize(mStream, maze);
+                                                    mStream.Position = 0;
+                                                    BZip2.Compress(mStream, fStream, true, 4096);
+                                                }
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Cursor.Current = Cursors.Default;
+                                            MessageBox.Show("Maze could not be saved: " + ex.Message, "File Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        }
+                                        finally
+                                        {
+                                            if (mStream != null) mStream.Close();
+                                            if (fStream != null) fStream.Close();
+                                        }
+                                        Cursor.Current = Cursors.Default;
+                                    }
+                                    else if (dr == DialogResult.Cancel)
+                                    {
+                                        //dont close
+                                        e.Cancel = true;
+                                        return;
+                                    }
+                                }
+                            }
+     
                         }
                     }
                 }
@@ -434,38 +439,17 @@ namespace mhedit
 
         #endregion
 
-        #region PropertyGrid Methods
-
-        private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
-        {
-            PropertyGrid grid = (PropertyGrid)s;
-            if (treeView.SelectedNode != null)
-            {
-                if (treeView.SelectedNode.Tag != null)
-                {
-                    switch (grid.SelectedObject.GetType().ToString())
-                    {
-                        case "mhedit.MazeCollection":
-                        case "mhedit.Maze":
-                            ((ITreeObject)grid.SelectedObject).TreeRender(treeView, treeView.SelectedNode);
-                            break;
-                        default:
-                            //zoomPanImageBox.Image = ((ITreeObject)treeView.SelectedNode.Tag).GetImage();
-                            //zoomPanImageBox.Invalidate();
-                            break;
-                    }
-                }
-            }
-        }
-
-        #endregion
-
         #region ToolStrip Methods
 
         private void toolStripButtonNewCollection_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
             MazeCollection collection = new MazeCollection(GetNewName("MazeCollection"));
+            //assign callbacks
+            foreach (Maze maze in collection.Mazes)
+            {
+                maze.OnMazePropertiesUpdated += new MazePropertiesUpdated(RefreshMazeName);
+            }
             TreeNode node = collection.TreeRender(treeView, null);
             node.ImageIndex = 0;
             node.SelectedImageIndex = node.ImageIndex;
@@ -596,13 +580,13 @@ namespace mhedit
                 if (treeView.SelectedNode.Tag != null)
                 {
                     MazeCollection collection = null;
-                    if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.MazeCollection")
+                    if (treeView.SelectedNode.Tag.GetType() == typeof(MazeCollection))
                     {
                         collection = (MazeCollection)treeView.SelectedNode.Tag;
                     }
                     if (treeView.SelectedNode.Parent != null)
                     {
-                        if (treeView.SelectedNode.Parent.Tag.GetType().ToString() == "mhedit.MazeCollection")
+                        if (treeView.SelectedNode.Parent.Tag.GetType() == typeof(MazeCollection))
                         {
                             collection = (MazeCollection)treeView.SelectedNode.Parent.Tag;
                         }
@@ -686,10 +670,20 @@ namespace mhedit
             Cursor.Current = Cursors.Default;
         }
 
+        private void RefreshMazeName(object sender)
+        {
+            if (treeView.SelectedNode != null)
+            {
+                treeView.SelectedNode.Text = ((Maze)sender).Name;
+            }
+        }
+
         private void toolStripButtonNewMaze_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
             Maze maze = new Maze(GetNewName("Maze"));
+            maze.OnMazePropertiesUpdated += new MazePropertiesUpdated(RefreshMazeName);
+            maze.ShowGridReferences = Properties.Settings.Default.ShowGridReferences;
             TreeNode node = maze.TreeRender(treeView, null);
             node.ImageIndex = ((int)maze.MazeType) + 1;
             node.SelectedImageIndex = node.ImageIndex;
@@ -724,7 +718,7 @@ namespace mhedit
                 {
                     using (mStream = new MemoryStream())
                     {
-                        BZip2.Decompress(fStream, mStream, true);
+                        BZip2.Decompress(fStream, mStream, false);
                         mStream.Position = 0;
                         BinaryFormatter b = new BinaryFormatter();
                         Maze maze = (Maze)b.Deserialize(mStream);
@@ -759,7 +753,7 @@ namespace mhedit
             {
                 if (treeView.SelectedNode.Tag != null)
                 {
-                    if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.Maze")
+                    if (treeView.SelectedNode.Tag.GetType() == typeof(Maze))
                     {
                         Maze maze = (Maze)treeView.SelectedNode.Tag;
                         SaveMaze(maze);
@@ -774,12 +768,12 @@ namespace mhedit
             {
                 if (treeView.SelectedNode.Tag != null)
                 {
-                    if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.Maze")
+                    if (treeView.SelectedNode.Tag.GetType() == typeof(Maze))
                     {
                         Maze maze = (Maze)treeView.SelectedNode.Tag;
                         SaveMaze(maze);
                     }
-                    if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.MazeCollection")
+                    if (treeView.SelectedNode.Tag.GetType()== typeof(MazeCollection))
                     {
                         MazeCollection collection = (MazeCollection)treeView.SelectedNode.Tag;
                         SaveCollection(collection);
@@ -922,14 +916,14 @@ namespace mhedit
                 {
                     if (treeView.SelectedNode.Parent == null)
                     {
-                        if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.Maze")
+                        if (treeView.SelectedNode.Tag.GetType() == typeof(Maze))
                         {
                             Maze maze = (Maze)treeView.SelectedNode.Tag;
                             CloseMaze(maze);
                             treeView.SelectedNode.Remove();
                             RefreshTree();
                         }
-                        else if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.MazeCollection")
+                        else if (treeView.SelectedNode.Tag.GetType() == typeof(MazeCollection))
                         {
                             MazeCollection collection = (MazeCollection)treeView.SelectedNode.Tag;
                             CloseCollection(collection);
@@ -940,7 +934,7 @@ namespace mhedit
                     else
                     {
                         //this node has a parent... which should be a collection, so save that
-                        if (treeView.SelectedNode.Parent.Tag.GetType().ToString() == "mhedit.MazeCollection")
+                        if (treeView.SelectedNode.Parent.Tag.GetType() == typeof(MazeCollection))
                         {
                             MazeCollection collection = (MazeCollection)treeView.SelectedNode.Parent.Tag;
                             CloseCollection(collection);
@@ -959,7 +953,7 @@ namespace mhedit
             {
                 if (treeView.SelectedNode.Tag != null)
                 {
-                    if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.Maze")
+                    if (treeView.SelectedNode.Tag.GetType() == typeof(Maze))
                     {
                         Maze maze = (Maze)treeView.SelectedNode.Tag;
                         SaveMaze(maze);
@@ -1047,6 +1041,7 @@ namespace mhedit
             }
             else if (args.Button == MouseButtons.Left)
             {
+                _currentMaze = null;
                 //typical selection
                 TreeNode node = treeView.GetNodeAt(new Point(args.X, args.Y));
                 if (node != null)
@@ -1059,12 +1054,11 @@ namespace mhedit
                         _currentMaze = (Maze)treeView.SelectedNode.Tag;
                         _currentMaze.PropertyGrid = propertyGrid;
                         _currentMaze.ComboBoxObjects = comboBoxMazeObjects;
-                        return;
+                        //show the maze properties on tree click
+                        propertyGrid.SelectedObject = _currentMaze;
                     }
                 }
-                _currentMaze = null;
             }
-
         }
 
         private void toolStripButtonHome_Click(object sender, EventArgs e)
@@ -1091,7 +1085,7 @@ namespace mhedit
         {
             if (_currentMaze != null)
             {
-                if (CreateRom())
+                if (MAMEHelper.CreateMAMERom(_currentMaze))
                 {
                     try
                     {
@@ -1103,6 +1097,11 @@ namespace mhedit
                         if (Properties.Settings.Default.MameDebug)
                         {
                             args += "-debug ";
+                        }
+
+                        if (Properties.Settings.Default.MameWindow)
+                        {
+                            args += "-window ";
                         }
 
                         args += Properties.Settings.Default.MameDriver;
@@ -1145,471 +1144,14 @@ namespace mhedit
                     }
                 }
             }
-        }
-
-        private bool CreateRom()
-        {
-            bool success = false;
-
+            //put back the ROM's from backup
             string mamePath = Path.GetDirectoryName(Properties.Settings.Default.MameExecutable) + "\\roms\\" + Properties.Settings.Default.MameDriver + "\\";
+            string backupPath = mamePath + "_backup\\";
             
-            string templatePath = Path.GetDirectoryName(Application.ExecutablePath) + "\\template\\";
-
-            if (!File.Exists(Properties.Settings.Default.MameExecutable))
+            foreach(string file in Directory.GetFiles(backupPath))
             {
-                MessageBox.Show("MAME Executable not found. Check path in Preferences", "Error", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                return false;
+                File.Copy(file, mamePath + Path.GetFileName(file), true);
             }
-
-            if (!Directory.Exists(mamePath))
-            {
-                Directory.CreateDirectory(mamePath);
-            }
-
-            if (File.Exists(Path.GetDirectoryName(Properties.Settings.Default.MameExecutable) + "\\roms\\" + Properties.Settings.Default.MameDriver + ".zip"))
-            {
-                MessageBox.Show("The MAME driver you have specified is using a zipped ROM archive. The level editor does not support zipped ROM's. Please extract your '" + Properties.Settings.Default.MameDriver + ".zip' file to a '" + Properties.Settings.Default.MameDriver + "' folder under the 'roms' folder and delete the .zip file. The level editor will then overwrite your mhavoc ROM's as needed in order to run the level you have created.", "MAME Configuration Issue", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return false;
-            }
-
-            _currentMaze.Validate();
-
-            if (_currentMaze.IsValid)
-            {
-                ROMDump rom = new ROMDump(templatePath, mamePath, templatePath);
-
-                MazeObjects.Reactoid reactor = null;
-                MazeObjects.EscapePod pod = null;
-                MazeObjects.Boots boots = null;
-                MazeObjects.Clock clock = null;
-                List<MazeEnemies.Pyroid> pyroids = new List<MazeEnemies.Pyroid>();
-                List<MazeEnemies.Perkoid> perkoids = new List<MazeEnemies.Perkoid>();
-                List<MazeObjects.Oxoid> oxoids = new List<MazeObjects.Oxoid>();
-                List<MazeEnemies.LightningH> lightningHorizontal = new List<MazeEnemies.LightningH>();
-                List<MazeEnemies.LightningV> lightningVertical = new List<MazeEnemies.LightningV>();
-                List<MazeObjects.Arrow> arrows = new List<mhedit.MazeObjects.Arrow>();
-                List<MazeWall> staticWalls = new List<MazeWall>();
-                List<MazeWall> dynamicWalls = new List<MazeWall>();
-                List<MazeObjects.OneWay> oneWayRights = new List<mhedit.MazeObjects.OneWay>();
-                List<MazeObjects.OneWay> oneWayLefts = new List<mhedit.MazeObjects.OneWay>();
-                List<MazeObjects.Spikes> spikes = new List<mhedit.MazeObjects.Spikes>();
-                List<MazeObjects.Lock> locks = new List<mhedit.MazeObjects.Lock>();
-                List<MazeObjects.Key> keys = new List<mhedit.MazeObjects.Key>();
-                List<MazeObjects.Transporter> transporters = new List<mhedit.MazeObjects.Transporter>();
-                List<MazeEnemies.Cannon> cannons = new List<mhedit.MazeEnemies.Cannon>();
-                List<MazeEnemies.TripPad> tripPads = new List<mhedit.MazeEnemies.TripPad>();
-                MazeObjects.Hand hand = null;
-
-                foreach (MazeObject obj in _currentMaze.MazeObjects)
-                {
-                    if (obj is MazeObjects.Reactoid)
-                    {
-                        reactor = (MazeObjects.Reactoid)obj;
-                    }
-                    else if (obj is MazeEnemies.Pyroid)
-                    {
-                        pyroids.Add((MazeEnemies.Pyroid)obj);
-                    }
-                    else if (obj is MazeEnemies.Perkoid)
-                    {
-                        perkoids.Add((MazeEnemies.Perkoid)obj);
-                    }
-                    else if (obj is MazeObjects.Oxoid)
-                    {
-                        oxoids.Add((MazeObjects.Oxoid)obj);
-                    }
-                    else if (obj is MazeEnemies.LightningH)
-                    {
-                        lightningHorizontal.Add((MazeEnemies.LightningH)obj);
-                    }
-                    else if (obj is MazeEnemies.LightningV)
-                    {
-                        lightningVertical.Add((MazeEnemies.LightningV)obj);
-                    }
-                    else if (obj is MazeObjects.Arrow)
-                    {
-                        arrows.Add((MazeObjects.Arrow)obj);
-                    }
-                    else if (obj is MazeWall)
-                    {
-                        if (((MazeWall)obj).IsDynamicWall)
-                        {
-                            dynamicWalls.Add((MazeWall)obj);
-                        }
-                        else
-                        {
-                            staticWalls.Add((MazeWall)obj);
-                        }
-                    }
-                    else if (obj is MazeObjects.OneWay)
-                    {
-                        if (((MazeObjects.OneWay)obj).Direction == MazeObjects.OneWayDirection.Right)
-                        {
-                            oneWayRights.Add((MazeObjects.OneWay)obj);
-                        }
-                        else if (((MazeObjects.OneWay)obj).Direction == MazeObjects.OneWayDirection.Left)
-                        {
-                            oneWayLefts.Add((MazeObjects.OneWay)obj);
-                        }
-                    }
-                    else if (obj is MazeObjects.Spikes)
-                    {
-                        spikes.Add((MazeObjects.Spikes)obj);
-                    }
-                    else if (obj is MazeObjects.Lock)
-                    {
-                        locks.Add((MazeObjects.Lock)obj);
-                    }
-                    else if (obj is MazeObjects.Key)
-                    {
-                        keys.Add((MazeObjects.Key)obj);
-                    }
-                    else if (obj is MazeObjects.EscapePod)
-                    {
-                        pod = (MazeObjects.EscapePod)obj;
-                    }
-                    else if (obj is MazeObjects.Boots)
-                    {
-                        boots = (MazeObjects.Boots)obj;
-                    }
-                    else if (obj is MazeObjects.Clock)
-                    {
-                        clock = (MazeObjects.Clock)obj;
-                    }
-                    else if (obj is MazeObjects.Transporter)
-                    {
-                        transporters.Add((MazeObjects.Transporter)obj);
-                    }
-                    else if (obj is MazeEnemies.Cannon)
-                    {
-                        cannons.Add((MazeEnemies.Cannon)obj);
-                    }
-                    else if (obj is MazeEnemies.TripPad)
-                    {
-                        tripPads.Add((MazeEnemies.TripPad)obj);
-                    }
-                    else if (obj is MazeObjects.Hand)
-                    {
-                        hand = (MazeObjects.Hand)obj;
-                    }
-                }
-
-                /////////////////////////////
-                // Start building ROM here //
-                /////////////////////////////
-                //first is the level selection
-                rom.Write(ROMAddress.levelst, (byte)_currentMaze.MazeType, 1);
-
-                //next hint text
-                rom.Write(ROMAddress.mzh0, rom.GetText(_currentMaze.Hint), 0);
-
-                //build reactor, pyroids and perkoids now...
-                //write reactor
-                int offset = 0;
-                offset += rom.Write(ROMAddress.mzsc0, Context.PointToByteArrayLong(Context.ConvertPixelsToVector(reactor.Position)), offset);
-                foreach (MazeEnemies.Pyroid pyroid in pyroids)
-                {
-                    offset += rom.Write(ROMAddress.mzsc0, Context.PointToByteArrayLong(Context.ConvertPixelsToVector(pyroid.Position)), offset);
-                    offset += rom.Write(ROMAddress.mzsc0, new byte[] { (byte)pyroid.Velocity.X, (byte)pyroid.Velocity.Y }, offset);
-                }
-                if (perkoids.Count > 0)
-                {
-                    offset += rom.Write(ROMAddress.mzsc0, (byte)0xfe, offset);
-                    foreach (MazeEnemies.Perkoid perkoid in perkoids)
-                    {
-                        offset += rom.Write(ROMAddress.mzsc0, Context.PointToByteArrayLong(Context.ConvertPixelsToVector(perkoid.Position)), offset);
-                        offset += rom.Write(ROMAddress.mzsc0, new byte[] { (byte)perkoid.Velocity.X, (byte)perkoid.Velocity.Y }, offset);
-                    }
-                }
-                rom.Write(ROMAddress.mzsc0, (byte)0xff, offset);
-                //reactor timer, we will write all 4 entries for now...
-                rom.Write(ROMAddress.outime, new byte[] { GetDecimalByte(reactor.Timer), GetDecimalByte(reactor.Timer), GetDecimalByte(reactor.Timer), GetDecimalByte(reactor.Timer) }, 0);
-
-                //do oxygens now
-                offset = 0;
-                foreach (MazeObjects.Oxoid oxoid in oxoids)
-                {
-                    byte[] oxoidPositionBytes = Context.PointToByteArrayPacked(oxoid.Position);
-                    offset += rom.Write(ROMAddress.mzdc0, oxoidPositionBytes, offset);
-                    //offset += rom.Write(ROMAddress.mzdc0, (byte)oxoid.OxoidType, offset);
-                    //Point oxoidVectorPoint2 = rom.ByteArrayPackedToPoint(oxoidPositionBytes[0]);
-                    //Point oxoidPixelPoint2 = rom.ConvertVectorToPixels(oxoidVectorPoint2);
-                }
-                rom.Write(ROMAddress.mzdc0, 0, offset);
-
-                //do lightning (Force Fields)
-                offset = 0;
-                if (lightningHorizontal.Count > 0)
-                {
-                    foreach (MazeEnemies.LightningH lightning in lightningHorizontal)
-                    {
-                        Point fixedPosition = new Point(lightning.Position.X + 64, lightning.Position.Y + 64);
-                        offset += rom.Write(ROMAddress.mzlg0, Context.PointToByteArrayPacked(fixedPosition), offset);
-                    }
-                    offset += rom.Write(ROMAddress.mzlg0, (byte)0xff, offset);
-                }
-                foreach (MazeEnemies.LightningV lightning in lightningVertical)
-                {
-                    //lighning has a weird positioning issue, lets kludge
-                    Point fixedPosition = new Point(lightning.Position.X, lightning.Position.Y + 64);
-                    offset += rom.Write(ROMAddress.mzlg0, Context.PointToByteArrayPacked(fixedPosition), offset);
-                }
-                rom.Write(ROMAddress.mzlg0, (byte)0, offset);
-
-                //build arrows now
-                offset = 0;
-                foreach (MazeObjects.Arrow arrow in arrows)
-                {
-                    offset += rom.Write(ROMAddress.mzar0, Context.PointToByteArrayPacked(arrow.Position), offset);
-                    offset += rom.Write(ROMAddress.mzar0, (byte)arrow.ArrowDirection , offset);
-                }
-                rom.Write(ROMAddress.mzar0, (byte)0, offset);
-
-                //maze walls
-                //static first
-                offset = 0;
-                foreach (MazeWall wall in staticWalls)
-                {
-                    offset += rom.Write(ROMAddress.mzta0, (byte)_currentMaze.PointToStamp(new Point(wall.Position.X + 128, wall.Position.Y + 64)), offset);
-                    offset += rom.Write(ROMAddress.mzta0, (byte)wall.WallType, offset);
-                }
-                rom.Write(ROMAddress.mzta0, (byte)0, offset);
-
-                //then dynamic
-                offset = 0;
-                foreach (MazeWall wall in dynamicWalls)
-                {
-                    offset += rom.Write(ROMAddress.mztd0, (byte)_currentMaze.PointToStamp(new Point(wall.Position.X + 128, wall.Position.Y + 64)), offset);
-                    offset += rom.Write(ROMAddress.mztd0, (byte)wall.DynamicWallTimout, offset);
-                    offset += rom.Write(ROMAddress.mztd0, (byte)wall.AlternateWallTimeout, offset);
-                    offset += rom.Write(ROMAddress.mztd0, (byte)wall.WallType, offset);
-                    offset += rom.Write(ROMAddress.mztd0, (byte)wall.AlternateWallType, offset);
-                }
-                rom.Write(ROMAddress.mztd0, (byte)0, offset);
-
-                //one way walls
-                offset = 0;
-                if (oneWayRights.Count > 0)
-                {
-                    foreach (MazeObjects.OneWay oneway in oneWayRights)
-                    {
-                        offset += rom.Write(ROMAddress.mone0, Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
-                    }
-                    offset += rom.Write(ROMAddress.mone0, (byte)0xff, offset);
-                }
-                foreach (MazeObjects.OneWay oneway in oneWayLefts)
-                {
-                    offset += rom.Write(ROMAddress.mone0, Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
-                }
-                rom.Write(ROMAddress.mone0, (byte)0, offset);
-
-                //build spikes now
-                offset = 0;
-                foreach (MazeObjects.Spikes spike in spikes)
-                {
-                    offset += rom.Write(ROMAddress.tite0, Context.PointToByteArrayPacked(new Point(spike.Position.X, spike.Position.Y + 64)), offset);
-                }
-                rom.Write(ROMAddress.tite0, (byte)0, offset);
-
-                //locks and keys, for now, there has to be an even number of locks and keys
-                offset = 0;
-                for( int i = 0; i < locks.Count; i++)
-                {
-                    MazeObjects.Lock thisLock = locks[i];
-                    MazeObjects.Key thisKey = keys.Where(k => k.KeyColor == thisLock.LockColor).FirstOrDefault();
-                    if (thisKey != null)
-                    {
-                        offset += rom.Write(ROMAddress.lock0, (byte)thisLock.LockColor, offset);
-                        offset += rom.Write(ROMAddress.lock0, Context.PointToByteArrayPacked(thisKey.Position), offset);
-                        offset += rom.Write(ROMAddress.lock0, Context.PointToByteArrayPacked(new Point(thisLock.Position.X, thisLock.Position.Y + 64)), offset);
-                    }
-                }
-                rom.Write(ROMAddress.lock0, (byte)0, offset);
-
-                //Escape pod
-                if (pod != null)
-                {
-                    rom.Write(ROMAddress.mpod, (byte)pod.Option, 0);
-                }
-
-                //clock & boots
-                if (clock != null)
-                {
-                    rom.Write(ROMAddress.mclock, Context.PointToByteArrayPacked(new Point(clock.Position.X + 64, clock.Position.Y + 64)), 0);
-                }
-                if (boots != null)
-                {
-                    rom.Write(ROMAddress.mclock, Context.PointToByteArrayPacked(boots.Position), 0x10);
-                }
-
-                //transporters
-                offset = 0;
-                var tpairs = transporters.GroupBy(t => t.Color).Select(group => new { Color = group.Key, Count = keys.Count() });
-                if (tpairs.Count() > 0)
-                {
-                    foreach (var i in tpairs)
-                    {
-                        if (i.Count == 2)
-                        {
-                            //there are two... move ahead
-                            List<MazeObjects.Transporter> colorT = transporters.Where(t => t.Color == i.Color).ToList();
-                            foreach (MazeObjects.Transporter t in colorT)
-                            {
-                                byte colorByte = (byte)(((byte)t.Color) & 0x0F);
-                                if (t.Direction == mhedit.MazeObjects.OneWayDirection.Right)
-                                {
-                                    colorByte += 0x10;
-                                }
-                                offset += rom.Write(ROMAddress.tran0, colorByte, offset);
-                                offset += rom.Write(ROMAddress.tran0, Context.PointToByteArrayPacked(new Point(t.Position.X, t.Position.Y + 64)), offset);
-                            }
-                        }
-                    }
-                    //write end of transports
-                    offset += rom.Write(ROMAddress.tran0, 0, offset);
-                    //write transportability data
-                    offset += rom.Write(ROMAddress.tran0, new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xee }, offset);
-                }
-
-                //Laser Cannon
-                offset = 0;
-                int pointer = 0;
-                if (cannons.Count > 0)
-                {
-                    rom.Write(ROMAddress.mcan, new byte[] { 0x02, 0x02, 0x02, 0x02 }, 0);
-                }
-                for (int i = 0; i < cannons.Count; i++)
-                {
-                    MazeEnemies.Cannon cannon = cannons[i];
-                    pointer += rom.Write(ROMAddress.mcan0, (UInt16)(rom.GetAddress(ROMAddress.mcand) + offset), pointer);
-                    //cannon location first...
-                    offset += rom.Write(ROMAddress.mcand, Context.PointToByteArrayLong(Context.ConvertPixelsToVector(cannon.Position)), offset);
-                    //now cannon commands
-                    foreach(MazeEnemies.iCannonMovement movement in cannon.Movements)
-                    {
-                        byte command = 0;
-                        if (movement is MazeEnemies.CannonMovementMove)
-                        {
-                            MazeEnemies.CannonMovementMove move = (MazeEnemies.CannonMovementMove)movement;
-                            command = 0x80;
-                            if (move.Velocity.X == 0 && move.Velocity.Y == 0)
-                            {
-                                offset += rom.Write(ROMAddress.mcand, command, offset);
-                            }
-                            else
-                            {
-                                command += (byte)(move.WaitFrames & 0x3F);
-                                offset += rom.Write(ROMAddress.mcand, command, offset);
-                                //write velocities
-                                if (move.Velocity.X >= 0)
-                                {
-                                    offset += rom.Write(ROMAddress.mcand, (byte)(move.Velocity.X & 0x3F), offset);
-                                }
-                                else
-                                {
-                                    offset += rom.Write(ROMAddress.mcand, (byte)(move.Velocity.X | 0xc0), offset);
-                                }
-                                if (move.Velocity.Y >= 0)
-                                {
-                                    offset += rom.Write(ROMAddress.mcand, (byte)(move.Velocity.Y & 0x3F), offset);
-                                }
-                                else
-                                {
-                                    offset += rom.Write(ROMAddress.mcand, (byte)(move.Velocity.Y | 0xc0), offset);
-                                }
-                            }
-                        }
-                        else if (movement is MazeEnemies.CannonMovementPause)
-                        {
-                            MazeEnemies.CannonMovementPause pause = (MazeEnemies.CannonMovementPause)movement;
-                            command = 0xc0;
-                            command += (byte)(pause.WaitFrames & 0x3F );
-                            offset += rom.Write(ROMAddress.mcand, command, offset);
-                        }
-                        else if (movement is MazeEnemies.CannonMovementReturn)
-                        {
-                            MazeEnemies.CannonMovementReturn ret = (MazeEnemies.CannonMovementReturn)movement;
-                            command = 0x00;
-                            offset += rom.Write(ROMAddress.mcand, 0, offset);
-                        }
-                        else if (movement is MazeEnemies.CannonMovementAngle)
-                        {
-                            MazeEnemies.CannonMovementAngle angle = (MazeEnemies.CannonMovementAngle)movement;
-                            command = 0x40;
-                            command += (byte)(((int)angle.Angle) << 3);
-                            command += (byte)(((int)angle.Speed) << 1);
-                            if (angle.FireShot > 0)
-                            {
-                                command += 0x01;
-                            }
-                            offset += rom.Write(ROMAddress.mcand, command, offset);
-                            if (angle.FireShot > 0)
-                            {
-                                //write velocity now too
-                                offset += rom.Write(ROMAddress.mcand, angle.FireShot, offset);
-                            }
-                        }
-                    }
-                }
-                //build trips now
-                offset = 0;
-                int tripoffset = 0;
-                foreach (MazeEnemies.TripPad trip in tripPads)
-                {
-                    offset += rom.Write(ROMAddress.mztr0, Context.PointToByteArrayPacked(new Point(trip.Position.X, trip.Position.Y + 64)), offset);
-                    byte[] position = Context.PointToByteArrayShort(new Point(trip.Pyroid.Position.X, trip.Pyroid.Position.Y + 64));
-                    if (trip.Pyroid.PyroidStyle == mhedit.MazeEnemies.PyroidStyle.Single)
-                    {
-                        position[0] += 0x80;
-                    }
-                    rom.Write(ROMAddress.trtbl, position, tripoffset + 0x18);
-                    rom.Write(ROMAddress.trtbl, position, tripoffset + 0x30);
-                    rom.Write(ROMAddress.trtbl, position, tripoffset + 0x48);
-                    tripoffset += rom.Write(ROMAddress.trtbl, position, tripoffset);
-                    
-                    rom.Write(ROMAddress.trtbl, new byte[] { (byte)trip.Pyroid.Velocity }, tripoffset + 0x18);
-                    rom.Write(ROMAddress.trtbl, new byte[] { (byte)trip.Pyroid.Velocity }, tripoffset + 0x30);
-                    rom.Write(ROMAddress.trtbl, new byte[] { (byte)trip.Pyroid.Velocity }, tripoffset + 0x48);
-                    tripoffset += rom.Write(ROMAddress.trtbl, new byte[] { (byte)trip.Pyroid.Velocity }, tripoffset);
-                    
-                }
-                rom.Write(ROMAddress.mztr0, (byte)0, offset);
-                //de hand finally
-                offset = 0;
-                if (hand != null)
-                {
-                    byte[] handLocation = Context.PointToByteArrayShort(new Point(hand.Position.X + 64, hand.Position.Y));
-                    offset += rom.Write(ROMAddress.hand0, handLocation , offset);
-                    byte[] reactoidLocation = Context.PointToByteArrayShort(new Point(reactor.Position.X, reactor.Position.Y + 64));
-                    int xAccordians = Math.Abs(reactoidLocation[0] - handLocation[0]);
-                    int yAccordians = Math.Abs(handLocation[1] - reactoidLocation[1]);
-                    offset += rom.Write(ROMAddress.hand0, new byte[] { (byte)((xAccordians * 2) + 1), (byte)(yAccordians * 2), 0x3F, 0x0B, 0x1F, 0x05, 0x03 }, offset);
-                }
-
-                //write it BABY!!!!
-                if (rom.Save())
-                {
-                    success = true;
-                }
-            }
-            else
-            {
-                MessageBox.Show(String.Join("\r\n",_currentMaze.ValidationMessage.ToArray()), "Validation Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                success = false;
-            }
-            return success;
-        }
-
-        private byte GetDecimalByte(int value)
-        {
-            byte outValue = 0;
-            string valueString = value.ToString();
-            for(int i = 0; i < valueString.Length; i++)
-            {
-                if (i > 0) outValue = (byte)(outValue << 4);
-                outValue += (byte)(((byte)0xF) & byte.Parse(valueString[i].ToString()));
-            }
-            return outValue;
         }
 
         private void toolStripButtonConfiguration_Click(object sender, EventArgs e)
@@ -1635,8 +1177,8 @@ namespace mhedit
         private void toolStripButtonLoadFromROM_Click(object sender, EventArgs e)
         {
 
-            //string romPath = "Z:\\Files\\ROM Archive\\Vid ROM's\\Atari\\MajorHavoc\\";
-            string romPath = @"..\..\ProductionROMs\";
+            string romPath = @"C:\SVN\havoc\mame\roms\mhavoc\";
+			//string romPath = @"..\..\ProductionROMs\";
 
             if (!Directory.Exists(romPath))
             {
@@ -1650,435 +1192,7 @@ namespace mhedit
                 romPath = fb.SelectedPath + "\\";
             }
 
-            ROMDump rom = new ROMDump(romPath, romPath, romPath);
-
-            MazeCollection mazeCollection = new MazeCollection("Production Mazes");
-            mazeCollection.AuthorEmail = "Owen Rubin";
-
-            for ( int i = 0; i < 16; i++)
-            {
-
-                byte mazeType = (byte) (i & 0x03);
-   
-                Maze maze = new Maze((MazeType)mazeType, "Level " + (i+1).ToString());
-
-                //hint text - only first 12 mazes tho
-                if (i < 12)
-                {
-                    byte messageIndex = rom.ReadByte(0x93FE, i);
-                    maze.Hint = rom.GetMessage(messageIndex);
-                }
-                //build reactor
-                ushort mazeInitIndex = rom.ReadWord(0x2581, i*2);
-                MazeObjects.Reactoid reactor = new MazeObjects.Reactoid();
-                reactor.LoadPosition(rom.ReadBytes(mazeInitIndex, 4));
-                mazeInitIndex += 4;
-                int timer = rom.HexToDecimal((int) rom.ReadByte(0x3355, i));
-                reactor.Timer = timer;
-                maze.AddObject(reactor);
-
-
-
-                //pyroids
-                byte firstValue = rom.ReadByte(mazeInitIndex, 0);
-                while (firstValue != 0xff)
-                {
-                    MazeEnemies.Pyroid pyroid = new MazeEnemies.Pyroid();
-                    pyroid.LoadPosition(rom.ReadBytes(mazeInitIndex, 4));
-                    mazeInitIndex += 4;
-                    byte fireballVelX = rom.ReadByte(mazeInitIndex, 0);
-                    if (fireballVelX > 0x70 && fireballVelX < 0x90)
-                    {
-                        //incrementing velocity
-                        mazeInitIndex++;
-                        byte fireballVelXIncrement = fireballVelX;
-                        fireballVelX = rom.ReadByte(mazeInitIndex, 0);
-                    }
-                    mazeInitIndex++;
-                    byte fireballVelY = rom.ReadByte(mazeInitIndex, 0);
-                    if (fireballVelY > 0x70 && fireballVelY < 0x90)
-                    {
-                        //incrementing velocity
-                        mazeInitIndex++;
-                        byte fireballVelYIncrement = fireballVelY;
-                        fireballVelY = rom.ReadByte(mazeInitIndex, 0);
-                    }
-                    mazeInitIndex++;
-
-                    pyroid.Velocity.X = fireballVelX;
-                    pyroid.Velocity.Y = fireballVelY;
-                    maze.AddObject(pyroid);
-
-                    firstValue = rom.ReadByte(mazeInitIndex, 0);
-
-                    if (firstValue == 0xfe)
-                    {
-                        mazeInitIndex++;
-                        //perkoids now...
-                        break;
-                    }
-                }   
-
-                /// Perkoids 
-                while ( firstValue != 0xff )
-                {
-                    MazeEnemies.Perkoid perkoid = new MazeEnemies.Perkoid();
-                    perkoid.LoadPosition( rom.ReadBytes( mazeInitIndex, 4 ) );
-                    mazeInitIndex += 4;
-                    byte perkoidVelX = rom.ReadByte( mazeInitIndex, 0 );
-                    if ( perkoidVelX > 0x70 && perkoidVelX < 0x90 )
-                    {
-                        //incrementing velocity
-                        mazeInitIndex++;
-                        byte perkoidVelXIncrement = perkoidVelX;
-                        perkoidVelX = rom.ReadByte( mazeInitIndex, 0 );
-                    }
-                    mazeInitIndex++;
-                    byte perkoidVelY = rom.ReadByte( mazeInitIndex, 0 );
-                    if ( perkoidVelY > 0x70 && perkoidVelY < 0x90 )
-                    {
-                        //incrementing velocity
-                        mazeInitIndex++;
-                        byte perkoidVelYIncrement = perkoidVelY;
-                        perkoidVelY = rom.ReadByte( mazeInitIndex, 0 );
-                    }
-                    mazeInitIndex++;
-
-                    perkoid.Velocity.X = perkoidVelX;
-                    perkoid.Velocity.Y = perkoidVelY;
-                    maze.AddObject( perkoid );
-
-                    firstValue = rom.ReadByte( mazeInitIndex, 0 );
-                }
-
-                //do oxygens now
-                ushort oxygenBaseAddress = rom.ReadWord(0x25A9, i * 2);
-
-                byte oxoidValue = rom.ReadByte(oxygenBaseAddress, 0);
-                while (oxoidValue != 0x00)
-                {
-                    MazeObjects.Oxoid oxoid = new MazeObjects.Oxoid();
-                    oxoid.LoadPosition(oxoidValue);
-                    maze.AddObject(oxoid);
-
-                    oxygenBaseAddress++;
-                    oxoidValue = rom.ReadByte(oxygenBaseAddress, 0);
-                }
-
-
-                //do lightning (Force Fields)
-                ushort lightningBaseAddress = rom.ReadWord(0x25D1, i * 2);
-
-                byte lightningValue = rom.ReadByte(lightningBaseAddress, 0);
-                bool isHorizontal = true;
-
-                if (lightningValue == 0xff)
-                {
-                    isHorizontal = false;
-                    lightningBaseAddress++;
-                    /// I think we are missing this load here...
-                    ///lightningValue = rom.ReadByte( lightningBaseAddress, 0 );
-                }
-
-                while (lightningValue != 0x00)
-                {
-
-                    if (isHorizontal)
-                    {
-                        MazeEnemies.LightningH lightningh = new MazeEnemies.LightningH();
-                        lightningh.LoadPosition(lightningValue);
-                        maze.AddObject(lightningh);
-                    }
-                    else
-                    {
-                        /// Weird?? We don't seem to load a new lightningValue thus this
-                        /// value is always OxFF for the 1st one???? So the position never
-                        /// changes??
-                        /// Seems like this code doesn't work if the first lightning is
-                        /// Vertical?
-                        MazeEnemies.LightningV lightningv = new MazeEnemies.LightningV();
-                        lightningv.LoadPosition(lightningValue);
-                        maze.AddObject(lightningv);
-
-                    }
-
-                    lightningBaseAddress++;
-                    lightningValue = rom.ReadByte(lightningBaseAddress, 0);
-                    if (lightningValue == 0xff)
-                    {
-                        isHorizontal = false;
-                        lightningBaseAddress++;
-                    }
-                    lightningValue = rom.ReadByte(lightningBaseAddress, 0);
-                }
-
-                //build arrows now
-                ushort arrowBaseAddress = rom.ReadWord(0x25F9, i * 2);
-                byte arrowValue = rom.ReadByte(arrowBaseAddress, 0);
-
-                while (arrowValue != 0x00)
-                {
-                    MazeObjects.Arrow arrow = new MazeObjects.Arrow();
-                    arrow.LoadPosition(arrowValue);
-                    arrowBaseAddress++;
-                    arrowValue = rom.ReadByte(arrowBaseAddress, 0);
-                    arrow.ArrowDirection = (MazeObjects.ArrowDirection)arrowValue;
-                    maze.AddObject(arrow);
-                    arrowBaseAddress++;
-                    arrowValue = rom.ReadByte(arrowBaseAddress, 0);
-                }
-
-                //maze walls
-                //static first
-                ushort wallBaseAddress = rom.ReadWord(0x2647, i * 2);
-                byte wallValue = rom.ReadByte(wallBaseAddress, 0);
-
-                while (wallValue != 0x00)
-                {
-                    int relativeWallValue = wallValue - 1;
-                    if (mazeType == 0x01)
-                    {
-                        relativeWallValue = wallValue + 4;
-                    }
-                    else if (mazeType == 0x02)
-                    {
-                        relativeWallValue = wallValue + 4;
-                    }
-                    else if (mazeType == 0x03)
-                    {
-                        relativeWallValue = wallValue + 2;
-                    }
-                    Point stampPoint = maze.PointFromStamp(relativeWallValue);
-                    wallBaseAddress++;
-                    wallValue = rom.ReadByte(wallBaseAddress, 0);
-                    MazeWall wall = new MazeWall((MazeWallType)(wallValue & 0x07), stampPoint);
-                    wall.UserWall = true;
-                    maze.AddObject(wall);
-                    wallBaseAddress++;
-                    wallValue = rom.ReadByte(wallBaseAddress, 0);
-                }
-
-                //then dynamic walls
-
-
-
-
-                //one way walls
-                ushort onewayBaseAddress = rom.ReadWord(0x2677, i * 2);
-                byte onewayValue = rom.ReadByte(onewayBaseAddress, 0);
-
-                while (onewayValue != 0x00)
-                {
-                    MazeObjects.OneWay oneway = new MazeObjects.OneWay();
-                    if ( onewayValue == 0xff )
-                    {
-                        oneway.Direction = MazeObjects.OneWayDirection.Left;
-                        onewayBaseAddress++;
-                        onewayValue = rom.ReadByte( onewayBaseAddress, 0 );
-                    }
-                    else
-                    {
-                        oneway.Direction = MazeObjects.OneWayDirection.Right;
-                    }
-                    oneway.LoadPosition(onewayValue);
-                    maze.AddObject(oneway);
-
-                    onewayBaseAddress++;
-                    onewayValue = rom.ReadByte(onewayBaseAddress, 0);
-                }
-
-                // Stalactite Level 6 and up
-                if ( i > 4 )
-                {
-                    ushort stalactiteBaseAddress = rom.ReadWord( 0x26B3, (i-5) * 2 );
-                    byte stalactiteValue = rom.ReadByte( stalactiteBaseAddress, 0 );
-
-                    while ( stalactiteValue != 0x00 )
-                    {
-                        MazeObjects.Spikes spikes = new MazeObjects.Spikes();
-                        spikes.LoadPosition( stalactiteValue );
-                        maze.AddObject( spikes );
-
-                        stalactiteBaseAddress++;
-                        stalactiteValue = rom.ReadByte( stalactiteBaseAddress, 0 );
-                    }
-                }
-
-                //locks and keys
-                ushort lockBaseAddress = rom.ReadWord(0x26D1, i * 2);
-                byte lockValue = rom.ReadByte(lockBaseAddress, 0);
-
-                while (lockValue != 0x00)
-                {
-                    byte lockColor = lockValue;
-                    lockBaseAddress++;
-
-                    MazeObjects.Key key = new MazeObjects.Key();
-                    key.LoadPosition(rom.ReadByte(lockBaseAddress, 0));
-                    key.KeyColor = (MazeObjects.ObjectColor)lockColor;
-                    maze.AddObject(key);
-
-                    lockBaseAddress++;
-
-                    MazeObjects.Lock keylock = new MazeObjects.Lock();
-                    keylock.LoadPosition(rom.ReadByte(lockBaseAddress, 0));
-                    keylock.LockColor = (MazeObjects.ObjectColor)lockColor;
-                    maze.AddObject(keylock);
-
-                    lockBaseAddress++;
-                    lockValue = rom.ReadByte(lockBaseAddress, 0);
-                }
-
-                //Escape pod
-                // Levels 2,6,10,14 only
-                if (mazeType == 0x01)
-                {
-                    ushort podBaseAddress = 0x32FF;
-                    byte podValue = rom.ReadByte(podBaseAddress, i >> 2);
-
-                    if (podValue > 0)
-                    {
-                        MazeObjects.EscapePod pod = new MazeObjects.EscapePod();
-                        maze.AddObject(pod);
-                    }
-                }
-
-                //clock & boots
-                byte clockData = rom.ReadByte(0x3290, i);
-                byte bootsData = rom.ReadByte(0x3290, i + 0x10);
-
-                if (clockData != 0)
-                {
-                    MazeObjects.Clock clock = new MazeObjects.Clock();
-                    clock.LoadPosition(clockData);
-                    maze.AddObject(clock);
-                }
-
-                if (bootsData != 0)
-                {
-                    MazeObjects.Boots boots = new MazeObjects.Boots();
-                    boots.LoadPosition(bootsData);
-                    maze.AddObject(boots);
-                }
-               
-                //transporters
-                ushort transporterBaseAddress = rom.ReadWord(0x26F9, i * 2);
-                byte colorValue = rom.ReadByte(transporterBaseAddress, 0);
-
-                while (colorValue != 0x00)
-                {
-                    transporterBaseAddress++;
-                    MazeObjects.Transporter transporter = new MazeObjects.Transporter();
-                    transporter.LoadPosition(rom.ReadByte(transporterBaseAddress, 0));
-                    transporter.Direction = MazeObjects.OneWayDirection.Left;
-                    if ((colorValue & 0x10) > 0)
-                    {
-                        transporter.Direction = MazeObjects.OneWayDirection.Right;
-                    }
-                    transporter.Color = (MazeObjects.ObjectColor)(colorValue & 0x07);
-                    maze.AddObject(transporter);
-                    transporterBaseAddress++;
-                    colorValue = rom.ReadByte(transporterBaseAddress, 0);
-                }
-
-                //Laser Cannon
-                /// Ok, So looking at why the cannons are shifted down on level 16.
-                /// The issue is that the cannon goes up and down. The key is where
-                /// the cannon starts with respect to the ceiling. Cannons 2 and 3
-                /// start low (closer to the floor) than all others.
-                /// I need to figure out how that's encoded.
-                byte cannonAddressOffset = rom.ReadByte(0x269F, i );
-                if (cannonAddressOffset != 0)
-                {
-                    ushort cannonBaseAddress = (ushort)(0x30B1 + cannonAddressOffset);
-                    ushort cannonPointerAddress = rom.ReadWord(cannonBaseAddress, 0);
-                    
-                    while (cannonPointerAddress != 0)
-                    {
-                        MazeEnemies.Cannon cannon = new MazeEnemies.Cannon();
-                        cannon.LoadPosition(rom.ReadBytes(cannonPointerAddress, 4));
-                        maze.AddObject(cannon);
-
-                        cannonBaseAddress += 2;
-                        cannonPointerAddress = rom.ReadWord(cannonBaseAddress, 0);
-                    }
-                }
-
-                //build trips now
-                // Level 5 and up
-                if (i > 3)
-                {
-                    /// The max number of trips in a maze is 7. Trips are stored in a list
-                    /// that is null terminated. Trips start on level 5 and exist on every
-                    /// level to 16. 12 total levels.
-                    ushort tripBaseAddress = rom.ReadWord( (ushort)0x2627, ((i-4)*2));
-                    /// Trip Pyroids are a 1 to 1 relationship to a trip. Trip Pyroids are
-                    /// described in 3 bytes. Each level worth of trip pyroids are stored in
-                    /// an array 8 pyroids long (7 + null) even if there are less than 7
-                    /// trips in a level.
-                    ushort tripPyroidBaseAddress = (ushort)(0x2D36 + ((i-4)*3*8));
-
-                    byte tripX = rom.ReadByte(tripBaseAddress, 0);
-
-                    while (tripX != 0)
-                    {
-                        MazeEnemies.TripPad trip = new MazeEnemies.TripPad();
-                        trip.LoadPosition(tripX);
-                        maze.AddObject(trip);
-
-                        tripBaseAddress++;
-                        tripX = rom.ReadByte(tripBaseAddress, 0);
-
-                        /// level 8 has 2 pyroids per trip pad.
-                        //trip pyroid too
-                        byte bx = (byte) (0x7f & rom.ReadByte(tripPyroidBaseAddress++, 0));
-                        byte by = rom.ReadByte(tripPyroidBaseAddress++, 0);
-
-                        /// This velocity value isn't used anywhere??
-                        byte bv = rom.ReadByte(tripPyroidBaseAddress++, 0);
-
-                        byte[] longBytes = new byte[4];
-
-                        longBytes[0] = 0;
-                        longBytes[1] = (byte)((bx & 0x1f)+1);
-
-                        /// this isn't the same sign extension used elsewhere? I need to spend
-                        /// some more time understanding the position conversions.
-                        longBytes[2] = 0x80;
-                        longBytes[3] = by;
-
-                        MazeEnemies.TripPadPyroid tpp = new MazeEnemies.TripPadPyroid();
-                        tpp.LoadPosition(longBytes);
-                        maze.AddObject(tpp);
-
-                        trip.Pyroid = tpp;
-                    }
-                }
-
-                //finally... de hand
-                // Level 7 and up.
-                if (i > 5)
-                {
-                    byte[] longBytes = new byte[ 4 ];
-
-                    //longBytes[ 0 ] = 0;
-                    //longBytes[ 2 ] = 0;
-
-                    ushort handBaseAddress = rom.ReadWord((ushort)(0x2721 + ((i - 6) * 2)), 0);
-                    longBytes[ 1 ] = rom.ReadByte(handBaseAddress, 0);
-                    if ( longBytes[ 1 ] != 0)
-                    {
-                        handBaseAddress++;
-                        longBytes[ 3 ] = rom.ReadByte(handBaseAddress, 0);
-
-                        MazeObjects.Hand hand = new MazeObjects.Hand();
-
-                        hand.LoadPosition( longBytes );
-                        maze.AddObject(hand);
-                    }
-                }
-                mazeCollection.InsertMaze(i, maze);
-            }
+            MazeCollection mazeCollection = MAMEHelper.GetMazeCollectionFromROM(romPath, RefreshMazeName);
 
             TreeNode node = treeView.Nodes.Add(mazeCollection.Name);
             node.Tag = mazeCollection;
@@ -2089,31 +1203,45 @@ namespace mhedit
             mazeCollection.PropertyGrid = propertyGrid;
         }
 
-        private void toolStripButtonContestLogin_Click(object sender, EventArgs e)
-        {
-            DialogMHPLogin mhpLogin = new DialogMHPLogin();
-            mhpLogin.ShowDialog();
-        }
-
         private void toolStripButtonContestUpload_Click(object sender, EventArgs e)
         {
-            if (treeView.SelectedNode != null)
+
+            if (treeView.SelectedNode == null)
             {
-                if (treeView.SelectedNode.Tag != null)
+                MessageBox.Show("You must select a maze to upload.", "Missing Maze", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                if (treeView.SelectedNode.Tag == null)
                 {
-                    if (treeView.SelectedNode.Tag.GetType().ToString() == "mhedit.Maze")
+                    MessageBox.Show("There was an error getting the maze from the tree. Sorry!", "Missing Maze", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    if (treeView.SelectedNode.Tag.GetType() == typeof(Maze))
                     {
                         Maze maze = (Maze)treeView.SelectedNode.Tag;
+                        Image mazeImage = maze.GetImage();
 
-                        using (MemoryStream oStream = new MemoryStream())
+                        if (maze != null && mazeImage != null)
                         {
-                            using (MemoryStream mStream = new MemoryStream())
+                            DialogMHPLogin mhpDialog = new DialogMHPLogin();
+                            if (!String.IsNullOrEmpty(Properties.Settings.Default.MHPUsername))
                             {
-                                BinaryFormatter b = new BinaryFormatter();
-                                b.Serialize(mStream, maze);
-                                mStream.Position = 0;
-                                BZip2.Compress(mStream, oStream, true, 4096);
+                                mhpDialog.Username = Properties.Settings.Default.MHPUsername;
                             }
+                            if (!String.IsNullOrEmpty(Properties.Settings.Default.MHPPassword)
+                                && !String.IsNullOrEmpty(Properties.Settings.Default.MHPKey))
+                            {
+                                mhpDialog.Password = Properties.Settings.Default.MHPPassword;
+                                mhpDialog.PasswordKey = Properties.Settings.Default.MHPKey;
+                            }
+                            mhpDialog.SavePassword = Properties.Settings.Default.MHPSavePassword;
+                            mhpDialog.MazePreview = mazeImage;
+                            mhpDialog.Maze = maze;
+                            mhpDialog.Description = maze.Description;
+                            mhpDialog.MazeName = maze.Name;
+                            mhpDialog.ShowDialog();
                         }
                     }
                 }

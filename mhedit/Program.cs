@@ -88,7 +88,7 @@ namespace mhedit
         {
             //try sending this..
             SendException(title, e);
-            string errorMsg = "An application error occurred. Information will automatically be submitted to the developer. Sorry for an inconvienience.\n\n";
+            string errorMsg = "An application error occurred. Information will automatically be submitted to the homeworld. Sorry for an inconvienience.\n\n";
             errorMsg = errorMsg + "\n" + e.Message + "\n\nStack Trace:\n" + e.StackTrace;
             DialogResult result = MessageBox.Show(errorMsg, title, MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Stop);
             return result;
@@ -105,8 +105,8 @@ namespace mhedit
                     versionString = version.ToString();
                 }
 
-                ServiceReferenceMhedit.ServiceClient service = new mhedit.ServiceReferenceMhedit.ServiceClient();
-                service.LogException(ex.Message, ex.Source, ex.StackTrace, String.Empty, versionString);
+                MHEditServiceReference.MHEditClient client = new MHEditServiceReference.MHEditClient();
+                client.LogException(ex.Message, ex.Source, ex.StackTrace, String.Empty, versionString);
             }
             catch { }
         }

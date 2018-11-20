@@ -94,5 +94,41 @@ namespace mhedit.Properties {
                 this["ShowGridReferences"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MHPKey {
+            get {
+                return ((string)(this["MHPKey"]));
+            }
+            set {
+                this["MHPKey"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MHPSavePassword {
+            get {
+                return ((bool)(this["MHPSavePassword"]));
+            }
+            set {
+                this["MHPSavePassword"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MameWindow {
+            get {
+                return ((bool)(this["MameWindow"]));
+            }
+            set {
+                this["MameWindow"] = value;
+            }
+        }
     }
 }

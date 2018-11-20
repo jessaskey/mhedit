@@ -31,6 +31,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DialogConfiguration));
             this.buttonSave = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPageOptions = new System.Windows.Forms.TabPage();
+            this.checkBoxShowGridCoordinateReferences = new System.Windows.Forms.CheckBox();
             this.tabPageMAME = new System.Windows.Forms.TabPage();
             this.checkBoxDebug = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -40,11 +42,10 @@
             this.textBoxMameExecutable = new System.Windows.Forms.TextBox();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.tabPageOptions = new System.Windows.Forms.TabPage();
-            this.checkBoxShowGridCoordinateReferences = new System.Windows.Forms.CheckBox();
+            this.checkBoxMAMEWindow = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
-            this.tabPageMAME.SuspendLayout();
             this.tabPageOptions.SuspendLayout();
+            this.tabPageMAME.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonSave
@@ -67,8 +68,29 @@
             this.tabControl1.Size = new System.Drawing.Size(544, 158);
             this.tabControl1.TabIndex = 13;
             // 
+            // tabPageOptions
+            // 
+            this.tabPageOptions.Controls.Add(this.checkBoxShowGridCoordinateReferences);
+            this.tabPageOptions.Location = new System.Drawing.Point(4, 22);
+            this.tabPageOptions.Name = "tabPageOptions";
+            this.tabPageOptions.Size = new System.Drawing.Size(536, 132);
+            this.tabPageOptions.TabIndex = 2;
+            this.tabPageOptions.Text = "Options";
+            this.tabPageOptions.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxShowGridCoordinateReferences
+            // 
+            this.checkBoxShowGridCoordinateReferences.AutoSize = true;
+            this.checkBoxShowGridCoordinateReferences.Location = new System.Drawing.Point(22, 17);
+            this.checkBoxShowGridCoordinateReferences.Name = "checkBoxShowGridCoordinateReferences";
+            this.checkBoxShowGridCoordinateReferences.Size = new System.Drawing.Size(182, 17);
+            this.checkBoxShowGridCoordinateReferences.TabIndex = 0;
+            this.checkBoxShowGridCoordinateReferences.Text = "Show Grid Coordinate Reference";
+            this.checkBoxShowGridCoordinateReferences.UseVisualStyleBackColor = true;
+            // 
             // tabPageMAME
             // 
+            this.tabPageMAME.Controls.Add(this.checkBoxMAMEWindow);
             this.tabPageMAME.Controls.Add(this.checkBoxDebug);
             this.tabPageMAME.Controls.Add(this.label5);
             this.tabPageMAME.Controls.Add(this.textBoxMameDriver);
@@ -86,7 +108,7 @@
             // checkBoxDebug
             // 
             this.checkBoxDebug.AutoSize = true;
-            this.checkBoxDebug.Location = new System.Drawing.Point(109, 100);
+            this.checkBoxDebug.Location = new System.Drawing.Point(109, 74);
             this.checkBoxDebug.Name = "checkBoxDebug";
             this.checkBoxDebug.Size = new System.Drawing.Size(193, 17);
             this.checkBoxDebug.TabIndex = 18;
@@ -151,25 +173,15 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // tabPageOptions
+            // checkBoxMAMEWindow
             // 
-            this.tabPageOptions.Controls.Add(this.checkBoxShowGridCoordinateReferences);
-            this.tabPageOptions.Location = new System.Drawing.Point(4, 22);
-            this.tabPageOptions.Name = "tabPageOptions";
-            this.tabPageOptions.Size = new System.Drawing.Size(536, 132);
-            this.tabPageOptions.TabIndex = 2;
-            this.tabPageOptions.Text = "Options";
-            this.tabPageOptions.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxShowGridCoordinateReferences
-            // 
-            this.checkBoxShowGridCoordinateReferences.AutoSize = true;
-            this.checkBoxShowGridCoordinateReferences.Location = new System.Drawing.Point(22, 17);
-            this.checkBoxShowGridCoordinateReferences.Name = "checkBoxShowGridCoordinateReferences";
-            this.checkBoxShowGridCoordinateReferences.Size = new System.Drawing.Size(182, 17);
-            this.checkBoxShowGridCoordinateReferences.TabIndex = 0;
-            this.checkBoxShowGridCoordinateReferences.Text = "Show Grid Coordinate Reference";
-            this.checkBoxShowGridCoordinateReferences.UseVisualStyleBackColor = true;
+            this.checkBoxMAMEWindow.AutoSize = true;
+            this.checkBoxMAMEWindow.Location = new System.Drawing.Point(109, 97);
+            this.checkBoxMAMEWindow.Name = "checkBoxMAMEWindow";
+            this.checkBoxMAMEWindow.Size = new System.Drawing.Size(199, 17);
+            this.checkBoxMAMEWindow.TabIndex = 19;
+            this.checkBoxMAMEWindow.Text = "Run MAME with \'-window\' parameter";
+            this.checkBoxMAMEWindow.UseVisualStyleBackColor = true;
             // 
             // DialogConfiguration
             // 
@@ -190,10 +202,10 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Configuration";
             this.tabControl1.ResumeLayout(false);
-            this.tabPageMAME.ResumeLayout(false);
-            this.tabPageMAME.PerformLayout();
             this.tabPageOptions.ResumeLayout(false);
             this.tabPageOptions.PerformLayout();
+            this.tabPageMAME.ResumeLayout(false);
+            this.tabPageMAME.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -213,5 +225,6 @@
         private System.Windows.Forms.CheckBox checkBoxDebug;
         private System.Windows.Forms.TabPage tabPageOptions;
         private System.Windows.Forms.CheckBox checkBoxShowGridCoordinateReferences;
+        private System.Windows.Forms.CheckBox checkBoxMAMEWindow;
     }
 }

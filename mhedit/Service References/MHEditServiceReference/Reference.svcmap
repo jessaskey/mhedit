@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="ed7e8ec1-d952-4561-ac47-07e2a68f18c1" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:52484/mhedit.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="MHEdit.xsd" MetadataType="Schema" ID="035dbd2d-9743-45b2-9c4a-4e309b467c00" SourceId="1" SourceUrl="http://localhost:52484/MHEdit.svc?xsd=xsd0" />
+    <MetadataFile FileName="MHEditService.wsdl" MetadataType="Wsdl" ID="155f5124-31c7-4277-b1c9-925422090d45" SourceId="1" SourceUrl="http://localhost:52484/MHEdit.svc?wsdl" />
+    <MetadataFile FileName="MHEdit1.xsd" MetadataType="Schema" ID="dc03dcc1-3e38-4741-9013-2898e2f68bf2" SourceId="1" SourceUrl="http://localhost:52484/MHEdit.svc?xsd=xsd1" />
+    <MetadataFile FileName="MHEdit.disco" MetadataType="Disco" ID="e24b6625-53be-45b9-a92b-528037bf9179" SourceId="1" SourceUrl="http://localhost:52484/MHEdit.svc?disco" />
+    <MetadataFile FileName="MHEdit2.xsd" MetadataType="Schema" ID="cdeedd7c-d535-4f44-8a81-b2d19c96937b" SourceId="1" SourceUrl="http://localhost:52484/MHEdit.svc?xsd=xsd2" />
+    <MetadataFile FileName="MHEdit3.xsd" MetadataType="Schema" ID="a829a296-6011-4e12-964d-bfe72c5659eb" SourceId="1" SourceUrl="http://localhost:52484/MHEdit.svc?xsd=xsd3" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
