@@ -10,7 +10,7 @@ namespace GameEditor.Atari.MajorHavoc.Test
 {
     public class UnitTest1
     {
-        [Fact]
+        [Fact( Skip = "Not Completed" )]
         public void Test1()
         {
             //GameProfile profile;
@@ -51,7 +51,7 @@ namespace GameEditor.Atari.MajorHavoc.Test
             Assert.Equal( oxoids[ 0 ], oxoidsAo[ 0 ] );
         }
 
-        [Fact]
+        [Fact( Skip = "Not Completed" )]
         public void Test2()
         {
             Stream memoryStream = new MemoryStream( 32 );
