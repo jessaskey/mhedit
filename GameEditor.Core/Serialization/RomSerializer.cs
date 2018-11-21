@@ -99,16 +99,15 @@ namespace GameEditor.Core.Serialization
             objectWriter.Serialize( this._type, graph );
         }
 
-        internal static byte GetTerminationByte( Type type )
+        internal static object GetTerminationObject( Type type )
         {
-            IEnumerable<CollectionTerminationAttribute> attrs =
-                type.GetCustomAttributes<CollectionTerminationAttribute>( true );
+            IEnumerable<TerminationObjectAttribute> attrs =
+                type.GetCustomAttributes<TerminationObjectAttribute>( true );
 
-            CollectionTerminationAttribute attr = attrs.FirstOrDefault();
+            TerminationObjectAttribute attr = attrs.FirstOrDefault();
 
-            /// The default is null (0x00) termination. Return that if no attribute
-            /// is found.
-            return attr == null ? (byte)0 : attr.TerminationByte;
+            /// return the termination value or null if no attribute present.
+            return attr?.Value;
         }
 
         internal static bool IsPrimitiveType( Type type )

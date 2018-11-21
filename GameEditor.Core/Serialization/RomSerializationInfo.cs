@@ -159,10 +159,12 @@ namespace GameEditor.Core.Serialization
             IEnumerable<ConcreteTypeAttribute> concreteTypes =
                 attrs.Where<ConcreteTypeAttribute>( attr =>
                 {
-                    return string.IsNullOrEmpty( attr.PropertyName ) ?
-                           type.IsAssignableFrom( attr.ConcreteType ) :
-                           name.Equals( attr.PropertyName, StringComparison.InvariantCultureIgnoreCase ) &&
-                            type.IsAssignableFrom( attr.ConcreteType );
+                    /// If Member name is provided then use that in the qualification
+                    return string.IsNullOrEmpty( attr.MemberName ) ?
+                           type.IsAssignableFrom( attr.ConcreteType )
+                           :
+                           name.Equals( attr.MemberName, StringComparison.InvariantCultureIgnoreCase ) &&
+                           type.IsAssignableFrom( attr.ConcreteType );
                 } );
 
             /// if there are multiple hits for a concrete type (when a member name

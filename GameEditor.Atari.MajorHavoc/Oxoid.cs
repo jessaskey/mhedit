@@ -8,7 +8,7 @@ namespace GameEditor.Atari.MajorHavoc
     /// </summary>
     [Serializable]
     [ConcreteType( typeof( LowResolutionMazePosition ) )]
-    [CollectionTermination( 0xff )]
+    [TerminationObject( (byte)0xff )]
     public sealed class Oxoid : MazeObject
     {
         private int _value;

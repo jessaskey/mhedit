@@ -8,22 +8,22 @@ namespace GameEditor.Core.Serialization
     public class ConcreteTypeAttribute : Attribute
     {
         private Type _concrete;
-        private string _property;
+        private string _memberName;
 
         public ConcreteTypeAttribute( Type concrete )
             : this( concrete, string.Empty )
         { }
 
-        public ConcreteTypeAttribute( Type concrete, string property )
+        public ConcreteTypeAttribute( Type concrete, string memberName )
         {
             this._concrete = concrete;
 
-            this._property = property;
+            this._memberName = memberName;
         }
 
-        public string PropertyName
+        public string MemberName
         {
-            get { return this._property; }
+            get { return this._memberName; }
         }
 
         public Type ConcreteType

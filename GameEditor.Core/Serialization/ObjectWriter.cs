@@ -34,6 +34,8 @@ namespace GameEditor.Core.Serialization
                 }
                 else
                 {
+                    /// Collect the objects that make up this object type and serialize
+                    /// them individually, in the order added.
                     RomSerializationInfo si = new RomSerializationInfo( type, null );
 
                     iSerializable.GetObjectData( si, this._context );
@@ -51,12 +53,10 @@ namespace GameEditor.Core.Serialization
 
         private void SerializeCollection( Type type, object graph )
         {
-            IEnumerable enumerable = graph as IEnumerable;
-
             /// I don't really know what to check here to limit the serialization
             /// to Generic collections but they all seem to implement IEnumerable
             /// and I need that to iterate over them anyway.
-            if ( enumerable != null && type.IsClass )
+            if ( graph is IEnumerable enumerable && type.IsClass )
             {
                 Type collectionElementType;
 
@@ -74,20 +74,23 @@ namespace GameEditor.Core.Serialization
                     throw new SerializationException();
                 }
 
-                byte terminationByte = 
-                    RomSerializer.GetTerminationByte( collectionElementType );
-
                 var enumerator = enumerable.GetEnumerator();
 
                 ///Collection class so enumerate and serialize..
                 while ( enumerator.MoveNext() && enumerator.Current != null )
                 {
+                    /// serialize the collection objects using the element Type.
                     this.Serialize( collectionElementType, enumerator.Current );
-
-                    /// serialize the objects with the provided Type.
                 }
 
-                this._writer.Write( terminationByte );
+                /// terminate the collection with the terminator if provided.
+                object terminationValue =
+                    RomSerializer.GetTerminationObject( collectionElementType );
+
+                if ( terminationValue != null )
+                {
+                    this.SerializePrimitive( terminationValue );
+                }
             }
         }
 
