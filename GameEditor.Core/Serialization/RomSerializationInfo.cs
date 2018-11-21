@@ -183,9 +183,9 @@ namespace GameEditor.Core.Serialization
                 name, this._reader.DeserializePrimitive( typeof( T ) ), typeof( T ) );
         }
 
-        public object GetValue( string name, Type type )
+        public object GetValue( string name, Type type, int? iEnumerableLength )
         {
-            if ( string.IsNullOrEmpty(name) )
+            if ( string.IsNullOrEmpty( name ) )
             {
                 throw new ArgumentNullException();
             }
@@ -208,7 +208,12 @@ namespace GameEditor.Core.Serialization
 
             /// Don't allow any object to deserialize the same element twice.
             return this.FindElementInternal(
-                name, this._reader.Deserialize( concreteType ), type );
+                name, this._reader.Deserialize( concreteType, iEnumerableLength ), type );
+        }
+
+        public object GetValue( string name, Type type )
+        {
+            return this.GetValue( name, type, null );
         }
 
         public bool GetBoolean( string name )

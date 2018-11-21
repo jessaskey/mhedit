@@ -14,8 +14,12 @@ namespace GameEditor.Atari.MajorHavoc.Serialization
     public class RomSerializer : Core.Serialization.RomSerializer
     {
         public RomSerializer( Type type )
-            :base( type )
-        {}
+            : base( type )
+        { }
+
+        public RomSerializer( Type iEnumerable, int length )
+            : base( iEnumerable, length )
+        { }
 
         public override object Deserialize( Stream serializationStream )
         {

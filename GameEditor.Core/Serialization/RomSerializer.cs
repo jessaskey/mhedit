@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace GameEditor.Core.Serialization
 {
-
     public abstract class RomSerializer : IFormatter
     {
         //private readonly BinaryDeserializationEvents _events = new BinaryDeserializationEvents();
         private readonly Type _type;
         private StreamingContext _context = new StreamingContext( StreamingContextStates.All );
+        private readonly int? _enumerableLength = null;
 
         public ISurrogateSelector SurrogateSelector
         {
@@ -56,6 +56,12 @@ namespace GameEditor.Core.Serialization
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the GameEditor.Core.Serialization.RomSerializer
+        /// class that can serialize objects of the specified type into EPROMs, and
+        /// deserialize EPROMs into objects of the specified type.
+        /// </summary>
+        /// <param name="type">The type of the object that this RomSerializer can serialize.</param>
         public RomSerializer( Type type )
         {
             if ( type == null )
@@ -71,6 +77,33 @@ namespace GameEditor.Core.Serialization
             this._type = type;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the GameEditor.Core.Serialization.RomSerializer
+        /// class that can serialize objects of the specified type into EPROMs, and
+        /// deserialize EPROMs into objects of the specified type. EPROMs typically have
+        /// implicit length Arrays/Collections embedded within and can be deserialized when
+        /// enumerable type and length are provided.
+        /// </summary>
+        /// <param name="iEnumerable">The enumerable type that this RomSerializer
+        /// can serialize.</param>
+        /// <param name="length">The number of objects to be deserialized.</param>
+        public RomSerializer( Type iEnumerable, int length )
+            :this( iEnumerable )
+        {
+            /// must be an enumerable collection class.
+            if ( !iEnumerable.GetInterfaces().Contains( typeof( IEnumerable ) ) )
+            {
+                throw new ArgumentException( "Type is not IEnumerable" );
+            }
+
+            if ( length < 0 )
+            {
+                throw new ArgumentOutOfRangeException( "Length is < 0" );
+            }
+
+            this._enumerableLength = length;
+        }
+
         public abstract object Deserialize( Stream serializationStream );
 
         public abstract void Serialize( Stream serializationStream, object graph );
@@ -79,7 +112,7 @@ namespace GameEditor.Core.Serialization
         {
             ObjectReader objectReader = new ObjectReader( binaryReader, this.Context );
 
-            return objectReader.Deserialize( this._type );
+            return objectReader.Deserialize( this._type, this._enumerableLength );
         }
 
         protected void Serialize( BinaryWriter binaryWriter, object graph )

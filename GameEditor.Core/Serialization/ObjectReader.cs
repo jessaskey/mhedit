@@ -10,10 +10,11 @@ using System.Threading.Tasks;
 
 namespace GameEditor.Core.Serialization
 {
+
     internal class ObjectReader
     {
-        private StreamingContext _context;
-        private BinaryReader _reader;
+        private readonly StreamingContext _context;
+        private readonly BinaryReader _reader;
 
         public ObjectReader( BinaryReader reader, StreamingContext context )
         {
@@ -22,7 +23,12 @@ namespace GameEditor.Core.Serialization
             this._context = context;
         }
 
-        public object Deserialize( Type type )//, BinaryDeserializationEvents events )
+        public BinaryReader BaseReader
+        {
+            get { return this._reader; }
+        }
+
+        public object Deserialize( Type type, int? enumerableLength )//, BinaryDeserializationEvents events )
         {
             if ( RomSerializer.IsPrimitiveType( type ) )
             {
@@ -36,7 +42,7 @@ namespace GameEditor.Core.Serialization
             if ( iserializable == null )
             {
                 /// if not then it assume it to be a collection class..
-                return this.DeserializeCollection( type );
+                return this.DeserializeCollection( type, enumerableLength );
             }
 
             RomSerializationInfo si = new RomSerializationInfo( type, this );
@@ -98,6 +104,7 @@ namespace GameEditor.Core.Serialization
                 default:
                     if ( type == typeof( byte[] ) )
                     {
+                        throw new NotImplementedException();
                         o = this._reader.ReadBytes( 1 );
                     }
                     else
@@ -111,7 +118,7 @@ namespace GameEditor.Core.Serialization
             return o;
         }
 
-        private object DeserializeCollection( Type type )
+        private object DeserializeCollection( Type type, int? predeterminedLength )
         {
             Type collectionElementType;
 
@@ -132,23 +139,15 @@ namespace GameEditor.Core.Serialization
                 throw new SerializationException();
             }
 
-            byte terminationByte =
-                RomSerializer.GetTerminationByte( collectionElementType );
+            CollectionReaderEnumerator enumerator =
+                new CollectionReaderEnumerator( this, collectionElementType, predeterminedLength );
 
             IList collection = (IList)Activator.CreateInstance(
                 typeof( List<> ).MakeGenericType( collectionElementType ) );
 
-            /// Don't use PeekChar() because Characters are custom encoded
-            /// in Atari (and possibly other) games thus PeekChar returns
-            /// a converted value rather than the actual char/byte in the
-            /// stream.
-            while ( this._reader.ReadByte() != terminationByte )
+            while ( enumerator.MoveNext() )
             {
-                /// must back up 1 char/byte to compensate for the ReadByte()
-                /// call above.
-                this._reader.BaseStream.Seek( -1, SeekOrigin.Current );
-
-                collection.Add( this.Deserialize( collectionElementType ) );
+                collection.Add( this.Deserialize( collectionElementType, null ) );
             }
 
             if ( type.IsArray )
