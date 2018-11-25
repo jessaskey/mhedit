@@ -38,11 +38,42 @@ namespace GameEditor.Atari.MajorHavoc.Test
         public void DeserializeUshortArray()
         {
             /// move to the ROM location for the array of uShorts.
-            this._programRomPage0.Seek( 0xE48b - 0x8000, SeekOrigin.Begin );
+            this._programRomPage0.Seek( 0x93FE - 0x8000, SeekOrigin.Begin );
 
-            RomSerializer ushortSerializer = new RomSerializer( typeof( ushort[] ), 12 );
+            RomSerializer ushortSerializer = new RomSerializer( typeof( byte[] ), 12 );
 
-            ushort[] ptrArray = ushortSerializer.Deserialize( this._programRomPage0 ) as ushort[];
+            byte[] indexArray = ushortSerializer.Deserialize( this._programRomPage0 ) as byte[];
+
+            string[] strings = new string[ 12 ];
+
+            int i = 0;
+
+            foreach ( byte b in indexArray )
+            {
+                /// move to the ROM location for the array of uShorts.
+                this._programRomPage0.Position =  0xE48b + b;
+
+                RomSerializer ushortSerializer1 = new RomSerializer( typeof( ushort ) );
+
+                ushort pstr = (ushort)ushortSerializer1.Deserialize( this._programRomPage0 );
+
+                this._programRomPage0.Position = pstr;
+
+                RomSerializer ushortSerializer2 = new RomSerializer( typeof(string) );
+
+                strings[ i ] = ushortSerializer2.Deserialize( this._programRomPage0 ) as string;
+
+                this._programRomPage0.Position = pstr;
+
+                ushortSerializer2.Serialize( this._programRomPage0, strings[ i++ ] );
+            }
+
+            ///// move to the ROM location for the array of uShorts.
+            //this._programRomPage0.Seek( 0xE48b - 0x8000, SeekOrigin.Begin );
+
+            //RomSerializer ushortSerializer1 = new RomSerializer( typeof( ushort[] ), 12 );
+
+            //ushort[] ptrArray = ushortSerializer1.Deserialize( this._programRomPage0 ) as ushort[];
 
         }
 

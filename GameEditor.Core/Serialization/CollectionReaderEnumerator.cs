@@ -76,9 +76,7 @@ namespace GameEditor.Core.Serialization
                 if ( !peekTerminationValue.Equals( this._terminationValue ) )
                 {
                     /// Rewind stream as termination object was not found.
-                    this._reader.BaseReader.BaseStream.Seek(
-                        savedPosition - this._reader.BaseReader.BaseStream.Position,
-                        SeekOrigin.Current );
+                    this._reader.BaseReader.BaseStream.Position = savedPosition;
 
                     /// return true to continue iterating
                     this._continueIterating = true;
