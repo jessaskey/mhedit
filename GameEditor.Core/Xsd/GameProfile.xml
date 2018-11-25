@@ -29,7 +29,7 @@
                     </Bank>
                     <Bank Id="Bank_1NP">
                         <EPROM Id="EPROM_1NP"
-                               Path="136025.216"
+                               Path="136025.318"
                                Size="16384"
                                Width="8"/>
                     </Bank>
@@ -55,13 +55,13 @@
                 <Banks>
                     <Bank Id="Bank_1MN">
                         <EPROM Id="EPROM_1MN"
-                               Path="136025.217"
+                               Path="136025.216"
                                Size="16384"
                                Width="8"/>
                     </Bank>
                     <Bank Id="Bank_1L">
                         <EPROM Id="EPROM_1L"
-                               Path="136025.318"
+                               Path="136025.217"
                                Size="16384"
                                Width="8"/>
                     </Bank>
