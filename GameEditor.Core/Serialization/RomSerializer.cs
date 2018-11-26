@@ -10,38 +10,18 @@ using System.Threading.Tasks;
 
 namespace GameEditor.Core.Serialization
 {
-    public abstract class RomSerializer : IFormatter
+    public abstract class RomSerializer
     {
         //private readonly BinaryDeserializationEvents _events = new BinaryDeserializationEvents();
-        private readonly Type _type;
         private StreamingContext _context = new StreamingContext( StreamingContextStates.All );
-        private readonly int? _enumerableLength = null;
 
-        public ISurrogateSelector SurrogateSelector
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public SerializationBinder Binder
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        /// <summary>
+        /// Initializes a new instance of the GameEditor.Core.Serialization.RomSerializer
+        /// class that can serialize objects into EPROMs, and deserialize EPROMs into 
+        /// objects of the specified type.
+        /// </summary>
+        public RomSerializer()
+        {}
 
         public StreamingContext Context
         {
@@ -57,79 +37,114 @@ namespace GameEditor.Core.Serialization
         }
 
         /// <summary>
-        /// Initializes a new instance of the GameEditor.Core.Serialization.RomSerializer
-        /// class that can serialize objects of the specified type into EPROMs, and
-        /// deserialize EPROMs into objects of the specified type.
+        /// Deserializes the ROM contained by the specified BinaryReader into an
+        /// object of the type specfied.
         /// </summary>
-        /// <param name="type">The type of the object that this RomSerializer can serialize.</param>
-        public RomSerializer( Type type )
+        /// <typeparam name="T">The type of the object to deserialize.</typeparam>
+        /// <param name="binaryReader">The BinaryReader that contains the ROM 
+        /// information to deserialize.</param>
+        /// <returns>The Type being deserialized.</returns>
+        public T Deserialize<T>( BinaryReader binaryReader )
         {
-            if ( type == null )
-            {
-                throw new ArgumentNullException( "type" );
-            }
-
-            if ( !type.IsSerializable )
-            {
-                throw new ArgumentException( "Type is not serializable" );
-            }
-
-            this._type = type;
+            return this.Deserialize<T>( binaryReader, null );
         }
 
         /// <summary>
-        /// Initializes a new instance of the GameEditor.Core.Serialization.RomSerializer
-        /// class that can serialize objects of the specified type into EPROMs, and
-        /// deserialize EPROMs into objects of the specified type. EPROMs typically have
-        /// implicit length Arrays/Collections embedded within and can be deserialized when
-        /// enumerable type and length are provided.
+        /// Deserializes the ROM contained by the specified BinaryReader into an object
+        /// of the type specfied. EPROMs typically have implicit length Arrays/Collections
+        /// embedded within and can be deserialized when an enumerable type and length are
+        /// provided.
         /// </summary>
-        /// <param name="iEnumerable">The enumerable type that this RomSerializer
-        /// can serialize.</param>
-        /// <param name="length">The number of objects to be deserialized.</param>
-        public RomSerializer( Type iEnumerable, int length )
-            :this( iEnumerable )
+        /// <typeparam name="T">The type that will be deserialized. If a fixed length is
+        /// not null then this type must implement System.Collections.IEnumerable.</typeparam>
+        /// <param name="binaryReader">The BinaryReader that contains the ROM 
+        /// information to deserialize.</param>
+        /// <param name="length">The number of objects to be deserialized, or null to
+        /// signify that the length is embedded in the binaryReader.</param>
+        /// <returns>The Type being deserialized.</returns>
+        public T Deserialize<T>( BinaryReader binaryReader, int? length )
         {
-            /// must be an enumerable collection class.
-            if ( !iEnumerable.GetInterfaces().Contains( typeof( IEnumerable ) ) )
+            try
             {
-                throw new ArgumentException( "Type is not IEnumerable" );
-            }
+                if ( binaryReader == null )
+                {
+                    throw new ArgumentNullException( nameof( binaryReader ) );
+                }
 
-            if ( length < 0 )
+                if ( !typeof( T ).IsSerializable )
+                {
+                    throw new ArgumentException( "Type is not serializable" );
+                }
+
+                /// if fixed length is provided then the type MUST implement IEnumerable
+                if ( length.HasValue )
+                {
+                    /// must be an enumerable collection class.
+                    if ( !typeof( T ).GetInterfaces().Contains( typeof( IEnumerable ) ) )
+                    {
+                        throw new ArgumentException( "Type is not IEnumerable" );
+                    }
+
+                    if ( length.Value < 0 )
+                    {
+                        throw new ArgumentOutOfRangeException( "Length is < 0" );
+                    }
+                }
+
+                ObjectReader objectReader = new ObjectReader( binaryReader, this.Context );
+
+                return (T)objectReader.Deserialize( typeof( T ), length );
+            }
+            catch ( Exception e )
             {
-                throw new ArgumentOutOfRangeException( "Length is < 0" );
-            }
+                if ( e is ThreadAbortException ||
+                     e is StackOverflowException ||
+                     e is OutOfMemoryException )
+                {
+                    throw;
+                }
 
-            this._enumerableLength = length;
+                throw new SerializationException( $"Deserialization of {typeof( T ).Name}.", e );
+            }
         }
 
-        public abstract object Deserialize( Stream serializationStream );
-
-        public abstract void Serialize( Stream serializationStream, object graph );
-
-        protected object Deserialize( BinaryReader binaryReader )
+        /// <summary>
+        /// Serializes the specified System.Object and writes to a ROM using the specified
+        /// BinaryWriter that references the ROM images.
+        /// </summary>
+        /// <param name="binaryWriter">The BinaryWriter that contains the ROM information
+        /// to deserialize.</param>
+        /// <param name="graph">The System.Object to serialize.</param>
+        public void Serialize( BinaryWriter binaryWriter, object graph )
         {
-            ObjectReader objectReader = new ObjectReader( binaryReader, this.Context );
-
-            return objectReader.Deserialize( this._type, this._enumerableLength );
-        }
-
-        protected void Serialize( BinaryWriter binaryWriter, object graph )
-        {
-            if ( graph == null )
+            try
             {
-                throw new ArgumentNullException( "object" );
-            }
+                if ( binaryWriter == null || graph == null )
+                {
+                    throw new ArgumentNullException(
+                        binaryWriter == null ? nameof( binaryWriter ) : nameof( graph ) );
+                }
 
-            if ( graph.GetType() != this._type )
+                if ( !graph.GetType().IsSerializable )
+                {
+                    throw new ArgumentException( nameof( graph ), "Object is not serializable" );
+                }
+
+                ObjectWriter objectWriter = new ObjectWriter( binaryWriter, this.Context );
+
+                objectWriter.Serialize( graph.GetType(), graph );
+            }
+            catch ( Exception e )
             {
-                throw new InvalidOperationException( "not proper type" );
+                if ( e is ThreadAbortException ||
+                     e is StackOverflowException ||
+                     e is OutOfMemoryException )
+                {
+                    throw;
+                }
+
+                throw new SerializationException( $"Serialization of { graph.GetType().Name}.", e );
             }
-
-            ObjectWriter objectWriter = new ObjectWriter( binaryWriter, this.Context );
-
-            objectWriter.Serialize( this._type, graph );
         }
 
         internal static object GetTerminationObject( Type type )

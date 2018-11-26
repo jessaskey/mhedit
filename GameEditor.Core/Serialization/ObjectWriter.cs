@@ -8,8 +8,8 @@ namespace GameEditor.Core.Serialization
 {
     internal class ObjectWriter
     {
-        private StreamingContext _context;
-        private BinaryWriter _writer;
+        private readonly StreamingContext _context;
+        private readonly BinaryWriter _writer;
 
         public ObjectWriter( BinaryWriter writer, StreamingContext context )
         {
@@ -71,7 +71,7 @@ namespace GameEditor.Core.Serialization
                 }
                 else
                 {
-                    throw new SerializationException();
+                    throw new NotSupportedException( $"Collection {type.FullName}." );
                 }
 
                 var enumerator = enumerable.GetEnumerator();
@@ -146,12 +146,9 @@ namespace GameEditor.Core.Serialization
                     {
                         this._writer.Write( (byte[])obj );
                     }
-                    else
-                    {
-                        throw new InvalidOperationException( string.Format(
-                            "Unexpected Type {0}", obj.GetType().FullName ) );
-                    }
-                    break;
+
+                    throw new NotSupportedException(
+                        $"Unsupported or Unexpected primitive type {obj.GetType().FullName}." );
             }
         }
     }

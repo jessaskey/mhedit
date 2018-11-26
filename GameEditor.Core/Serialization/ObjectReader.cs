@@ -32,7 +32,7 @@ namespace GameEditor.Core.Serialization
         {
             if ( RomSerializer.IsPrimitiveType( type ) )
             {
-                return this.DeserializePrimitive( type );
+                return this.DeserializePrimitive( type, enumerableLength );
             }
 
             Type iserializable = type.GetInterfaces()
@@ -52,7 +52,7 @@ namespace GameEditor.Core.Serialization
             return ctor.Invoke( new object[] { si, this._context } );
         }
 
-        internal object DeserializePrimitive( Type type )//, BinaryDeserializationEvents events )
+        internal object DeserializePrimitive( Type type, int? byteArrayLength = null )//, BinaryDeserializationEvents events )
         {
             object o;
 
@@ -102,17 +102,14 @@ namespace GameEditor.Core.Serialization
                     break;
 
                 default:
-                    if ( type == typeof( byte[] ) )
+                    /// special case to read known length byte array
+                    if ( type == typeof( byte[] ) && byteArrayLength.HasValue )
                     {
-                        throw new NotImplementedException();
-                        o = this._reader.ReadBytes( 1 );
+                        return this._reader.ReadBytes( byteArrayLength.Value );
                     }
-                    else
-                    {
-                        throw new InvalidOperationException( string.Format(
-                            "Unexpected Type {0}", type.FullName ) );
-                    }
-                    break;
+
+                    throw new NotSupportedException(
+                        $"Unsupported or Unexpected primitive type {type.FullName}." );
             }
 
             return o;
@@ -136,7 +133,7 @@ namespace GameEditor.Core.Serialization
             }
             else
             {
-                throw new SerializationException();
+                throw new NotSupportedException( $"Collection {type.FullName}." );
             }
 
             CollectionReaderEnumerator enumerator =
@@ -182,7 +179,8 @@ namespace GameEditor.Core.Serialization
                 }
             }
 
-            throw new InvalidOperationException();
+            throw new SerializationException(
+                $"Unable to locate IRomSerializable constructor on {type.FullName}." );
         }
 
         private static ConstructorInfo GetIEnumerableConstructor( Type type, Type parameterType )
@@ -202,7 +200,8 @@ namespace GameEditor.Core.Serialization
                 }
             }
 
-            throw new InvalidOperationException();
+            throw new SerializationException(
+                $"Unable to locate IRomSerializable constructor on {type.FullName}." );
         }
     }
 }

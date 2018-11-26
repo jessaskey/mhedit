@@ -40,9 +40,9 @@ namespace GameEditor.Atari.MajorHavoc.Test
             /// move to the ROM location for the array of uShorts.
             this._programRomPage0.Seek( 0x93FE - 0x8000, SeekOrigin.Begin );
 
-            RomSerializer ushortSerializer = new RomSerializer( typeof( byte[] ), 12 );
+            RomSerializer romSerializer = new RomSerializer();
 
-            byte[] indexArray = ushortSerializer.Deserialize( this._programRomPage0 ) as byte[];
+            byte[] indexArray = romSerializer.Deserialize<byte[]>( this._programRomPage0, 12 );
 
             string[] strings = new string[ 12 ];
 
@@ -53,19 +53,15 @@ namespace GameEditor.Atari.MajorHavoc.Test
                 /// move to the ROM location for the array of uShorts.
                 this._programRomPage0.Position =  0xE48b + b;
 
-                RomSerializer ushortSerializer1 = new RomSerializer( typeof( ushort ) );
-
-                ushort pstr = (ushort)ushortSerializer1.Deserialize( this._programRomPage0 );
+                ushort pstr = (ushort)romSerializer.Deserialize<ushort>( this._programRomPage0 );
 
                 this._programRomPage0.Position = pstr;
 
-                RomSerializer ushortSerializer2 = new RomSerializer( typeof(string) );
-
-                strings[ i ] = ushortSerializer2.Deserialize( this._programRomPage0 ) as string;
+                strings[ i ] = romSerializer.Deserialize<string>( this._programRomPage0 );
 
                 this._programRomPage0.Position = pstr;
 
-                ushortSerializer2.Serialize( this._programRomPage0, strings[ i++ ] );
+                romSerializer.Serialize( this._programRomPage0, strings[ i++ ] );
             }
 
             ///// move to the ROM location for the array of uShorts.
@@ -82,7 +78,7 @@ namespace GameEditor.Atari.MajorHavoc.Test
         {
             Stream memoryStream = new MemoryStream( 32 );
 
-            RomSerializer romSerializer1 = new RomSerializer( typeof( Oxoid[] ) );
+            RomSerializer romSerializer1 = new RomSerializer();
 
             Oxoid[] oxoids = new Oxoid[ 5 ];
 
@@ -94,7 +90,7 @@ namespace GameEditor.Atari.MajorHavoc.Test
 
             memoryStream.Seek( 0, SeekOrigin.Begin );
 
-            Oxoid[] oxoidsAo = romSerializer1.Deserialize( memoryStream ) as Oxoid[];
+            Oxoid[] oxoidsAo = romSerializer1.Deserialize<Oxoid[]>( memoryStream );
         }
 
         [Fact]
@@ -102,7 +98,7 @@ namespace GameEditor.Atari.MajorHavoc.Test
         {
             Stream memoryStream = new MemoryStream( 32 );
 
-            RomSerializer romSerializer1 = new RomSerializer( typeof( List<Oxoid> ) );
+            RomSerializer romSerializer1 = new RomSerializer();
 
             List<Oxoid> oxoids = new List<Oxoid>();
 
@@ -114,7 +110,7 @@ namespace GameEditor.Atari.MajorHavoc.Test
 
             memoryStream.Seek( 0, SeekOrigin.Begin );
 
-            List<Oxoid> oxoidsAo = romSerializer1.Deserialize( memoryStream ) as List<Oxoid>;
+            List<Oxoid> oxoidsAo = romSerializer1.Deserialize<List<Oxoid>>( memoryStream );
         }
 
         [Fact]
@@ -122,13 +118,13 @@ namespace GameEditor.Atari.MajorHavoc.Test
         {
             Stream memoryStream = new MemoryStream( 32 );
 
-            RomSerializer romSerializer1 = new RomSerializer( typeof( Oxoid ) );
+            RomSerializer romSerializer1 = new RomSerializer();
 
             romSerializer1.Serialize( memoryStream, new Oxoid() { Value = 64 } );
 
             memoryStream.Seek( 0, SeekOrigin.Begin );
 
-            Oxoid oxoidsAo = romSerializer1.Deserialize( memoryStream ) as Oxoid;
+            Oxoid oxoidsAo = romSerializer1.Deserialize<Oxoid>( memoryStream );
         }
 
         [Fact]
@@ -136,13 +132,14 @@ namespace GameEditor.Atari.MajorHavoc.Test
         {
             Stream memoryStream = new MemoryStream( 32 );
 
-            RomSerializer romSerializer1 = new RomSerializer( typeof( TestEmbeddedArray ) );
+            RomSerializer romSerializer1 = new RomSerializer();
 
             romSerializer1.Serialize( memoryStream, new TestEmbeddedArray() );
 
             memoryStream.Seek( 0, SeekOrigin.Begin );
 
-            TestEmbeddedArray oxoidsAo = romSerializer1.Deserialize( memoryStream ) as TestEmbeddedArray;
+            TestEmbeddedArray oxoidsAo = 
+                romSerializer1.Deserialize<TestEmbeddedArray>( memoryStream );
         }
     }
 }

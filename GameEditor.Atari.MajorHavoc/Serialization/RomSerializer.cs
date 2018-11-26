@@ -13,20 +13,22 @@ namespace GameEditor.Atari.MajorHavoc.Serialization
     /// </summary>
     public class RomSerializer : Core.Serialization.RomSerializer
     {
-        public RomSerializer( Type type )
-            : base( type )
-        { }
+        public RomSerializer()
+        {}
 
-        public RomSerializer( Type iEnumerable, int length )
-            : base( iEnumerable, length )
-        { }
-
-        public override object Deserialize( Stream serializationStream )
+        /// <summary>
+        ///  Forwards into the base RomSerializer.Deserialize() method.
+        /// </summary>
+        public T Deserialize<T>( Stream serializationStream, int? length = null )
         {
-            return this.Deserialize( new HavocBinaryReader( serializationStream ) );
+            return this.Deserialize<T>(
+                new HavocBinaryReader( serializationStream ), length );
         }
 
-        public override void Serialize( Stream serializationStream, object graph )
+        /// <summary>
+        ///  Forwards into the base RomSerializer.Serialize() method.
+        /// </summary>
+        public void Serialize( Stream serializationStream, object graph )
         {
             this.Serialize( new HavocBinaryWriter( serializationStream ), graph );
         }

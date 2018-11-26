@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -109,42 +107,44 @@ namespace GameEditor.Core.Serialization
 
         public void AddValue( string name, float value )
         {
-            this.AddValue( name, value, typeof( float ) );
+            /// Not sure how this would convert as encodings might be
+            /// different on different architectures.
+            throw new NotImplementedException();
+            //this.AddValue( name, value, typeof( float ) );
         }
 
         public void AddValue( string name, double value )
         {
-            this.AddValue( name, value, typeof( double ) );
+            /// Not sure how this would convert as encodings might be
+            /// different on different architectures.
+            throw new NotImplementedException();
+            //this.AddValue( name, value, typeof( double ) );
         }
 
         public void AddValue( string name, Decimal value )
         {
-            this.AddValue( name, value, typeof( Decimal ) );
+            /// Not sure how this would convert as encodings might be
+            /// different on different architectures.
+            throw new NotImplementedException();
+            //this.AddValue( name, value, typeof( Decimal ) );
         }
 
         public void AddValue( string name, DateTime value )
         {
-            this.AddValue( name, value, typeof( DateTime ) );
+            /// Not sure how this would convert as encodings might be
+            /// different on different architectures.
+            throw new NotImplementedException();
+            //this.AddValue( name, value, typeof( DateTime ) );
         }
 
         private void AddValueInternal( string name, object value, Type type )
         {
-            if ( this._nameToIndex.ContainsKey( name ) )
-            {
-                throw new SerializationException( "Serialization_SameNameTwice" );
-            }
-
             this._nameToIndex.Add( name,
                 new SerializationEntry( name, value, type) );
         }
 
         private object FindElementInternal( string name, object value, Type type )
         {
-            if ( this._nameToIndex.ContainsKey( name ) )
-            {
-                throw new SerializationException( "Serialization_SameNameTwice" );
-            }
-
             this._nameToIndex.Add( name,
                 new SerializationEntry( name, value, type ) );
 
@@ -169,14 +169,22 @@ namespace GameEditor.Core.Serialization
 
             /// if there are multiple hits for a concrete type (when a member name
             /// isn't specified) then pull the first match.
-            return concreteTypes.First().ConcreteType;
+            ConcreteTypeAttribute found = concreteTypes.FirstOrDefault();
+
+            if ( found == null )
+            {
+                throw new SerializationException(
+                    $"Unable to locate ConcreteTypeAttribute for {type.FullName}." );
+            }
+
+            return found.ConcreteType;
         }
 
         private T GetObject<T>( string name )
         {
             if ( this._reader == null )
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException( "Not a deserialization process" );
             }
 
             return (T)this.FindElementInternal(
@@ -185,19 +193,15 @@ namespace GameEditor.Core.Serialization
 
         public object GetValue( string name, Type type, int? iEnumerableLength )
         {
-            if ( string.IsNullOrEmpty( name ) )
+            if ( string.IsNullOrEmpty( name ) || type == null )
             {
-                throw new ArgumentNullException();
-            }
-
-            if ( type == null )
-            {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(
+                    type == null ? nameof( type ) : nameof( name ) );
             }
 
             if ( this._reader == null )
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException( "Not a deserialization process" );
             }
 
             /// if the type we are deserializing is abstract then look for

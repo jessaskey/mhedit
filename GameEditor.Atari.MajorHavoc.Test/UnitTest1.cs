@@ -34,7 +34,7 @@ namespace GameEditor.Atari.MajorHavoc.Test
 
             Stream memoryStream = new MemoryStream( 32 );
 
-            RomSerializer romSerializer1 = new RomSerializer( typeof( Oxoid[] ) );
+            RomSerializer romSerializer1 = new RomSerializer();
 
             Oxoid[] oxoids = new Oxoid[ 5 ];
 
@@ -46,7 +46,7 @@ namespace GameEditor.Atari.MajorHavoc.Test
 
             memoryStream.Seek( 0, SeekOrigin.Begin );
 
-            Oxoid[] oxoidsAo = romSerializer1.Deserialize( memoryStream ) as Oxoid[];
+            Oxoid[] oxoidsAo = romSerializer1.Deserialize<Oxoid[]>( memoryStream );
 
             Assert.Equal( oxoids[ 0 ], oxoidsAo[ 0 ] );
         }
@@ -56,7 +56,7 @@ namespace GameEditor.Atari.MajorHavoc.Test
         {
             Stream memoryStream = new MemoryStream( 32 );
 
-            RomSerializer romSerializer1 = new RomSerializer( typeof( Oxoid[] ) );
+            RomSerializer romSerializer1 = new RomSerializer();
 
             Oxoid[] oxoids = new Oxoid[ 5 ];
 
@@ -68,7 +68,7 @@ namespace GameEditor.Atari.MajorHavoc.Test
 
             memoryStream.Seek( 0, SeekOrigin.Begin );
 
-            Oxoid[] oxoidsAo = romSerializer1.Deserialize( memoryStream ) as Oxoid[];
+            Oxoid[] oxoidsAo = romSerializer1.Deserialize<Oxoid[]>( memoryStream );
 
             Assert.Equal( oxoids[ 0 ], oxoidsAo[ 0 ] );
         }
