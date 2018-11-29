@@ -5,7 +5,7 @@ namespace GameEditor.Core.Serialization
     public struct DeserializationEvents
     {
         EventHandler onUnknownType;
-        internal object sender;
+        //internal object _sender;
 
         public EventHandler OnUnknownType
         {

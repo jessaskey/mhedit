@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,16 +13,20 @@ namespace GameEditor.Core.Serialization
 {
     public abstract class RomSerializer
     {
-        //private readonly BinaryDeserializationEvents _events = new BinaryDeserializationEvents();
         private StreamingContext _context = new StreamingContext( StreamingContextStates.All );
+        private Encoding _encoding;
 
         /// <summary>
         /// Initializes a new instance of the GameEditor.Core.Serialization.RomSerializer
         /// class that can serialize objects into EPROMs, and deserialize EPROMs into 
         /// objects of the specified type.
         /// </summary>
-        public RomSerializer()
-        {}
+        /// <param name="encoding">An encoding which represents the character encoding
+        /// in the ROM images to be subjected to serialization operations.</param>
+        public RomSerializer( Encoding encoding )
+        {
+            this._encoding = encoding;
+        }
 
         public StreamingContext Context
         {
@@ -41,12 +46,12 @@ namespace GameEditor.Core.Serialization
         /// object of the type specfied.
         /// </summary>
         /// <typeparam name="T">The type of the object to deserialize.</typeparam>
-        /// <param name="binaryReader">The BinaryReader that contains the ROM 
-        /// information to deserialize.</param>
-        /// <returns>The Type being deserialized.</returns>
-        public T Deserialize<T>( BinaryReader binaryReader )
+        /// <param name="stream">The System.IO.Stream that contains the Game ROM image
+        /// to deserialize.</param>
+        /// <returns>An object of the type T, being deserialized.</returns>
+        public T Deserialize<T>( Stream stream )
         {
-            return this.Deserialize<T>( binaryReader, null );
+            return this.Deserialize<T>( stream, null );
         }
 
         /// <summary>
@@ -57,18 +62,18 @@ namespace GameEditor.Core.Serialization
         /// </summary>
         /// <typeparam name="T">The type that will be deserialized. If a fixed length is
         /// not null then this type must implement System.Collections.IEnumerable.</typeparam>
-        /// <param name="binaryReader">The BinaryReader that contains the ROM 
-        /// information to deserialize.</param>
+        /// <param name="stream">The System.IO.Stream that contains the Game ROM image
+        /// to deserialize.</param>
         /// <param name="length">The number of objects to be deserialized, or null to
         /// signify that the length is embedded in the binaryReader.</param>
-        /// <returns>The Type being deserialized.</returns>
-        public T Deserialize<T>( BinaryReader binaryReader, int? length )
+        /// <returns>An object of the type T, being deserialized.</returns>
+        public T Deserialize<T>( Stream stream, int? length )
         {
             try
             {
-                if ( binaryReader == null )
+                if ( stream == null )
                 {
-                    throw new ArgumentNullException( nameof( binaryReader ) );
+                    throw new ArgumentNullException( nameof( stream ) );
                 }
 
                 if ( !typeof( T ).IsSerializable )
@@ -91,7 +96,8 @@ namespace GameEditor.Core.Serialization
                     }
                 }
 
-                ObjectReader objectReader = new ObjectReader( binaryReader, this.Context );
+                ObjectReader objectReader = new ObjectReader(
+                    new RomReader( stream, this._encoding ), this.Context );
 
                 return (T)objectReader.Deserialize( typeof( T ), length );
             }
@@ -112,17 +118,17 @@ namespace GameEditor.Core.Serialization
         /// Serializes the specified System.Object and writes to a ROM using the specified
         /// BinaryWriter that references the ROM images.
         /// </summary>
-        /// <param name="binaryWriter">The BinaryWriter that contains the ROM information
-        /// to deserialize.</param>
+        /// <param name="stream">The System.IO.Stream that represents the Game ROM
+        /// image.</param>
         /// <param name="graph">The System.Object to serialize.</param>
-        public void Serialize( BinaryWriter binaryWriter, object graph )
+        public void Serialize( Stream stream, object graph )
         {
             try
             {
-                if ( binaryWriter == null || graph == null )
+                if ( stream == null || graph == null )
                 {
                     throw new ArgumentNullException(
-                        binaryWriter == null ? nameof( binaryWriter ) : nameof( graph ) );
+                        stream == null ? nameof( stream ) : nameof( graph ) );
                 }
 
                 if ( !graph.GetType().IsSerializable )
@@ -130,7 +136,8 @@ namespace GameEditor.Core.Serialization
                     throw new ArgumentException( nameof( graph ), "Object is not serializable" );
                 }
 
-                ObjectWriter objectWriter = new ObjectWriter( binaryWriter, this.Context );
+                ObjectWriter objectWriter = new ObjectWriter(
+                    new RomWriter( stream, this._encoding ), this.Context );
 
                 objectWriter.Serialize( graph.GetType(), graph );
             }

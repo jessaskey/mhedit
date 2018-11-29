@@ -2,24 +2,24 @@
 
 namespace GameEditor.Core.Serialization
 {
-    public struct SerializationEntry
+    internal struct SerializationEntry
     {
-        private Type m_type;
-        private object m_value;
-        private string m_name;
+        private readonly Type _type;
+        private readonly object _value;
+        private readonly string _name;
 
         internal SerializationEntry( string entryName, object entryValue, Type entryType )
         {
-            this.m_value = entryValue;
-            this.m_name = entryName;
-            this.m_type = entryType;
+            this._value = entryValue;
+            this._name = entryName;
+            this._type = entryType;
         }
 
         public object Value
         {
             get
             {
-                return this.m_value;
+                return this._value;
             }
         }
 
@@ -27,7 +27,7 @@ namespace GameEditor.Core.Serialization
         {
             get
             {
-                return this.m_name;
+                return this._name;
             }
         }
 
@@ -35,7 +35,7 @@ namespace GameEditor.Core.Serialization
         {
             get
             {
-                return this.m_type;
+                return this._type;
             }
         }
     }

@@ -8,10 +8,10 @@ namespace GameEditor.Core.Serialization
 {
     public class RomSerializationInfo
     {
-        private ObjectReader _reader;
-        private Dictionary<string, SerializationEntry> _nameToIndex =
+        private readonly ObjectReader _reader;
+        private readonly Dictionary<string, SerializationEntry> _nameToIndex =
             new Dictionary<string, SerializationEntry>();
-        private Type _type;
+        private readonly Type _type;
 
         internal RomSerializationInfo( Type type )
             :this( type, null )
@@ -24,7 +24,7 @@ namespace GameEditor.Core.Serialization
             this._reader = reader;
         }
 
-        public IEnumerator<SerializationEntry> GetEnumerator()
+        internal IEnumerator<SerializationEntry> GetEnumerator()
         {
             return this._nameToIndex.Values.GetEnumerator();
         }

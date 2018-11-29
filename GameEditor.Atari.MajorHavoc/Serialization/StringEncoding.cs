@@ -1,7 +1,9 @@
 ﻿using GameEditor.Core;
+using GameEditor.Core.Serialization;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace GameEditor.Atari.MajorHavoc
@@ -10,7 +12,7 @@ namespace GameEditor.Atari.MajorHavoc
     /// This is the string manipulation code for Major Havoc. We shall see if it
     /// is used on other Atari games.
     /// </summary>
-    internal class HavocStringEncoding : Encoding
+    internal class StringEncoding : Encoding, IStringEncoding
     {
         /// <summary>
         /// Valid characters. Note: I took a guess that the 2nd '.' in the original
@@ -26,7 +28,7 @@ namespace GameEditor.Atari.MajorHavoc
         private static readonly Dictionary<char, byte> CharToByteEncoding =
             new Dictionary<char, byte>();
 
-        static HavocStringEncoding()
+        static StringEncoding()
         {
             /// create hash tables for the encodings
             for( int i = 0; i < ValidCharacterString.Length; ++i )
@@ -40,19 +42,9 @@ namespace GameEditor.Atari.MajorHavoc
         /// Throw if the character can't be encoded into a byte, and replace a
         /// byte with '?' if it can't be decoded.
         /// </summary>
-        public HavocStringEncoding()
+        public StringEncoding()
             :base( 0, new EncoderExceptionFallback(), new DecoderReplacementFallback())
         { }
-
-        public static char DecodeByte( byte aByte )
-        {
-            return BytetoCharEncoding[ aByte & 0x7f ];
-        }
-
-        public static byte EncodeChar( char aChar )
-        {
-            return CharToByteEncoding[ aChar ];
-        }
 
         public override string EncodingName { get { return "Atari, Major Havoc"; } }
 
@@ -194,6 +186,71 @@ namespace GameEditor.Atari.MajorHavoc
             }
 
             return byteCount;
+        }
+
+        public string ReadString( Stream stream )
+        {
+            /// Not positive but are all strings prefixed with 0xA3? NO!
+            /// Move past the unknown byte at the start of every string.
+            long savedPosition = stream.Position++;
+
+            /// Read strings in 32 byte chunks and adjust to actual length
+            char[] chars = new char[ 32 ];
+            byte[] bytes = new byte[ chars.Length ];
+
+            StringBuilder builder = new StringBuilder();
+
+            int lastChar;
+
+            do
+            {
+                int bytesRead = stream.Read( bytes, 0, bytes.Length );
+
+                /// look for the sign bit indicating the last char.
+                lastChar = Array.FindIndex( bytes, 0, bytesRead, b => ( b & 0x80 ) != 0 );
+
+                builder.Append( chars, 0,
+                    this.GetChars(
+                        bytes, 0, lastChar < 0 ? bytes.Length : lastChar + 1, chars, 0 )
+                    );
+            }
+            while ( lastChar == -1 );
+
+            /// Move stream to after last char.
+            stream.Position = savedPosition + builder.Length;
+
+            return builder.ToString();
+        }
+
+        public void Write( Stream stream, string value )
+        {
+            /// Not positive but are all strings prefixed with 0xA3? NO!
+            /// Move past the unknown byte at the start of every string.
+            stream.Position++;
+
+            char[] chars = value.Trim().ToUpper().ToCharArray();
+
+            /// Should be calling into GetCharCount() but this encoding
+            /// is 1 to 1.
+            byte[] bytes = new byte[ chars.Length ];
+
+            int encodedLength =
+                this.GetBytes( chars, 0, chars.Length, bytes, 0 );
+
+            /// terminate string with the sign bit.
+            bytes[ bytes.Length - 1 ] += 0x80;
+
+            stream.Write( bytes, 0, bytes.Length );
+        }
+
+        private static char DecodeByte( byte aByte )
+        {
+            return BytetoCharEncoding[ aByte & 0x7f ];
+        }
+
+        private static byte EncodeChar( char aChar )
+        {
+            return CharToByteEncoding[ aChar ];
         }
     }
 }
