@@ -18,6 +18,7 @@ namespace mhedit
     public partial class DialogMHPLogin : Form
     {
         private string _savedPasswordKey = "";
+        private Maze _maze = null;
 
         public DialogMHPLogin()
         {
@@ -34,12 +35,6 @@ namespace mhedit
         {
             get { return textBoxPassword.Text; }
             set { textBoxPassword.Text = value; }
-        }
-
-        public string Description
-        {
-            get { return textBoxDescription.Text; }
-            set { textBoxDescription.Text = value; }
         }
 
         public string PasswordKey
@@ -62,13 +57,18 @@ namespace mhedit
             }
         }
 
-        public string MazeName
-        {
-            get { return labelMazeName.Text; }
-            set { labelMazeName.Text = value; }
+        public Maze MazeToUpload {
+            get
+            {
+                return _maze;
+            }
+            set
+            {
+                _maze = value;
+                textBoxDescription.Text = _maze.Description;
+                labelMazeName.Text = _maze.Name;
+            }
         }
-
-        public Maze Maze { get;set; }
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
@@ -85,7 +85,7 @@ namespace mhedit
                     try
                     {
                         Cursor.Current = Cursors.WaitCursor;
-                        Maze.Description = textBoxDescription.Text;
+                        MazeToUpload.Description = textBoxDescription.Text;
 
                         MHEditServiceReference.SecurityToken token = null;
                         if (String.IsNullOrEmpty(_savedPasswordKey))
@@ -120,7 +120,7 @@ namespace mhedit
                                     using (MemoryStream mStream = new MemoryStream())
                                     {
                                         BinaryFormatter b = new BinaryFormatter();
-                                        b.Serialize(mStream, Maze);
+                                        b.Serialize(mStream, MazeToUpload);
                                         mStream.Position = 0;
                                         BZip2.Compress(mStream, oStream, false, 4096);
 
@@ -198,7 +198,7 @@ namespace mhedit
                 MessageBox.Show("Your maze name of '" + labelMazeName.Text + "' seems to be pretty generic. You have to go edit the maze name to something more descriptive as this will be how we label the maze on the gallery.", "Crappy Maze Name", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
-            if (!String.IsNullOrEmpty(textBoxDescription.Text))
+            if (String.IsNullOrEmpty(textBoxDescription.Text))
             {
                 MessageBox.Show("Maze description is required. Describe the features and play of the maze.", "Missing Description", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;

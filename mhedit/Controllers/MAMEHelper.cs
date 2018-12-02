@@ -56,6 +56,7 @@ namespace mhedit.Controllers
                         //incrementing velocity
                         mazeInitIndex++;
                         byte fireballVelXIncrement = fireballVelX;
+                        pyroid.IncrementingVelocity.X = fireballVelXIncrement;
                         fireballVelX = rom.ReadByte(mazeInitIndex, 0);
                     }
                     mazeInitIndex++;
@@ -65,6 +66,7 @@ namespace mhedit.Controllers
                         //incrementing velocity
                         mazeInitIndex++;
                         byte fireballVelYIncrement = fireballVelY;
+                        pyroid.IncrementingVelocity.Y = fireballVelYIncrement;
                         fireballVelY = rom.ReadByte(mazeInitIndex, 0);
                     }
                     mazeInitIndex++;
@@ -721,7 +723,18 @@ namespace mhedit.Controllers
                 foreach (Pyroid pyroid in pyroids)
                 {
                     offset += rom.Write(ROMAddress.mzsc0, Context.PointToByteArrayLong(Context.ConvertPixelsToVector(pyroid.Position)), offset);
-                    offset += rom.Write(ROMAddress.mzsc0, new byte[] { (byte)pyroid.Velocity.X, (byte)pyroid.Velocity.Y }, offset);
+
+                    if (pyroid.IncrementingVelocity.X != 0)
+                    {
+                        offset += rom.Write(ROMAddress.mzsc0, new byte[] { (byte)(0x80 | pyroid.IncrementingVelocity.X) }, offset);
+                    }
+                    offset += rom.Write(ROMAddress.mzsc0, new byte[] { (byte)pyroid.Velocity.X }, offset);
+
+                    if (pyroid.IncrementingVelocity.Y != 0)
+                    {
+                        offset += rom.Write(ROMAddress.mzsc0, new byte[] { (byte)(0x80 | pyroid.IncrementingVelocity.Y) }, offset);
+                    }
+                    offset += rom.Write(ROMAddress.mzsc0, new byte[] { (byte)pyroid.Velocity.Y }, offset);
                 }
                 if (perkoids.Count > 0)
                 {
@@ -729,7 +742,17 @@ namespace mhedit.Controllers
                     foreach (Perkoid perkoid in perkoids)
                     {
                         offset += rom.Write(ROMAddress.mzsc0, Context.PointToByteArrayLong(Context.ConvertPixelsToVector(perkoid.Position)), offset);
-                        offset += rom.Write(ROMAddress.mzsc0, new byte[] { (byte)perkoid.Velocity.X, (byte)perkoid.Velocity.Y }, offset);
+                        if (perkoid.IncrementingVelocity.X != 0)
+                        {
+                            offset += rom.Write(ROMAddress.mzsc0, new byte[] { (byte)(0x80 | perkoid.IncrementingVelocity.X) }, offset);
+                        }
+                        offset += rom.Write(ROMAddress.mzsc0, new byte[] { (byte)perkoid.Velocity.X}, offset);
+
+                        if (perkoid.IncrementingVelocity.Y != 0)
+                        {
+                            offset += rom.Write(ROMAddress.mzsc0, new byte[] { (byte)(0x80 | perkoid.IncrementingVelocity.Y) }, offset);
+                        }
+                        offset += rom.Write(ROMAddress.mzsc0, new byte[] { (byte)perkoid.Velocity.Y }, offset);
                     }
                 }
                 rom.Write(ROMAddress.mzsc0, (byte)0xff, offset);

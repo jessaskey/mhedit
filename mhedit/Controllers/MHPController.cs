@@ -12,9 +12,10 @@ namespace mhedit
         public static MHEditServiceReference.MHEditClient GetClient()
         {
             MHEditServiceReference.MHEditClient client = new MHEditServiceReference.MHEditClient();
-#if DEBUG
-            client.Endpoint.Address = new System.ServiceModel.EndpointAddress("http://localhost:52484/MHEdit.svc");
-#endif
+
+            //client.Endpoint.Address = new System.ServiceModel.EndpointAddress("http://localhost:52484/MHEdit.svc");
+            client.Endpoint.Address = new System.ServiceModel.EndpointAddress("http://mhp.askey.org/MHEdit.svc");
+
             return client;
         }
 

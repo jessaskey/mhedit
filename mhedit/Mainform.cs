@@ -1237,9 +1237,7 @@ namespace mhedit
                             }
                             mhpDialog.SavePassword = Properties.Settings.Default.MHPSavePassword;
                             mhpDialog.MazePreview = mazeImage;
-                            mhpDialog.Maze = maze;
-                            mhpDialog.Description = maze.Description;
-                            mhpDialog.MazeName = maze.Name;
+                            mhpDialog.MazeToUpload = maze;
                             mhpDialog.ShowDialog();
                         }
                     }

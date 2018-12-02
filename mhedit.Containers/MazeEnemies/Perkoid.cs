@@ -20,6 +20,7 @@ namespace mhedit.Containers.MazeEnemies
         private Point _position;
         private Image _img;
         private Velocity _velocity;
+        private Velocity _incrementingVelocity;
 
         public Perkoid()
         {
@@ -56,6 +57,15 @@ namespace mhedit.Containers.MazeEnemies
         {
             get { return _velocity; }
             set { _velocity = value; }
+        }
+
+        [CategoryAttribute("Location")]
+        [DescriptionAttribute("Defines the additional velocity added at each difficulty level. Generally leave this at zero.")]
+        [TypeConverter(typeof(TypeConverters.VelocityTypeConverter))]
+        public Velocity IncrementingVelocity
+        {
+            get { return _incrementingVelocity; }
+            set { _incrementingVelocity = value; }
         }
 
         [BrowsableAttribute(false)]
