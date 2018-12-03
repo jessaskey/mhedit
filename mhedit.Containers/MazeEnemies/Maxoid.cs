@@ -13,6 +13,15 @@ namespace mhedit.Containers.MazeEnemies
     [Serializable]
     public class Maxoid : MazeObject
     {
+
+        public enum MaxSpeed : int
+        {
+            Slowest = 0,
+            Slow,
+            Medium,
+            Agressive
+        }
+
         private const int _SNAP_X = 4;
         private const int _SNAP_Y = 4;
         private const int _MAXOBJECTS = 8;
@@ -20,6 +29,8 @@ namespace mhedit.Containers.MazeEnemies
         private Point _position;
         private Image _img;
         private Velocity _velocity;
+        private int _triggerDistance;
+        private MaxSpeed _speed;
 
         public Maxoid()
         {
@@ -56,6 +67,22 @@ namespace mhedit.Containers.MazeEnemies
         {
             get { return _velocity; }
             set { _velocity = value; }
+        }
+
+        [CategoryAttribute("Location")]
+        [DescriptionAttribute("Defines how fast Max moves after Rex.")]
+        public MaxSpeed Speed
+        {
+            get { return _speed; }
+            set { _speed = value; }
+        }
+
+        [CategoryAttribute("Location")]
+        [DescriptionAttribute("Defines how many maze squares between Max and Rex before Max will start persuit.")]
+        public int TriggerDistance
+        {
+            get { return _triggerDistance; }
+            set { _triggerDistance = value; }
         }
 
         [BrowsableAttribute(false)]

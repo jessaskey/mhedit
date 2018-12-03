@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace mhedit
 {
-    public enum ROMAddress
+    public enum ROMAddressPE
     {
         levelst,
         mzsc0,
@@ -134,7 +134,7 @@ namespace mhedit
         }
 
 
-        public ushort GetAddress(ROMAddress location)
+        public ushort GetAddress(ROMAddressPE location)
         {
             ushort address = 0;
             //search the export list for this address...
@@ -257,13 +257,13 @@ namespace mhedit
         }
 
 
-        public int Write(ROMAddress location, byte data, int offset)
+        public int Write(ROMAddressPE location, byte data, int offset)
         {
             ushort address = GetAddress(location);
             return WriteROM(address, new byte[] { data }, offset);
         }
 
-        public int Write(ROMAddress location, UInt16 data, int offset)
+        public int Write(ROMAddressPE location, UInt16 data, int offset)
         {
             ushort address = GetAddress(location);
             byte datahigh = (byte)(data>>8);
@@ -271,7 +271,7 @@ namespace mhedit
             return WriteROM(address, new byte[] { datalow, datahigh }, offset);
         }
 
-        public int Write(ROMAddress location, byte[] data, int offset)
+        public int Write(ROMAddressPE location, byte[] data, int offset)
         {
             ushort address = GetAddress(location);
             return WriteROM(address, data, offset);
