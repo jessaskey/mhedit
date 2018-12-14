@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace mhedit.GameControllers
 {
-    public class MajorHavocPromisedEnd
+    public class MajorHavocPromisedEnd : GameController, IGameController
     {
 
         #region Private Variables
@@ -68,7 +68,7 @@ namespace mhedit.GameControllers
             }
         }
 
-        public byte[] GetText(string text)
+        public byte[] GetBytesFromString(string text)
         {
             text = text.ToUpper();
             List<byte> bytes = new List<byte>();
@@ -125,22 +125,7 @@ namespace mhedit.GameControllers
             return bytes;
         }
 
-        public byte ReadByte(ushort address, int offset, int page)
-        {
-            return ReadROM(address, offset, 1, page)[0];
-        }
 
-        public byte[] ReadBytes(ushort address, int length, int page)
-        {
-            return ReadROM(address, 0, length, page);
-        }
-
-        public ushort ReadWord(ushort address, int offset, int page)
-        {
-            byte[] bytes = ReadROM(address, offset, 2, page);
-            ushort wordH = bytes[1];
-            return (ushort)(((ushort)wordH << 8) + (ushort)bytes[0]);
-        }
 
         private int WriteROM(ushort address, byte[] bytes, int offset, int page)
         {
@@ -216,6 +201,23 @@ namespace mhedit.GameControllers
             }
 
             return true;
+        }
+
+        public byte ReadByte(ushort address, int offset, int page)
+        {
+            return ReadROM(address, offset, 1, page)[0];
+        }
+
+        public byte[] ReadBytes(ushort address, int length, int page)
+        {
+            return ReadROM(address, 0, length, page);
+        }
+
+        public ushort ReadWord(ushort address, int offset, int page)
+        {
+            byte[] bytes = ReadROM(address, offset, 2, page);
+            ushort wordH = bytes[1];
+            return (ushort)(((ushort)wordH << 8) + (ushort)bytes[0]);
         }
 
 

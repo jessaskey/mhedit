@@ -128,6 +128,7 @@
     <Compile Include="Dialogs\DialogConfiguration.Designer.cs">
       <DependentUpon>DialogConfiguration.cs</DependentUpon>
     </Compile>
+    <Compile Include="GameControllers\GameController.cs" />
     <Compile Include="GameControllers\IGameController.cs" />
     <Compile Include="GameControllers\MajorHavoc.cs" />
     <Compile Include="GameControllers\MajorHavocPromisedEnd.cs" />
@@ -212,7 +213,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ROMDump.cs" />
     <None Include="Service References\MHEditServiceReference\mhedit.MHEditServiceReference.ClientResponseOfArrayOfMazeItem6aJH8QNC.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>

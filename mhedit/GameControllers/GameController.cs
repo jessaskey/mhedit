@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace mhedit.GameControllers
 {
-    public interface IGameController
+    public class GameController
     {
+        protected string _validText = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:";
 
-        byte[] GetBytesFromString(string text);
-
-        Tuple<ushort, int> GetAddress(string location);
-
+ 
     }
 }

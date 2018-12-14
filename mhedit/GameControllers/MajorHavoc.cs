@@ -11,47 +11,47 @@ using System.Threading.Tasks;
 
 namespace mhedit.GameControllers
 {
-    public class MajorHavoc : IGameController
+    public class MajorHavoc : GameController, IGameController
     {
         #region Enums
-        public enum ROMAddress
-        {
-            levelst,
-            mzsc0,
-            mzdc0,
-            mzlg0,
-            mzar0,
-            mzta0,
-            mztd0,
-            mone0,
-            tite0,
-            lock0,
-            outime,
-            mpod,
-            cksumal,
-            cksumah,
-            cksump01,
-            mclock,
-            mboots,
-            tran0,
-            mzh0,
-            mcan,
-            mcan0,
-            mcand,
-            mztr0,
-            trtbl,
-            hand0
-        }
+        //public enum ROMAddress
+        //{
+        //    levelst,
+        //    mzsc0,
+        //    mzdc0,
+        //    mzlg0,
+        //    mzar0,
+        //    mzta0,
+        //    mztd0,
+        //    mone0,
+        //    tite0,
+        //    lock0,
+        //    outime,
+        //    mpod,
+        //    cksumal,
+        //    cksumah,
+        //    cksump01,
+        //    mclock,
+        //    mboots,
+        //    tran0,
+        //    mzh0,
+        //    mcan,
+        //    mcan0,
+        //    mcand,
+        //    mztr0,
+        //    trtbl,
+        //    hand0
+        //}
 
-        public enum ROMPhysical
-        {
-            AlphaHigh,
-            AlphaLow,
-            Page0,
-            Page1,
-            Page2,
-            Page3
-        }
+        //public enum ROMPhysical
+        //{
+        //    AlphaHigh,
+        //    AlphaLow,
+        //    Page0,
+        //    Page1,
+        //    Page2,
+        //    Page3
+        //}
 
         #endregion
 
@@ -66,7 +66,6 @@ namespace mhedit.GameControllers
         private string _alphaHighROM = "136025.217";
         private string _alphaLowROM = "136025.216";
         private string _page01ROM = "136025.215";
-        private string _validText = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:";
 
         #endregion
 
@@ -116,7 +115,7 @@ namespace mhedit.GameControllers
             }
         }
 
-        public byte[] GetText(string text)
+        public byte[] GetBytesFromString(string text)
         {
             text = text.ToUpper();
             List<byte> bytes = new List<byte>();
@@ -136,7 +135,7 @@ namespace mhedit.GameControllers
         }
 
 
-        public ushort GetAddress(ROMAddress location)
+        public Tuple<ushort, int> GetAddress(string location)
         {
             ushort address = 0;
             //search the export list for this address...
@@ -161,7 +160,7 @@ namespace mhedit.GameControllers
                 throw new Exception("Address not found: " + location.ToString());
             }
 
-            return address;
+            return new Tuple<ushort, int>(address, 2);
         }
 
         private byte[] ReadROM(ushort address, int offset, int length)
@@ -259,23 +258,23 @@ namespace mhedit.GameControllers
         }
 
 
-        public int Write(ROMAddress location, byte data, int offset)
+        public int Write(string location, byte data, int offset)
         {
-            ushort address = GetAddress(location);
+            ushort address = GetAddress(location).Item1;
             return WriteROM(address, new byte[] { data }, offset);
         }
 
-        public int Write(ROMAddress location, UInt16 data, int offset)
+        public int Write(string location, UInt16 data, int offset)
         {
-            ushort address = GetAddress(location);
+            ushort address = GetAddress(location).Item1;
             byte datahigh = (byte)(data >> 8);
             byte datalow = (byte)(data & 0xff);
             return WriteROM(address, new byte[] { datalow, datahigh }, offset);
         }
 
-        public int Write(ROMAddress location, byte[] data, int offset)
+        public int Write(string location, byte[] data, int offset)
         {
-            ushort address = GetAddress(location);
+            ushort address = GetAddress(location).Item1;
             return WriteROM(address, data, offset);
         }
 
@@ -332,6 +331,25 @@ namespace mhedit.GameControllers
             return GetText(messageBase);
         }
 
+        public byte[] GetText(string text)
+        {
+            text = text.ToUpper();
+            List<byte> bytes = new List<byte>();
+            bytes.Add(0xa3);
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                int index = _validText.IndexOf(text[i]);
+                if (index >= 0)
+                {
+                    bytes.Add((byte)(index * 2));
+                }
+            }
+            //last one needs special flag set...
+            bytes.Add(0x80);
+            return bytes.ToArray();
+        }
+
         private string GetText(ushort textBase)
         {
             StringBuilder sb = new StringBuilder();
@@ -377,7 +395,7 @@ namespace mhedit.GameControllers
         {
             bool success = false;
 
-            ROMDump rom = new ROMDump(_templatePath, _mamePath, _templatePath);
+            //ROMDump rom = new ROMDump(_templatePath, _mamePath, _templatePath);
 
             Reactoid reactor = null;
             EscapePod pod = null;
@@ -499,86 +517,86 @@ namespace mhedit.GameControllers
             // Start building ROM here //
             /////////////////////////////
             //first is the level selection
-            rom.Write(ROMDump.ROMAddress.levelst, (byte)maze.MazeType, 1);
-
+            Write("levelst", (byte)maze.MazeType, 1);
+            
             //next hint text
-            rom.Write(ROMDump.ROMAddress.mzh0, rom.GetText(maze.Hint), 0);
+            Write("mzh0", GetText(maze.Hint), 0);
 
             //build reactor, pyroids and perkoids now...
             //write reactor
             int offset = 0;
-            offset += rom.Write(ROMDump.ROMAddress.mzsc0, Context.PointToByteArrayLong(Context.ConvertPixelsToVector(reactor.Position)), offset);
+            offset += Write("mzsc0", Context.PointToByteArrayLong(Context.ConvertPixelsToVector(reactor.Position)), offset);
             foreach (Pyroid pyroid in pyroids)
             {
-                offset += rom.Write(ROMDump.ROMAddress.mzsc0, Context.PointToByteArrayLong(Context.ConvertPixelsToVector(pyroid.Position)), offset);
+                offset += Write("mzsc0", Context.PointToByteArrayLong(Context.ConvertPixelsToVector(pyroid.Position)), offset);
 
                 if (pyroid.IncrementingVelocity.X != 0)
                 {
-                    offset += rom.Write(ROMDump.ROMAddress.mzsc0, new byte[] { (byte)(0x80 | pyroid.IncrementingVelocity.X) }, offset);
+                    offset += Write("mzsc0", new byte[] { (byte)(0x80 | pyroid.IncrementingVelocity.X) }, offset);
                 }
-                offset += rom.Write(ROMDump.ROMAddress.mzsc0, new byte[] { (byte)pyroid.Velocity.X }, offset);
+                offset += Write("mzsc0", new byte[] { (byte)pyroid.Velocity.X }, offset);
 
                 if (pyroid.IncrementingVelocity.Y != 0)
                 {
-                    offset += rom.Write(ROMDump.ROMAddress.mzsc0, new byte[] { (byte)(0x80 | pyroid.IncrementingVelocity.Y) }, offset);
+                    offset += Write("mzsc0", new byte[] { (byte)(0x80 | pyroid.IncrementingVelocity.Y) }, offset);
                 }
-                offset += rom.Write(ROMDump.ROMAddress.mzsc0, new byte[] { (byte)pyroid.Velocity.Y }, offset);
+                offset += Write("mzsc0", new byte[] { (byte)pyroid.Velocity.Y }, offset);
             }
             if (perkoids.Count > 0)
             {
-                offset += rom.Write(ROMDump.ROMAddress.mzsc0, (byte)0xfe, offset);
+                offset += Write("mzsc0", (byte)0xfe, offset);
                 foreach (Perkoid perkoid in perkoids)
                 {
-                    offset += rom.Write(ROMDump.ROMAddress.mzsc0, Context.PointToByteArrayLong(Context.ConvertPixelsToVector(perkoid.Position)), offset);
+                    offset += Write("mzsc0", Context.PointToByteArrayLong(Context.ConvertPixelsToVector(perkoid.Position)), offset);
                     if (perkoid.IncrementingVelocity.X != 0)
                     {
-                        offset += rom.Write(ROMDump.ROMAddress.mzsc0, new byte[] { (byte)(0x80 | perkoid.IncrementingVelocity.X) }, offset);
+                        offset += Write("mzsc0", new byte[] { (byte)(0x80 | perkoid.IncrementingVelocity.X) }, offset);
                     }
-                    offset += rom.Write(ROMDump.ROMAddress.mzsc0, new byte[] { (byte)perkoid.Velocity.X }, offset);
+                    offset += Write("mzsc0", new byte[] { (byte)perkoid.Velocity.X }, offset);
 
                     if (perkoid.IncrementingVelocity.Y != 0)
                     {
-                        offset += rom.Write(ROMDump.ROMAddress.mzsc0, new byte[] { (byte)(0x80 | perkoid.IncrementingVelocity.Y) }, offset);
+                        offset += Write("mzsc0", new byte[] { (byte)(0x80 | perkoid.IncrementingVelocity.Y) }, offset);
                     }
-                    offset += rom.Write(ROMDump.ROMAddress.mzsc0, new byte[] { (byte)perkoid.Velocity.Y }, offset);
+                    offset += Write("mzsc0", new byte[] { (byte)perkoid.Velocity.Y }, offset);
                 }
             }
-            rom.Write(ROMDump.ROMAddress.mzsc0, (byte)0xff, offset);
+            Write("mzsc0", (byte)0xff, offset);
             //reactor timer, we will write all 4 entries for now...
-            rom.Write(ROMDump.ROMAddress.outime, new byte[] { (byte)rom.ToDecimal(reactor.Timer), (byte)rom.ToDecimal(reactor.Timer), (byte)rom.ToDecimal(reactor.Timer), (byte)rom.ToDecimal(reactor.Timer) }, 0);
+            Write("outime", new byte[] { (byte)ToDecimal(reactor.Timer), (byte)ToDecimal(reactor.Timer), (byte)ToDecimal(reactor.Timer), (byte)ToDecimal(reactor.Timer) }, 0);
 
             //do oxygens now
             offset = 0;
             foreach (Oxoid oxoid in oxoids)
             {
                 byte[] oxoidPositionBytes = Context.PointToByteArrayPacked(oxoid.Position);
-                offset += rom.Write(ROMDump.ROMAddress.mzdc0, oxoidPositionBytes, offset);
+                offset += Write("mzdc0", oxoidPositionBytes, offset);
             }
-            rom.Write(ROMDump.ROMAddress.mzdc0, 0, offset);
+            Write("mzdc0", 0, offset);
 
             //do lightning (Force Fields)
             offset = 0;
             foreach (LightningH lightning in lightningHorizontal)
             {
-                offset += rom.Write(ROMDump.ROMAddress.mzlg0, Context.PointToByteArrayPacked(lightning.Position), offset);
+                offset += Write("mzlg0", Context.PointToByteArrayPacked(lightning.Position), offset);
             }
             //end horizontal with 0xff
-            offset += rom.Write(ROMDump.ROMAddress.mzlg0, (byte)0xff, offset);
+            offset += Write("mzlg0", (byte)0xff, offset);
             foreach (LightningV lightning in lightningVertical)
             {
-                offset += rom.Write(ROMDump.ROMAddress.mzlg0, Context.PointToByteArrayPacked(lightning.Position), offset);
+                offset += Write("mzlg0", Context.PointToByteArrayPacked(lightning.Position), offset);
             }
             //end all with 0x00
-            rom.Write(ROMDump.ROMAddress.mzlg0, (byte)0, offset);
+            Write("mzlg0", (byte)0, offset);
 
             //build arrows now
             offset = 0;
             foreach (Arrow arrow in arrows)
             {
-                offset += rom.Write(ROMDump.ROMAddress.mzar0, Context.PointToByteArrayPacked(arrow.Position), offset);
-                offset += rom.Write(ROMDump.ROMAddress.mzar0, (byte)arrow.ArrowDirection, offset);
+                offset += Write("mzar0", Context.PointToByteArrayPacked(arrow.Position), offset);
+                offset += Write("mzar0", (byte)arrow.ArrowDirection, offset);
             }
-            rom.Write(ROMDump.ROMAddress.mzar0, (byte)0, offset);
+            Write("mzar0", (byte)0, offset);
 
             //maze walls
             //static first
@@ -586,22 +604,22 @@ namespace mhedit.GameControllers
             int wallDataOffset = 18; //this is a set of blank data offsets defined in the mhavoc source for some reason
             foreach (MazeWall wall in staticWalls)
             {
-                offset += rom.Write(ROMDump.ROMAddress.mzta0, (byte)(wallDataOffset + (maze.PointToStamp(wall.Position))), offset);
-                offset += rom.Write(ROMDump.ROMAddress.mzta0, (byte)wall.WallType, offset);
+                offset += Write("mzta0", (byte)(wallDataOffset + (maze.PointToStamp(wall.Position))), offset);
+                offset += Write("mzta0", (byte)wall.WallType, offset);
             }
-            rom.Write(ROMDump.ROMAddress.mzta0, (byte)0, offset);
+            Write("mzta0", (byte)0, offset);
 
             //then dynamic
             offset = 0;
             foreach (MazeWall wall in dynamicWalls)
             {
-                offset += rom.Write(ROMDump.ROMAddress.mztd0, (byte)(wallDataOffset + (maze.PointToStamp(wall.Position))), offset);
-                offset += rom.Write(ROMDump.ROMAddress.mztd0, (byte)wall.DynamicWallTimout, offset);
-                offset += rom.Write(ROMDump.ROMAddress.mztd0, (byte)wall.AlternateWallTimeout, offset);
-                offset += rom.Write(ROMDump.ROMAddress.mztd0, (byte)wall.WallType, offset);
-                offset += rom.Write(ROMDump.ROMAddress.mztd0, (byte)wall.AlternateWallType, offset);
+                offset += Write("mztd0", (byte)(wallDataOffset + (maze.PointToStamp(wall.Position))), offset);
+                offset += Write("mztd0", (byte)wall.DynamicWallTimout, offset);
+                offset += Write("mztd0", (byte)wall.AlternateWallTimeout, offset);
+                offset += Write("mztd0", (byte)wall.WallType, offset);
+                offset += Write("mztd0", (byte)wall.AlternateWallType, offset);
             }
-            rom.Write(ROMDump.ROMAddress.mztd0, (byte)0, offset);
+            Write("mztd0", (byte)0, offset);
 
             //one way walls
             offset = 0;
@@ -609,23 +627,23 @@ namespace mhedit.GameControllers
             {
                 foreach (OneWay oneway in oneWayRights)
                 {
-                    offset += rom.Write(ROMDump.ROMAddress.mone0, Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
+                    offset += Write("mone0", Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
                 }
             }
             foreach (OneWay oneway in oneWayLefts)
             {
-                offset += rom.Write(ROMDump.ROMAddress.mone0, (byte)0xff, offset);
-                offset += rom.Write(ROMDump.ROMAddress.mone0, Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
+                offset += Write("mone0", (byte)0xff, offset);
+                offset += Write("mone0", Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
             }
-            rom.Write(ROMDump.ROMAddress.mone0, (byte)0, offset);
+            Write("mone0", (byte)0, offset);
 
             //build spikes now
             offset = 0;
             foreach (Spikes spike in spikes)
             {
-                offset += rom.Write(ROMDump.ROMAddress.tite0, Context.PointToByteArrayPacked(spike.Position), offset);
+                offset += Write("tite0", Context.PointToByteArrayPacked(spike.Position), offset);
             }
-            rom.Write(ROMDump.ROMAddress.tite0, (byte)0, offset);
+            Write("tite0", (byte)0, offset);
 
             //locks and keys, for now, there has to be an even number of locks and keys
             offset = 0;
@@ -635,35 +653,35 @@ namespace mhedit.GameControllers
                 Key thisKey = keys.Where(k => k.KeyColor == thisLock.LockColor).FirstOrDefault();
                 if (thisKey != null)
                 {
-                    offset += rom.Write(ROMDump.ROMAddress.lock0, (byte)thisLock.LockColor, offset);
-                    offset += rom.Write(ROMDump.ROMAddress.lock0, Context.PointToByteArrayPacked(thisKey.Position), offset);
-                    offset += rom.Write(ROMDump.ROMAddress.lock0, Context.PointToByteArrayPacked(new Point(thisLock.Position.X, thisLock.Position.Y + 64)), offset);
+                    offset += Write("lock0", (byte)thisLock.LockColor, offset);
+                    offset += Write("lock0", Context.PointToByteArrayPacked(thisKey.Position), offset);
+                    offset += Write("lock0", Context.PointToByteArrayPacked(new Point(thisLock.Position.X, thisLock.Position.Y + 64)), offset);
                 }
             }
-            rom.Write(ROMDump.ROMAddress.lock0, (byte)0, offset);
+            Write("lock0", (byte)0, offset);
 
             //Escape pod
             if (pod != null)
             {
-                rom.Write(ROMDump.ROMAddress.mpod, (byte)pod.Option, 0);
+                Write("mpod", (byte)pod.Option, 0);
             }
 
             //clock & boots
             if (clock != null)
             {
                 //write these on all 4 level options
-                rom.Write(ROMDump.ROMAddress.mclock, Context.PointToByteArrayPacked(clock.Position), 0);
-                rom.Write(ROMDump.ROMAddress.mclock, Context.PointToByteArrayPacked(clock.Position), 1);
-                rom.Write(ROMDump.ROMAddress.mclock, Context.PointToByteArrayPacked(clock.Position), 2);
-                rom.Write(ROMDump.ROMAddress.mclock, Context.PointToByteArrayPacked(clock.Position), 3);
+                Write("mclock", Context.PointToByteArrayPacked(clock.Position), 0);
+                Write("mclock", Context.PointToByteArrayPacked(clock.Position), 1);
+                Write("mclock", Context.PointToByteArrayPacked(clock.Position), 2);
+                Write("mclock", Context.PointToByteArrayPacked(clock.Position), 3);
             }
             if (boots != null)
             {
                 //write these on all 4 level options
-                rom.Write(ROMDump.ROMAddress.mboots, Context.PointToByteArrayPacked(boots.Position), 0);
-                rom.Write(ROMDump.ROMAddress.mboots, Context.PointToByteArrayPacked(boots.Position), 1);
-                rom.Write(ROMDump.ROMAddress.mboots, Context.PointToByteArrayPacked(boots.Position), 2);
-                rom.Write(ROMDump.ROMAddress.mboots, Context.PointToByteArrayPacked(boots.Position), 3);
+                Write("mboots", Context.PointToByteArrayPacked(boots.Position), 0);
+                Write("mboots", Context.PointToByteArrayPacked(boots.Position), 1);
+                Write("mboots", Context.PointToByteArrayPacked(boots.Position), 2);
+                Write("mboots", Context.PointToByteArrayPacked(boots.Position), 3);
             }
 
             //transporters
@@ -680,28 +698,28 @@ namespace mhedit.GameControllers
                     {
                         colorByte += 0x10;
                     }
-                    offset += rom.Write(ROMDump.ROMAddress.tran0, colorByte, offset);
-                    offset += rom.Write(ROMDump.ROMAddress.tran0, Context.PointToByteArrayPacked(new Point(t.Position.X, t.Position.Y + 64)), offset);
+                    offset += Write("tran0", colorByte, offset);
+                    offset += Write("tran0", Context.PointToByteArrayPacked(new Point(t.Position.X, t.Position.Y + 64)), offset);
                 }
             }
             //write end of transports
-            offset += rom.Write(ROMDump.ROMAddress.tran0, 0, offset);
+            offset += Write("tran0", 0, offset);
             //write transportability data
-            offset += rom.Write(ROMDump.ROMAddress.tran0, new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xee }, offset);
+            offset += Write("tran0", new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xee }, offset);
 
             //Laser Cannon
             offset = 0;
             int pointer = 0;
             if (cannons.Count > 0)
             {
-                rom.Write(ROMDump.ROMAddress.mcan, new byte[] { 0x02, 0x02, 0x02, 0x02 }, 0);
+                Write("mcan", new byte[] { 0x02, 0x02, 0x02, 0x02 }, 0);
             }
             for (int i = 0; i < cannons.Count; i++)
             {
                 Cannon cannon = cannons[i];
-                pointer += rom.Write(ROMDump.ROMAddress.mcan0, (UInt16)(rom.GetAddress(ROMDump.ROMAddress.mcand) + offset), pointer);
+                pointer += Write("mcan0", (UInt16)(GetAddress("mcand").Item1 + offset), pointer);
                 //cannon location first...
-                offset += rom.Write(ROMDump.ROMAddress.mcand, Context.PointToByteArrayLong(Context.ConvertPixelsToVector(cannon.Position)), offset);
+                offset += Write("mcand", Context.PointToByteArrayLong(Context.ConvertPixelsToVector(cannon.Position)), offset);
                 //now cannon commands
                 foreach (iCannonMovement movement in cannon.Movements)
                 {
@@ -712,28 +730,28 @@ namespace mhedit.GameControllers
                         command = 0x80;
                         if (move.Velocity.X == 0 && move.Velocity.Y == 0)
                         {
-                            offset += rom.Write(ROMDump.ROMAddress.mcand, command, offset);
+                            offset += Write("mcand", command, offset);
                         }
                         else
                         {
                             command += (byte)(0x3F & ((move.WaitFrames) >> 2));
-                            offset += rom.Write(ROMDump.ROMAddress.mcand, command, offset);
+                            offset += Write("mcand", command, offset);
                             //write velocities
                             if (move.Velocity.X >= 0)
                             {
-                                offset += rom.Write(ROMDump.ROMAddress.mcand, (byte)(move.Velocity.X & 0x3F), offset);
+                                offset += Write("mcand", (byte)(move.Velocity.X & 0x3F), offset);
                             }
                             else
                             {
-                                offset += rom.Write(ROMDump.ROMAddress.mcand, (byte)(move.Velocity.X | 0xc0), offset);
+                                offset += Write("mcand", (byte)(move.Velocity.X | 0xc0), offset);
                             }
                             if (move.Velocity.Y >= 0)
                             {
-                                offset += rom.Write(ROMDump.ROMAddress.mcand, (byte)(move.Velocity.Y & 0x3F), offset);
+                                offset += Write("mcand", (byte)(move.Velocity.Y & 0x3F), offset);
                             }
                             else
                             {
-                                offset += rom.Write(ROMDump.ROMAddress.mcand, (byte)(move.Velocity.Y | 0xc0), offset);
+                                offset += Write("mcand", (byte)(move.Velocity.Y | 0xc0), offset);
                             }
                         }
                     }
@@ -742,13 +760,13 @@ namespace mhedit.GameControllers
                         CannonMovementPause pause = (CannonMovementPause)movement;
                         command = 0xc0;
                         command += (byte)(pause.WaitFrames & 0x3F);
-                        offset += rom.Write(ROMDump.ROMAddress.mcand, command, offset);
+                        offset += Write("mcand", command, offset);
                     }
                     else if (movement is CannonMovementReturn)
                     {
                         CannonMovementReturn ret = (CannonMovementReturn)movement;
                         command = 0x00;
-                        offset += rom.Write(ROMDump.ROMAddress.mcand, 0, offset);
+                        offset += Write("mcand", 0, offset);
                     }
                     else if (movement is CannonMovementPosition)
                     {
@@ -760,11 +778,11 @@ namespace mhedit.GameControllers
                         {
                             command += 0x01;
                         }
-                        offset += rom.Write(ROMDump.ROMAddress.mcand, command, offset);
+                        offset += Write("mcand", command, offset);
                         if (position.ShotSpeed > 0)
                         {
                             //write velocity now too
-                            offset += rom.Write(ROMDump.ROMAddress.mcand, position.ShotSpeed, offset);
+                            offset += Write("mcand", position.ShotSpeed, offset);
                         }
                     }
                 }
@@ -774,16 +792,16 @@ namespace mhedit.GameControllers
             int tripoffset = 0;
             foreach (TripPad trip in tripPads)
             {
-                offset += rom.Write(ROMDump.ROMAddress.mztr0, Context.PointToByteArrayPacked(trip.Position), offset);
+                offset += Write("mztr0", Context.PointToByteArrayPacked(trip.Position), offset);
                 byte[] position = Context.PointToByteArrayShort(new Point(trip.Pyroid.Position.X, trip.Pyroid.Position.Y + 64));
                 if (trip.Pyroid.PyroidStyle == PyroidStyle.Single)
                 {
                     position[0] |= 0x80;
                 }
-                rom.Write(ROMDump.ROMAddress.trtbl, position, tripoffset + 0x18);
-                rom.Write(ROMDump.ROMAddress.trtbl, position, tripoffset + 0x30);
-                rom.Write(ROMDump.ROMAddress.trtbl, position, tripoffset + 0x48);
-                tripoffset += rom.Write(ROMDump.ROMAddress.trtbl, position, tripoffset);
+                Write("trtbl", position, tripoffset + 0x18);
+                Write("trtbl", position, tripoffset + 0x30);
+                Write("trtbl", position, tripoffset + 0x48);
+                tripoffset += Write("trtbl", position, tripoffset);
 
                 byte velocity = (byte)Math.Abs(trip.Pyroid.Velocity);
                 if (trip.Pyroid.Velocity < 0)
@@ -791,28 +809,28 @@ namespace mhedit.GameControllers
                     velocity |= 0x80;
                 }
 
-                rom.Write(ROMDump.ROMAddress.trtbl, velocity, tripoffset + 0x18);
-                rom.Write(ROMDump.ROMAddress.trtbl, velocity, tripoffset + 0x30);
-                rom.Write(ROMDump.ROMAddress.trtbl, velocity, tripoffset + 0x48);
-                tripoffset += rom.Write(ROMDump.ROMAddress.trtbl, velocity, tripoffset);
+                Write("trtbl", velocity, tripoffset + 0x18);
+                Write("trtbl", velocity, tripoffset + 0x30);
+                Write("trtbl", velocity, tripoffset + 0x48);
+                tripoffset += Write("trtbl", velocity, tripoffset);
 
             }
-            rom.Write(ROMDump.ROMAddress.mztr0, (byte)0, offset);
+            Write("mztr0", (byte)0, offset);
 
             //de hand finally
             offset = 0;
             if (hand != null)
             {
                 byte[] handLocation = Context.PointToByteArrayShort(hand.Position);
-                offset += rom.Write(ROMDump.ROMAddress.hand0, handLocation, offset);
+                offset += Write("hand0", handLocation, offset);
                 byte[] reactoidLocation = Context.PointToByteArrayShort(reactor.Position);
                 int xAccordians = Math.Abs(reactoidLocation[0] - handLocation[0]);
                 int yAccordians = Math.Abs(handLocation[1] - reactoidLocation[1]);
-                offset += rom.Write(ROMDump.ROMAddress.hand0, new byte[] { (byte)((xAccordians * 2) + 1), (byte)(yAccordians * 2), 0x3F, 0x0B, 0x1F, 0x05, 0x03 }, offset);
+                offset += Write("hand0", new byte[] { (byte)((xAccordians * 2) + 1), (byte)(yAccordians * 2), 0x3F, 0x0B, 0x1F, 0x05, 0x03 }, offset);
             }
 
             //write it BABY!!!!
-            if (rom.Save())
+            if (Save())
             {
                 success = true;
             }

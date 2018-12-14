@@ -17,7 +17,7 @@ namespace mhedit.Controllers
     {
         public static MazeCollection GetMazeCollectionFromROM(string romPath, MazePropertiesUpdated mazePropertiesUpdatedHandler)
         {
-            ROMDump rom = new ROMDump(romPath, romPath, romPath);
+            MajorHavoc mh = new MajorHavoc(romPath, romPath, romPath);
 
             MazeCollection mazeCollection = new MazeCollection("Production Mazes");
             mazeCollection.AuthorEmail = "Owen Rubin";
@@ -32,43 +32,43 @@ namespace mhedit.Controllers
                 //hint text - only first 12 mazes tho
                 if (i < 12)
                 {
-                    byte messageIndex = rom.ReadByte(0x93FE, i);
-                    maze.Hint = rom.GetMessage(messageIndex);
+                    byte messageIndex = mh.ReadByte(0x93FE, i);
+                    maze.Hint = mh.GetMessage(messageIndex);
                 }
                 //build reactor
-                ushort mazeInitIndex = rom.ReadWord(0x2581, i * 2);
+                ushort mazeInitIndex = mh.ReadWord(0x2581, i * 2);
                 Reactoid reactor = new Reactoid();
-                reactor.LoadPosition(rom.ReadBytes(mazeInitIndex, 4));
+                reactor.LoadPosition(mh.ReadBytes(mazeInitIndex, 4));
                 mazeInitIndex += 4;
-                int timer = rom.FromDecimal((int)rom.ReadByte(0x3355, i));
+                int timer = mh.FromDecimal((int)mh.ReadByte(0x3355, i));
                 reactor.Timer = timer;
                 maze.AddObject(reactor);
 
                 //pyroids
-                byte firstValue = rom.ReadByte(mazeInitIndex, 0);
+                byte firstValue = mh.ReadByte(mazeInitIndex, 0);
                 while (firstValue != 0xff)
                 {
                     Pyroid pyroid = new Pyroid();
-                    pyroid.LoadPosition(rom.ReadBytes(mazeInitIndex, 4));
+                    pyroid.LoadPosition(mh.ReadBytes(mazeInitIndex, 4));
                     mazeInitIndex += 4;
-                    byte fireballVelX = rom.ReadByte(mazeInitIndex, 0);
+                    byte fireballVelX = mh.ReadByte(mazeInitIndex, 0);
                     if (fireballVelX > 0x70 && fireballVelX < 0x90)
                     {
                         //incrementing velocity
                         mazeInitIndex++;
                         byte fireballVelXIncrement = fireballVelX;
                         pyroid.IncrementingVelocity.X = fireballVelXIncrement;
-                        fireballVelX = rom.ReadByte(mazeInitIndex, 0);
+                        fireballVelX = mh.ReadByte(mazeInitIndex, 0);
                     }
                     mazeInitIndex++;
-                    byte fireballVelY = rom.ReadByte(mazeInitIndex, 0);
+                    byte fireballVelY = mh.ReadByte(mazeInitIndex, 0);
                     if (fireballVelY > 0x70 && fireballVelY < 0x90)
                     {
                         //incrementing velocity
                         mazeInitIndex++;
                         byte fireballVelYIncrement = fireballVelY;
                         pyroid.IncrementingVelocity.Y = fireballVelYIncrement;
-                        fireballVelY = rom.ReadByte(mazeInitIndex, 0);
+                        fireballVelY = mh.ReadByte(mazeInitIndex, 0);
                     }
                     mazeInitIndex++;
 
@@ -76,7 +76,7 @@ namespace mhedit.Controllers
                     pyroid.Velocity.Y = fireballVelY;
                     maze.AddObject(pyroid);
 
-                    firstValue = rom.ReadByte(mazeInitIndex, 0);
+                    firstValue = mh.ReadByte(mazeInitIndex, 0);
 
                     if (firstValue == 0xfe)
                     {
@@ -90,24 +90,24 @@ namespace mhedit.Controllers
                 while (firstValue != 0xff)
                 {
                     Perkoid perkoid = new Perkoid();
-                    perkoid.LoadPosition(rom.ReadBytes(mazeInitIndex, 4));
+                    perkoid.LoadPosition(mh.ReadBytes(mazeInitIndex, 4));
                     mazeInitIndex += 4;
-                    byte perkoidVelX = rom.ReadByte(mazeInitIndex, 0);
+                    byte perkoidVelX = mh.ReadByte(mazeInitIndex, 0);
                     if (perkoidVelX > 0x70 && perkoidVelX < 0x90)
                     {
                         //incrementing velocity
                         mazeInitIndex++;
                         byte perkoidVelXIncrement = perkoidVelX;
-                        perkoidVelX = rom.ReadByte(mazeInitIndex, 0);
+                        perkoidVelX = mh.ReadByte(mazeInitIndex, 0);
                     }
                     mazeInitIndex++;
-                    byte perkoidVelY = rom.ReadByte(mazeInitIndex, 0);
+                    byte perkoidVelY = mh.ReadByte(mazeInitIndex, 0);
                     if (perkoidVelY > 0x70 && perkoidVelY < 0x90)
                     {
                         //incrementing velocity
                         mazeInitIndex++;
                         byte perkoidVelYIncrement = perkoidVelY;
-                        perkoidVelY = rom.ReadByte(mazeInitIndex, 0);
+                        perkoidVelY = mh.ReadByte(mazeInitIndex, 0);
                     }
                     mazeInitIndex++;
 
@@ -115,13 +115,13 @@ namespace mhedit.Controllers
                     perkoid.Velocity.Y = perkoidVelY;
                     maze.AddObject(perkoid);
 
-                    firstValue = rom.ReadByte(mazeInitIndex, 0);
+                    firstValue = mh.ReadByte(mazeInitIndex, 0);
                 }
 
                 //do oxygens now
-                ushort oxygenBaseAddress = rom.ReadWord(0x25A9, i * 2);
+                ushort oxygenBaseAddress = mh.ReadWord(0x25A9, i * 2);
 
-                byte oxoidValue = rom.ReadByte(oxygenBaseAddress, 0);
+                byte oxoidValue = mh.ReadByte(oxygenBaseAddress, 0);
                 while (oxoidValue != 0x00)
                 {
                     Oxoid oxoid = new Oxoid();
@@ -129,20 +129,20 @@ namespace mhedit.Controllers
                     maze.AddObject(oxoid);
 
                     oxygenBaseAddress++;
-                    oxoidValue = rom.ReadByte(oxygenBaseAddress, 0);
+                    oxoidValue = mh.ReadByte(oxygenBaseAddress, 0);
                 }
 
                 //do lightning (Force Fields)
-                ushort lightningBaseAddress = rom.ReadWord(0x25D1, i * 2);
+                ushort lightningBaseAddress = mh.ReadWord(0x25D1, i * 2);
 
-                byte lightningValue = rom.ReadByte(lightningBaseAddress, 0);
+                byte lightningValue = mh.ReadByte(lightningBaseAddress, 0);
                 bool isHorizontal = true;
 
                 if (lightningValue == 0xff)
                 {
                     isHorizontal = false;
                     lightningBaseAddress++;
-                    lightningValue = rom.ReadByte(lightningBaseAddress, 0);
+                    lightningValue = mh.ReadByte(lightningBaseAddress, 0);
                 }
 
                 while (lightningValue != 0x00)
@@ -162,47 +162,47 @@ namespace mhedit.Controllers
                     }
 
                     lightningBaseAddress++;
-                    lightningValue = rom.ReadByte(lightningBaseAddress, 0);
+                    lightningValue = mh.ReadByte(lightningBaseAddress, 0);
                     if (lightningValue == 0xff)
                     {
                         isHorizontal = false;
                         lightningBaseAddress++;
                     }
-                    lightningValue = rom.ReadByte(lightningBaseAddress, 0);
+                    lightningValue = mh.ReadByte(lightningBaseAddress, 0);
                 }
 
                 //build arrows now
-                ushort arrowBaseAddress = rom.ReadWord(0x25F9, i * 2);
-                byte arrowValue = rom.ReadByte(arrowBaseAddress, 0);
+                ushort arrowBaseAddress = mh.ReadWord(0x25F9, i * 2);
+                byte arrowValue = mh.ReadByte(arrowBaseAddress, 0);
 
                 while (arrowValue != 0x00)
                 {
                     Arrow arrow = new Arrow();
                     arrow.LoadPosition(arrowValue);
                     arrowBaseAddress++;
-                    arrowValue = rom.ReadByte(arrowBaseAddress, 0);
+                    arrowValue = mh.ReadByte(arrowBaseAddress, 0);
                     arrow.ArrowDirection = (Containers.MazeObjects.ArrowDirection)arrowValue;
                     maze.AddObject(arrow);
                     arrowBaseAddress++;
-                    arrowValue = rom.ReadByte(arrowBaseAddress, 0);
+                    arrowValue = mh.ReadByte(arrowBaseAddress, 0);
                 }
 
                 //maze walls
                 //static first
-                ushort wallBaseAddress = rom.ReadWord(0x2647, i * 2);
-                byte wallValue = rom.ReadByte(wallBaseAddress, 0);
+                ushort wallBaseAddress = mh.ReadWord(0x2647, i * 2);
+                byte wallValue = mh.ReadByte(wallBaseAddress, 0);
 
                 while (wallValue != 0x00)
                 {
                     int relativeWallValue = GetRelativeWallIndex(maze.MazeType, wallValue);
                     Point stampPoint = maze.PointFromStamp(relativeWallValue);
                     wallBaseAddress++;
-                    wallValue = rom.ReadByte(wallBaseAddress, 0);
+                    wallValue = mh.ReadByte(wallBaseAddress, 0);
                     MazeWall wall = new MazeWall((MazeWallType)(wallValue & 0x07), stampPoint, relativeWallValue);
                     wall.UserWall = true;
                     maze.AddObject(wall);
                     wallBaseAddress++;
-                    wallValue = rom.ReadByte(wallBaseAddress, 0);
+                    wallValue = mh.ReadByte(wallBaseAddress, 0);
                 }
 
                 //then dynamic walls
@@ -210,15 +210,15 @@ namespace mhedit.Controllers
                 //only level 9 and higher
                 if (i > 7)
                 {
-                    ushort dynamicWallBaseAddress = rom.ReadWord(0x2667, (i-8) * 2);
-                    byte dynamicWallIndex = rom.ReadByte(dynamicWallBaseAddress, 0);
+                    ushort dynamicWallBaseAddress = mh.ReadWord(0x2667, (i-8) * 2);
+                    byte dynamicWallIndex = mh.ReadByte(dynamicWallBaseAddress, 0);
                     while(dynamicWallIndex != 0x00)
                     {
                         int relativeWallIndex = GetRelativeWallIndex(maze.MazeType, dynamicWallIndex);
-                        int baseTimer = rom.ReadByte(dynamicWallBaseAddress, 1);
-                        int altTimer = rom.ReadByte(dynamicWallBaseAddress, 2);
-                        MazeWallType baseType = (MazeWallType)rom.ReadByte(dynamicWallBaseAddress, 3);
-                        MazeWallType altType = (MazeWallType)rom.ReadByte(dynamicWallBaseAddress, 4);
+                        int baseTimer = mh.ReadByte(dynamicWallBaseAddress, 1);
+                        int altTimer = mh.ReadByte(dynamicWallBaseAddress, 2);
+                        MazeWallType baseType = (MazeWallType)mh.ReadByte(dynamicWallBaseAddress, 3);
+                        MazeWallType altType = (MazeWallType)mh.ReadByte(dynamicWallBaseAddress, 4);
                         MazeWall wall = maze.MazeObjects.Where(o => o.GetType() == typeof(MazeWall) && ((MazeWall)o).WallIndex == relativeWallIndex).FirstOrDefault() as MazeWall;
                         if (wall == null)
                         {
@@ -241,13 +241,13 @@ namespace mhedit.Controllers
                             wall.IsDynamicWall = true;
                         }
                         dynamicWallBaseAddress += 5;
-                        dynamicWallIndex = rom.ReadByte(dynamicWallBaseAddress, 0);
+                        dynamicWallIndex = mh.ReadByte(dynamicWallBaseAddress, 0);
                     }
                 }
 
                 //one way walls
-                ushort onewayBaseAddress = rom.ReadWord(0x2677, i * 2);
-                byte onewayValue = rom.ReadByte(onewayBaseAddress, 0);
+                ushort onewayBaseAddress = mh.ReadWord(0x2677, i * 2);
+                byte onewayValue = mh.ReadByte(onewayBaseAddress, 0);
 
                 while (onewayValue != 0x00)
                 {
@@ -256,7 +256,7 @@ namespace mhedit.Controllers
                     {
                         oneway.Direction = OneWayDirection.Left;
                         onewayBaseAddress++;
-                        onewayValue = rom.ReadByte(onewayBaseAddress, 0);
+                        onewayValue = mh.ReadByte(onewayBaseAddress, 0);
                     }
                     else
                     {
@@ -266,14 +266,14 @@ namespace mhedit.Controllers
                     maze.AddObject(oneway);
 
                     onewayBaseAddress++;
-                    onewayValue = rom.ReadByte(onewayBaseAddress, 0);
+                    onewayValue = mh.ReadByte(onewayBaseAddress, 0);
                 }
 
                 // Stalactite Level 5 and up
                 if (i > 4)
                 {
-                    ushort stalactiteBaseAddress = rom.ReadWord(0x26B3, (i - 5) * 2);
-                    byte stalactiteValue = rom.ReadByte(stalactiteBaseAddress, 0);
+                    ushort stalactiteBaseAddress = mh.ReadWord(0x26B3, (i - 5) * 2);
+                    byte stalactiteValue = mh.ReadByte(stalactiteBaseAddress, 0);
 
                     while (stalactiteValue != 0x00)
                     {
@@ -282,13 +282,13 @@ namespace mhedit.Controllers
                         maze.AddObject(spikes);
 
                         stalactiteBaseAddress++;
-                        stalactiteValue = rom.ReadByte(stalactiteBaseAddress, 0);
+                        stalactiteValue = mh.ReadByte(stalactiteBaseAddress, 0);
                     }
                 }
 
                 //locks and keys
-                ushort lockBaseAddress = rom.ReadWord(0x26D1, i * 2);
-                byte lockValue = rom.ReadByte(lockBaseAddress, 0);
+                ushort lockBaseAddress = mh.ReadWord(0x26D1, i * 2);
+                byte lockValue = mh.ReadByte(lockBaseAddress, 0);
 
                 while (lockValue != 0x00)
                 {
@@ -296,19 +296,19 @@ namespace mhedit.Controllers
                     lockBaseAddress++;
 
                     Key key = new Key();
-                    key.LoadPosition(rom.ReadByte(lockBaseAddress, 0));
+                    key.LoadPosition(mh.ReadByte(lockBaseAddress, 0));
                     key.KeyColor = (ObjectColor)lockColor;
                     maze.AddObject(key);
 
                     lockBaseAddress++;
 
                     Lock keylock = new Lock();
-                    keylock.LoadPosition(rom.ReadByte(lockBaseAddress, 0));
+                    keylock.LoadPosition(mh.ReadByte(lockBaseAddress, 0));
                     keylock.LockColor = (ObjectColor)lockColor;
                     maze.AddObject(keylock);
 
                     lockBaseAddress++;
-                    lockValue = rom.ReadByte(lockBaseAddress, 0);
+                    lockValue = mh.ReadByte(lockBaseAddress, 0);
                 }
 
                 //Escape pod
@@ -316,7 +316,7 @@ namespace mhedit.Controllers
                 if (mazeType == 0x01)
                 {
                     ushort podBaseAddress = 0x32FF;
-                    byte podValue = rom.ReadByte(podBaseAddress, i >> 2);
+                    byte podValue = mh.ReadByte(podBaseAddress, i >> 2);
 
                     if (podValue > 0)
                     {
@@ -326,8 +326,8 @@ namespace mhedit.Controllers
                 }
 
                 //clock & boots
-                byte clockData = rom.ReadByte(0x3290, i);
-                byte bootsData = rom.ReadByte(0x3290, i + 0x10);
+                byte clockData = mh.ReadByte(0x3290, i);
+                byte bootsData = mh.ReadByte(0x3290, i + 0x10);
 
                 if (clockData != 0)
                 {
@@ -344,14 +344,14 @@ namespace mhedit.Controllers
                 }
 
                 //transporters
-                ushort transporterBaseAddress = rom.ReadWord(0x26F9, i * 2);
-                byte colorValue = rom.ReadByte(transporterBaseAddress, 0);
+                ushort transporterBaseAddress = mh.ReadWord(0x26F9, i * 2);
+                byte colorValue = mh.ReadByte(transporterBaseAddress, 0);
 
                 while (colorValue != 0x00)
                 {
                     transporterBaseAddress++;
                     Transporter transporter = new Transporter();
-                    transporter.LoadPosition(rom.ReadByte(transporterBaseAddress, 0));
+                    transporter.LoadPosition(mh.ReadByte(transporterBaseAddress, 0));
                     transporter.Direction = OneWayDirection.Left;
                     if ((colorValue & 0x10) > 0)
                     {
@@ -360,7 +360,7 @@ namespace mhedit.Controllers
                     transporter.Color = (ObjectColor)(colorValue & 0x07);
                     maze.AddObject(transporter);
                     transporterBaseAddress++;
-                    colorValue = rom.ReadByte(transporterBaseAddress, 0);
+                    colorValue = mh.ReadByte(transporterBaseAddress, 0);
                 }
 
                 //Laser Cannon
@@ -369,19 +369,19 @@ namespace mhedit.Controllers
                 /// the cannon starts with respect to the ceiling. Cannons 2 and 3
                 /// start low (closer to the floor) than all others.
                 /// I need to figure out how that's encoded.
-                byte cannonAddressOffset = rom.ReadByte(0x269F, i);
+                byte cannonAddressOffset = mh.ReadByte(0x269F, i);
                 if (cannonAddressOffset != 0)
                 {
                     ushort cannonBaseAddress = (ushort)(0x30B1 + cannonAddressOffset);
-                    ushort cannonPointerAddress = rom.ReadWord(cannonBaseAddress, 0);
+                    ushort cannonPointerAddress = mh.ReadWord(cannonBaseAddress, 0);
 
                     while (cannonPointerAddress != 0)
                     {
                         Cannon cannon = new Cannon();
-                        cannon.LoadPosition(rom.ReadBytes(cannonPointerAddress, 4));
+                        cannon.LoadPosition(mh.ReadBytes(cannonPointerAddress, 4));
                         //now read data until we hit a cannon_end byte ($00)
                         int cannonCommandOffset = 4;
-                        byte commandStartByte = commandStartByte = rom.ReadByte(cannonPointerAddress, cannonCommandOffset);
+                        byte commandStartByte = commandStartByte = mh.ReadByte(cannonPointerAddress, cannonCommandOffset);
                         bool hasData = true;
                         while (hasData)
                         {
@@ -402,7 +402,7 @@ namespace mhedit.Controllers
                                     if (fireBit > 0)
                                     {
                                         cannonCommandOffset++;
-                                        cannonPosition.ShotSpeed = (byte)rom.ReadByte(cannonPointerAddress, cannonCommandOffset);
+                                        cannonPosition.ShotSpeed = (byte)mh.ReadByte(cannonPointerAddress, cannonCommandOffset);
                                     }
                                     cannon.Movements.Add(cannonPosition);
                                     break;
@@ -413,9 +413,9 @@ namespace mhedit.Controllers
                                     if (waitFrames > 0)
                                     {
                                         cannonCommandOffset++;
-                                        cannonMovement.Velocity.X = (sbyte)rom.ReadByte(cannonPointerAddress, cannonCommandOffset);
+                                        cannonMovement.Velocity.X = (sbyte)mh.ReadByte(cannonPointerAddress, cannonCommandOffset);
                                         cannonCommandOffset++;
-                                        cannonMovement.Velocity.Y = (sbyte)rom.ReadByte(cannonPointerAddress, cannonCommandOffset);
+                                        cannonMovement.Velocity.Y = (sbyte)mh.ReadByte(cannonPointerAddress, cannonCommandOffset);
                                     }
                                     //cannonMovement.
                                     cannon.Movements.Add(cannonMovement);
@@ -427,12 +427,12 @@ namespace mhedit.Controllers
                                     break;
                             }
                             cannonCommandOffset++;
-                            commandStartByte = commandStartByte = rom.ReadByte(cannonPointerAddress, cannonCommandOffset);
+                            commandStartByte = commandStartByte = mh.ReadByte(cannonPointerAddress, cannonCommandOffset);
                         }
                         maze.AddObject(cannon);
 
                         cannonBaseAddress += 2;
-                        cannonPointerAddress = rom.ReadWord(cannonBaseAddress, 0);
+                        cannonPointerAddress = mh.ReadWord(cannonBaseAddress, 0);
                     }
                 }
 
@@ -443,14 +443,14 @@ namespace mhedit.Controllers
                     /// The max number of trips in a maze is 7. Trips are stored in a list
                     /// that is null terminated. Trips start on level 5 and exist on every
                     /// level to 16. 12 total levels.
-                    ushort tripBaseAddress = rom.ReadWord((ushort)0x2627, ((i - 4) * 2));
+                    ushort tripBaseAddress = mh.ReadWord((ushort)0x2627, ((i - 4) * 2));
                     /// Trip Pyroids are a 1 to 1 relationship to a trip. Trip Pyroids are
                     /// described in 3 bytes. Each level worth of trip pyroids are stored in
                     /// an array 8 pyroids long (7 + null) even if there are less than 7
                     /// trips in a level.
                     ushort tripPyroidBaseAddress = (ushort)(0x2D36 + ((i - 4) * 3 * 8));
 
-                    byte tripX = rom.ReadByte(tripBaseAddress, 0);
+                    byte tripX = mh.ReadByte(tripBaseAddress, 0);
 
                     while (tripX != 0)
                     {
@@ -459,16 +459,16 @@ namespace mhedit.Controllers
                         maze.AddObject(trip);
 
                         tripBaseAddress++;
-                        tripX = rom.ReadByte(tripBaseAddress, 0);
+                        tripX = mh.ReadByte(tripBaseAddress, 0);
 
                         /// level 8 has 2 pyroids per trip pad.
                         //trip pyroid too
 
-                        byte xdata = rom.ReadByte(tripPyroidBaseAddress++, 0);
+                        byte xdata = mh.ReadByte(tripPyroidBaseAddress++, 0);
                         byte xh = (byte)(0x7f & xdata);
                         byte styleFlag = (byte)(0x80 & xdata);
-                        byte yh = rom.ReadByte(tripPyroidBaseAddress++, 0);
-                        byte vdata = rom.ReadByte(tripPyroidBaseAddress++, 0);
+                        byte yh = mh.ReadByte(tripPyroidBaseAddress++, 0);
+                        byte vdata = mh.ReadByte(tripPyroidBaseAddress++, 0);
 
                         byte[] longBytes = new byte[4];
 
@@ -509,12 +509,12 @@ namespace mhedit.Controllers
                     //longBytes[ 0 ] = 0;
                     //longBytes[ 2 ] = 0;
 
-                    ushort handBaseAddress = rom.ReadWord((ushort)(0x2721 + ((i - 6) * 2)), 0);
-                    longBytes[1] = rom.ReadByte(handBaseAddress, 0);
+                    ushort handBaseAddress = mh.ReadWord((ushort)(0x2721 + ((i - 6) * 2)), 0);
+                    longBytes[1] = mh.ReadByte(handBaseAddress, 0);
                     if (longBytes[1] != 0)
                     {
                         handBaseAddress++;
-                        longBytes[3] = rom.ReadByte(handBaseAddress, 0);
+                        longBytes[3] = mh.ReadByte(handBaseAddress, 0);
 
                         Hand hand = new Hand();
 
