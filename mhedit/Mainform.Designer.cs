@@ -33,29 +33,12 @@ namespace mhedit
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.toolStripButtonNewCollection = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonOpenCollection = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonSaveCollection = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButtonNewMaze = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonOpenMaze = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonOpenMazeMHP = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonSaveMaze = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonSaveMazeMHP = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButtonGrid = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonZoomIn = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonZoomOut = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonMAME = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButtonHome = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonAbout = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonLoadFromROM = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripButtonConfiguration = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripButtonContestUpload = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.treeView = new System.Windows.Forms.TreeView();
             this.contextMenuStripTree = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -69,11 +52,28 @@ namespace mhedit
             this.splitterRight = new System.Windows.Forms.Splitter();
             this.panelRight = new System.Windows.Forms.Panel();
             this.splitContainerRight = new System.Windows.Forms.SplitContainer();
-            this.toolBox = new Silver.UI.ToolBox();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.comboBoxMazeObjects = new System.Windows.Forms.ComboBox();
             this.splitterUpDown = new System.Windows.Forms.Splitter();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
+            this.toolBox = new Silver.UI.ToolBox();
+            this.toolStripButtonNewCollection = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonOpenCollection = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonSaveCollection = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonNewMaze = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonOpenMaze = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonOpenMazeMHP = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonSaveMaze = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonSaveMazeMHP = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonGrid = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonZoomIn = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonZoomOut = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonMAME = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonHome = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonAbout = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonLoadFromROM = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonConfiguration = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonContestUpload = new System.Windows.Forms.ToolStripButton();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.contextMenuStripTree.SuspendLayout();
@@ -133,209 +133,25 @@ namespace mhedit
             this.toolStrip.TabIndex = 2;
             this.toolStrip.Text = "toolStrip1";
             // 
-            // toolStripButtonNewCollection
-            // 
-            this.toolStripButtonNewCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonNewCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonNewCollection.Image")));
-            this.toolStripButtonNewCollection.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.toolStripButtonNewCollection.Name = "toolStripButtonNewCollection";
-            this.toolStripButtonNewCollection.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonNewCollection.Text = "toolStripButton1";
-            this.toolStripButtonNewCollection.ToolTipText = "Create a new maze collection";
-            this.toolStripButtonNewCollection.Click += new System.EventHandler(this.toolStripButtonNewCollection_Click);
-            // 
-            // toolStripButtonOpenCollection
-            // 
-            this.toolStripButtonOpenCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonOpenCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOpenCollection.Image")));
-            this.toolStripButtonOpenCollection.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.toolStripButtonOpenCollection.Name = "toolStripButtonOpenCollection";
-            this.toolStripButtonOpenCollection.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonOpenCollection.Text = "toolStripButton1";
-            this.toolStripButtonOpenCollection.ToolTipText = "Open an existing maze collection";
-            this.toolStripButtonOpenCollection.Click += new System.EventHandler(this.toolStripButtonOpenCollection_Click);
-            // 
-            // toolStripButtonSaveCollection
-            // 
-            this.toolStripButtonSaveCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonSaveCollection.Enabled = false;
-            this.toolStripButtonSaveCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSaveCollection.Image")));
-            this.toolStripButtonSaveCollection.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.toolStripButtonSaveCollection.Name = "toolStripButtonSaveCollection";
-            this.toolStripButtonSaveCollection.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonSaveCollection.Text = "toolStripButton2";
-            this.toolStripButtonSaveCollection.ToolTipText = "Save a maze collection";
-            this.toolStripButtonSaveCollection.Click += new System.EventHandler(this.toolStripButtonSaveCollection_Click);
-            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripButtonNewMaze
-            // 
-            this.toolStripButtonNewMaze.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonNewMaze.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonNewMaze.Image")));
-            this.toolStripButtonNewMaze.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.toolStripButtonNewMaze.Name = "toolStripButtonNewMaze";
-            this.toolStripButtonNewMaze.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonNewMaze.Text = "toolStripButton1";
-            this.toolStripButtonNewMaze.ToolTipText = "Create a new individual maze";
-            this.toolStripButtonNewMaze.Click += new System.EventHandler(this.toolStripButtonNewMaze_Click);
-            // 
-            // toolStripButtonOpenMaze
-            // 
-            this.toolStripButtonOpenMaze.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonOpenMaze.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOpenMaze.Image")));
-            this.toolStripButtonOpenMaze.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.toolStripButtonOpenMaze.Name = "toolStripButtonOpenMaze";
-            this.toolStripButtonOpenMaze.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonOpenMaze.Text = "toolStripButton1";
-            this.toolStripButtonOpenMaze.ToolTipText = "Open an individual maze";
-            this.toolStripButtonOpenMaze.Click += new System.EventHandler(this.toolStripButtonOpenMaze_Click);
-            // 
-            // toolStripButtonOpenMazeMHP
-            // 
-            this.toolStripButtonOpenMazeMHP.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonOpenMazeMHP.Enabled = false;
-            this.toolStripButtonOpenMazeMHP.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOpenMazeMHP.Image")));
-            this.toolStripButtonOpenMazeMHP.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonOpenMazeMHP.Name = "toolStripButtonOpenMazeMHP";
-            this.toolStripButtonOpenMazeMHP.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonOpenMazeMHP.Text = "toolStripButton2";
-            // 
-            // toolStripButtonSaveMaze
-            // 
-            this.toolStripButtonSaveMaze.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonSaveMaze.Enabled = false;
-            this.toolStripButtonSaveMaze.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.toolStripButtonSaveMaze.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSaveMaze.Image")));
-            this.toolStripButtonSaveMaze.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.toolStripButtonSaveMaze.Name = "toolStripButtonSaveMaze";
-            this.toolStripButtonSaveMaze.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonSaveMaze.Text = "toolStripButton2";
-            this.toolStripButtonSaveMaze.ToolTipText = "Save an individual maze";
-            this.toolStripButtonSaveMaze.Click += new System.EventHandler(this.toolStripButtonSaveMaze_Click);
-            // 
-            // toolStripButtonSaveMazeMHP
-            // 
-            this.toolStripButtonSaveMazeMHP.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonSaveMazeMHP.Enabled = false;
-            this.toolStripButtonSaveMazeMHP.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSaveMazeMHP.Image")));
-            this.toolStripButtonSaveMazeMHP.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonSaveMazeMHP.Name = "toolStripButtonSaveMazeMHP";
-            this.toolStripButtonSaveMazeMHP.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonSaveMazeMHP.Text = "toolStripButton3";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButtonGrid
-            // 
-            this.toolStripButtonGrid.Checked = true;
-            this.toolStripButtonGrid.CheckOnClick = true;
-            this.toolStripButtonGrid.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.toolStripButtonGrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonGrid.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonGrid.Image")));
-            this.toolStripButtonGrid.ImageTransparentColor = System.Drawing.Color.Black;
-            this.toolStripButtonGrid.Name = "toolStripButtonGrid";
-            this.toolStripButtonGrid.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonGrid.Text = "toolStripButton3";
-            this.toolStripButtonGrid.ToolTipText = "Grid Lines On/Off";
-            this.toolStripButtonGrid.Click += new System.EventHandler(this.toolStripButtonGrid_Click);
-            // 
-            // toolStripButtonZoomIn
-            // 
-            this.toolStripButtonZoomIn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonZoomIn.Enabled = false;
-            this.toolStripButtonZoomIn.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonZoomIn.Image")));
-            this.toolStripButtonZoomIn.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonZoomIn.Name = "toolStripButtonZoomIn";
-            this.toolStripButtonZoomIn.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonZoomIn.Text = "toolStripButton1";
-            this.toolStripButtonZoomIn.ToolTipText = "Zoom In";
-            this.toolStripButtonZoomIn.Click += new System.EventHandler(this.toolStripButtonZoomIn_Click);
-            // 
-            // toolStripButtonZoomOut
-            // 
-            this.toolStripButtonZoomOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonZoomOut.Enabled = false;
-            this.toolStripButtonZoomOut.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonZoomOut.Image")));
-            this.toolStripButtonZoomOut.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonZoomOut.Name = "toolStripButtonZoomOut";
-            this.toolStripButtonZoomOut.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonZoomOut.Text = "toolStripButton2";
-            this.toolStripButtonZoomOut.ToolTipText = "Zoom Out";
-            this.toolStripButtonZoomOut.Click += new System.EventHandler(this.toolStripButtonZoomOut_Click);
-            // 
-            // toolStripButtonMAME
-            // 
-            this.toolStripButtonMAME.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonMAME.Enabled = false;
-            this.toolStripButtonMAME.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonMAME.Image")));
-            this.toolStripButtonMAME.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonMAME.Name = "toolStripButtonMAME";
-            this.toolStripButtonMAME.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonMAME.Text = "Run Maze in MAME";
-            this.toolStripButtonMAME.ToolTipText = "Run Maze in MAME - Hint, click on the maze in the tree first!";
-            this.toolStripButtonMAME.Click += new System.EventHandler(this.toolStripButtonAnimate_Click);
-            // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripButtonHome
-            // 
-            this.toolStripButtonHome.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripButtonHome.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonHome.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonHome.Image")));
-            this.toolStripButtonHome.ImageTransparentColor = System.Drawing.Color.Black;
-            this.toolStripButtonHome.Name = "toolStripButtonHome";
-            this.toolStripButtonHome.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonHome.Text = "toolStripButton";
-            this.toolStripButtonHome.ToolTipText = "Major Havoc Level Editor Homepage";
-            this.toolStripButtonHome.Click += new System.EventHandler(this.toolStripButtonHome_Click);
-            // 
-            // toolStripButtonAbout
-            // 
-            this.toolStripButtonAbout.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripButtonAbout.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonAbout.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonAbout.Image")));
-            this.toolStripButtonAbout.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonAbout.Name = "toolStripButtonAbout";
-            this.toolStripButtonAbout.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonAbout.Text = "toolStripButton1";
-            this.toolStripButtonAbout.ToolTipText = "About this program";
-            this.toolStripButtonAbout.Click += new System.EventHandler(this.toolStripButtonAbout_Click);
-            // 
-            // toolStripButtonLoadFromROM
-            // 
-            this.toolStripButtonLoadFromROM.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonLoadFromROM.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonLoadFromROM.Image")));
-            this.toolStripButtonLoadFromROM.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonLoadFromROM.Name = "toolStripButtonLoadFromROM";
-            this.toolStripButtonLoadFromROM.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonLoadFromROM.Text = "Load Mazes from ROMs";
-            this.toolStripButtonLoadFromROM.Click += new System.EventHandler(this.toolStripButtonLoadFromROM_Click);
-            // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripButtonConfiguration
-            // 
-            this.toolStripButtonConfiguration.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonConfiguration.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonConfiguration.Image")));
-            this.toolStripButtonConfiguration.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonConfiguration.Name = "toolStripButtonConfiguration";
-            this.toolStripButtonConfiguration.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonConfiguration.Text = "toolStripButton1";
-            this.toolStripButtonConfiguration.ToolTipText = "Configuration";
-            this.toolStripButtonConfiguration.Click += new System.EventHandler(this.toolStripButtonConfiguration_Click);
             // 
             // toolStripSeparator5
             // 
@@ -347,16 +163,6 @@ namespace mhedit
             this.toolStripLabel1.Name = "toolStripLabel1";
             this.toolStripLabel1.Size = new System.Drawing.Size(118, 22);
             this.toolStripLabel1.Text = "Major Havoc Project:";
-            // 
-            // toolStripButtonContestUpload
-            // 
-            this.toolStripButtonContestUpload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonContestUpload.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonContestUpload.Image")));
-            this.toolStripButtonContestUpload.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonContestUpload.Name = "toolStripButtonContestUpload";
-            this.toolStripButtonContestUpload.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonContestUpload.Text = "Upload Maze to Major Havoc Project";
-            this.toolStripButtonContestUpload.Click += new System.EventHandler(this.toolStripButtonContestUpload_Click);
             // 
             // toolStripSeparator6
             // 
@@ -499,6 +305,38 @@ namespace mhedit
             this.splitContainerRight.SplitterDistance = 400;
             this.splitContainerRight.TabIndex = 4;
             // 
+            // propertyGrid
+            // 
+            this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyGrid.LineColor = System.Drawing.SystemColors.ControlDark;
+            this.propertyGrid.Location = new System.Drawing.Point(0, 21);
+            this.propertyGrid.Name = "propertyGrid";
+            this.propertyGrid.Size = new System.Drawing.Size(250, 235);
+            this.propertyGrid.TabIndex = 5;
+            // 
+            // comboBoxMazeObjects
+            // 
+            this.comboBoxMazeObjects.Dock = System.Windows.Forms.DockStyle.Top;
+            this.comboBoxMazeObjects.FormattingEnabled = true;
+            this.comboBoxMazeObjects.Location = new System.Drawing.Point(0, 0);
+            this.comboBoxMazeObjects.Name = "comboBoxMazeObjects";
+            this.comboBoxMazeObjects.Size = new System.Drawing.Size(250, 21);
+            this.comboBoxMazeObjects.TabIndex = 4;
+            // 
+            // splitterUpDown
+            // 
+            this.splitterUpDown.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitterUpDown.Location = new System.Drawing.Point(0, 660);
+            this.splitterUpDown.Name = "splitterUpDown";
+            this.splitterUpDown.Size = new System.Drawing.Size(250, 3);
+            this.splitterUpDown.TabIndex = 1;
+            this.splitterUpDown.TabStop = false;
+            // 
+            // timerMain
+            // 
+            this.timerMain.Interval = 1000;
+            this.timerMain.Tick += new System.EventHandler(this.timerMain_Tick);
+            // 
             // toolBox
             // 
             this.toolBox.AllowDrop = true;
@@ -533,37 +371,199 @@ namespace mhedit
             this.toolBox.TabSpacing = 1;
             this.toolBox.UseItemColorInRename = false;
             // 
-            // propertyGrid
+            // toolStripButtonNewCollection
             // 
-            this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid.LineColor = System.Drawing.SystemColors.ControlDark;
-            this.propertyGrid.Location = new System.Drawing.Point(0, 21);
-            this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(250, 235);
-            this.propertyGrid.TabIndex = 5;
+            this.toolStripButtonNewCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonNewCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonNewCollection.Image")));
+            this.toolStripButtonNewCollection.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.toolStripButtonNewCollection.Name = "toolStripButtonNewCollection";
+            this.toolStripButtonNewCollection.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonNewCollection.Text = "toolStripButton1";
+            this.toolStripButtonNewCollection.ToolTipText = "Create a new maze collection";
+            this.toolStripButtonNewCollection.Click += new System.EventHandler(this.toolStripButtonNewCollection_Click);
             // 
-            // comboBoxMazeObjects
+            // toolStripButtonOpenCollection
             // 
-            this.comboBoxMazeObjects.Dock = System.Windows.Forms.DockStyle.Top;
-            this.comboBoxMazeObjects.FormattingEnabled = true;
-            this.comboBoxMazeObjects.Location = new System.Drawing.Point(0, 0);
-            this.comboBoxMazeObjects.Name = "comboBoxMazeObjects";
-            this.comboBoxMazeObjects.Size = new System.Drawing.Size(250, 21);
-            this.comboBoxMazeObjects.TabIndex = 4;
+            this.toolStripButtonOpenCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonOpenCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOpenCollection.Image")));
+            this.toolStripButtonOpenCollection.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.toolStripButtonOpenCollection.Name = "toolStripButtonOpenCollection";
+            this.toolStripButtonOpenCollection.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonOpenCollection.Text = "toolStripButton1";
+            this.toolStripButtonOpenCollection.ToolTipText = "Open an existing maze collection";
+            this.toolStripButtonOpenCollection.Click += new System.EventHandler(this.toolStripButtonOpenCollection_Click);
             // 
-            // splitterUpDown
+            // toolStripButtonSaveCollection
             // 
-            this.splitterUpDown.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitterUpDown.Location = new System.Drawing.Point(0, 660);
-            this.splitterUpDown.Name = "splitterUpDown";
-            this.splitterUpDown.Size = new System.Drawing.Size(250, 3);
-            this.splitterUpDown.TabIndex = 1;
-            this.splitterUpDown.TabStop = false;
+            this.toolStripButtonSaveCollection.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonSaveCollection.Enabled = false;
+            this.toolStripButtonSaveCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSaveCollection.Image")));
+            this.toolStripButtonSaveCollection.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.toolStripButtonSaveCollection.Name = "toolStripButtonSaveCollection";
+            this.toolStripButtonSaveCollection.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonSaveCollection.Text = "toolStripButton2";
+            this.toolStripButtonSaveCollection.ToolTipText = "Save a maze collection";
+            this.toolStripButtonSaveCollection.Click += new System.EventHandler(this.toolStripButtonSaveCollection_Click);
             // 
-            // timerMain
+            // toolStripButtonNewMaze
             // 
-            this.timerMain.Interval = 1000;
-            this.timerMain.Tick += new System.EventHandler(this.timerMain_Tick);
+            this.toolStripButtonNewMaze.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonNewMaze.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonNewMaze.Image")));
+            this.toolStripButtonNewMaze.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.toolStripButtonNewMaze.Name = "toolStripButtonNewMaze";
+            this.toolStripButtonNewMaze.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonNewMaze.Text = "toolStripButton1";
+            this.toolStripButtonNewMaze.ToolTipText = "Create a new individual maze";
+            this.toolStripButtonNewMaze.Click += new System.EventHandler(this.toolStripButtonNewMaze_Click);
+            // 
+            // toolStripButtonOpenMaze
+            // 
+            this.toolStripButtonOpenMaze.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonOpenMaze.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOpenMaze.Image")));
+            this.toolStripButtonOpenMaze.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.toolStripButtonOpenMaze.Name = "toolStripButtonOpenMaze";
+            this.toolStripButtonOpenMaze.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonOpenMaze.Text = "toolStripButton1";
+            this.toolStripButtonOpenMaze.ToolTipText = "Open an individual maze";
+            this.toolStripButtonOpenMaze.Click += new System.EventHandler(this.toolStripButtonOpenMaze_Click);
+            // 
+            // toolStripButtonOpenMazeMHP
+            // 
+            this.toolStripButtonOpenMazeMHP.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonOpenMazeMHP.Enabled = false;
+            this.toolStripButtonOpenMazeMHP.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOpenMazeMHP.Image")));
+            this.toolStripButtonOpenMazeMHP.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonOpenMazeMHP.Name = "toolStripButtonOpenMazeMHP";
+            this.toolStripButtonOpenMazeMHP.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonOpenMazeMHP.Text = "toolStripButton2";
+            // 
+            // toolStripButtonSaveMaze
+            // 
+            this.toolStripButtonSaveMaze.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonSaveMaze.Enabled = false;
+            this.toolStripButtonSaveMaze.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.toolStripButtonSaveMaze.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSaveMaze.Image")));
+            this.toolStripButtonSaveMaze.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.toolStripButtonSaveMaze.Name = "toolStripButtonSaveMaze";
+            this.toolStripButtonSaveMaze.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonSaveMaze.Text = "toolStripButton2";
+            this.toolStripButtonSaveMaze.ToolTipText = "Save an individual maze";
+            this.toolStripButtonSaveMaze.Click += new System.EventHandler(this.toolStripButtonSaveMaze_Click);
+            // 
+            // toolStripButtonSaveMazeMHP
+            // 
+            this.toolStripButtonSaveMazeMHP.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonSaveMazeMHP.Enabled = false;
+            this.toolStripButtonSaveMazeMHP.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSaveMazeMHP.Image")));
+            this.toolStripButtonSaveMazeMHP.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonSaveMazeMHP.Name = "toolStripButtonSaveMazeMHP";
+            this.toolStripButtonSaveMazeMHP.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonSaveMazeMHP.Text = "toolStripButton3";
+            // 
+            // toolStripButtonGrid
+            // 
+            this.toolStripButtonGrid.Checked = true;
+            this.toolStripButtonGrid.CheckOnClick = true;
+            this.toolStripButtonGrid.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.toolStripButtonGrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonGrid.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonGrid.Image")));
+            this.toolStripButtonGrid.ImageTransparentColor = System.Drawing.Color.Black;
+            this.toolStripButtonGrid.Name = "toolStripButtonGrid";
+            this.toolStripButtonGrid.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonGrid.Text = "toolStripButton3";
+            this.toolStripButtonGrid.ToolTipText = "Grid Lines On/Off";
+            this.toolStripButtonGrid.Click += new System.EventHandler(this.toolStripButtonGrid_Click);
+            // 
+            // toolStripButtonZoomIn
+            // 
+            this.toolStripButtonZoomIn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonZoomIn.Enabled = false;
+            this.toolStripButtonZoomIn.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonZoomIn.Image")));
+            this.toolStripButtonZoomIn.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonZoomIn.Name = "toolStripButtonZoomIn";
+            this.toolStripButtonZoomIn.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonZoomIn.Text = "toolStripButton1";
+            this.toolStripButtonZoomIn.ToolTipText = "Zoom In";
+            this.toolStripButtonZoomIn.Click += new System.EventHandler(this.toolStripButtonZoomIn_Click);
+            // 
+            // toolStripButtonZoomOut
+            // 
+            this.toolStripButtonZoomOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonZoomOut.Enabled = false;
+            this.toolStripButtonZoomOut.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonZoomOut.Image")));
+            this.toolStripButtonZoomOut.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonZoomOut.Name = "toolStripButtonZoomOut";
+            this.toolStripButtonZoomOut.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonZoomOut.Text = "toolStripButton2";
+            this.toolStripButtonZoomOut.ToolTipText = "Zoom Out";
+            this.toolStripButtonZoomOut.Click += new System.EventHandler(this.toolStripButtonZoomOut_Click);
+            // 
+            // toolStripButtonMAME
+            // 
+            this.toolStripButtonMAME.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonMAME.Enabled = false;
+            this.toolStripButtonMAME.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonMAME.Image")));
+            this.toolStripButtonMAME.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonMAME.Name = "toolStripButtonMAME";
+            this.toolStripButtonMAME.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonMAME.Text = "Run Maze in MAME";
+            this.toolStripButtonMAME.ToolTipText = "Run Maze in MAME - Hint, click on the maze in the tree first!";
+            this.toolStripButtonMAME.Click += new System.EventHandler(this.toolStripButtonAnimate_Click);
+            // 
+            // toolStripButtonHome
+            // 
+            this.toolStripButtonHome.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripButtonHome.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonHome.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonHome.Image")));
+            this.toolStripButtonHome.ImageTransparentColor = System.Drawing.Color.Black;
+            this.toolStripButtonHome.Name = "toolStripButtonHome";
+            this.toolStripButtonHome.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonHome.Text = "toolStripButton";
+            this.toolStripButtonHome.ToolTipText = "Major Havoc Level Editor Homepage";
+            this.toolStripButtonHome.Click += new System.EventHandler(this.toolStripButtonHome_Click);
+            // 
+            // toolStripButtonAbout
+            // 
+            this.toolStripButtonAbout.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripButtonAbout.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonAbout.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonAbout.Image")));
+            this.toolStripButtonAbout.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonAbout.Name = "toolStripButtonAbout";
+            this.toolStripButtonAbout.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonAbout.Text = "toolStripButton1";
+            this.toolStripButtonAbout.ToolTipText = "About this program";
+            this.toolStripButtonAbout.Click += new System.EventHandler(this.toolStripButtonAbout_Click);
+            // 
+            // toolStripButtonLoadFromROM
+            // 
+            this.toolStripButtonLoadFromROM.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonLoadFromROM.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonLoadFromROM.Image")));
+            this.toolStripButtonLoadFromROM.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonLoadFromROM.Name = "toolStripButtonLoadFromROM";
+            this.toolStripButtonLoadFromROM.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonLoadFromROM.Text = "Load Mazes from ROMs";
+            this.toolStripButtonLoadFromROM.Click += new System.EventHandler(this.toolStripButtonLoadFromROM_Click);
+            // 
+            // toolStripButtonConfiguration
+            // 
+            this.toolStripButtonConfiguration.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonConfiguration.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonConfiguration.Image")));
+            this.toolStripButtonConfiguration.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonConfiguration.Name = "toolStripButtonConfiguration";
+            this.toolStripButtonConfiguration.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonConfiguration.Text = "toolStripButton1";
+            this.toolStripButtonConfiguration.ToolTipText = "Configuration";
+            this.toolStripButtonConfiguration.Click += new System.EventHandler(this.toolStripButtonConfiguration_Click);
+            // 
+            // toolStripButtonContestUpload
+            // 
+            this.toolStripButtonContestUpload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonContestUpload.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonContestUpload.Image")));
+            this.toolStripButtonContestUpload.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonContestUpload.Name = "toolStripButtonContestUpload";
+            this.toolStripButtonContestUpload.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonContestUpload.Text = "Upload Maze to Major Havoc Project";
+            this.toolStripButtonContestUpload.Click += new System.EventHandler(this.toolStripButtonContestUpload_Click);
             // 
             // Mainform
             // 

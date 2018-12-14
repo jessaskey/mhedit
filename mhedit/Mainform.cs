@@ -10,8 +10,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Silver.UI;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using ICSharpCode.SharpZipLib.BZip2;
 using ICSharpCode.SharpZipLib.Zip;
@@ -19,7 +17,6 @@ using ICSharpCode.SharpZipLib.Zip;
 using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
 using mhedit.Containers.MazeObjects;
-using mhedit.Containers.TypeConverters;
 using mhedit.Controllers;
 
 namespace mhedit
@@ -34,6 +31,7 @@ namespace mhedit
         /// </summary>
         public const string MESSAGEBOX_CAPTION = "The Homeworld Is Near";
         private Maze _currentMaze = null;
+        private List<GameProfile> _gameProfiles = null;
         private TreeNode _dragNode;
 
         #region Constructor
@@ -1085,7 +1083,7 @@ namespace mhedit
         {
             if (_currentMaze != null)
             {
-                if (MAMEHelper.CreateMAMERom(_currentMaze))
+                if (MAMEHelper.SaveROM(_currentMaze))
                 {
                     try
                     {
