@@ -88,6 +88,33 @@ namespace mhedit.Containers.MazeEnemies
             }
         }
 
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(Context.PointToByteArrayLong(Context.ConvertPixelsToVector(_position)));
+
+            if (_incrementingVelocity.X != 0)
+            {
+                bytes.Add((byte)(0x80 | _incrementingVelocity.X));
+            }
+            bytes.Add((byte)_velocity.X);
+
+            if (_incrementingVelocity.Y != 0)
+            {
+                bytes.Add((byte)(0x80 | _incrementingVelocity.Y));
+            }
+            bytes.Add((byte)_velocity.Y);
+
+            return bytes.ToArray();
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            return ToBytes();
+        }
+
         private void LoadDefaultImage()
         {
             _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.perkoid_obj.ico");

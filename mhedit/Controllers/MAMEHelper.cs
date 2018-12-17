@@ -86,7 +86,7 @@ namespace mhedit.Controllers
                     }
                 }
 
-                /// Perkoids 
+                // Perkoids 
                 while (firstValue != 0xff)
                 {
                     Perkoid perkoid = new Perkoid();
@@ -352,10 +352,10 @@ namespace mhedit.Controllers
                     transporterBaseAddress++;
                     Transporter transporter = new Transporter();
                     transporter.LoadPosition(mh.ReadByte(transporterBaseAddress, 0));
-                    transporter.Direction = OneWayDirection.Left;
+                    transporter.Direction = TransporterDirection.Left;
                     if ((colorValue & 0x10) > 0)
                     {
-                        transporter.Direction = OneWayDirection.Right;
+                        transporter.Direction = TransporterDirection.Right;
                     }
                     transporter.Color = (ObjectColor)(colorValue & 0x07);
                     maze.AddObject(transporter);
@@ -364,11 +364,11 @@ namespace mhedit.Controllers
                 }
 
                 //Laser Cannon
-                /// Ok, So looking at why the cannons are shifted down on level 16.
-                /// The issue is that the cannon goes up and down. The key is where
-                /// the cannon starts with respect to the ceiling. Cannons 2 and 3
-                /// start low (closer to the floor) than all others.
-                /// I need to figure out how that's encoded.
+                // Ok, So looking at why the cannons are shifted down on level 16.
+                // The issue is that the cannon goes up and down. The key is where
+                // the cannon starts with respect to the ceiling. Cannons 2 and 3
+                // start low (closer to the floor) than all others.
+                // I need to figure out how that's encoded.
                 byte cannonAddressOffset = mh.ReadByte(0x269F, i);
                 if (cannonAddressOffset != 0)
                 {
@@ -440,14 +440,14 @@ namespace mhedit.Controllers
                 // Level 5 and up
                 if (i > 3)
                 {
-                    /// The max number of trips in a maze is 7. Trips are stored in a list
-                    /// that is null terminated. Trips start on level 5 and exist on every
-                    /// level to 16. 12 total levels.
+                    // The max number of trips in a maze is 7. Trips are stored in a list
+                    // that is null terminated. Trips start on level 5 and exist on every
+                    // level to 16. 12 total levels.
                     ushort tripBaseAddress = mh.ReadWord((ushort)0x2627, ((i - 4) * 2));
-                    /// Trip Pyroids are a 1 to 1 relationship to a trip. Trip Pyroids are
-                    /// described in 3 bytes. Each level worth of trip pyroids are stored in
-                    /// an array 8 pyroids long (7 + null) even if there are less than 7
-                    /// trips in a level.
+                    // Trip Pyroids are a 1 to 1 relationship to a trip. Trip Pyroids are
+                    // described in 3 bytes. Each level worth of trip pyroids are stored in
+                    // an array 8 pyroids long (7 + null) even if there are less than 7
+                    // trips in a level.
                     ushort tripPyroidBaseAddress = (ushort)(0x2D36 + ((i - 4) * 3 * 8));
 
                     byte tripX = mh.ReadByte(tripBaseAddress, 0);
@@ -461,7 +461,7 @@ namespace mhedit.Controllers
                         tripBaseAddress++;
                         tripX = mh.ReadByte(tripBaseAddress, 0);
 
-                        /// level 8 has 2 pyroids per trip pad.
+                        // level 8 has 2 pyroids per trip pad.
                         //trip pyroid too
 
                         byte xdata = mh.ReadByte(tripPyroidBaseAddress++, 0);
@@ -589,8 +589,17 @@ namespace mhedit.Controllers
 
             if (maze.IsValid)
             {
-                MajorHavoc mh = new MajorHavoc(templatePath, mamePath, templatePath);
-                success = mh.Save();
+                //we will always serialize to target 'The Promised End' here in this editor.
+                IGameController controller = new MajorHavocPromisedEnd(templatePath, mamePath, templatePath);
+                bool serializeSuccess = controller.SerializeObjects(maze);
+                if (serializeSuccess)
+                {
+                    success = controller.WriteFiles();
+                }
+                else
+                {
+                    MessageBox.Show("There was an issue serializing the maze objects to binary.", "Serialization Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
             }
             else
             {

@@ -13,7 +13,6 @@ namespace mhedit.Containers.MazeEnemies
     [Serializable]
     public class Maxoid : MazeObject
     {
-
         public enum MaxSpeed : int
         {
             Slowest = 0,
@@ -92,6 +91,22 @@ namespace mhedit.Containers.MazeEnemies
             {
                 return new Point(_SNAP_X, _SNAP_Y);
             }
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(Context.PointToByteArrayLong(Context.ConvertPixelsToVector(_position)));
+            int speedDistance =  ((byte)(((int)_speed)<<4)&0x30) +((byte)(_triggerDistance&0x0F));
+            bytes.Add((byte)speedDistance);
+            return bytes.ToArray();
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            return ToBytes();
         }
 
         [BrowsableAttribute(false)]

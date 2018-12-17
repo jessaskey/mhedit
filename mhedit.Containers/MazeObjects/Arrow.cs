@@ -109,6 +109,21 @@ namespace mhedit.Containers.MazeObjects
         }
 
         [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(Context.PointToByteArrayPacked(_position));
+            bytes.Add((byte)_arrowDirection);
+            return bytes.ToArray();
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            return ToBytes();
+        }
+
+        [BrowsableAttribute(false)]
         public override Image Image
         {
             get

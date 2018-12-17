@@ -1,4 +1,5 @@
-﻿using System;
+﻿using mhedit.Containers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace mhedit.GameControllers
             if (File.Exists(exportPath + "havocpe6.exp"))
             {
                 string[] exportLines = File.ReadAllLines(exportPath + "havocpe6.exp");
-                foreach(string exportLine in exportLines)
+                foreach (string exportLine in exportLines)
                 {
                     string[] def = exportLine.Split(',');
                     if (def.Length == 2)
@@ -87,16 +88,17 @@ namespace mhedit.GameControllers
         }
 
 
-        public Tuple<ushort,int> GetAddress(string label)
+        public Tuple<ushort, int> GetAddress(string label)
         {
             Tuple<ushort, int> address = null;
             //search the export list for this address...
 
             if (_exports6.ContainsKey(label.ToLower()))
             {
-                address = new Tuple<ushort, int>((ushort)_exports6[label],6);
+                address = new Tuple<ushort, int>((ushort)_exports6[label], 6);
             }
-            else {
+            else
+            {
                 if (_exports7.ContainsKey(label.ToLower()))
                 {
                     address = new Tuple<ushort, int>((ushort)_exports7[label], 6);
@@ -116,7 +118,7 @@ namespace mhedit.GameControllers
             if (page == 7) page67Base += 0x2000;
 
             if (address >= 0x2000 && address <= 0x3fff)
-            { 
+            {
                 for (int i = 0; i < length; i++)
                 {
                     bytes[i] = _page2367[page67Base + address + i + offset];
@@ -145,7 +147,7 @@ namespace mhedit.GameControllers
 
         public int Write(string location, byte data, int offset)
         {
-            Tuple<ushort,int> addressInfo = GetAddress(location);
+            Tuple<ushort, int> addressInfo = GetAddress(location);
             return WriteROM(addressInfo.Item1, new byte[] { data }, offset, addressInfo.Item2);
         }
 
@@ -165,7 +167,7 @@ namespace mhedit.GameControllers
 
 
 
-        public bool Save()
+        public bool WriteFiles()
         {
 
             //fix csums...
@@ -268,6 +270,14 @@ namespace mhedit.GameControllers
             return Convert.ToInt16(value.ToString("X2"), 10);
         }
 
+        public bool SerializeObjects(Maze maze)
+        {
+            bool success = false;
 
+
+
+            success = true;
+            return success;
+        }
     }
 }

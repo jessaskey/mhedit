@@ -263,6 +263,40 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            throw new Exception("Serialization of Wall requires the parent Maze, use the ToBytes(object) method instead.");
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            List<byte> bytes = new List<byte>();
+            if (obj is Maze)
+            {
+                int wallDataOffset = 18; //this is a set of blank data offsets defined in the mhavoc source for some reason
+                if (_dynamicWall)
+                {
+                    bytes.Add((byte)(wallDataOffset + ((Maze)obj).PointToStamp(_position)));
+                    bytes.Add((byte)_dynamicWallTimeout);
+                    bytes.Add((byte)_alternateWallTimeout);
+                    bytes.Add((byte)_wallType);
+                    bytes.Add((byte)_wallTypeDynamic);
+                }
+                else
+                {
+                    bytes.Add((byte)(wallDataOffset + ((Maze)obj).PointToStamp(_position)));
+                    bytes.Add((byte)_wallType);
+                }
+            }
+            else
+            {
+                throw new Exception("Walls are serialized via the maze object.");
+            }
+            return bytes.ToArray();
+        }
+
+        [BrowsableAttribute(false)]
         public override Image Image 
         {
             get

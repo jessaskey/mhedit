@@ -31,6 +31,7 @@ namespace mhedit.Containers
         private bool gridlines = true;
         private string exportPath = String.Empty;
         //private PropertyGrid propertyGrid = null;
+        #endregion
 
         #region PropertyIncludes
 
@@ -40,7 +41,6 @@ namespace mhedit.Containers
           "FileName"
         };
 
-        #endregion
         #endregion
 
         #region Constructor
@@ -416,16 +416,6 @@ namespace mhedit.Containers
                 //main routine to generate a ROM image file from this collection...
                 MemoryStream mStream = new MemoryStream();
                 //double check each maze and all it's objects for consistency...
-# region Maze Objects Check
-
-
-
-#endregion
-
-#region Maze Enemies Check
-
-
-#endregion
 
                 //build our arrays of objects for each maze...
 

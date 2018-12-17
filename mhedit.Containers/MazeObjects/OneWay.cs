@@ -9,7 +9,7 @@ namespace mhedit.Containers.MazeObjects
     /// <summary>
     /// The direction that a OneWay allows the player to pass.
     /// </summary>
-    public enum OneWayDirection
+    public enum OneWayDirection : int
     {
         /// <summary>
         /// One Way Arrows allowing travel left to right
@@ -75,6 +75,20 @@ namespace mhedit.Containers.MazeObjects
         public override Point SnapSize
         {
             get { return new Point(_SNAP_X, _SNAP_Y); }
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(Context.PointToByteArrayPacked(new Point(_position.X, _position.Y + 64)));
+            return bytes.ToArray();
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            return ToBytes();
         }
 
         [BrowsableAttribute(false)]

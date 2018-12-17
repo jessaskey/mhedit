@@ -280,7 +280,7 @@ namespace mhedit.GameControllers
 
 
 
-        public bool Save()
+        public bool WriteFiles()
         {
 
             //fix csums...
@@ -391,128 +391,10 @@ namespace mhedit.GameControllers
 
 
 
-        public bool CreateMAMERom(Maze maze)
+        public bool SerializeObjects(Maze maze)
         {
             bool success = false;
-
-            //ROMDump rom = new ROMDump(_templatePath, _mamePath, _templatePath);
-
-            Reactoid reactor = null;
-            EscapePod pod = null;
-            Boots boots = null;
-            Clock clock = null;
-            List<Pyroid> pyroids = new List<Pyroid>();
-            List<Perkoid> perkoids = new List<Perkoid>();
-            List<Oxoid> oxoids = new List<Oxoid>();
-            List<LightningH> lightningHorizontal = new List<LightningH>();
-            List<LightningV> lightningVertical = new List<LightningV>();
-            List<Arrow> arrows = new List<Arrow>();
-            List<MazeWall> staticWalls = new List<MazeWall>();
-            List<MazeWall> dynamicWalls = new List<MazeWall>();
-            List<OneWay> oneWayRights = new List<OneWay>();
-            List<OneWay> oneWayLefts = new List<OneWay>();
-            List<Spikes> spikes = new List<Spikes>();
-            List<Lock> locks = new List<Lock>();
-            List<Key> keys = new List<Key>();
-            List<Transporter> transporters = new List<Transporter>();
-            List<Cannon> cannons = new List<Cannon>();
-            List<TripPad> tripPads = new List<TripPad>();
-            Hand hand = null;
-
-            foreach (MazeObject obj in maze.MazeObjects)
-            {
-                if (obj is Reactoid)
-                {
-                    reactor = (Reactoid)obj;
-                }
-                else if (obj is Pyroid)
-                {
-                    pyroids.Add((Pyroid)obj);
-                }
-                else if (obj is Perkoid)
-                {
-                    perkoids.Add((Perkoid)obj);
-                }
-                else if (obj is Oxoid)
-                {
-                    oxoids.Add((Oxoid)obj);
-                }
-                else if (obj is LightningH)
-                {
-                    lightningHorizontal.Add((LightningH)obj);
-                }
-                else if (obj is LightningV)
-                {
-                    lightningVertical.Add((LightningV)obj);
-                }
-                else if (obj is Arrow)
-                {
-                    arrows.Add((Arrow)obj);
-                }
-                else if (obj is MazeWall)
-                {
-                    if (((MazeWall)obj).IsDynamicWall)
-                    {
-                        dynamicWalls.Add((MazeWall)obj);
-                    }
-                    else
-                    {
-                        staticWalls.Add((MazeWall)obj);
-                    }
-                }
-                else if (obj is OneWay)
-                {
-                    if (((OneWay)obj).Direction == OneWayDirection.Right)
-                    {
-                        oneWayRights.Add((OneWay)obj);
-                    }
-                    else if (((OneWay)obj).Direction == OneWayDirection.Left)
-                    {
-                        oneWayLefts.Add((OneWay)obj);
-                    }
-                }
-                else if (obj is Spikes)
-                {
-                    spikes.Add((Spikes)obj);
-                }
-                else if (obj is Lock)
-                {
-                    locks.Add((Lock)obj);
-                }
-                else if (obj is Key)
-                {
-                    keys.Add((Key)obj);
-                }
-                else if (obj is EscapePod)
-                {
-                    pod = (EscapePod)obj;
-                }
-                else if (obj is Boots)
-                {
-                    boots = (Boots)obj;
-                }
-                else if (obj is Clock)
-                {
-                    clock = (Clock)obj;
-                }
-                else if (obj is Transporter)
-                {
-                    transporters.Add((Transporter)obj);
-                }
-                else if (obj is Cannon)
-                {
-                    cannons.Add((Cannon)obj);
-                }
-                else if (obj is TripPad)
-                {
-                    tripPads.Add((TripPad)obj);
-                }
-                else if (obj is Hand)
-                {
-                    hand = (Hand)obj;
-                }
-            }
-
+            
             /////////////////////////////
             // Start building ROM here //
             /////////////////////////////
@@ -522,184 +404,158 @@ namespace mhedit.GameControllers
             //next hint text
             Write("mzh0", GetText(maze.Hint), 0);
 
-            //build reactor, pyroids and perkoids now...
             //write reactor
             int offset = 0;
-            offset += Write("mzsc0", Context.PointToByteArrayLong(Context.ConvertPixelsToVector(reactor.Position)), offset);
-            foreach (Pyroid pyroid in pyroids)
+            Reactoid reactoid = maze.MazeObjects.OfType<Reactoid>().First();
+            offset += Write("mzsc0", reactoid.ToBytes(reactoid.Position), offset);
+            //build pyroids and perkoids now...
+            foreach (Pyroid pyroid in maze.MazeObjects.OfType<Pyroid>())
             {
-                offset += Write("mzsc0", Context.PointToByteArrayLong(Context.ConvertPixelsToVector(pyroid.Position)), offset);
-
-                if (pyroid.IncrementingVelocity.X != 0)
-                {
-                    offset += Write("mzsc0", new byte[] { (byte)(0x80 | pyroid.IncrementingVelocity.X) }, offset);
-                }
-                offset += Write("mzsc0", new byte[] { (byte)pyroid.Velocity.X }, offset);
-
-                if (pyroid.IncrementingVelocity.Y != 0)
-                {
-                    offset += Write("mzsc0", new byte[] { (byte)(0x80 | pyroid.IncrementingVelocity.Y) }, offset);
-                }
-                offset += Write("mzsc0", new byte[] { (byte)pyroid.Velocity.Y }, offset);
+                offset += Write("mzsc0", pyroid.ToBytes(), offset);
             }
-            if (perkoids.Count > 0)
+            if (maze.MazeObjects.OfType<Perkoid>().Count() > 0)
             {
                 offset += Write("mzsc0", (byte)0xfe, offset);
-                foreach (Perkoid perkoid in perkoids)
+                foreach (Perkoid perkoid in maze.MazeObjects.OfType<Perkoid>())
                 {
-                    offset += Write("mzsc0", Context.PointToByteArrayLong(Context.ConvertPixelsToVector(perkoid.Position)), offset);
-                    if (perkoid.IncrementingVelocity.X != 0)
-                    {
-                        offset += Write("mzsc0", new byte[] { (byte)(0x80 | perkoid.IncrementingVelocity.X) }, offset);
-                    }
-                    offset += Write("mzsc0", new byte[] { (byte)perkoid.Velocity.X }, offset);
-
-                    if (perkoid.IncrementingVelocity.Y != 0)
-                    {
-                        offset += Write("mzsc0", new byte[] { (byte)(0x80 | perkoid.IncrementingVelocity.Y) }, offset);
-                    }
-                    offset += Write("mzsc0", new byte[] { (byte)perkoid.Velocity.Y }, offset);
+                    offset += Write("mzsc0", perkoid.ToBytes(), offset);
                 }
             }
-            Write("mzsc0", (byte)0xff, offset);
+            //end tag for CORE maze objects, ALWAYS!
+            offset += Write("mzsc0", (byte)0xff, offset);
+
             //reactor timer, we will write all 4 entries for now...
-            Write("outime", new byte[] { (byte)ToDecimal(reactor.Timer), (byte)ToDecimal(reactor.Timer), (byte)ToDecimal(reactor.Timer), (byte)ToDecimal(reactor.Timer) }, 0);
+            int reactorTimerOffset = 0;
+            reactorTimerOffset += Write("outime", reactoid.ToBytes(reactoid.Timer), reactorTimerOffset);
+            reactorTimerOffset += Write("outime", reactoid.ToBytes(reactoid.Timer), reactorTimerOffset);
+            reactorTimerOffset += Write("outime", reactoid.ToBytes(reactoid.Timer), reactorTimerOffset);
+            reactorTimerOffset += Write("outime", reactoid.ToBytes(reactoid.Timer), reactorTimerOffset);
 
             //do oxygens now
             offset = 0;
-            foreach (Oxoid oxoid in oxoids)
+            foreach (Oxoid oxoid in maze.MazeObjects.OfType<Oxoid>())
             {
-                byte[] oxoidPositionBytes = Context.PointToByteArrayPacked(oxoid.Position);
-                offset += Write("mzdc0", oxoidPositionBytes, offset);
+                offset += Write("mzdc0", oxoid.ToBytes(), offset);
             }
             Write("mzdc0", 0, offset);
 
             //do lightning (Force Fields)
             offset = 0;
-            foreach (LightningH lightning in lightningHorizontal)
+            foreach (LightningH lightning in maze.MazeObjects.OfType<LightningH>())
             {
-                offset += Write("mzlg0", Context.PointToByteArrayPacked(lightning.Position), offset);
+                offset += Write("mzlg0", lightning.ToBytes(), offset);
             }
             //end horizontal with 0xff
             offset += Write("mzlg0", (byte)0xff, offset);
-            foreach (LightningV lightning in lightningVertical)
+            foreach (LightningV lightning in maze.MazeObjects.OfType<LightningV>())
             {
-                offset += Write("mzlg0", Context.PointToByteArrayPacked(lightning.Position), offset);
+                offset += Write("mzlg0", lightning.ToBytes(), offset);
             }
             //end all with 0x00
             Write("mzlg0", (byte)0, offset);
 
             //build arrows now
             offset = 0;
-            foreach (Arrow arrow in arrows)
+            foreach (Arrow arrow in maze.MazeObjects.OfType<Arrow>())
             {
-                offset += Write("mzar0", Context.PointToByteArrayPacked(arrow.Position), offset);
-                offset += Write("mzar0", (byte)arrow.ArrowDirection, offset);
+                offset += Write("mzar0", arrow.ToBytes(), offset);
             }
             Write("mzar0", (byte)0, offset);
 
             //maze walls
             //static first
             offset = 0;
-            int wallDataOffset = 18; //this is a set of blank data offsets defined in the mhavoc source for some reason
-            foreach (MazeWall wall in staticWalls)
+            
+            foreach (MazeWall wall in maze.MazeObjects.OfType<MazeWall>().Where(w=>!w.IsDynamicWall))
             {
-                offset += Write("mzta0", (byte)(wallDataOffset + (maze.PointToStamp(wall.Position))), offset);
-                offset += Write("mzta0", (byte)wall.WallType, offset);
+                offset += Write("mzta0", wall.ToBytes(maze), offset);
             }
             Write("mzta0", (byte)0, offset);
 
             //then dynamic
             offset = 0;
-            foreach (MazeWall wall in dynamicWalls)
+            foreach (MazeWall wall in maze.MazeObjects.OfType<MazeWall>().Where(w => w.IsDynamicWall))
             {
-                offset += Write("mztd0", (byte)(wallDataOffset + (maze.PointToStamp(wall.Position))), offset);
-                offset += Write("mztd0", (byte)wall.DynamicWallTimout, offset);
-                offset += Write("mztd0", (byte)wall.AlternateWallTimeout, offset);
-                offset += Write("mztd0", (byte)wall.WallType, offset);
-                offset += Write("mztd0", (byte)wall.AlternateWallType, offset);
+                offset += Write("mztd0", wall.ToBytes(maze), offset);
             }
             Write("mztd0", (byte)0, offset);
 
             //one way walls
             offset = 0;
-            if (oneWayRights.Count > 0)
+            if (maze.MazeObjects.OfType<OneWay>().Where(o=>o.Direction == OneWayDirection.Right).Count() > 0)
             {
-                foreach (OneWay oneway in oneWayRights)
+                foreach (OneWay oneway in maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Right))
                 {
-                    offset += Write("mone0", Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
+                    offset += Write("mone0", oneway.ToBytes(), offset);
                 }
             }
-            foreach (OneWay oneway in oneWayLefts)
+            foreach (OneWay oneway in maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Left))
             {
                 offset += Write("mone0", (byte)0xff, offset);
-                offset += Write("mone0", Context.PointToByteArrayPacked(new Point(oneway.Position.X, oneway.Position.Y + 64)), offset);
+                offset += Write("mone0", oneway.ToBytes(), offset);
             }
             Write("mone0", (byte)0, offset);
 
             //build spikes now
             offset = 0;
-            foreach (Spikes spike in spikes)
+            foreach (Spikes spike in maze.MazeObjects.OfType<Spikes>())
             {
-                offset += Write("tite0", Context.PointToByteArrayPacked(spike.Position), offset);
+                offset += Write("tite0", spike.ToBytes(), offset);
             }
             Write("tite0", (byte)0, offset);
 
             //locks and keys, for now, there has to be an even number of locks and keys
             offset = 0;
-            for (int i = 0; i < locks.Count; i++)
+            foreach (Lock lock_ in maze.MazeObjects.OfType<Lock>())
             {
-                Lock thisLock = locks[i];
-                Key thisKey = keys.Where(k => k.KeyColor == thisLock.LockColor).FirstOrDefault();
+                Key thisKey = maze.MazeObjects.OfType<Key>().Where(k => k.KeyColor == lock_.LockColor).FirstOrDefault();
                 if (thisKey != null)
                 {
-                    offset += Write("lock0", (byte)thisLock.LockColor, offset);
+                    offset += Write("lock0", (byte)lock_.LockColor, offset);
                     offset += Write("lock0", Context.PointToByteArrayPacked(thisKey.Position), offset);
-                    offset += Write("lock0", Context.PointToByteArrayPacked(new Point(thisLock.Position.X, thisLock.Position.Y + 64)), offset);
+                    offset += Write("lock0", Context.PointToByteArrayPacked(new Point(lock_.Position.X, lock_.Position.Y + 64)), offset);
                 }
             }
             Write("lock0", (byte)0, offset);
 
             //Escape pod
+            EscapePod pod = maze.MazeObjects.OfType<EscapePod>().FirstOrDefault();
             if (pod != null)
             {
-                Write("mpod", (byte)pod.Option, 0);
+                Write("mpod", pod.ToBytes(), 0);
             }
 
             //clock & boots
+            Clock clock = maze.MazeObjects.OfType<Clock>().FirstOrDefault();
             if (clock != null)
             {
                 //write these on all 4 level options
-                Write("mclock", Context.PointToByteArrayPacked(clock.Position), 0);
-                Write("mclock", Context.PointToByteArrayPacked(clock.Position), 1);
-                Write("mclock", Context.PointToByteArrayPacked(clock.Position), 2);
-                Write("mclock", Context.PointToByteArrayPacked(clock.Position), 3);
+                Write("mclock", clock.ToBytes(), 0);
+                Write("mclock", clock.ToBytes(), 1);
+                Write("mclock", clock.ToBytes(), 2);
+                Write("mclock", clock.ToBytes(), 3);
             }
+
+            Boots boots = maze.MazeObjects.OfType<Boots>().FirstOrDefault();
             if (boots != null)
             {
                 //write these on all 4 level options
-                Write("mboots", Context.PointToByteArrayPacked(boots.Position), 0);
-                Write("mboots", Context.PointToByteArrayPacked(boots.Position), 1);
-                Write("mboots", Context.PointToByteArrayPacked(boots.Position), 2);
-                Write("mboots", Context.PointToByteArrayPacked(boots.Position), 3);
+                Write("mboots", boots.ToBytes(), 0);
+                Write("mboots", boots.ToBytes(), 1);
+                Write("mboots", boots.ToBytes(), 2);
+                Write("mboots", boots.ToBytes(), 3);
             }
 
             //transporters
             offset = 0;
-            var transporterPairs = transporters.GroupBy(t => t.Color).Select(group => new { Key = group.Key, Count = group.Count() });
+            var transporterGroups = maze.MazeObjects.OfType<Transporter>().GroupBy(t => t.Color).Select(group => new { Key = group.Key, Count = group.Count() });
 
-            foreach (var transporterPair in transporterPairs)
+            foreach (var transporterPair in transporterGroups)
             {
-                List<Transporter> coloredTranporterMatches = transporters.Where(t => t.Color == transporterPair.Key).ToList();
+                List<Transporter> coloredTranporterMatches = maze.MazeObjects.OfType<Transporter>().Where(t => t.Color == transporterPair.Key).ToList();
                 foreach (Transporter t in coloredTranporterMatches)
                 {
-                    byte colorByte = (byte)(((byte)t.Color) & 0x0F);
-                    if (t.Direction == OneWayDirection.Right)
-                    {
-                        colorByte += 0x10;
-                    }
-                    offset += Write("tran0", colorByte, offset);
-                    offset += Write("tran0", Context.PointToByteArrayPacked(new Point(t.Position.X, t.Position.Y + 64)), offset);
+                    offset += Write("tran0", t.ToBytes(), offset);
                 }
             }
             //write end of transports
@@ -710,132 +566,38 @@ namespace mhedit.GameControllers
             //Laser Cannon
             offset = 0;
             int pointer = 0;
-            if (cannons.Count > 0)
+            if (maze.MazeObjects.OfType<Cannon>().Count() > 0)
             {
                 Write("mcan", new byte[] { 0x02, 0x02, 0x02, 0x02 }, 0);
             }
-            for (int i = 0; i < cannons.Count; i++)
+            foreach (Cannon cannon in maze.MazeObjects.OfType<Cannon>())
             {
-                Cannon cannon = cannons[i];
                 pointer += Write("mcan0", (UInt16)(GetAddress("mcand").Item1 + offset), pointer);
                 //cannon location first...
-                offset += Write("mcand", Context.PointToByteArrayLong(Context.ConvertPixelsToVector(cannon.Position)), offset);
-                //now cannon commands
-                foreach (iCannonMovement movement in cannon.Movements)
-                {
-                    byte command = 0;
-                    if (movement is CannonMovementMove)
-                    {
-                        CannonMovementMove move = (CannonMovementMove)movement;
-                        command = 0x80;
-                        if (move.Velocity.X == 0 && move.Velocity.Y == 0)
-                        {
-                            offset += Write("mcand", command, offset);
-                        }
-                        else
-                        {
-                            command += (byte)(0x3F & ((move.WaitFrames) >> 2));
-                            offset += Write("mcand", command, offset);
-                            //write velocities
-                            if (move.Velocity.X >= 0)
-                            {
-                                offset += Write("mcand", (byte)(move.Velocity.X & 0x3F), offset);
-                            }
-                            else
-                            {
-                                offset += Write("mcand", (byte)(move.Velocity.X | 0xc0), offset);
-                            }
-                            if (move.Velocity.Y >= 0)
-                            {
-                                offset += Write("mcand", (byte)(move.Velocity.Y & 0x3F), offset);
-                            }
-                            else
-                            {
-                                offset += Write("mcand", (byte)(move.Velocity.Y | 0xc0), offset);
-                            }
-                        }
-                    }
-                    else if (movement is CannonMovementPause)
-                    {
-                        CannonMovementPause pause = (CannonMovementPause)movement;
-                        command = 0xc0;
-                        command += (byte)(pause.WaitFrames & 0x3F);
-                        offset += Write("mcand", command, offset);
-                    }
-                    else if (movement is CannonMovementReturn)
-                    {
-                        CannonMovementReturn ret = (CannonMovementReturn)movement;
-                        command = 0x00;
-                        offset += Write("mcand", 0, offset);
-                    }
-                    else if (movement is CannonMovementPosition)
-                    {
-                        CannonMovementPosition position = (CannonMovementPosition)movement;
-                        command = 0x40;
-                        command += (byte)(((int)position.Position) << 3);
-                        command += (byte)(((int)position.Speed) << 1);
-                        if (position.ShotSpeed > 0)
-                        {
-                            command += 0x01;
-                        }
-                        offset += Write("mcand", command, offset);
-                        if (position.ShotSpeed > 0)
-                        {
-                            //write velocity now too
-                            offset += Write("mcand", position.ShotSpeed, offset);
-                        }
-                    }
-                }
+                offset += Write("mcan0", cannon.ToBytes(), offset);
             }
             //build trips now
             offset = 0;
             int tripoffset = 0;
-            foreach (TripPad trip in tripPads)
+            foreach (TripPad trip in maze.MazeObjects.OfType<TripPad>())
             {
-                offset += Write("mztr0", Context.PointToByteArrayPacked(trip.Position), offset);
-                byte[] position = Context.PointToByteArrayShort(new Point(trip.Pyroid.Position.X, trip.Pyroid.Position.Y + 64));
-                if (trip.Pyroid.PyroidStyle == PyroidStyle.Single)
-                {
-                    position[0] |= 0x80;
-                }
-                Write("trtbl", position, tripoffset + 0x18);
-                Write("trtbl", position, tripoffset + 0x30);
-                Write("trtbl", position, tripoffset + 0x48);
-                tripoffset += Write("trtbl", position, tripoffset);
-
-                byte velocity = (byte)Math.Abs(trip.Pyroid.Velocity);
-                if (trip.Pyroid.Velocity < 0)
-                {
-                    velocity |= 0x80;
-                }
-
-                Write("trtbl", velocity, tripoffset + 0x18);
-                Write("trtbl", velocity, tripoffset + 0x30);
-                Write("trtbl", velocity, tripoffset + 0x48);
-                tripoffset += Write("trtbl", velocity, tripoffset);
-
+                offset += Write("mztr0", trip.ToBytes(), offset);
+                //trip pad pyroid
+                Write("trtbl", trip.Pyroid.ToBytes(), tripoffset + 0x18);
+                Write("trtbl", trip.Pyroid.ToBytes(), tripoffset + 0x30);
+                Write("trtbl", trip.Pyroid.ToBytes(), tripoffset + 0x48);
+                tripoffset += Write("trtbl", trip.Pyroid.ToBytes(), tripoffset);
             }
             Write("mztr0", (byte)0, offset);
 
             //de hand finally
             offset = 0;
-            if (hand != null)
+            if (maze.MazeObjects.OfType<Hand>().First() != null)
             {
-                byte[] handLocation = Context.PointToByteArrayShort(hand.Position);
-                offset += Write("hand0", handLocation, offset);
-                byte[] reactoidLocation = Context.PointToByteArrayShort(reactor.Position);
-                int xAccordians = Math.Abs(reactoidLocation[0] - handLocation[0]);
-                int yAccordians = Math.Abs(handLocation[1] - reactoidLocation[1]);
-                offset += Write("hand0", new byte[] { (byte)((xAccordians * 2) + 1), (byte)(yAccordians * 2), 0x3F, 0x0B, 0x1F, 0x05, 0x03 }, offset);
+                offset += Write("hand0", maze.MazeObjects.OfType<Hand>().First().ToBytes(), offset);
             }
 
-            //write it BABY!!!!
-            if (Save())
-            {
-                success = true;
-            }
-
-
+            success = true;
             return success;
         }
     }

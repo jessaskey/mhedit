@@ -55,6 +55,18 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            return Context.PointToByteArrayPacked(_position);
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            return ToBytes();
+        }
+
+        [BrowsableAttribute(false)]
         public override Image Image
         {
             get

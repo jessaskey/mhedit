@@ -55,6 +55,33 @@ namespace mhedit.Containers.MazeObjects
         }
 
         [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            throw new Exception("Hand must be serialized with Rectoid position passed.");
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            List<byte> bytes = new List<byte>();
+            if (obj is Point)
+            {
+                Point reactoidPosition = (Point)obj;
+                byte[] handLocation = Context.PointToByteArrayShort(_position);
+                bytes.AddRange(handLocation);
+                byte[] reactoidLocation = Context.PointToByteArrayShort(reactoidPosition);
+                int xAccordians = Math.Abs(reactoidLocation[0] - handLocation[0]);
+                int yAccordians = Math.Abs(handLocation[1] - reactoidLocation[1]);
+                bytes.AddRange(new byte[] { (byte)((xAccordians * 2) + 1), (byte)(yAccordians * 2), 0x3F, 0x0B, 0x1F, 0x05, 0x03 });
+            }
+            else
+            {
+                throw new Exception("Parameter passed must be a Reactoid.Position object.");
+            }
+            return bytes.ToArray();
+        }
+
+        [BrowsableAttribute(false)]
         public override Image Image
         {
             get

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using mhedit.Containers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,8 @@ namespace mhedit.GameControllers
 
         Tuple<ushort, int> GetAddress(string location);
 
+        bool WriteFiles();
+
+        bool SerializeObjects(Maze maze);
     }
 }

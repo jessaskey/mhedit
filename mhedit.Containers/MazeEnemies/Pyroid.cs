@@ -20,7 +20,7 @@ namespace mhedit.Containers.MazeEnemies
         private Point _position;
         private Image _img;
         private Velocity _velocity;
-        private Velocity _incrementingVelocity;
+        private Velocity _incrementingVelocity = new Velocity();
 
         public Pyroid()
         {
@@ -89,6 +89,33 @@ namespace mhedit.Containers.MazeEnemies
                 }
                 return _img;
             }
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(Context.PointToByteArrayLong(Context.ConvertPixelsToVector(_position)));
+
+            if (_incrementingVelocity.X != 0)
+            {
+                bytes.Add((byte)(0x80 | _incrementingVelocity.X) );
+            }
+            bytes.Add((byte)_velocity.X);
+
+            if (_incrementingVelocity.Y != 0)
+            {
+                bytes.Add((byte)(0x80 | _incrementingVelocity.Y));
+            }
+            bytes.Add((byte)_velocity.Y);
+
+            return bytes.ToArray();
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            return ToBytes();
         }
 
         private void LoadDefaultImage()
