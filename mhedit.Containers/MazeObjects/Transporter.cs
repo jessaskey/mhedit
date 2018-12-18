@@ -7,6 +7,17 @@ using System.Text;
 
 namespace mhedit.Containers.MazeObjects
 {
+    public enum TransporterDirection : int
+    {
+        /// <summary>
+        /// Open to the right
+        /// </summary>
+        Right = 0,
+        /// <summary>
+        /// Open to the left
+        /// </summary>
+        Left
+    }
 
     [Serializable]
     public class Transporter : MazeObject
@@ -16,7 +27,7 @@ namespace mhedit.Containers.MazeObjects
         private const int _MAXOBJECTS = 8;
 
         private Point _position;
-        private OneWayDirection _direction = OneWayDirection.Right;
+        private TransporterDirection _direction = TransporterDirection.Right;
         private Image _img;
         private BitArray _transportability = new BitArray(32, true);
         private ObjectColor _color = ObjectColor.Red;
@@ -45,7 +56,7 @@ namespace mhedit.Containers.MazeObjects
 
         [CategoryAttribute("Direction")]
         [DescriptionAttribute("The Direction of the transporter.")]
-        public OneWayDirection Direction
+        public TransporterDirection Direction
         {
             get { return _direction; }
             set { _direction = value; }
@@ -79,13 +90,35 @@ namespace mhedit.Containers.MazeObjects
         }
 
         [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            List<byte> bytes = new List<byte>();
+
+            byte colorByte = (byte)(((byte)_color) & 0x0F);
+            if (_direction == TransporterDirection.Right)
+            {
+                colorByte += 0x10;
+            }
+            bytes.Add(colorByte);
+            bytes.AddRange(Context.PointToByteArrayPacked(new Point(_position.X, _position.Y + 64)));
+
+            return bytes.ToArray();
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            return ToBytes();
+        }
+
+        [BrowsableAttribute(false)]
         public override Image Image
         {
             get
             {
                 LoadDefaultImage();
                 _img = ResourceFactory.ReplaceColor(_img, System.Drawing.Color.Yellow, MazeFactory.GetObjectColor(_color));
-                if (_direction == OneWayDirection.Right)
+                if (_direction == TransporterDirection.Right)
                 {
                     _img.RotateFlip(RotateFlipType.Rotate180FlipNone);
                 }

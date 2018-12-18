@@ -80,6 +80,86 @@ namespace mhedit.Containers.MazeEnemies
             }
         }
 
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            List<byte> bytes = new List<byte>();
+
+            bytes.AddRange(Context.PointToByteArrayLong(Context.ConvertPixelsToVector(_position)));
+            //now cannon commands
+            foreach (iCannonMovement movement in _movements)
+            {
+                byte command = 0;
+                if (movement is CannonMovementMove)
+                {
+                    CannonMovementMove move = (CannonMovementMove)movement;
+                    command = 0x80;
+                    if (move.Velocity.X == 0 && move.Velocity.Y == 0)
+                    {
+                        bytes.Add(command);
+                    }
+                    else
+                    {
+                        command += (byte)(0x3F & ((move.WaitFrames) >> 2));
+                        bytes.Add(command);
+                        //write velocities
+                        if (move.Velocity.X >= 0)
+                        {
+                            bytes.Add((byte)(move.Velocity.X & 0x3F));
+                        }
+                        else
+                        {
+                            bytes.Add((byte)(move.Velocity.X | 0xc0));
+                        }
+                        if (move.Velocity.Y >= 0)
+                        {
+                            bytes.Add((byte)(move.Velocity.Y & 0x3F));
+                        }
+                        else
+                        {
+                            bytes.Add((byte)(move.Velocity.Y | 0xc0));
+                        }
+                    }
+                }
+                else if (movement is CannonMovementPause)
+                {
+                    CannonMovementPause pause = (CannonMovementPause)movement;
+                    command = 0xc0;
+                    command += (byte)(pause.WaitFrames & 0x3F);
+                    bytes.Add(command);
+                }
+                else if (movement is CannonMovementReturn)
+                {
+                    CannonMovementReturn ret = (CannonMovementReturn)movement;
+                    command = 0x00;
+                    bytes.Add(0);
+                }
+                else if (movement is CannonMovementPosition)
+                {
+                    CannonMovementPosition position = (CannonMovementPosition)movement;
+                    command = 0x40;
+                    command += (byte)(((int)position.Position) << 3);
+                    command += (byte)(((int)position.Speed) << 1);
+                    if (position.ShotSpeed > 0)
+                    {
+                        command += 0x01;
+                    }
+                    bytes.Add(command);
+                    if (position.ShotSpeed > 0)
+                    {
+                        //write velocity now too
+                        bytes.Add(position.ShotSpeed);
+                    }
+                }
+            }
+            return bytes.ToArray();
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            return ToBytes();
+        }
 
         private void LoadDefaultImage()
         {

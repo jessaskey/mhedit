@@ -76,6 +76,33 @@ namespace mhedit.Containers.MazeObjects
             }
         }
 
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            List<byte> bytes = new List<byte>();
+            if (obj is Point)
+            {
+                //Position
+                bytes.AddRange(Context.PointToByteArrayLong(Context.ConvertPixelsToVector(_position)));
+            }
+            else if (obj is int)
+            {
+                //Decimal Mode here requires extra conversion for Timer value
+                bytes.Add((byte)Convert.ToInt16(("0x" + _timer.ToString()), 16));
+            }
+            else
+            {
+
+            }
+            return bytes.ToArray();
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            throw new Exception("Reactoid must be serialized in parts. Use other ToBytes(object) method.");
+        }
+
         private void LoadDefaultImage()
         {
             _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.reactoid_obj.ico");

@@ -32,6 +32,7 @@ namespace mhedit.Containers
         //private Point objectOffset = new Point(-16, 16);
 
         private string _mazeName = null;
+        private string _mazeDescription = String.Empty;
         private string _fileName = null;
         private bool _isDirty = false;
         private bool _isValid = false;
@@ -44,8 +45,7 @@ namespace mhedit.Containers
         private int _mazeStampsY = 0;
         private decimal _zoom = 1;
         private string _mazeHint = String.Empty;
-        private bool _repainted = false;
-        private string _synopsis = String.Empty;
+        private bool _repainted = false;   
 
         private PropertyGrid _propertyGrid = null;
         private ComboBox _comboBoxObjects = null;
@@ -191,8 +191,8 @@ namespace mhedit.Containers
         [DescriptionAttribute("A description of gameplay and strategy for this maze.")]
         public string Description
         {
-            get { return _synopsis; }
-            set { _synopsis = value; }
+            get { return _mazeDescription; }
+            set { _mazeDescription = value; }
         }
 
         [DescriptionAttribute("The structure type of the maze.")]
@@ -227,6 +227,7 @@ namespace mhedit.Containers
         public Maze(SerializationInfo info, StreamingContext ctxt)
         {
             _mazeName = (string)info.GetValue("Name", typeof(string));
+            _mazeDescription = (string)info.GetValue("Description", typeof(string));
             try
             {
                 _mazeHint = (string)info.GetValue("Hint", typeof(string));
@@ -248,6 +249,7 @@ namespace mhedit.Containers
         public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
         {
             info.AddValue("Name", _mazeName);
+            info.AddValue("Description", _mazeDescription);
             info.AddValue("Hint", _mazeHint);
             info.AddValue("FileName", _fileName);
             info.AddValue("Width", base.Width);

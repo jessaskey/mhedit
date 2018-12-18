@@ -13,6 +13,14 @@ namespace mhedit.Containers.MazeEnemies
     [Serializable]
     public class Maxoid : MazeObject
     {
+        public enum MaxSpeed : int
+        {
+            Slowest = 0,
+            Slow,
+            Medium,
+            Agressive
+        }
+
         private const int _SNAP_X = 4;
         private const int _SNAP_Y = 4;
         private const int _MAXOBJECTS = 8;
@@ -20,6 +28,8 @@ namespace mhedit.Containers.MazeEnemies
         private Point _position;
         private Image _img;
         private Velocity _velocity;
+        private int _triggerDistance;
+        private MaxSpeed _speed;
 
         public Maxoid()
         {
@@ -58,6 +68,22 @@ namespace mhedit.Containers.MazeEnemies
             set { _velocity = value; }
         }
 
+        [CategoryAttribute("Location")]
+        [DescriptionAttribute("Defines how fast Max moves after Rex.")]
+        public MaxSpeed Speed
+        {
+            get { return _speed; }
+            set { _speed = value; }
+        }
+
+        [CategoryAttribute("Location")]
+        [DescriptionAttribute("Defines how many maze squares between Max and Rex before Max will start persuit.")]
+        public int TriggerDistance
+        {
+            get { return _triggerDistance; }
+            set { _triggerDistance = value; }
+        }
+
         [BrowsableAttribute(false)]
         public override Point SnapSize
         {
@@ -65,6 +91,22 @@ namespace mhedit.Containers.MazeEnemies
             {
                 return new Point(_SNAP_X, _SNAP_Y);
             }
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(Context.PointToByteArrayLong(Context.ConvertPixelsToVector(_position)));
+            int speedDistance =  ((byte)(((int)_speed)<<4)&0x30) +((byte)(_triggerDistance&0x0F));
+            bytes.Add((byte)speedDistance);
+            return bytes.ToArray();
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            return ToBytes();
         }
 
         [BrowsableAttribute(false)]

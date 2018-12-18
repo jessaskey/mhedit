@@ -65,6 +65,12 @@
             the contents of this method with the code editor.
             </summary>
         </member>
+        <member name="T:mhedit.GameProfile">
+            <summary>
+            Ghost of the XSD GameProfile class, this will go away when we merge code, but for now, I 
+            will code against this so we can code in Parallel.
+            </summary>
+        </member>
         <member name="T:mhedit.Mainform">
             <summary>
             The main application form.

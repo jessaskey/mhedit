@@ -8,48 +8,53 @@ using System.Windows.Forms;
 
 namespace mhedit
 {
-    public enum ROMAddress
-    {
-        levelst,
-        mzsc0,
-        mzdc0, 
-        mzlg0,
-        mzar0,
-        mzta0,
-        mztd0,
-        mone0,
-        tite0,
-        lock0, 
-        outime,
-        mpod,
-        cksumal,
-        cksumah,
-        cksump01,
-        mclock,
-        mboots,
-        tran0,
-        mzh0,
-        mcan,
-        mcan0,
-        mcand,
-        mztr0,
-        trtbl,
-        hand0
-    }
-
-    public enum ROMPhysical
-    {
-        AlphaHigh,
-        AlphaLow,
-        Page0,
-        Page1,
-        Page2,
-        Page3
-    }
-
 
     public class ROMDump
     {
+        #region Enums
+        public enum ROMAddress
+        {
+            levelst,
+            mzsc0,
+            mzdc0,
+            mzlg0,
+            mzar0,
+            mzta0,
+            mztd0,
+            mone0,
+            tite0,
+            lock0,
+            outime,
+            mpod,
+            cksumal,
+            cksumah,
+            cksump01,
+            mclock,
+            mboots,
+            tran0,
+            mzh0,
+            mcan,
+            mcan0,
+            mcand,
+            mztr0,
+            trtbl,
+            hand0
+        }
+
+        public enum ROMPhysical
+        {
+            AlphaHigh,
+            AlphaLow,
+            Page0,
+            Page1,
+            Page2,
+            Page3
+        }
+
+        #endregion
+
+        #region Private Variables
+
         private string _templatePath = String.Empty;
         private string _mamePath = String.Empty;
         private byte[] _alphaHigh = new byte[0x4000];
@@ -59,11 +64,13 @@ namespace mhedit
         private string _alphaLowFileNameMame = String.Empty;
         private string _page01FileNameMame = String.Empty;
         private string[] _exports;
-
         private string _alphaHighROM = "136025.217";
         private string _alphaLowROM = "136025.216";
         private string _page01ROM = "136025.215";
         private string _validText = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:";
+
+        #endregion
+
 
         public ROMDump(string templatePath, string mamePath, string exportPath)
         {

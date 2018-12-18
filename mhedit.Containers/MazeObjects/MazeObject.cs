@@ -62,6 +62,10 @@ namespace mhedit.Containers
         public abstract Image Image { get; }
         public abstract int MaxObjects { get; }
 
+        //Methods for Serialization
+        public abstract byte[] ToBytes();
+        public abstract byte[] ToBytes(object obj);
+
         [BrowsableAttribute(false)]
         public Point RenderOffset 
         {

@@ -94,6 +94,32 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            byte[] position = Context.PointToByteArrayShort(new Point(_position.X, _position.Y + 64));
+            if (_pyroidStyle == PyroidStyle.Single)
+            {
+                position[0] |= 0x80;
+            }
+            bytes.AddRange(position);
+
+            byte velocity = (byte)Math.Abs(_velocity);
+            if (_velocity < 0)
+            {
+                velocity |= 0x80;
+            }
+            bytes.Add(velocity);
+            return bytes.ToArray();
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            return ToBytes();
+        }
+
+        [BrowsableAttribute(false)]
         public override Image Image
         {
             get

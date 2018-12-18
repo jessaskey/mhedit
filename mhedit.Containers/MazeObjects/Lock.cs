@@ -64,6 +64,29 @@ namespace mhedit.Containers.MazeObjects
         }
 
         [BrowsableAttribute(false)]
+        public override byte[] ToBytes()
+        {
+            throw new Exception("Lock requires it's related key to be passed into the ToBytes(object) method.");
+        }
+
+        [BrowsableAttribute(false)]
+        public override byte[] ToBytes(object obj)
+        {
+            List<byte> bytes = new List<byte>();
+            if (obj is Key)
+            {
+                bytes.Add((byte)_color);
+                bytes.AddRange(Context.PointToByteArrayPacked(((Key)obj).Position));
+                bytes.AddRange(Context.PointToByteArrayPacked(new Point(_position.X, _position.Y + 64)));
+            }
+            else
+            {
+                throw new Exception("Lock.ToByte() requires it's related key to be passed into the ToBytes(object) method.");
+            }
+            return bytes.ToArray();
+        }
+
+        [BrowsableAttribute(false)]
         public override Image Image
         {
             get
