@@ -458,9 +458,6 @@ namespace mhedit.Controllers
                         tripBaseAddress++;
                         tripX = rom.ReadByte(tripBaseAddress, 0);
 
-                        /// level 8 has 2 pyroids per trip pad.
-                        //trip pyroid too
-
                         byte xdata = rom.ReadByte(tripPyroidBaseAddress++, 0);
                         byte xh = (byte)(0x7f & xdata);
                         byte styleFlag = (byte)(0x80 & xdata);

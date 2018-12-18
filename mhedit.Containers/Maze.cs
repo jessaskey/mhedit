@@ -1059,9 +1059,9 @@ namespace mhedit.Containers
 
         public int PointToStamp(Point point)
         {
-            int row = point.X / (GRIDUNITS * GRIDUNITSTAMPS);
-            int col = point.Y / (GRIDUNITS * GRIDUNITSTAMPS);
-            return Math.Max(Math.Min((col * _mazeStampsX) + row, MAXWALLS), 0);
+            int col = point.X / (GRIDUNITS * GRIDUNITSTAMPS);
+            int row = point.Y / (GRIDUNITS * GRIDUNITSTAMPS);
+            return Math.Max(Math.Min((row * _mazeStampsX) + col, MAXWALLS), 0);
         }
 
         public Point PointFromStamp(int stamp)
