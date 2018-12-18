@@ -1,4 +1,5 @@
-﻿using GameEditor.Atari.MajorHavoc.Serialization;
+﻿using GameEditor.Atari.MajorHavoc.Maze.Features;
+using GameEditor.Atari.MajorHavoc.Serialization;
 using GameEditor.Core.Xml;
 using System.Collections.Generic;
 using System.IO;

@@ -1,7 +1,5 @@
-﻿using GameEditor.Core;
-using GameEditor.Core.Serialization;
+﻿using GameEditor.Core.Serialization;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -190,11 +188,11 @@ namespace GameEditor.Atari.MajorHavoc
 
         public string ReadString( Stream stream )
         {
-            /// Not positive but are all strings prefixed with 0xA3? NO!
-            /// Move past the unknown byte at the start of every string.
-            long savedPosition = stream.Position++;
+            /// Save the position so that string decoding can be performed in
+            /// chunks rather than a byte at a time.
+            long savedPosition = stream.Position;
 
-            /// Read strings in 32 byte chunks and adjust to actual length
+            /// Read strings in 32 byte chunks and scan for termination byte.
             char[] chars = new char[ 32 ];
             byte[] bytes = new byte[ chars.Length ];
 
@@ -224,10 +222,6 @@ namespace GameEditor.Atari.MajorHavoc
 
         public void Write( Stream stream, string value )
         {
-            /// Not positive but are all strings prefixed with 0xA3? NO!
-            /// Move past the unknown byte at the start of every string.
-            stream.Position++;
-
             char[] chars = value.Trim().ToUpper().ToCharArray();
 
             /// Should be calling into GetCharCount() but this encoding

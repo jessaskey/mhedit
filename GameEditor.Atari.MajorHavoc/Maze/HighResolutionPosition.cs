@@ -2,18 +2,18 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace GameEditor.Atari.MajorHavoc
+namespace GameEditor.Atari.MajorHavoc.Maze
 {
     /// <summary>
     /// Pulls a Maze Position from a pair of short values that are ordered X, Y.
     /// </summary>
     [Serializable]
-    public class HighResolutionMazePosition : MazePosition
+    public class HighResolutionPosition : MazePosition
     {
-        public HighResolutionMazePosition()
+        public HighResolutionPosition()
         { }
 
-        protected HighResolutionMazePosition( RomSerializationInfo si, StreamingContext context )
+        protected HighResolutionPosition( RomSerializationInfo si, StreamingContext context )
         {
             short valueX = si.GetInt16( "MazePositionX" );
 
@@ -27,5 +27,4 @@ namespace GameEditor.Atari.MajorHavoc
             si.AddValue( "MazePositionY", this._y );
         }
     }
-
 }

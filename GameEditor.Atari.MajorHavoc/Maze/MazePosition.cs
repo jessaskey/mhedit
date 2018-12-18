@@ -2,7 +2,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace GameEditor.Atari.MajorHavoc
+namespace GameEditor.Atari.MajorHavoc.Maze
 {
     /// <summary>
     /// Atari Vectors are in the 4th quadrant
@@ -30,17 +30,24 @@ namespace GameEditor.Atari.MajorHavoc
         protected short _x;
         protected short _y;
 
-        public short X
+        public virtual short X
         {
             get { return this._x; }
-            ///TODO:: make abstract and force implement to range check.
             set { this._x = value; }
         }
 
-        public short Y
+        public virtual short Y
         {
             get { return this._y; }
             set { this._y = value; }
+        }
+
+        /// <summary>
+        /// Reset the position to 0.0. (origin)
+        /// </summary>
+        public virtual void Reset()
+        {
+            this._x = this._y = 0;
         }
 
         public abstract void GetObjectData( RomSerializationInfo si, StreamingContext context );

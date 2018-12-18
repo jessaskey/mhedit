@@ -7,8 +7,8 @@ namespace GameEditor.Core.Serialization
                  Inherited = true )]
     public class ConcreteTypeAttribute : Attribute
     {
-        private Type _concrete;
-        private string _memberName;
+        private readonly Type _concrete;
+        private readonly string _memberName;
 
         public ConcreteTypeAttribute( Type concrete )
             : this( concrete, string.Empty )

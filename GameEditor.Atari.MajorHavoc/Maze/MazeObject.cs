@@ -3,7 +3,7 @@ using GameEditor.Core.Serialization;
 using System;
 using System.Runtime.Serialization;
 
-namespace GameEditor.Atari.MajorHavoc
+namespace GameEditor.Atari.MajorHavoc.Maze
 {
     [Serializable]
     public abstract class MazeObject : IName, IRomSerializable
@@ -11,6 +11,7 @@ namespace GameEditor.Atari.MajorHavoc
         private string _name;
         private readonly MazePosition _position;
 
+        /// [CallerMemberName] string name = null
         public MazeObject( string name, MazePosition position )
         {
             this._name = name;
@@ -41,8 +42,7 @@ namespace GameEditor.Atari.MajorHavoc
 
         public virtual void GetObjectData( RomSerializationInfo si, StreamingContext context )
         {
-            //si.AddValue( "Position", this._position, typeof( MazePosition ) );
-            si.AddValue( "Position", this._position, this._position.GetType() );
+            si.AddValue( "Position", this._position );
         }
     }
 

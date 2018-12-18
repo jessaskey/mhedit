@@ -1177,8 +1177,8 @@ namespace mhedit
         private void toolStripButtonLoadFromROM_Click(object sender, EventArgs e)
         {
 
-            string romPath = @"C:\SVN\havoc\mame\roms\mhavoc\";
-			//string romPath = @"..\..\ProductionROMs\";
+            //string romPath = @"C:\SVN\havoc\mame\roms\mhavoc\";
+			string romPath = @"..\..\ProductionROMs\";
 
             if (!Directory.Exists(romPath))
             {

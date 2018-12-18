@@ -2,23 +2,23 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace GameEditor.Atari.MajorHavoc
+namespace GameEditor.Atari.MajorHavoc.Maze
 {
     /// <summary>
     /// Pulls a Maze Position from a single byte. X is least significant nibble
     /// and Y is most significant nibble.
     /// </summary>
     [Serializable]
-    public class LowResolutionMazePosition : MazePosition
+    public class LowResolutionPosition : MazePosition
     {
-        public LowResolutionMazePosition()
+        public LowResolutionPosition()
         {
             this._x = 0x0100;
         }
 
-        protected LowResolutionMazePosition( RomSerializationInfo si, StreamingContext context )
+        protected LowResolutionPosition( RomSerializationInfo si, StreamingContext context )
         {
-            byte value = si.GetByte( "LowResolutionMazePosition" );
+            byte value = si.GetByte( "LowResolutionPosition" );
 
             /// LSN plus 1 shifted to upper byte.
             this._x = (short)( ( ( value & 0x0F ) + 1 ) << 8 );
@@ -33,7 +33,7 @@ namespace GameEditor.Atari.MajorHavoc
 
             value += (byte)( ( this._y & 0x0F00 ) >> 4 );
 
-            si.AddValue( "LowResolutionMazePosition", value );
+            si.AddValue( "LowResolutionPosition", value );
         }
     }
 
