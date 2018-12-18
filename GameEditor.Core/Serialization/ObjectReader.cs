@@ -52,6 +52,26 @@ namespace GameEditor.Core.Serialization
             return ctor.Invoke( new object[] { si, this._context } );
         }
 
+        /// <summary>
+        /// Retrieves value of type T from the SerializationInfo store that matches the
+        /// conditions defined by the specified predicate.
+        /// </summary>
+        /// <param name="predicate">The Predicate<T> delegate that defines the conditions
+        /// under which the value is read.</param>
+        /// <returns>True if the value was read from the serialization stream; otherwise,
+        /// false.</returns>
+        internal bool TryGet<T>( Predicate<T> predicate )
+        {
+            long position = this._reader.BaseStream.Position;
+
+            if ( !predicate( (T)this.DeserializePrimitive( typeof(T), null ) ) )
+            {
+                this._reader.BaseStream.Position = position;
+            }
+
+            return position == this._reader.BaseStream.Position;
+        }
+
         internal object DeserializePrimitive( Type type, int? byteArrayLength = null )//, BinaryDeserializationEvents events )
         {
             object o;
@@ -73,15 +93,19 @@ namespace GameEditor.Core.Serialization
                 case TypeCode.Int64:
                     o = this._reader.ReadInt64();
                     break;
-                case TypeCode.Single:
-                    o = this._reader.ReadSingle();
-                    break;
-                case TypeCode.Double:
-                    o = this._reader.ReadDouble();
-                    break;
-                case TypeCode.Decimal:
-                    o = this._reader.ReadDecimal();
-                    break;
+
+                /// Not sure how these would convert as encodings might be
+                /// different on different architectures.
+                //case TypeCode.Single:
+                //    o = this._reader.ReadSingle();
+                //    break;
+                //case TypeCode.Double:
+                //    o = this._reader.ReadDouble();
+                //    break;
+                //case TypeCode.Decimal:
+                //    o = this._reader.ReadDecimal();
+                //    break;
+
                 case TypeCode.Char:
                     o = this._reader.ReadChar();
                     break;

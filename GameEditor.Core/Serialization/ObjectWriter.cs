@@ -51,6 +51,68 @@ namespace GameEditor.Core.Serialization
             }
         }
 
+        private void SerializePrimitive( object obj )//, BinaryDeserializationEvents events )
+        {
+            switch ( Type.GetTypeCode( obj.GetType() ) )
+            {
+                case TypeCode.String:
+                    this._writer.Write( (string)obj );
+                    break;
+                case TypeCode.Int32:
+                    this._writer.Write( (Int32)obj );
+                    break;
+                case TypeCode.Boolean:
+                    this._writer.Write( (Boolean)obj );
+                    break;
+                case TypeCode.Int16:
+                    this._writer.Write( (Int16)obj );
+                    break;
+                case TypeCode.Int64:
+                    this._writer.Write( (Int64)obj );
+                    break;
+
+                /// Not sure how these would convert as encodings might be
+                /// different on different architectures.
+                //case TypeCode.Single:
+                //    this._writer.Write( (Single)obj );
+                //    break;
+                //case TypeCode.Double:
+                //    this._writer.Write( (Double)obj );
+                //    break;
+                //case TypeCode.Decimal:
+                //    this._writer.Write( (Decimal)obj );
+                //    break;
+
+                case TypeCode.Char:
+                    this._writer.Write( (Char)obj );
+                    break;
+                case TypeCode.Byte:
+                    this._writer.Write( (Byte)obj );
+                    break;
+                case TypeCode.SByte:
+                    this._writer.Write( (SByte)obj );
+                    break;
+                case TypeCode.UInt16:
+                    this._writer.Write( (UInt16)obj );
+                    break;
+                case TypeCode.UInt32:
+                    this._writer.Write( (UInt32)obj );
+                    break;
+                case TypeCode.UInt64:
+                    this._writer.Write( (UInt64)obj );
+                    break;
+
+                default:
+                    if ( obj.GetType() == typeof( byte[] ) )
+                    {
+                        this._writer.Write( (byte[])obj );
+                    }
+
+                    throw new NotSupportedException(
+                        $"Unsupported or Unexpected primitive type {obj.GetType().FullName}." );
+            }
+        }
+
         private void SerializeCollection( Type type, object graph )
         {
             /// I don't really know what to check here to limit the serialization
@@ -91,64 +153,6 @@ namespace GameEditor.Core.Serialization
                 {
                     this.SerializePrimitive( terminationValue );
                 }
-            }
-        }
-
-        private void SerializePrimitive( object obj )//, BinaryDeserializationEvents events )
-        {
-            switch ( Type.GetTypeCode( obj.GetType() ) )
-            {
-                case TypeCode.String:
-                    this._writer.Write( (string)obj );
-                    break;
-                case TypeCode.Int32:
-                    this._writer.Write( (Int32)obj );
-                    break;
-                case TypeCode.Boolean:
-                    this._writer.Write( (Boolean)obj );
-                    break;
-                case TypeCode.Int16:
-                    this._writer.Write( (Int16)obj );
-                    break;
-                case TypeCode.Int64:
-                    this._writer.Write( (Int64)obj );
-                    break;
-                case TypeCode.Single:
-                    this._writer.Write( (Single)obj );
-                    break;
-                case TypeCode.Double:
-                    this._writer.Write( (Double)obj );
-                    break;
-                case TypeCode.Decimal:
-                    this._writer.Write( (Decimal)obj );
-                    break;
-                case TypeCode.Char:
-                    this._writer.Write( (Char)obj );
-                    break;
-                case TypeCode.Byte:
-                    this._writer.Write( (Byte)obj );
-                    break;
-                case TypeCode.SByte:
-                    this._writer.Write( (SByte)obj );
-                    break;
-                case TypeCode.UInt16:
-                    this._writer.Write( (UInt16)obj );
-                    break;
-                case TypeCode.UInt32:
-                    this._writer.Write( (UInt32)obj );
-                    break;
-                case TypeCode.UInt64:
-                    this._writer.Write( (UInt64)obj );
-                    break;
-
-                default:
-                    if ( obj.GetType() == typeof( byte[] ) )
-                    {
-                        this._writer.Write( (byte[])obj );
-                    }
-
-                    throw new NotSupportedException(
-                        $"Unsupported or Unexpected primitive type {obj.GetType().FullName}." );
             }
         }
     }

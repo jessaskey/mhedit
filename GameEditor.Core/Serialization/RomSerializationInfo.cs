@@ -107,34 +107,22 @@ namespace GameEditor.Core.Serialization
 
         public void AddValue( string name, float value )
         {
-            /// Not sure how this would convert as encodings might be
-            /// different on different architectures.
-            throw new NotImplementedException();
-            //this.AddValue( name, value, typeof( float ) );
+            this.AddValue( name, value, typeof( float ) );
         }
 
         public void AddValue( string name, double value )
         {
-            /// Not sure how this would convert as encodings might be
-            /// different on different architectures.
-            throw new NotImplementedException();
-            //this.AddValue( name, value, typeof( double ) );
+            this.AddValue( name, value, typeof( double ) );
         }
 
         public void AddValue( string name, Decimal value )
         {
-            /// Not sure how this would convert as encodings might be
-            /// different on different architectures.
-            throw new NotImplementedException();
-            //this.AddValue( name, value, typeof( Decimal ) );
+            this.AddValue( name, value, typeof( Decimal ) );
         }
 
         public void AddValue( string name, DateTime value )
         {
-            /// Not sure how this would convert as encodings might be
-            /// different on different architectures.
-            throw new NotImplementedException();
-            //this.AddValue( name, value, typeof( DateTime ) );
+            this.AddValue( name, value, typeof( DateTime ) );
         }
 
         private void AddValueInternal( string name, object value, Type type )
@@ -189,6 +177,21 @@ namespace GameEditor.Core.Serialization
 
             return (T)this.FindElementInternal(
                 name, this._reader.DeserializePrimitive( typeof( T ) ), typeof( T ) );
+        }
+
+        /// <summary>
+        /// Retrieves value of type T from the SerializationInfo store that matches the
+        /// conditions defined by the specified predicate.
+        /// </summary>
+        /// <param name="name">The name associated with the value to retrieve.</param>
+        /// <param name="predicate">The Predicate<T> delegate that defines the conditions
+        /// under which the value is read.</param>
+        /// <returns>True if the value was read from the serialization stream; otherwise,
+        /// false.</returns>
+        public bool TryGet<T>( string name, Predicate<T> predicate ) where T : struct
+        {
+            return (bool)this.FindElementInternal(
+                name, this._reader.TryGet<T>( predicate ), typeof( T ) );
         }
 
         public object GetValue( string name, Type type, int? iEnumerableLength )
@@ -272,34 +275,22 @@ namespace GameEditor.Core.Serialization
 
         public float GetSingle( string name )
         {
-            /// Not sure how this would convert as encodings might be
-            /// different on different architectures.
-            throw new NotImplementedException();
-            //return this.GetObject<float>( name );
+            return this.GetObject<float>( name );
         }
 
         public double GetDouble( string name )
         {
-            /// Not sure how this would convert as encodings might be
-            /// different on different architectures.
-            throw new NotImplementedException();
-            //return this.GetObject<double>( name );
+            return this.GetObject<double>( name );
         }
 
         public Decimal GetDecimal( string name )
         {
-            /// Not sure how this would convert as encodings might be
-            /// different on different architectures.
-            throw new NotImplementedException();
-            //return this.GetObject<Decimal>( name );
+            return this.GetObject<Decimal>( name );
         }
 
         public DateTime GetDateTime( string name )
         {
-            /// Not sure how this would convert as encodings might be
-            /// different on different architectures.
-            throw new NotImplementedException();
-            //return this.GetObject<DateTime>( name );
+            return this.GetObject<DateTime>( name );
         }
 
         public string GetString( string name )
