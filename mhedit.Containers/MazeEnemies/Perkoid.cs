@@ -94,13 +94,13 @@ namespace mhedit.Containers.MazeEnemies
             List<byte> bytes = new List<byte>();
             bytes.AddRange(Context.PointToByteArrayLong(Context.ConvertPixelsToVector(_position)));
 
-            if (_incrementingVelocity.X != 0)
+            if (_incrementingVelocity != null && _incrementingVelocity.X != 0)
             {
                 bytes.Add((byte)(0x80 | _incrementingVelocity.X));
             }
             bytes.Add((byte)_velocity.X);
 
-            if (_incrementingVelocity.Y != 0)
+            if (_incrementingVelocity != null && _incrementingVelocity.Y != 0)
             {
                 bytes.Add((byte)(0x80 | _incrementingVelocity.Y));
             }

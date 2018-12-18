@@ -45,6 +45,7 @@ namespace mhedit.Containers
         private int _mazeStampsY = 0;
         private decimal _zoom = 1;
         private string _mazeHint = String.Empty;
+        private int _oxygenReward = 16;
         private bool _repainted = false;   
 
         private PropertyGrid _propertyGrid = null;
@@ -204,6 +205,16 @@ namespace mhedit.Containers
                 _mazeType = value;
                 InitBaseMap();
                 DataChanged();
+            }
+        }
+
+        [DescriptionAttribute("The Oxygen reward value on this maze.")]
+        public int OxygenReward
+        {
+            get { return _oxygenReward; }
+            set
+            {
+                _oxygenReward = value ;
             }
         }
 
@@ -677,14 +688,14 @@ namespace mhedit.Containers
             _isValid = false;
             _validationMessage.Clear();
 
-            //
             //validate here...
-
-            if (_mazeObjects.Where(o => o is MazeObjects.Reactoid).FirstOrDefault() == null)
+            if (_mazeObjects != null && _mazeObjects.Count > 0)
             {
-                _validationMessage.Add("ERROR/REQUIRED: Maze does not contain a reactor");
+                if (_mazeObjects.Where(o => o is MazeObjects.Reactoid).FirstOrDefault() == null)
+                {
+                    _validationMessage.Add("ERROR/REQUIRED: Maze does not contain a reactor.");
+                }
             }
-
 
             _isValid = (_validationMessage.Count == 0);
         }

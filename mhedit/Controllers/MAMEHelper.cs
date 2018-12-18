@@ -545,7 +545,7 @@ namespace mhedit.Controllers
             return relativeWallIndex;
         }
 
-        public static bool SaveROM(Maze maze)
+        public static bool SaveROM(MazeCollection collection, Maze maze)
         {
             bool success = false;
             string mamePath = Path.GetDirectoryName(Properties.Settings.Default.MameExecutable) + "\\roms\\" + Properties.Settings.Default.MameDriver + "\\";
@@ -566,7 +566,10 @@ namespace mhedit.Controllers
             string backupPath = mamePath + "\\_backup\\";
 
             //delete the current backup folder so we can make a fresh copy
-            Directory.Delete(backupPath, true);
+            if (Directory.Exists(backupPath))
+            {
+                Directory.Delete(backupPath, true);
+            }
 
             if (!Directory.Exists(backupPath))
             {
@@ -585,13 +588,13 @@ namespace mhedit.Controllers
                 File.Copy(file, backupPath + Path.GetFileName(file), true);
             }
 
-            maze.Validate();
+            collection.Validate();
 
-            if (maze.IsValid)
+            if (collection.IsValid)
             {
                 //we will always serialize to target 'The Promised End' here in this editor.
                 IGameController controller = new MajorHavocPromisedEnd(templatePath, mamePath, templatePath);
-                bool serializeSuccess = controller.SerializeObjects(maze);
+                bool serializeSuccess = controller.SerializeObjects(collection, maze);
                 if (serializeSuccess)
                 {
                     success = controller.WriteFiles();
@@ -603,7 +606,7 @@ namespace mhedit.Controllers
             }
             else
             {
-                MessageBox.Show(String.Join("\r\n", maze.ValidationMessage.ToArray()), "Validation Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(collection.ValidationMessage, "Validation Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 success = false;
             }
             return success;
