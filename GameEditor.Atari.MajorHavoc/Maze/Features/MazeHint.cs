@@ -62,6 +62,11 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Features
         //    }
         //}
 
+        public override string ToString()
+        {
+            return this._text.ToString();
+        }
+
         public void GetObjectData( RomSerializationInfo si, StreamingContext context )
         {
             si.AddValue( "Unknown", this._unknown );

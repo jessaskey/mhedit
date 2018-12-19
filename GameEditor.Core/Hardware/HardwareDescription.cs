@@ -47,9 +47,9 @@ namespace GameEditor.Core.Hardware
             int pathIndex = 0;
 
             IMemoryPage found =
-                this._maps.Find( map => map.Id == path[ pathIndex ] )?.
-                      Segments.Find( segment => segment.Id == path[ pathIndex = 1 ] )?.
-                      Pages.Find( page => page.Id == path[ pathIndex = 2 ] );
+                this._maps.FirstOrDefault( map => map.Id == path[ pathIndex ] )?.
+                      Segments.FirstOrDefault( segment => segment.Id == path[ pathIndex = 1 ] )?.
+                      Pages.FirstOrDefault( page => page.Id == path[ pathIndex = 2 ] );
 
             if ( found == null )
             {
