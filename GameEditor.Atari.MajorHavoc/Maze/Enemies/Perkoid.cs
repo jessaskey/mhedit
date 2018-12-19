@@ -12,7 +12,7 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Enemies
     [Serializable]
     [ConcreteType( typeof( HighResolutionPosition ) )]
     [SerializationSurrogate( typeof( CoreMazeObjects ) )]
-    public class Perkoid : MazeObject
+    public sealed class Perkoid : MazeObject
     {
         private readonly Vector _velocity;
 

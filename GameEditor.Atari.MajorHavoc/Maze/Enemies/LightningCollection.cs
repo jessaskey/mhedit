@@ -9,7 +9,7 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Enemies
     /// Implements the funky pattern required to pull out Lightning objects.
     /// </summary>
     [Serializable]
-    public class LightningCollection : List<Lightning>, IRomSerializable
+    public sealed class LightningCollection : List<Lightning>, IRomSerializable
     {
         public LightningCollection()
         {}

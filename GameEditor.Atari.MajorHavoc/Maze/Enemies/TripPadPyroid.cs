@@ -51,7 +51,7 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Enemies
     [Serializable]
     [ConcreteType( typeof( TripPadPyroidPosition ) )]
     [SerializationSurrogate( typeof( TripPad ) )]
-    public class TripPadPyroid : MazeObject
+    public sealed class TripPadPyroid : MazeObject
     {
         private byte _velocity = 0;
 

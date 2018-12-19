@@ -23,7 +23,7 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Features
     [Serializable]
     [ConcreteType( typeof( WallPosition ) )]
     [TerminationObject( (byte)0x00 )]
-    public class MazeWall : MazeObject
+    public sealed class MazeWall : MazeObject
     {
         private MazeWallTypes _type = MazeWallTypes.Empty;
 

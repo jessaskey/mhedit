@@ -12,7 +12,7 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Enemies
     /// objects. I believe MaxBots will end up in here too.
     /// </summary>
     [Serializable]
-    public class CoreMazeObjects : IRomSerializable
+    public sealed class CoreMazeObjects : IRomSerializable
     {
         private Reactoid _reactoid;
         private List<Pyroid> _pyroids = new List<Pyroid>();

@@ -12,7 +12,7 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Features
     /// </summary>
     [Serializable]
     [ConcreteType( typeof( MediumResolutionPosition ) )]
-    public class Hand : MazeObject
+    public sealed class Hand : MazeObject
     {
         public Hand()
             : base( "Hand", new LowResolutionPosition() )

@@ -11,7 +11,7 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Features
     /// captured in the unknown property.
     /// </summary>
     [Serializable]
-    class MazeHint : IRomSerializable
+    public sealed class MazeHint : IRomSerializable
     {
         /// <summary>
         /// The first byte of a MazeHint string is unknown (not encoded) but it

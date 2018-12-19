@@ -20,7 +20,7 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Enemies
     [ConcreteType( typeof( LowResolutionPosition ) )]
     //[CollectionType( typeof( TripPadPyroidCollection ) )]
     [TerminationObject( (byte)0x00 )]
-    public class TripPad : MazeObject
+    public sealed class TripPad : MazeObject
     {
         private readonly TripPadPyroid _pyroid;
 

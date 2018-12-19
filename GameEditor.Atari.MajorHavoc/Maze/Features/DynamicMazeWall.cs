@@ -10,7 +10,7 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Features
     [Serializable]
     [ConcreteType( typeof( WallPosition ) )]
     [TerminationObject( (byte)0x00 )]
-    public class DynamicMazeWall : MazeObject
+    public sealed class DynamicMazeWall : MazeObject
     {
         private readonly WallOption _base = new WallOption();
         private readonly WallOption _alternate = new WallOption();
