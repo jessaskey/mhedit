@@ -16,6 +16,6 @@ namespace mhedit.GameControllers
 
         bool WriteFiles();
 
-        bool SerializeObjects(Maze maze);
+        bool SerializeObjects(MazeCollection collection, Maze maze);
     }
 }

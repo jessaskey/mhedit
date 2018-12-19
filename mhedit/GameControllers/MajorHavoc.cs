@@ -130,7 +130,10 @@ namespace mhedit.GameControllers
                 }
             }
             //last one needs special flag set...
-            bytes.Add(0x80);
+            if (bytes.Count > 0)
+            {
+                bytes[bytes.Count - 1] |= (byte)0x80;
+            }
             return bytes.ToArray();
         }
 
@@ -389,9 +392,7 @@ namespace mhedit.GameControllers
         }
 
 
-
-
-        public bool SerializeObjects(Maze maze)
+        public bool SerializeObjects(MazeCollection collection, Maze maze)
         {
             bool success = false;
             
@@ -511,9 +512,8 @@ namespace mhedit.GameControllers
                 Key thisKey = maze.MazeObjects.OfType<Key>().Where(k => k.KeyColor == lock_.LockColor).FirstOrDefault();
                 if (thisKey != null)
                 {
-                    offset += Write("lock0", (byte)lock_.LockColor, offset);
-                    offset += Write("lock0", Context.PointToByteArrayPacked(thisKey.Position), offset);
-                    offset += Write("lock0", Context.PointToByteArrayPacked(new Point(lock_.Position.X, lock_.Position.Y + 64)), offset);
+
+                    offset += Write("lock0", lock_.ToBytes(thisKey), offset);
                 }
             }
             Write("lock0", (byte)0, offset);

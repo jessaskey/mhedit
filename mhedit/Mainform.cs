@@ -473,7 +473,7 @@ namespace mhedit
         {
             Cursor.Current = Cursors.WaitCursor;
             FileStream fStream = null;
-            Maze[] mazes = new Maze[16];
+            List<Maze> mazes = new List<Maze>();
             Application.DoEvents();
             MazeCollection mazeCollection = null;
             //try
@@ -1083,7 +1083,16 @@ namespace mhedit
         {
             if (_currentMaze != null)
             {
-                if (MAMEHelper.SaveROM(_currentMaze))
+                MazeCollection collection = null;
+                if (treeView.SelectedNode != null)
+                {
+                    if (treeView.SelectedNode.Parent != null)
+                    {
+                        collection = treeView.SelectedNode.Parent.Tag as MazeCollection;
+                    }
+                }
+
+                if (MAMEHelper.SaveROM(collection, _currentMaze))
                 {
                     try
                     {

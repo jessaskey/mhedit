@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
@@ -20,7 +21,7 @@ namespace mhedit.Containers
         #region Declarations
 
         private const int MAX_MAZES = 16;
-        private Maze[] mazes;
+        private List<Maze> mazes;
         private bool error = false;
         private bool isDirty = false;
         private string fileName = null;
@@ -75,7 +76,7 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
-        public Maze[] Mazes
+        public List<Maze> Mazes
         {
             get { return mazes; }
             set { mazes = value; }
@@ -85,6 +86,33 @@ namespace mhedit.Containers
         public int MazeCount
         {
             get { return MAX_MAZES; }
+        }
+
+        [BrowsableAttribute(false)]
+        public bool IsValid
+        {
+            get
+            {
+                if (mazes.Where(m => !m.IsValid).Count() > 0)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        [BrowsableAttribute(false)]
+        public string ValidationMessage
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach(Maze maze in mazes.Where(m => !m.IsValid))
+                {
+                    sb.AppendLine(maze.Name + ": " + maze.ValidationMessage);
+                }
+                return sb.ToString();
+            }
         }
 
         [BrowsableAttribute(false)]
@@ -409,28 +437,11 @@ namespace mhedit.Containers
             return false;
         }
 
-        public MemoryStream GetROMStream()
+        public void Validate()
         {
-            try
+            foreach (Maze maze in mazes)
             {
-                //main routine to generate a ROM image file from this collection...
-                MemoryStream mStream = new MemoryStream();
-                //double check each maze and all it's objects for consistency...
-
-                //build our arrays of objects for each maze...
-
-                //load the template ROM image from resource...
-
-                //fill the template image with our arrays
-
-
-
-                return mStream;
-            }
-            catch (Exception ex)
-            {
-                lastError = ex.Message;
-                return null;
+                maze.Validate();
             }
         }
 
@@ -440,23 +451,31 @@ namespace mhedit.Containers
 
         private void Init()
         {
-            mazes = new Maze[MAX_MAZES];
-            mazes[0] = new Maze(MazeType.TypeA, "Level 1");
-            mazes[1] = new Maze(MazeType.TypeB, "Level 2");
-            mazes[2] = new Maze(MazeType.TypeC, "Level 3");
-            mazes[3] = new Maze(MazeType.TypeD, "Level 4");
-            mazes[4] = new Maze(MazeType.TypeA, "Level 5");
-            mazes[5] = new Maze(MazeType.TypeB, "Level 6");
-            mazes[6] = new Maze(MazeType.TypeC, "Level 7");
-            mazes[7] = new Maze(MazeType.TypeD, "Level 8");
-            mazes[8] = new Maze(MazeType.TypeA, "Level 9");
-            mazes[9] = new Maze(MazeType.TypeB, "Level 10");
-            mazes[10] = new Maze(MazeType.TypeC, "Level 11");
-            mazes[11] = new Maze(MazeType.TypeD, "Level 12");
-            mazes[12] = new Maze(MazeType.TypeA, "Level 13");
-            mazes[13] = new Maze(MazeType.TypeB, "Level 14");
-            mazes[14] = new Maze(MazeType.TypeC, "Level 15");
-            mazes[15] = new Maze(MazeType.TypeD, "Level 16");
+            mazes = new List<Maze>();
+            mazes.Add(new Maze(MazeType.TypeA, "Level 1"));
+            mazes.Add(new Maze(MazeType.TypeB, "Level 2"));
+            mazes.Add(new Maze(MazeType.TypeC, "Level 3"));
+            mazes.Add(new Maze(MazeType.TypeD, "Level 4"));
+            mazes.Add(new Maze(MazeType.TypeA, "Level 5"));
+            mazes.Add(new Maze(MazeType.TypeB, "Level 6"));
+            mazes.Add(new Maze(MazeType.TypeC, "Level 7"));
+            mazes.Add(new Maze(MazeType.TypeD, "Level 8"));
+            mazes.Add(new Maze(MazeType.TypeA, "Level 9"));
+            mazes.Add(new Maze(MazeType.TypeB, "Level 10"));
+            mazes.Add(new Maze(MazeType.TypeC, "Level 11"));
+            mazes.Add(new Maze(MazeType.TypeD, "Level 12"));
+            mazes.Add(new Maze(MazeType.TypeA, "Level 13"));
+            mazes.Add(new Maze(MazeType.TypeB, "Level 14"));
+            mazes.Add(new Maze(MazeType.TypeC, "Level 15"));
+            mazes.Add(new Maze(MazeType.TypeD, "Level 16"));
+            mazes.Add(new Maze(MazeType.TypeA, "Level 17"));
+            mazes.Add(new Maze(MazeType.TypeB, "Level 18"));
+            mazes.Add(new Maze(MazeType.TypeC, "Level 19"));
+            mazes.Add(new Maze(MazeType.TypeD, "Level 20"));
+            mazes.Add(new Maze(MazeType.TypeA, "Level 21"));
+            mazes.Add(new Maze(MazeType.TypeB, "Level 22"));
+            mazes.Add(new Maze(MazeType.TypeC, "Level 23"));
+            mazes.Add(new Maze(MazeType.TypeD, "Level 24"));
         }
 
         #endregion
