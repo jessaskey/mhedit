@@ -61,6 +61,11 @@ namespace mhedit.GameControllers
             }
         }
 
+        public byte ReadByte(ushort address, int offset)
+        {
+            throw new Exception("Not implemented.");
+        }
+
         public byte[] GetBytesFromString(string text)
         {
             text = text.ToUpper();
@@ -120,13 +125,13 @@ namespace mhedit.GameControllers
         private int WriteROM(ushort address, byte[] bytes, int offset, int page)
         {
             int page67Base = 0x4000;
-            if (page == 7) page67Base += 0x2000;
+            if (page == 7) page67Base = 0x6000;
 
             if (address >= 0x2000 && address <= 0x3fff)
             {
                 for (int i = 0; i < bytes.Length; i++)
                 {
-                    _page2367[page67Base + address + i + offset] = bytes[i];
+                    _page2367[page67Base + address - 0x2000 + i + offset] = bytes[i];
                 }
             }
             return bytes.Length;
@@ -287,7 +292,7 @@ namespace mhedit.GameControllers
             // 2. Verify no strange boundaries were crossed
             // 3. Update the CSUM's on each ROM that was written.
 
-            int index7Data = _exports["mzsc00"] - 0x2000;
+            int index7Data = _exports["mzsc00"];
             Reactoid reactoid = null;
 
             int pointerIndex = 0;
@@ -307,11 +312,10 @@ namespace mhedit.GameControllers
                         {
                             index7Data += WriteROM((ushort)index7Data, pyroid.ToBytes(), 0, 7);
                         }
-                        //Perkoids: always mark into Perkoids, even if there are none
-                        index7Data += WriteROM((ushort)index7Data, new byte[] { 0xfe }, 0, 7);
+                        //Perkoids
                         if (mazeCollection.Mazes[i].MazeObjects.OfType<Perkoid>().Count() > 0)
                         {
-
+                            index7Data += WriteROM((ushort)index7Data, new byte[] { 0xfe }, 0, 7);
                             foreach (Perkoid perkoid in mazeCollection.Mazes[i].MazeObjects.OfType<Perkoid>())
                             {
                                 index7Data += WriteROM((ushort)index7Data, perkoid.ToBytes(), 0, 7);
@@ -353,7 +357,7 @@ namespace mhedit.GameControllers
             //********************************
             // Page 6 Data Now
             //********************************
-            int index6Data = _exports["dynamic_base"] - 0x2000;
+            int index6Data = _exports["dynamic_base"];
             //Oxygen Discs
             pointerIndex = 0;
             for (int i = 0; i < 24; i++)

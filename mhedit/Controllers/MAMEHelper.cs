@@ -51,31 +51,8 @@ namespace mhedit.Controllers
                     Pyroid pyroid = new Pyroid();
                     pyroid.LoadPosition(mh.ReadBytes(mazeInitIndex, 4));
                     mazeInitIndex += 4;
-                    byte fireballVelX = mh.ReadByte(mazeInitIndex, 0);
-                    if (fireballVelX > 0x70 && fireballVelX < 0x90)
-                    {
-                        //incrementing velocity
-                        mazeInitIndex++;
-                        byte fireballVelXIncrement = fireballVelX;
-                        pyroid.IncrementingVelocity.X = fireballVelXIncrement;
-                        fireballVelX = mh.ReadByte(mazeInitIndex, 0);
-                    }
-                    mazeInitIndex++;
-                    byte fireballVelY = mh.ReadByte(mazeInitIndex, 0);
-                    if (fireballVelY > 0x70 && fireballVelY < 0x90)
-                    {
-                        //incrementing velocity
-                        mazeInitIndex++;
-                        byte fireballVelYIncrement = fireballVelY;
-                        pyroid.IncrementingVelocity.Y = fireballVelYIncrement;
-                        fireballVelY = mh.ReadByte(mazeInitIndex, 0);
-                    }
-                    mazeInitIndex++;
-
-                    pyroid.Velocity.X = fireballVelX;
-                    pyroid.Velocity.Y = fireballVelY;
+                    mazeInitIndex += (byte)LoadIncrementingVelocity(mh, pyroid.Velocity, pyroid.IncrementingVelocity, mazeInitIndex);
                     maze.AddObject(pyroid);
-
                     firstValue = mh.ReadByte(mazeInitIndex, 0);
 
                     if (firstValue == 0xfe)
@@ -92,29 +69,8 @@ namespace mhedit.Controllers
                     Perkoid perkoid = new Perkoid();
                     perkoid.LoadPosition(mh.ReadBytes(mazeInitIndex, 4));
                     mazeInitIndex += 4;
-                    byte perkoidVelX = mh.ReadByte(mazeInitIndex, 0);
-                    if (perkoidVelX > 0x70 && perkoidVelX < 0x90)
-                    {
-                        //incrementing velocity
-                        mazeInitIndex++;
-                        byte perkoidVelXIncrement = perkoidVelX;
-                        perkoidVelX = mh.ReadByte(mazeInitIndex, 0);
-                    }
-                    mazeInitIndex++;
-                    byte perkoidVelY = mh.ReadByte(mazeInitIndex, 0);
-                    if (perkoidVelY > 0x70 && perkoidVelY < 0x90)
-                    {
-                        //incrementing velocity
-                        mazeInitIndex++;
-                        byte perkoidVelYIncrement = perkoidVelY;
-                        perkoidVelY = mh.ReadByte(mazeInitIndex, 0);
-                    }
-                    mazeInitIndex++;
-
-                    perkoid.Velocity.X = perkoidVelX;
-                    perkoid.Velocity.Y = perkoidVelY;
+                    mazeInitIndex += (byte)LoadIncrementingVelocity(mh, perkoid.Velocity, perkoid.IncrementingVelocity, mazeInitIndex);
                     maze.AddObject(perkoid);
-
                     firstValue = mh.ReadByte(mazeInitIndex, 0);
                 }
 
@@ -522,6 +478,53 @@ namespace mhedit.Controllers
                 mazeCollection.InsertMaze(i, maze);
             }
             return mazeCollection;
+        }
+
+        private static int LoadIncrementingVelocity(IGameController controller, SignedVelocity velocity, SignedVelocity incrementingVeloctiy, ushort mazeInitIndex)
+        {
+            int offset = 0;
+            byte velX = controller.ReadByte(mazeInitIndex, offset);
+            if (velX > 0x70 && velX < 0x90)
+            {
+                offset++;
+                //incrementing velocity, is it positive or negative
+                if ((velX & 0x80) > 0)
+                {
+                    //positive
+                    incrementingVeloctiy.X = (sbyte)(velX & 0x7F);
+                }
+                else
+                {
+                    //negative
+                    incrementingVeloctiy.X = (sbyte)(velX | 0x80);
+                }
+                //base velocity
+                velX = controller.ReadByte(mazeInitIndex, offset);
+            }
+            velocity.X = (sbyte)velX;
+
+            offset++;
+            byte velY = controller.ReadByte(mazeInitIndex, offset);
+            if (velY > 0x70 && velY < 0x90)
+            {
+                offset++;
+                //incrementing velocity, is it positive or negative
+                if ((velY & 0x80) > 0)
+                {
+                    //positive
+                    incrementingVeloctiy.Y = (sbyte)(velY & 0x7F);
+                }
+                else
+                {
+                    //negative
+                    incrementingVeloctiy.Y = (sbyte)(velY | 0x80);
+                }
+                //base velocity
+                velY = controller.ReadByte(mazeInitIndex, offset);
+            }
+            velocity.Y = (sbyte)velY;
+            offset++;
+            return offset;
         }
 
         private static int GetRelativeWallIndex(MazeType mazeType, int absoluteWallIndex)

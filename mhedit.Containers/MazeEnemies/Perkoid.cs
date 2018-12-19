@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 
 namespace mhedit.Containers.MazeEnemies
 {
@@ -19,13 +18,13 @@ namespace mhedit.Containers.MazeEnemies
 
         private Point _position;
         private Image _img;
-        private Velocity _velocity;
-        private Velocity _incrementingVelocity;
+        private SignedVelocity _velocity;
+        private SignedVelocity _incrementingVelocity = new SignedVelocity();
 
         public Perkoid()
         {
             LoadDefaultImage();
-            _velocity = new Velocity();
+            _velocity = new SignedVelocity();
             renderOffset.X = 16;
             renderOffset.Y = 16;
         }
@@ -52,8 +51,8 @@ namespace mhedit.Containers.MazeEnemies
 
         [CategoryAttribute("Location")]
         [DescriptionAttribute("Defines how the object moves within the maze and at what speed.")]
-        [TypeConverter(typeof(TypeConverters.VelocityTypeConverter))]
-        public Velocity Velocity
+        [TypeConverter(typeof(TypeConverters.SignedVelocityTypeConverter))]
+        public SignedVelocity Velocity
         {
             get { return _velocity; }
             set { _velocity = value; }
@@ -61,8 +60,8 @@ namespace mhedit.Containers.MazeEnemies
 
         [CategoryAttribute("Location")]
         [DescriptionAttribute("Defines the additional velocity added at each difficulty level. Generally leave this at zero.")]
-        [TypeConverter(typeof(TypeConverters.VelocityTypeConverter))]
-        public Velocity IncrementingVelocity
+        [TypeConverter(typeof(TypeConverters.SignedVelocityTypeConverter))]
+        public SignedVelocity IncrementingVelocity
         {
             get { return _incrementingVelocity; }
             set { _incrementingVelocity = value; }
@@ -94,15 +93,29 @@ namespace mhedit.Containers.MazeEnemies
             List<byte> bytes = new List<byte>();
             bytes.AddRange(Context.PointToByteArrayLong(Context.ConvertPixelsToVector(_position)));
 
-            if (_incrementingVelocity != null && _incrementingVelocity.X != 0)
+            if (_incrementingVelocity.X != 0)
             {
-                bytes.Add((byte)(0x80 | _incrementingVelocity.X));
+                if (_incrementingVelocity.X > 0)
+                {
+                    bytes.Add((byte)(0x80 | _incrementingVelocity.X));
+                }
+                else
+                {
+                    bytes.Add((byte)(0x70 | _incrementingVelocity.X));
+                }
             }
             bytes.Add((byte)_velocity.X);
 
-            if (_incrementingVelocity != null && _incrementingVelocity.Y != 0)
+            if (_incrementingVelocity.Y != 0)
             {
-                bytes.Add((byte)(0x80 | _incrementingVelocity.Y));
+                if (_incrementingVelocity.Y > 0)
+                {
+                    bytes.Add((byte)(0x80 | _incrementingVelocity.Y));
+                }
+                else
+                {
+                    bytes.Add((byte)(0x70 | _incrementingVelocity.Y));
+                }
             }
             bytes.Add((byte)_velocity.Y);
 
@@ -119,5 +132,6 @@ namespace mhedit.Containers.MazeEnemies
         {
             _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.perkoid_obj.ico");
         }
+
     }
 }
