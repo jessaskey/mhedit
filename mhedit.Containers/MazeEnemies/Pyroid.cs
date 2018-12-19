@@ -19,13 +19,13 @@ namespace mhedit.Containers.MazeEnemies
 
         private Point _position;
         private Image _img;
-        private Velocity _velocity;
-        private Velocity _incrementingVelocity = new Velocity();
+        private SignedVelocity _velocity;
+        private SignedVelocity _incrementingVelocity = new SignedVelocity();
 
         public Pyroid()
         {
             LoadDefaultImage();
-            _velocity = new Velocity();
+            _velocity = new SignedVelocity();
             renderOffset.X = 8;
             renderOffset.Y = 8;
         }
@@ -52,8 +52,8 @@ namespace mhedit.Containers.MazeEnemies
 
         [CategoryAttribute("Location")]
         [DescriptionAttribute("Defines how the object moves within the maze and at what speed.")]
-        [TypeConverter(typeof(TypeConverters.VelocityTypeConverter))]
-        public Velocity Velocity
+        [TypeConverter(typeof(TypeConverters.SignedVelocityTypeConverter))]
+        public SignedVelocity Velocity
         {
             get { return _velocity; }
             set { _velocity = value; }
@@ -61,8 +61,8 @@ namespace mhedit.Containers.MazeEnemies
 
         [CategoryAttribute("Location")]
         [DescriptionAttribute("Defines the additional velocity added at each difficulty level. Generally leave this at zero.")]
-        [TypeConverter(typeof(TypeConverters.VelocityTypeConverter))]
-        public Velocity IncrementingVelocity
+        [TypeConverter(typeof(TypeConverters.SignedVelocityTypeConverter))]
+        public SignedVelocity IncrementingVelocity
         {
             get { return _incrementingVelocity; }
             set { _incrementingVelocity = value; }
@@ -99,13 +99,13 @@ namespace mhedit.Containers.MazeEnemies
 
             if (_incrementingVelocity.X != 0)
             {
-                bytes.Add((byte)(0x80 | _incrementingVelocity.X) );
+                bytes.Add((byte)_incrementingVelocity.X);
             }
             bytes.Add((byte)_velocity.X);
 
             if (_incrementingVelocity.Y != 0)
             {
-                bytes.Add((byte)(0x80 | _incrementingVelocity.Y));
+                bytes.Add((byte)_incrementingVelocity.Y);
             }
             bytes.Add((byte)_velocity.Y);
 
@@ -122,5 +122,6 @@ namespace mhedit.Containers.MazeEnemies
         {
             _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.pyroid_obj.ico");
         }
+
     }
 }

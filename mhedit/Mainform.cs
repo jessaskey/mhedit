@@ -510,7 +510,7 @@ namespace mhedit
                         long i = zip.Position;
                         string filename = Path.GetFileNameWithoutExtension(entry.Name);
                         int mazeIndex = int.Parse(filename);
-                        mazes[mazeIndex] = maze;
+                        mazes.Add(maze);
                         break;
                     case ".dat":
                         MemoryStream mStreamCollection = new MemoryStream();

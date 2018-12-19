@@ -10,6 +10,6 @@ namespace mhedit.GameControllers
     {
         protected string _validText = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:";
 
- 
+        
     }
 }
