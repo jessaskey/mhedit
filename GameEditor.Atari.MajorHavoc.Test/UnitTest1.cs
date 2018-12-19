@@ -37,19 +37,19 @@ namespace GameEditor.Atari.MajorHavoc.Test
 
             RomSerializer romSerializer1 = new RomSerializer();
 
-            Oxoid[] oxoids = new Oxoid[ 5 ];
+            Arrow[] Arrows = new Arrow[ 5 ];
 
-            oxoids.SetValue( new Oxoid() { Value = 55 }, 0 );
-            oxoids.SetValue( new Oxoid() { Value = 44 }, 1 );
-            oxoids.SetValue( new Oxoid() { Value = 33 }, 2 );
+            Arrows.SetValue( new Arrow() { Direction = ArrowDirection.Down }, 0 );
+            Arrows.SetValue( new Arrow() { Direction = ArrowDirection.DownLeft }, 1 );
+            Arrows.SetValue( new Arrow() { Direction = ArrowDirection.DownRight }, 2 );
 
-            romSerializer1.Serialize( memoryStream, oxoids );
+            romSerializer1.Serialize( memoryStream, Arrows );
 
             memoryStream.Seek( 0, SeekOrigin.Begin );
 
-            Oxoid[] oxoidsAo = romSerializer1.Deserialize<Oxoid[]>( memoryStream );
+            Arrow[] ArrowsAo = romSerializer1.Deserialize<Arrow[]>( memoryStream );
 
-            Assert.Equal( oxoids[ 0 ], oxoidsAo[ 0 ] );
+            Assert.Equal( Arrows[ 0 ], ArrowsAo[ 0 ] );
         }
 
         [Fact( Skip = "Not Completed" )]
@@ -59,19 +59,19 @@ namespace GameEditor.Atari.MajorHavoc.Test
 
             RomSerializer romSerializer1 = new RomSerializer();
 
-            Oxoid[] oxoids = new Oxoid[ 5 ];
+            Arrow[] Arrows = new Arrow[ 5 ];
 
-            oxoids.SetValue( new Oxoid() { Value = 55 }, 0 );
-            oxoids.SetValue( new Oxoid() { Value = 44 }, 1 );
-            oxoids.SetValue( new Oxoid() { Value = 33 }, 2 );
+            Arrows.SetValue( new Arrow() { Direction = ArrowDirection.UpRight }, 0 );
+            Arrows.SetValue( new Arrow() { Direction = ArrowDirection.UpLeft }, 1 );
+            Arrows.SetValue( new Arrow() { Direction = ArrowDirection.Up }, 2 );
 
-            romSerializer1.Serialize( memoryStream, oxoids );
+            romSerializer1.Serialize( memoryStream, Arrows );
 
             memoryStream.Seek( 0, SeekOrigin.Begin );
 
-            Oxoid[] oxoidsAo = romSerializer1.Deserialize<Oxoid[]>( memoryStream );
+            Arrow[] ArrowsAo = romSerializer1.Deserialize<Arrow[]>( memoryStream );
 
-            Assert.Equal( oxoids[ 0 ], oxoidsAo[ 0 ] );
+            Assert.Equal( Arrows[ 0 ], ArrowsAo[ 0 ] );
         }
 
     }

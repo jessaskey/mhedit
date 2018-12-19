@@ -45,7 +45,7 @@ namespace GameEditor.Atari.MajorHavoc.Test
 
             byte[] indexArray = romSerializer.Deserialize<byte[]>( this._programRomPage0, 12 );
 
-            string[] strings = new string[ 12 ];
+            List<MazeHint> strings = new List<MazeHint>();
 
             int i = 0;
 
@@ -58,7 +58,7 @@ namespace GameEditor.Atari.MajorHavoc.Test
 
                 this._programRomPage0.Position = pstr;
 
-                strings[ i ] = romSerializer.Deserialize<string>( this._programRomPage0 );
+                strings.Add( romSerializer.Deserialize<MazeHint>( this._programRomPage0 ) );
 
                 this._programRomPage0.Position = pstr;
 
@@ -81,17 +81,17 @@ namespace GameEditor.Atari.MajorHavoc.Test
 
             RomSerializer romSerializer1 = new RomSerializer();
 
-            Oxoid[] oxoids = new Oxoid[ 5 ];
+            Arrow[] Arrows = new Arrow[ 5 ];
 
-            oxoids.SetValue( new Oxoid() { Value = 55 }, 0 );
-            oxoids.SetValue( new Oxoid() { Value = 44 }, 1 );
-            oxoids.SetValue( new Oxoid() { Value = 33 }, 2 );
+            Arrows.SetValue( new Arrow() { Direction = ArrowDirection.Down }, 0 );
+            Arrows.SetValue( new Arrow() { Direction = ArrowDirection.Left }, 1 );
+            Arrows.SetValue( new Arrow() { Direction = ArrowDirection.QuestionMark }, 2 );
 
-            romSerializer1.Serialize( memoryStream, oxoids );
+            romSerializer1.Serialize( memoryStream, Arrows );
 
             memoryStream.Seek( 0, SeekOrigin.Begin );
 
-            Oxoid[] oxoidsAo = romSerializer1.Deserialize<Oxoid[]>( memoryStream );
+            Arrow[] ArrowsAo = romSerializer1.Deserialize<Arrow[]>( memoryStream );
         }
 
         [Fact]
@@ -101,17 +101,17 @@ namespace GameEditor.Atari.MajorHavoc.Test
 
             RomSerializer romSerializer1 = new RomSerializer();
 
-            List<Oxoid> oxoids = new List<Oxoid>();
+            List<Arrow> Arrows = new List<Arrow>();
 
-            oxoids.Add( new Oxoid() { Value = 55 } );
-            oxoids.Add( new Oxoid() { Value = 44 } );
-            oxoids.Add( new Oxoid() { Value = 33 } );
+            Arrows.Add( new Arrow() { Direction = ArrowDirection.Right } );
+            Arrows.Add( new Arrow() { Direction = ArrowDirection.UpLeft } );
+            Arrows.Add( new Arrow() { Direction = ArrowDirection.DownRight } );
 
-            romSerializer1.Serialize( memoryStream, oxoids );
+            romSerializer1.Serialize( memoryStream, Arrows );
 
             memoryStream.Seek( 0, SeekOrigin.Begin );
 
-            List<Oxoid> oxoidsAo = romSerializer1.Deserialize<List<Oxoid>>( memoryStream );
+            List<Arrow> ArrowsAo = romSerializer1.Deserialize<List<Arrow>>( memoryStream );
         }
 
         [Fact]
@@ -121,11 +121,11 @@ namespace GameEditor.Atari.MajorHavoc.Test
 
             RomSerializer romSerializer1 = new RomSerializer();
 
-            romSerializer1.Serialize( memoryStream, new Oxoid() { Value = 64 } );
+            romSerializer1.Serialize( memoryStream, new Arrow() { Direction = ArrowDirection.QuestionMark } );
 
             memoryStream.Seek( 0, SeekOrigin.Begin );
 
-            Oxoid oxoidsAo = romSerializer1.Deserialize<Oxoid>( memoryStream );
+            Arrow ArrowsAo = romSerializer1.Deserialize<Arrow>( memoryStream );
         }
 
         [Fact]
@@ -139,7 +139,7 @@ namespace GameEditor.Atari.MajorHavoc.Test
 
             memoryStream.Seek( 0, SeekOrigin.Begin );
 
-            TestEmbeddedArray oxoidsAo = 
+            TestEmbeddedArray ArrowsAo = 
                 romSerializer1.Deserialize<TestEmbeddedArray>( memoryStream );
         }
     }
