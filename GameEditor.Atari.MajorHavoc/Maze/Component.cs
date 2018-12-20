@@ -26,19 +26,25 @@ namespace GameEditor.Atari.MajorHavoc.Maze
             /// increment.
             if ( valueOrDifficulty > 0x70 && valueOrDifficulty < 0x90 )
             {
-                /// Decode
-                /// if greater than 0 - or in sign bit
-                /// if less than 0 - clear sign bit.
-                this._adaptiveDifficulty = valueOrDifficulty > 0 ?
-                    valueOrDifficulty | 0x80 :
-                    valueOrDifficulty & 0x7F;
+                /// Decode (it's stored opposite it's sign..)
+                /// if sign bit then clear and take value as positive.
+                /// Otherwise, assume negative and add sign bit.
+                this.AdaptiveDifficulty = ( valueOrDifficulty & 0x80 ) != 0 ?
+                    valueOrDifficulty & 0x7F :
+                    valueOrDifficulty | 0x80;
 
                 valueOrDifficulty = si.GetByte( "Value" );
             }
 
-            this._value = valueOrDifficulty;
+            this.Value = valueOrDifficulty;
         }
 
+        /// <summary>
+        /// Looking at the Production ROM data the max/min value for velocity
+        /// was +-24 (0x18/0xE8). Technically speaking we could allow 
+        /// +-112 (0x70/0x90) and that would still allow the funky packing
+        /// algo to work properly.
+        /// </summary>
         public int Value
         {
             get
@@ -47,8 +53,6 @@ namespace GameEditor.Atari.MajorHavoc.Maze
             }
             set
             {
-                /// Values must be confined to less than 0x70???
-                /// TODO: Validate my mental abilities. LOL
                 if ( value > -112 || value < 112 )
                 {
                     throw new ArgumentOutOfRangeException( nameof( Value ),
@@ -59,6 +63,10 @@ namespace GameEditor.Atari.MajorHavoc.Maze
             }
         }
 
+        /// <summary>
+        /// The adaptive difficulty max/min must be +-15 to allow the funky packing
+        /// algo to work properly.
+        /// </summary>
         public int AdaptiveDifficulty
         {
             get
@@ -67,9 +75,7 @@ namespace GameEditor.Atari.MajorHavoc.Maze
             }
             set
             {
-                /// Adaptive values must be confined to the lower nibble???
-                /// TODO: Validate my mental abilities. LOL
-                if ( value > -16 || value < 16 )
+                if ( value > -15 || value < 15 )
                 {
                     throw new ArgumentOutOfRangeException( nameof ( AdaptiveDifficulty ),
                         value, $"Must be -15 < value < 15." );

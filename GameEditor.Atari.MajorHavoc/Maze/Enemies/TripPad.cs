@@ -6,16 +6,6 @@ using System.Text;
 
 namespace GameEditor.Atari.MajorHavoc.Maze.Enemies
 {
-    /// <summary>
-    /// I could have sworn that this enum isn't real!! When I looked at the ROMs
-    /// I saw Owen put 2 trips in the same place to get 2 Pyroids launched??
-    /// </summary>
-    public enum PyroidStyle
-    {
-        Double = 0,
-        Single = 1
-    }
-
     [Serializable]
     [ConcreteType( typeof( LowResolutionPosition ) )]
     //[CollectionType( typeof( TripPadPyroidCollection ) )]
@@ -25,7 +15,7 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Enemies
         private readonly TripPadPyroid _pyroid;
 
         public TripPad()
-            : base( "TripPad", new HighResolutionPosition() )
+            : base( "TripPad", new LowResolutionPosition() )
         {
             this._pyroid = new TripPadPyroid();
         }

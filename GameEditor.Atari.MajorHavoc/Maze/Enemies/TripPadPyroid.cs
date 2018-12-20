@@ -7,44 +7,49 @@ using System.Text;
 namespace GameEditor.Atari.MajorHavoc.Maze.Enemies
 {
     /// <summary>
-    /// TripPad Pyroids have a position that is specially encoded.
+    /// I could have sworn that this enum isn't real!! When I looked at the ROMs
+    /// I saw Owen put 2 trips in the same place to get 2 Pyroids launched??
+    /// </summary>
+    //public enum TripReleases
+    //{
+    //    TwoPyroids = 0,
+    //    OnePyroid = 0x80
+    //}
+
+
+    /// <summary>
+    /// TripPadPyroids have a wacky packed position algo that must be implemented in
+    /// the TripPadPyroid object itself. As a result the IRomSerializable interface
+    /// is implemented with empty methods.
     /// </summary>
     [Serializable]
     public class TripPadPyroidPosition : MazePosition
     {
         public TripPadPyroidPosition()
-        { }
+        {}
 
         protected TripPadPyroidPosition( RomSerializationInfo si, StreamingContext context )
+        {}
+
+        // TODO: Must implement way to keep LSB from being modified!
+        public override short X
         {
-            /// this is seriously messed up. Have to talk with Jess.
-            byte valueX = si.GetByte( "MazePositionX" );
+            set { this._x = value; }
+        }
 
-            PyroidStyle style = ( valueX & 0x80 ) != 0 ? PyroidStyle.Single : PyroidStyle.Double;
-
-            valueX &= 0x7f;
-
-            /// default to this value, if velocity warrants it will change the LSB
-            /// Why did we switch to 0x1f here?
-            this._x = (short)( ( valueX & 0x1f ) << 8 | 0x40 );
-
-            this._y = (short)( si.GetByte( "MazePositionY" ) << 8 | 0x80 );
+        public override short Y
+        {
+            set { this._y = value; }
         }
 
         public override void Reset()
         {
             /// I don't know what the default values for x/y should be.
-            /// And do we 
             throw new NotImplementedException();
         }
 
         public override void GetObjectData( RomSerializationInfo si, StreamingContext context )
-        {
-            throw new NotImplementedException();
-            si.AddValue( "MazePositionX", (byte)( this._x >> 8 ) );
-
-            si.AddValue( "MazePositionY", (byte)( this._y >> 8 ) );
-        }
+        {}
     }
 
 
@@ -53,7 +58,8 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Enemies
     [SerializationSurrogate( typeof( TripPad ) )]
     public sealed class TripPadPyroid : MazeObject
     {
-        private byte _velocity = 0;
+        private sbyte _velocity = 0;
+        private bool _releaseTwoPyroids = true;
 
         public TripPadPyroid()
             : base( "TripPadPyroid", new TripPadPyroidPosition() )
@@ -62,20 +68,46 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Enemies
         private TripPadPyroid( RomSerializationInfo si, StreamingContext context )
             : base( si, context )
         {
+            /// this is seriously messed up. Have to talk with Jess.
+            byte valueX = si.GetByte( "MazePositionX" );
+
+            /// Move the Y value into the MSB of Position.Y 
+            this.Position.Y = (short)( si.GetByte( "MazePositionY" ) << 8 | 0x80 );
+
+            /// Bit7 determines # of pyroids released when tripped. Bit7 set indicates
+            /// a single pyroid.
+            this._releaseTwoPyroids = ( valueX & 0x80 ) == 0x00;
+
             byte velocity = si.GetByte( "Velocity" );
 
-            this._velocity = (byte)( velocity & 0x7f );
+            /// Record velocity as if it were positive.
+            this.Velocity = velocity & 0x7F;
 
+            /// Use bit7 to set the LSB of Position.X and choose the sign of the
+            /// velocity value.
             if ( ( velocity & 0x80 ) == 0 )
             {
-                this.Position.X = (short)( ( this.Position.X & 0x00 ) | 0x80 );
+                this.Position.X = 0x80;
             }
             else
             {
-                this._velocity = (byte)( this._velocity * -1 );
+                this.Position.X = 0x40;
+
+                this.Velocity *= -1;
             }
+
+            /// Move the X value into the MSB of Position.X 
+            /// Why did we switch to 0x1f here?
+            //valueX &= 0x7f;
+            this.Position.X |= (short)( ( valueX & 0x1f ) << 8 );
         }
 
+        /// <summary>
+        /// Looking at the Production ROM data the max/min value for velocity
+        /// was +-6. Technically speaking we could allow +-128 and that would
+        /// still allow the funky packing algo to work properly. Lets limit it
+        /// to +-16 though.
+        /// </summary>
         public int Velocity
         {
             get
@@ -84,14 +116,33 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Enemies
             }
             set
             {
-                /// Values must be confined to less than 0x7F????
-                if ( value > -128 &&  value < 128)
+                if ( value > -16 &&  value < 16)
                 {
                     throw new ArgumentOutOfRangeException( nameof( value ),
-                        value, $"Must be -128 < value < 128." );
+                        value, $"Must be -16 < value < 16." );
                 }
 
-                this._velocity = (byte)value;
+                this._velocity = (sbyte)value;
+
+                /// TODO: Must implement update to LSB of position based upon velocity
+                /// sign!
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// True if 2 pyroids are released when the trippad is triggered.
+        /// </summary>
+        public bool ReleaseTwoPyroids
+        {
+            get
+            {
+                return this._releaseTwoPyroids;
+            }
+
+            set
+            {
+                this._releaseTwoPyroids = value;
             }
         }
 
@@ -99,20 +150,22 @@ namespace GameEditor.Atari.MajorHavoc.Maze.Enemies
         {
             base.GetObjectData( si, context );
 
-            byte velocity = this._velocity;
+            byte valueX = (byte)( this.Position.X >> 8 );
 
-            if ( velocity < 0 )
-            {
-                /// make positive
-                velocity = (byte)( this._velocity * -1 );
-            }
+            valueX |= (byte)( this.ReleaseTwoPyroids ? 0x00 : 0x80 );
 
-            if ( (this.Position.X & 0xFF ) == 0x40 )
-            {
-                velocity |= 0x80;
-            }
+            si.AddValue( "MazePositionX", valueX );
 
-            si.AddValue( "Velocity", this._velocity );
+            si.AddValue( "MazePositionY", (byte)( this.Position.Y >> 8 ) );
+
+            /// Record velocity as if it were positive.
+            byte velocity = 
+                (byte)( this.Velocity > 0 ? this.Velocity : this.Velocity * -1 );
+
+            /// Use Bit7 to indicate +-;
+            velocity |= (byte)( this.Velocity > 0 ? 0x00 : 0x80 );
+
+            si.AddValue( "Velocity", velocity );
         }
     }
 }
