@@ -263,13 +263,14 @@ namespace mhedit
                                 {
                                     if (node.Parent.Tag.GetType() == typeof(MazeCollection))
                                     {
-                                        MazeCollection collection = (MazeCollection)node.Parent.Tag;
-                                        int mazeindex = collection.FindMaze(maze);
-                                        if (mazeindex > -1)
-                                        {
-                                            collection.InsertMaze(mazeindex, draggedmaze);
-                                            collection.TreeRender(treeView, node.Parent);
-                                        }
+                                        MessageBox.Show("Maze dragging not supported.");
+                                        //MazeCollection collection = (MazeCollection)node.Parent.Tag;
+                                        //int mazeindex = collection.FindMaze(maze);
+                                        //if (mazeindex > -1)
+                                        //{
+                                        //    collection.AddMaze(mazeindex, draggedmaze);
+                                        //    collection.TreeRender(treeView, node.Parent);
+                                        //}
                                     }
                                 }
                             }
@@ -1184,29 +1185,26 @@ namespace mhedit
         private void toolStripButtonLoadFromROM_Click(object sender, EventArgs e)
         {
 
-            string romPath = @"C:\SVN\havoc\mame\roms\mhavoc\";
+            DialogLoadROM dlr = new DialogLoadROM();
+            dlr.TemplatePath = Path.GetDirectoryName(Application.ExecutablePath) + "\\template\\";
+            DialogResult dr = dlr.ShowDialog();
 
-            if (!Directory.Exists(romPath))
+            if (dr == DialogResult.OK)
             {
-                FolderBrowserDialog fb = new FolderBrowserDialog();
-                fb.Description = "Take me to your production ROMs";
-                DialogResult dr = fb.ShowDialog();
-                if (dr == System.Windows.Forms.DialogResult.Cancel)
+                MazeCollection mazeCollection = dlr.Mazes;
+                foreach (Maze maze in mazeCollection.Mazes)
                 {
-                    return;
+                    maze.OnMazePropertiesUpdated += new MazePropertiesUpdated(RefreshMazeName);
                 }
-                romPath = fb.SelectedPath + "\\";
+
+                TreeNode node = treeView.Nodes.Add(mazeCollection.Name);
+                node.Tag = mazeCollection;
+                mazeCollection.TreeRender(treeView, node);
+                node.ImageIndex = 0;
+                node.SelectedImageIndex = node.ImageIndex;
+                treeView.SelectedNode = node;
+                mazeCollection.PropertyGrid = propertyGrid;
             }
-
-            MazeCollection mazeCollection = MAMEHelper.GetMazeCollectionFromROM(romPath, RefreshMazeName);
-
-            TreeNode node = treeView.Nodes.Add(mazeCollection.Name);
-            node.Tag = mazeCollection;
-            mazeCollection.TreeRender(treeView, node);
-            node.ImageIndex = 0;
-            node.SelectedImageIndex = node.ImageIndex;
-            treeView.SelectedNode = node;
-            mazeCollection.PropertyGrid = propertyGrid;
         }
 
         private void toolStripButtonContestUpload_Click(object sender, EventArgs e)

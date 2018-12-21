@@ -110,6 +110,12 @@
     <Compile Include="Controllers\MAMEHelper.cs" />
     <Compile Include="Controllers\MHPController.cs" />
     <Compile Include="Crc32.cs" />
+    <Compile Include="Dialogs\DialogLoadROM.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DialogLoadROM.Designer.cs">
+      <DependentUpon>DialogLoadROM.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\DialogMHPLogin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -151,6 +157,9 @@
     <EmbeddedResource Include="Dialogs\DialogAbout.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DialogAbout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\DialogLoadROM.resx">
+      <DependentUpon>DialogLoadROM.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\DialogMHPLogin.resx">
       <DependentUpon>DialogMHPLogin.cs</DependentUpon>

@@ -13,52 +13,10 @@ namespace mhedit.GameControllers
 {
     public class MajorHavoc : GameController, IGameController
     {
-        #region Enums
-        //public enum ROMAddress
-        //{
-        //    levelst,
-        //    mzsc0,
-        //    mzdc0,
-        //    mzlg0,
-        //    mzar0,
-        //    mzta0,
-        //    mztd0,
-        //    mone0,
-        //    tite0,
-        //    lock0,
-        //    outime,
-        //    mpod,
-        //    cksumal,
-        //    cksumah,
-        //    cksump01,
-        //    mclock,
-        //    mboots,
-        //    tran0,
-        //    mzh0,
-        //    mcan,
-        //    mcan0,
-        //    mcand,
-        //    mztr0,
-        //    trtbl,
-        //    hand0
-        //}
-
-        //public enum ROMPhysical
-        //{
-        //    AlphaHigh,
-        //    AlphaLow,
-        //    Page0,
-        //    Page1,
-        //    Page2,
-        //    Page3
-        //}
-
-        #endregion
-
         #region Private Variables
 
         private string _templatePath = String.Empty;
-        private string _mamePath = String.Empty;
+        //private string _mamePath = String.Empty;
         private byte[] _alphaHigh = new byte[0x4000];
         private byte[] _alphaLow = new byte[0x4000];
         private byte[] _page01 = new byte[0x4000];
@@ -69,23 +27,25 @@ namespace mhedit.GameControllers
 
         #endregion
 
-
-        public MajorHavoc(string templatePath, string mamePath, string exportPath)
+        public MajorHavoc(string templatePath)
         {
             _templatePath = templatePath;
-            _mamePath = mamePath;
+            LoadROMS(templatePath);
+        }
 
+        private void LoadROMS(string templatePath)
+        {
             //load our exports
-            string exportFile = exportPath + "havoc.exp";
+            string exportFile = Path.Combine(templatePath, "havoc.exp");
             if (File.Exists(exportFile))
             {
                 _exports = File.ReadAllLines(exportFile);
             }
 
             //load up our roms for now...
-            string alphaHighFileName = _templatePath + _alphaHighROM;
-            string alphaLowFileName = _templatePath + _alphaLowROM;
-            string page01FileName = _templatePath + _page01ROM;
+            string alphaHighFileName = Path.Combine(templatePath, _alphaHighROM);
+            string alphaLowFileName = Path.Combine(templatePath, _alphaLowROM);
+            string page01FileName = Path.Combine(templatePath, _page01ROM);
 
             try
             {
@@ -113,6 +73,491 @@ namespace mhedit.GameControllers
             {
                 throw new Exception("ROM Load Error - Page0/1: " + Exception.Message);
             }
+        }
+
+        public MazeCollection LoadMazes(string sourceROMFilePath)
+        {
+            
+            MazeCollection mazeCollection = new MazeCollection("Production Mazes");
+            mazeCollection.AuthorEmail = "Owen Rubin";
+
+            for (int i = 0; i < 16; i++)
+            {
+
+                byte mazeType = (byte)(i & 0x03);
+                Maze maze = new Maze((MazeType)mazeType, "Level " + (i + 1).ToString());
+                
+                //hint text - only first 12 mazes tho
+                if (i < 12)
+                {
+                    byte messageIndex = ReadByte(0x93FE, i);
+                    maze.Hint = GetMessage(messageIndex);
+                }
+                //build reactor
+                ushort mazeInitIndex = ReadWord(0x2581, i * 2);
+                Reactoid reactor = new Reactoid();
+                reactor.LoadPosition(ReadBytes(mazeInitIndex, 4));
+                mazeInitIndex += 4;
+                int timer = FromDecimal((int)ReadByte(0x3355, i));
+                reactor.Timer = timer;
+                maze.AddObject(reactor);
+
+                //pyroids
+                byte firstValue = ReadByte(mazeInitIndex, 0);
+                while (firstValue != 0xff)
+                {
+                    Pyroid pyroid = new Pyroid();
+                    pyroid.LoadPosition(ReadBytes(mazeInitIndex, 4));
+                    mazeInitIndex += 4;
+                    mazeInitIndex += (byte)LoadIncrementingVelocity(pyroid.Velocity, pyroid.IncrementingVelocity, mazeInitIndex);
+                    maze.AddObject(pyroid);
+                    firstValue = ReadByte(mazeInitIndex, 0);
+
+                    if (firstValue == 0xfe)
+                    {
+                        mazeInitIndex++;
+                        //perkoids now...
+                        break;
+                    }
+                }
+
+                // Perkoids 
+                while (firstValue != 0xff)
+                {
+                    Perkoid perkoid = new Perkoid();
+                    perkoid.LoadPosition(ReadBytes(mazeInitIndex, 4));
+                    mazeInitIndex += 4;
+                    mazeInitIndex += (byte)LoadIncrementingVelocity(perkoid.Velocity, perkoid.IncrementingVelocity, mazeInitIndex);
+                    maze.AddObject(perkoid);
+                    firstValue = ReadByte(mazeInitIndex, 0);
+                }
+
+                //do oxygens now
+                ushort oxygenBaseAddress = ReadWord(0x25A9, i * 2);
+
+                byte oxoidValue = ReadByte(oxygenBaseAddress, 0);
+                while (oxoidValue != 0x00)
+                {
+                    Oxoid oxoid = new Oxoid();
+                    oxoid.LoadPosition(oxoidValue);
+                    maze.AddObject(oxoid);
+
+                    oxygenBaseAddress++;
+                    oxoidValue = ReadByte(oxygenBaseAddress, 0);
+                }
+
+                //do lightning (Force Fields)
+                ushort lightningBaseAddress = ReadWord(0x25D1, i * 2);
+
+                byte lightningValue = ReadByte(lightningBaseAddress, 0);
+                bool isHorizontal = true;
+
+                if (lightningValue == 0xff)
+                {
+                    isHorizontal = false;
+                    lightningBaseAddress++;
+                    lightningValue = ReadByte(lightningBaseAddress, 0);
+                }
+
+                while (lightningValue != 0x00)
+                {
+                    if (isHorizontal)
+                    {
+                        LightningH lightningh = new LightningH();
+                        lightningh.LoadPosition(lightningValue);
+                        maze.AddObject(lightningh);
+                    }
+                    else
+                    {
+                        LightningV lightningv = new LightningV();
+                        lightningv.LoadPosition(lightningValue);
+                        maze.AddObject(lightningv);
+
+                    }
+
+                    lightningBaseAddress++;
+                    lightningValue = ReadByte(lightningBaseAddress, 0);
+                    if (lightningValue == 0xff)
+                    {
+                        isHorizontal = false;
+                        lightningBaseAddress++;
+                    }
+                    lightningValue = ReadByte(lightningBaseAddress, 0);
+                }
+
+                //build arrows now
+                ushort arrowBaseAddress = ReadWord(0x25F9, i * 2);
+                byte arrowValue = ReadByte(arrowBaseAddress, 0);
+
+                while (arrowValue != 0x00)
+                {
+                    Arrow arrow = new Arrow();
+                    arrow.LoadPosition(arrowValue);
+                    arrowBaseAddress++;
+                    arrowValue = ReadByte(arrowBaseAddress, 0);
+                    arrow.ArrowDirection = (Containers.MazeObjects.ArrowDirection)arrowValue;
+                    maze.AddObject(arrow);
+                    arrowBaseAddress++;
+                    arrowValue = ReadByte(arrowBaseAddress, 0);
+                }
+
+                //maze walls
+                //static first
+                ushort wallBaseAddress = ReadWord(0x2647, i * 2);
+                byte wallValue = ReadByte(wallBaseAddress, 0);
+
+                while (wallValue != 0x00)
+                {
+                    int relativeWallValue = GetRelativeWallIndex(maze.MazeType, wallValue);
+                    Point stampPoint = maze.PointFromStamp(relativeWallValue);
+                    wallBaseAddress++;
+                    wallValue = ReadByte(wallBaseAddress, 0);
+                    MazeWall wall = new MazeWall((MazeWallType)(wallValue & 0x07), stampPoint, relativeWallValue);
+                    wall.UserWall = true;
+                    maze.AddObject(wall);
+                    wallBaseAddress++;
+                    wallValue = ReadByte(wallBaseAddress, 0);
+                }
+
+                //then dynamic walls
+                //TODO: Dyanamic Walls loading from ROM
+                //only level 9 and higher
+                if (i > 7)
+                {
+                    ushort dynamicWallBaseAddress = ReadWord(0x2667, (i - 8) * 2);
+                    byte dynamicWallIndex = ReadByte(dynamicWallBaseAddress, 0);
+                    while (dynamicWallIndex != 0x00)
+                    {
+                        int relativeWallIndex = GetRelativeWallIndex(maze.MazeType, dynamicWallIndex);
+                        int baseTimer = ReadByte(dynamicWallBaseAddress, 1);
+                        int altTimer = ReadByte(dynamicWallBaseAddress, 2);
+                        MazeWallType baseType = (MazeWallType)ReadByte(dynamicWallBaseAddress, 3);
+                        MazeWallType altType = (MazeWallType)ReadByte(dynamicWallBaseAddress, 4);
+                        MazeWall wall = maze.MazeObjects.Where(o => o.GetType() == typeof(MazeWall) && ((MazeWall)o).WallIndex == relativeWallIndex).FirstOrDefault() as MazeWall;
+                        if (wall == null)
+                        {
+                            //make a new one
+                            wall = new MazeWall(baseType, maze.PointFromStamp(relativeWallIndex), relativeWallIndex);
+                            wall.DynamicWallTimout = baseTimer;
+                            wall.AlternateWallTimeout = altTimer;
+                            wall.WallType = baseType;
+                            wall.AlternateWallType = altType;
+                            wall.IsDynamicWall = true;
+                            maze.AddObject(wall);
+                        }
+                        else
+                        {
+                            //we found a wall at this position, fill in the details...
+                            wall.DynamicWallTimout = baseTimer;
+                            wall.AlternateWallTimeout = altTimer;
+                            wall.WallType = baseType;
+                            wall.AlternateWallType = altType;
+                            wall.IsDynamicWall = true;
+                        }
+                        dynamicWallBaseAddress += 5;
+                        dynamicWallIndex = ReadByte(dynamicWallBaseAddress, 0);
+                    }
+                }
+
+                //one way walls
+                ushort onewayBaseAddress = ReadWord(0x2677, i * 2);
+                byte onewayValue = ReadByte(onewayBaseAddress, 0);
+
+                while (onewayValue != 0x00)
+                {
+                    OneWay oneway = new OneWay();
+                    if (onewayValue == 0xff)
+                    {
+                        oneway.Direction = OneWayDirection.Left;
+                        onewayBaseAddress++;
+                        onewayValue = ReadByte(onewayBaseAddress, 0);
+                    }
+                    else
+                    {
+                        oneway.Direction = OneWayDirection.Right;
+                    }
+                    oneway.LoadPosition(onewayValue);
+                    maze.AddObject(oneway);
+
+                    onewayBaseAddress++;
+                    onewayValue = ReadByte(onewayBaseAddress, 0);
+                }
+
+                // Stalactite Level 5 and up
+                if (i > 4)
+                {
+                    ushort stalactiteBaseAddress = ReadWord(0x26B3, (i - 5) * 2);
+                    byte stalactiteValue = ReadByte(stalactiteBaseAddress, 0);
+
+                    while (stalactiteValue != 0x00)
+                    {
+                        Spikes spikes = new Spikes();
+                        spikes.LoadPosition(stalactiteValue);
+                        maze.AddObject(spikes);
+
+                        stalactiteBaseAddress++;
+                        stalactiteValue = ReadByte(stalactiteBaseAddress, 0);
+                    }
+                }
+
+                //locks and keys
+                ushort lockBaseAddress = ReadWord(0x26D1, i * 2);
+                byte lockValue = ReadByte(lockBaseAddress, 0);
+
+                while (lockValue != 0x00)
+                {
+                    byte lockColor = lockValue;
+                    lockBaseAddress++;
+
+                    Key key = new Key();
+                    key.LoadPosition(ReadByte(lockBaseAddress, 0));
+                    key.KeyColor = (ObjectColor)lockColor;
+                    maze.AddObject(key);
+
+                    lockBaseAddress++;
+
+                    Lock keylock = new Lock();
+                    keylock.LoadPosition(ReadByte(lockBaseAddress, 0));
+                    keylock.LockColor = (ObjectColor)lockColor;
+                    maze.AddObject(keylock);
+
+                    lockBaseAddress++;
+                    lockValue = ReadByte(lockBaseAddress, 0);
+                }
+
+                //Escape pod
+                // Levels 2,6,10,14 only
+                if (mazeType == 0x01)
+                {
+                    ushort podBaseAddress = 0x32FF;
+                    byte podValue = ReadByte(podBaseAddress, i >> 2);
+
+                    if (podValue > 0)
+                    {
+                        EscapePod pod = new EscapePod();
+                        maze.AddObject(pod);
+                    }
+                }
+
+                //clock & boots
+                byte clockData = ReadByte(0x3290, i);
+                byte bootsData = ReadByte(0x3290, i + 0x10);
+
+                if (clockData != 0)
+                {
+                    Clock clock = new Clock();
+                    clock.LoadPosition(clockData);
+                    maze.AddObject(clock);
+                }
+
+                if (bootsData != 0)
+                {
+                    Boots boots = new Boots();
+                    boots.LoadPosition(bootsData);
+                    maze.AddObject(boots);
+                }
+
+                //transporters
+                ushort transporterBaseAddress = ReadWord(0x26F9, i * 2);
+                byte colorValue = ReadByte(transporterBaseAddress, 0);
+
+                while (colorValue != 0x00)
+                {
+                    transporterBaseAddress++;
+                    Transporter transporter = new Transporter();
+                    transporter.LoadPosition(ReadByte(transporterBaseAddress, 0));
+                    transporter.Direction = TransporterDirection.Left;
+                    if ((colorValue & 0x10) > 0)
+                    {
+                        transporter.Direction = TransporterDirection.Right;
+                    }
+                    transporter.Color = (ObjectColor)(colorValue & 0x07);
+                    maze.AddObject(transporter);
+                    transporterBaseAddress++;
+                    colorValue = ReadByte(transporterBaseAddress, 0);
+                }
+
+                //Laser Cannon
+                // Ok, So looking at why the cannons are shifted down on level 16.
+                // The issue is that the cannon goes up and down. The key is where
+                // the cannon starts with respect to the ceiling. Cannons 2 and 3
+                // start low (closer to the floor) than all others.
+                // I need to figure out how that's encoded.
+                byte cannonAddressOffset = ReadByte(0x269F, i);
+                if (cannonAddressOffset != 0)
+                {
+                    ushort cannonBaseAddress = (ushort)(0x30B1 + cannonAddressOffset);
+                    ushort cannonPointerAddress = ReadWord(cannonBaseAddress, 0);
+
+                    while (cannonPointerAddress != 0)
+                    {
+                        Cannon cannon = new Cannon();
+                        cannon.LoadPosition(ReadBytes(cannonPointerAddress, 4));
+                        //now read data until we hit a cannon_end byte ($00)
+                        int cannonCommandOffset = 4;
+                        byte commandStartByte = commandStartByte = ReadByte(cannonPointerAddress, cannonCommandOffset);
+                        bool hasData = true;
+                        while (hasData)
+                        {
+                            int cannonCommand = commandStartByte >> 6;
+                            switch (cannonCommand)
+                            {
+                                case 0:     //loop
+                                    cannon.Movements.Add(new CannonMovementReturn());
+                                    hasData = false;
+                                    break;
+                                case 1:     //Move Gun
+                                    CannonMovementPosition cannonPosition = new CannonMovementPosition();
+                                    int gunAngle = (commandStartByte & 0x38) >> 3;
+                                    cannonPosition.Position = (CannonGunPosition)gunAngle;
+                                    int rotationSpeed = (commandStartByte & 0x06) >> 1;
+                                    cannonPosition.Speed = (CannonGunSpeed)rotationSpeed;
+                                    int fireBit = (commandStartByte & 0x01);
+                                    if (fireBit > 0)
+                                    {
+                                        cannonCommandOffset++;
+                                        cannonPosition.ShotSpeed = (byte)ReadByte(cannonPointerAddress, cannonCommandOffset);
+                                    }
+                                    cannon.Movements.Add(cannonPosition);
+                                    break;
+                                case 2:     //Move Position
+                                    CannonMovementMove cannonMovement = new CannonMovementMove();
+                                    int waitFrames = (commandStartByte & 0x3F) << 2;
+                                    cannonMovement.WaitFrames = waitFrames;
+                                    if (waitFrames > 0)
+                                    {
+                                        cannonCommandOffset++;
+                                        cannonMovement.Velocity.X = (sbyte)ReadByte(cannonPointerAddress, cannonCommandOffset);
+                                        cannonCommandOffset++;
+                                        cannonMovement.Velocity.Y = (sbyte)ReadByte(cannonPointerAddress, cannonCommandOffset);
+                                    }
+                                    //cannonMovement.
+                                    cannon.Movements.Add(cannonMovement);
+                                    break;
+                                case 3:     //Pause
+                                    CannonMovementPause cannonPause = new CannonMovementPause();
+                                    cannonPause.WaitFrames = (commandStartByte & 0x3F) << 2;
+                                    cannon.Movements.Add(cannonPause);
+                                    break;
+                            }
+                            cannonCommandOffset++;
+                            commandStartByte = commandStartByte = ReadByte(cannonPointerAddress, cannonCommandOffset);
+                        }
+                        maze.AddObject(cannon);
+
+                        cannonBaseAddress += 2;
+                        cannonPointerAddress = ReadWord(cannonBaseAddress, 0);
+                    }
+                }
+
+                //build trips now
+                // Level 5 and up
+                if (i > 3)
+                {
+                    // The max number of trips in a maze is 7. Trips are stored in a list
+                    // that is null terminated. Trips start on level 5 and exist on every
+                    // level to 16. 12 total levels.
+                    ushort tripBaseAddress = ReadWord((ushort)0x2627, ((i - 4) * 2));
+                    // Trip Pyroids are a 1 to 1 relationship to a trip. Trip Pyroids are
+                    // described in 3 bytes. Each level worth of trip pyroids are stored in
+                    // an array 8 pyroids long (7 + null) even if there are less than 7
+                    // trips in a level.
+                    ushort tripPyroidBaseAddress = (ushort)(0x2D36 + ((i - 4) * 3 * 8));
+
+                    byte tripX = ReadByte(tripBaseAddress, 0);
+
+                    while (tripX != 0)
+                    {
+                        TripPad trip = new TripPad();
+                        trip.LoadPosition(tripX);
+                        maze.AddObject(trip);
+
+                        tripBaseAddress++;
+                        tripX = ReadByte(tripBaseAddress, 0);
+
+                        // level 8 has 2 pyroids per trip pad.
+                        //trip pyroid too
+
+                        byte xdata = ReadByte(tripPyroidBaseAddress++, 0);
+                        byte xh = (byte)(0x7f & xdata);
+                        byte styleFlag = (byte)(0x80 & xdata);
+                        byte yh = ReadByte(tripPyroidBaseAddress++, 0);
+                        byte vdata = ReadByte(tripPyroidBaseAddress++, 0);
+
+                        byte[] longBytes = new byte[4];
+
+                        int velocity = (byte)(vdata & 0x7f);
+                        if ((vdata & 0x80) == 0)
+                        {
+                            longBytes[0] = 0x80;
+                        }
+                        else
+                        {
+                            velocity = velocity * -1;
+                            longBytes[0] = 0x40;
+                        }
+
+                        longBytes[1] = (byte)((xh & 0x1f));
+                        longBytes[2] = 0x80;
+                        longBytes[3] = yh;
+
+                        TripPadPyroid tpp = new TripPadPyroid();
+                        tpp.LoadPosition(longBytes);
+                        tpp.Velocity = velocity;
+                        if (styleFlag != 0)
+                        {
+                            tpp.PyroidStyle = PyroidStyle.Single;
+                        }
+                        maze.AddObject(tpp);
+
+                        trip.Pyroid = tpp;
+                    }
+                }
+
+                //finally... de hand
+                // Level 7 and up.
+                if (i > 5)
+                {
+                    byte[] longBytes = new byte[4];
+
+                    //longBytes[ 0 ] = 0;
+                    //longBytes[ 2 ] = 0;
+
+                    ushort handBaseAddress = ReadWord((ushort)(0x2721 + ((i - 6) * 2)), 0);
+                    longBytes[1] = ReadByte(handBaseAddress, 0);
+                    if (longBytes[1] != 0)
+                    {
+                        handBaseAddress++;
+                        longBytes[3] = ReadByte(handBaseAddress, 0);
+
+                        Hand hand = new Hand();
+
+                        hand.LoadPosition(longBytes);
+                        maze.AddObject(hand);
+                    }
+                }
+                mazeCollection.AddMaze(maze);
+            }
+            return mazeCollection;
+        }
+
+
+        private static int GetRelativeWallIndex(MazeType mazeType, int absoluteWallIndex)
+        {
+            int relativeWallIndex = absoluteWallIndex - 1;
+            if (mazeType == MazeType.TypeB)
+            {
+                relativeWallIndex = absoluteWallIndex + 4;
+            }
+            else if (mazeType == MazeType.TypeC)
+            {
+                relativeWallIndex = absoluteWallIndex + 4;
+            }
+            else if (mazeType == MazeType.TypeD)
+            {
+                relativeWallIndex = absoluteWallIndex + 2;
+            }
+            return relativeWallIndex;
         }
 
         public byte[] GetBytesFromString(string text)
@@ -205,6 +650,53 @@ namespace mhedit.GameControllers
             return bytes;
         }
 
+        protected int LoadIncrementingVelocity(SignedVelocity velocity, SignedVelocity incrementingVeloctiy, ushort mazeInitIndex)
+        {
+            int offset = 0;
+            byte velX = ReadByte(mazeInitIndex, offset);
+            if (velX > 0x70 && velX < 0x90)
+            {
+                offset++;
+                //incrementing velocity, is it positive or negative
+                if ((velX & 0x80) > 0)
+                {
+                    //positive
+                    incrementingVeloctiy.X = (sbyte)(velX & 0x7F);
+                }
+                else
+                {
+                    //negative
+                    incrementingVeloctiy.X = (sbyte)(velX | 0x80);
+                }
+                //base velocity
+                velX = ReadByte(mazeInitIndex, offset);
+            }
+            velocity.X = (sbyte)velX;
+
+            offset++;
+            byte velY = ReadByte(mazeInitIndex, offset);
+            if (velY > 0x70 && velY < 0x90)
+            {
+                offset++;
+                //incrementing velocity, is it positive or negative
+                if ((velY & 0x80) > 0)
+                {
+                    //positive
+                    incrementingVeloctiy.Y = (sbyte)(velY & 0x7F);
+                }
+                else
+                {
+                    //negative
+                    incrementingVeloctiy.Y = (sbyte)(velY | 0x80);
+                }
+                //base velocity
+                velY = ReadByte(mazeInitIndex, offset);
+            }
+            velocity.Y = (sbyte)velY;
+            offset++;
+            return offset;
+        }
+
         public byte ReadByte(ushort address, int offset)
         {
             return ReadROM(address, offset, 1)[0];
@@ -283,7 +775,7 @@ namespace mhedit.GameControllers
 
 
 
-        public bool WriteFiles()
+        public bool WriteFiles(string mamePath)
         {
 
             //fix csums...
@@ -299,9 +791,9 @@ namespace mhedit.GameControllers
             //String hash = String.Empty;
             //foreach (byte b in crc32.ComputeHash(_alphaHigh)) hash += b.ToString("x2").ToLower();
 
-            string alphaHighFileNameMame = _mamePath + _alphaHighROM;
-            string alphaLowFileNameMame = _mamePath + _alphaLowROM;
-            string page01FileNameMame = _mamePath + _page01ROM;
+            string alphaHighFileNameMame = mamePath + _alphaHighROM;
+            string alphaLowFileNameMame = mamePath + _alphaLowROM;
+            string page01FileNameMame = mamePath + _page01ROM;
 
             //save each
             File.WriteAllBytes(alphaHighFileNameMame, _alphaHigh);
@@ -318,7 +810,7 @@ namespace mhedit.GameControllers
 
             foreach (string rom in otherROMs)
             {
-                File.Copy(_templatePath + rom, _mamePath + rom, true);
+                File.Copy(_templatePath + rom, mamePath + rom, true);
             }
 
             return true;

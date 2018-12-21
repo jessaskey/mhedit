@@ -14,10 +14,12 @@ namespace mhedit.GameControllers
 
         Tuple<ushort, int> GetAddress(string location);
 
-        bool WriteFiles();
+        bool WriteFiles(string mamePath);
 
         bool SerializeObjects(MazeCollection collection, Maze maze);
 
         byte ReadByte(ushort address, int offset);
+
+        MazeCollection LoadMazes(string sourceFilePath);
     }
 }

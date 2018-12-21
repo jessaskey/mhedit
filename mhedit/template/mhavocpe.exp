@@ -21,3 +21,5 @@ outime			.EQU	$2362
 oxybonus		.EQU	$237E
 trtbll			.EQU	$239A
 mcan			.EQU	$23FA
+mcanst			.EQU	$2CE3
+

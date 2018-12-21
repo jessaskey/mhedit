@@ -20,7 +20,7 @@ namespace mhedit.Containers
     {
         #region Declarations
 
-        private const int MAX_MAZES = 16;
+        private const int MAX_MAZES = 32;
         private List<Maze> mazes;
         private bool error = false;
         private bool isDirty = false;
@@ -68,7 +68,7 @@ namespace mhedit.Containers
             set
             {
                 //propertyGrid = value;
-                for (int i = 0; i < MAX_MAZES; i++)
+                for (int i = 0; i < mazes.Count; i++)
                 {
                     mazes[i].PropertyGrid = value;
                 }
@@ -85,7 +85,7 @@ namespace mhedit.Containers
         [BrowsableAttribute(false)]
         public int MazeCount
         {
-            get { return MAX_MAZES; }
+            get { return mazes.Count; }
         }
 
         [BrowsableAttribute(false)]
@@ -183,12 +183,8 @@ namespace mhedit.Containers
             get
             {
                 if (isDirty) return true;
-                for (int i = 0; i < MAX_MAZES; i++)
-                {
-                    if (mazes[i] != null)
-                    {
-                        if (mazes[i].IsDirty) return true;
-                    }
+                foreach(Maze maze in mazes) { 
+                    if (maze.IsDirty) return true;
                 }
                 return false;
 
@@ -342,20 +338,16 @@ namespace mhedit.Containers
                     }
                     collectionNode.Name = this.Name;
                     collectionNode.Tag = this;
-                    for (int i = 0; i < MAX_MAZES; i++)
+                    for(int i = 0; i < mazes.Count; i++)
                     {
-                        if (mazes[i] != null)
-                        {
-                            TreeNode mazeNode = new TreeNode(((int)i + 1).ToString() + ": <unassigned>");
-                            mazeNode.ForeColor = Color.Gray;
-                            mazeNode.Text = mazes[i].Name;
-                            mazeNode.Tag = mazes[i];
-                            mazeNode.ForeColor = Color.Black;
-                            mazeNode.ImageIndex = ((int)mazes[i].MazeType) + 1;
-                            mazeNode.SelectedImageIndex = mazeNode.ImageIndex;
-                            collectionNode.Nodes.Add(mazeNode);
-                        }
-
+                        TreeNode mazeNode = new TreeNode(((int)i + 1).ToString() + ": <unassigned>");
+                        mazeNode.ForeColor = Color.Gray;
+                        mazeNode.Text = mazes[i].Name;
+                        mazeNode.Tag = mazes[i];
+                        mazeNode.ForeColor = Color.Black;
+                        mazeNode.ImageIndex = ((int)mazes[i].MazeType) + 1;
+                        mazeNode.SelectedImageIndex = mazeNode.ImageIndex;
+                        collectionNode.Nodes.Add(mazeNode);
                     }
                     collectionNode.Expand();
                 }
@@ -411,7 +403,7 @@ namespace mhedit.Containers
 
         public int FindMaze(Maze maze)
         {
-            for (int i = 0; i < MAX_MAZES; i++)
+            for (int i = 0; i < mazes.Count; i++)
             {
                 if (mazes[i] == maze)
                 {
@@ -423,16 +415,12 @@ namespace mhedit.Containers
 
 
 
-        public bool InsertMaze(int index, Maze maze)
+        public bool AddMaze(Maze maze)
         {
             if (maze != null)
             {
-                if (index >= 0 && index < MAX_MAZES)
-                {
-                    mazes[index] = null;
-                    mazes[index] = maze;
+                    mazes.Add(maze);
                     return true;
-                }
             }
             return false;
         }
@@ -452,30 +440,30 @@ namespace mhedit.Containers
         private void Init()
         {
             mazes = new List<Maze>();
-            mazes.Add(new Maze(MazeType.TypeA, "Level 1"));
-            mazes.Add(new Maze(MazeType.TypeB, "Level 2"));
-            mazes.Add(new Maze(MazeType.TypeC, "Level 3"));
-            mazes.Add(new Maze(MazeType.TypeD, "Level 4"));
-            mazes.Add(new Maze(MazeType.TypeA, "Level 5"));
-            mazes.Add(new Maze(MazeType.TypeB, "Level 6"));
-            mazes.Add(new Maze(MazeType.TypeC, "Level 7"));
-            mazes.Add(new Maze(MazeType.TypeD, "Level 8"));
-            mazes.Add(new Maze(MazeType.TypeA, "Level 9"));
-            mazes.Add(new Maze(MazeType.TypeB, "Level 10"));
-            mazes.Add(new Maze(MazeType.TypeC, "Level 11"));
-            mazes.Add(new Maze(MazeType.TypeD, "Level 12"));
-            mazes.Add(new Maze(MazeType.TypeA, "Level 13"));
-            mazes.Add(new Maze(MazeType.TypeB, "Level 14"));
-            mazes.Add(new Maze(MazeType.TypeC, "Level 15"));
-            mazes.Add(new Maze(MazeType.TypeD, "Level 16"));
-            mazes.Add(new Maze(MazeType.TypeA, "Level 17"));
-            mazes.Add(new Maze(MazeType.TypeB, "Level 18"));
-            mazes.Add(new Maze(MazeType.TypeC, "Level 19"));
-            mazes.Add(new Maze(MazeType.TypeD, "Level 20"));
-            mazes.Add(new Maze(MazeType.TypeA, "Level 21"));
-            mazes.Add(new Maze(MazeType.TypeB, "Level 22"));
-            mazes.Add(new Maze(MazeType.TypeC, "Level 23"));
-            mazes.Add(new Maze(MazeType.TypeD, "Level 24"));
+            //mazes.Add(new Maze(MazeType.TypeA, "Level 1"));
+            //mazes.Add(new Maze(MazeType.TypeB, "Level 2"));
+            //mazes.Add(new Maze(MazeType.TypeC, "Level 3"));
+            //mazes.Add(new Maze(MazeType.TypeD, "Level 4"));
+            //mazes.Add(new Maze(MazeType.TypeA, "Level 5"));
+            //mazes.Add(new Maze(MazeType.TypeB, "Level 6"));
+            //mazes.Add(new Maze(MazeType.TypeC, "Level 7"));
+            //mazes.Add(new Maze(MazeType.TypeD, "Level 8"));
+            //mazes.Add(new Maze(MazeType.TypeA, "Level 9"));
+            //mazes.Add(new Maze(MazeType.TypeB, "Level 10"));
+            //mazes.Add(new Maze(MazeType.TypeC, "Level 11"));
+            //mazes.Add(new Maze(MazeType.TypeD, "Level 12"));
+            //mazes.Add(new Maze(MazeType.TypeA, "Level 13"));
+            //mazes.Add(new Maze(MazeType.TypeB, "Level 14"));
+            //mazes.Add(new Maze(MazeType.TypeC, "Level 15"));
+            //mazes.Add(new Maze(MazeType.TypeD, "Level 16"));
+            //mazes.Add(new Maze(MazeType.TypeA, "Level 17"));
+            //mazes.Add(new Maze(MazeType.TypeB, "Level 18"));
+            //mazes.Add(new Maze(MazeType.TypeC, "Level 19"));
+            //mazes.Add(new Maze(MazeType.TypeD, "Level 20"));
+            //mazes.Add(new Maze(MazeType.TypeA, "Level 21"));
+            //mazes.Add(new Maze(MazeType.TypeB, "Level 22"));
+            //mazes.Add(new Maze(MazeType.TypeC, "Level 23"));
+            //mazes.Add(new Maze(MazeType.TypeD, "Level 24"));
         }
 
         #endregion
