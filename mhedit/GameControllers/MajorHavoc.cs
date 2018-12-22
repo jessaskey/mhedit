@@ -24,6 +24,7 @@ namespace mhedit.GameControllers
         private string _alphaHighROM = "136025.217";
         private string _alphaLowROM = "136025.216";
         private string _page01ROM = "136025.215";
+        private string _lastError = null;
 
         #endregion
 
@@ -31,6 +32,11 @@ namespace mhedit.GameControllers
         {
             _templatePath = templatePath;
             LoadROMS(templatePath);
+        }
+
+        public string LastError
+        {
+            get { return _lastError; }
         }
 
         private void LoadROMS(string templatePath)

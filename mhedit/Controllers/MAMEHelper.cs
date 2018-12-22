@@ -71,7 +71,7 @@ namespace mhedit.Controllers
                 }
                 else
                 {
-                    MessageBox.Show("There was an issue serializing the maze objects to binary.", "Serialization Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("There was an issue serializing the maze objects to binary: " + controller.LastError, "Serialization Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
             else

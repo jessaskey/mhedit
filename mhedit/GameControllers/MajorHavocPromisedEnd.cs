@@ -36,6 +36,11 @@ namespace mhedit.GameControllers
             LoadROMS(_templatePath);
         }
 
+        public string LastError
+        {
+            get { return _lastError; }
+        }
+
         private void LoadROMS(string templatePath)
         {
             //load our exports
@@ -782,7 +787,7 @@ namespace mhedit.GameControllers
         {
             bool success = false;
 
-            if (mazeCollection.MazeCount > 24)
+            if (mazeCollection.MazeCount > 28)
             {
                 _lastError = "Maze collection contained more than 24 mazes.";
                 return false;
@@ -799,7 +804,7 @@ namespace mhedit.GameControllers
             Reactoid reactoid = null;
 
             int pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < 28; i++)
             {
                 if (mazeCollection.Mazes[i] != null)
                 {

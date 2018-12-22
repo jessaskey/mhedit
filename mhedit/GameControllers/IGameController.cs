@@ -21,5 +21,7 @@ namespace mhedit.GameControllers
         byte ReadByte(ushort address, int offset);
 
         MazeCollection LoadMazes(string sourceFilePath);
+
+        string LastError { get; }
     }
 }
