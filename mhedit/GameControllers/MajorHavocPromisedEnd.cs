@@ -615,14 +615,14 @@ namespace mhedit.GameControllers
         private byte[] ReadROM(ushort address, int offset, int length, int page)
         {
             byte[] bytes = new byte[length];
-            int page67Base = 0x2000; //since addresses come in with a base of 0x2000 already, we just need to add this amount
-            if (page == 7) page67Base += 0x2000;
+            int page67Base = 0x4000; //since addresses come in with a base of 0x2000 already, we just need to add this amount
+            if (page == 7) page67Base = 0x6000;
 
             if (address >= 0x2000 && address <= 0x3fff)
             {
                 for (int i = 0; i < length; i++)
                 {
-                    bytes[i] = _page2367[page67Base + address + i + offset];
+                    bytes[i] = _page2367[page67Base - 0x2000 + address + i + offset];
                 }
             }
             return bytes;
@@ -786,8 +786,9 @@ namespace mhedit.GameControllers
         public bool SerializeObjects(MazeCollection mazeCollection, Maze maze)
         {
             bool success = false;
+            int numMazes = 28;
 
-            if (mazeCollection.MazeCount > 28)
+            if (mazeCollection.MazeCount > numMazes)
             {
                 _lastError = "Maze collection contained more than 24 mazes.";
                 return false;
@@ -804,7 +805,7 @@ namespace mhedit.GameControllers
             Reactoid reactoid = null;
 
             int pointerIndex = 0;
-            for (int i = 0; i < 28; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 if (mazeCollection.Mazes[i] != null)
                 {
@@ -846,7 +847,7 @@ namespace mhedit.GameControllers
 
             //Maze Hints
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 string message = " ";   //default to a single blank space
                 if (mazeCollection.Mazes[i] != null)
@@ -854,7 +855,7 @@ namespace mhedit.GameControllers
                     //Write Table Pointer
                     pointerIndex += WriteROM((ushort)_exports["mazehint"], WordToByteArray(index7Data), pointerIndex, 6);
                     //Maze Data
-                    if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint))
+                    if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint.Replace(" ", "")))
                     {
                         message = mazeCollection.Mazes[i].Hint;
                     }
@@ -866,40 +867,63 @@ namespace mhedit.GameControllers
             // Page 6 Data Now
             //********************************
             int index6Data = _exports["dynamic_base"];
+            Dictionary<byte, ushort> existingOxoids = new Dictionary<byte, ushort>();
             //Oxygen Discs
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
-                //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["mzdc"], WordToByteArray(index6Data), pointerIndex, 6);
                 //Oxoid data
+                List<byte> oxoidBytes = new List<byte>();
+
                 foreach (Oxoid oxoid in mazeCollection.Mazes[i].MazeObjects.OfType<Oxoid>())
                 {
-                    index6Data += WriteROM((ushort)index6Data, oxoid.ToBytes(), 0, 6);
+                    oxoidBytes.AddRange(oxoid.ToBytes());
                 }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+
+                byte byteHash = GetByteHash(oxoidBytes.ToArray());
+                if (existingOxoids.ContainsKey(byteHash))
+                {
+                    //already defined, use this pointer
+                    pointerIndex += WriteROM((ushort)_exports["mzdc"], WordToByteArray(existingOxoids[byteHash]), pointerIndex, 6);
+                }
+                else //didn't exist, write it out
+                {
+                    //Write Table Pointer
+                    pointerIndex += WriteROM((ushort)_exports["mzdc"], WordToByteArray(index6Data), pointerIndex, 6);
+                    index6Data += WriteROM((ushort)index6Data, oxoidBytes.ToArray(), 0, 6);
+                    index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                    //save to dictionary
+                    existingOxoids.Add(byteHash, (ushort)index6Data);
+                }
             }
             //Lightning
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mzlg"], WordToByteArray(index6Data), pointerIndex, 6);
-                //Oxoid data
-                foreach (LightningH lightningH in mazeCollection.Mazes[i].MazeObjects.OfType<LightningH>())
+                if ((mazeCollection.Mazes[i].MazeObjects.OfType<LightningH>().Count() > 0) || 
+                    (mazeCollection.Mazes[i].MazeObjects.OfType<LightningV>().Count() > 0 ))
                 {
-                    index6Data += WriteROM((ushort)index6Data, lightningH.ToBytes(), 0, 6);
-                }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0xff }, 0, 6);
-                foreach (LightningV lightningV in mazeCollection.Mazes[i].MazeObjects.OfType<LightningV>())
-                {
-                    index6Data += WriteROM((ushort)index6Data, lightningV.ToBytes(), 0, 6);
+                    //Oxoid data
+                    foreach (LightningH lightningH in mazeCollection.Mazes[i].MazeObjects.OfType<LightningH>())
+                    {
+                        index6Data += WriteROM((ushort)index6Data, lightningH.ToBytes(), 0, 6);
+                    }
+                    if (mazeCollection.Mazes[i].MazeObjects.OfType<LightningV>().Count() > 0)
+                    {
+                        index6Data += WriteROM((ushort)index6Data, new byte[] { 0xff }, 0, 6);
+                        foreach (LightningV lightningV in mazeCollection.Mazes[i].MazeObjects.OfType<LightningV>())
+                        {
+                            index6Data += WriteROM((ushort)index6Data, lightningV.ToBytes(), 0, 6);
+                        }
+                    }
                 }
                 index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
             }
             //Arrows
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mzar"], WordToByteArray(index6Data), pointerIndex, 6);
@@ -912,7 +936,7 @@ namespace mhedit.GameControllers
             }
             //Exit Arrows
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mzor"], WordToByteArray(index6Data), pointerIndex, 6);
@@ -921,7 +945,7 @@ namespace mhedit.GameControllers
             }
             //Trip Points
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mztr"], WordToByteArray(index6Data), pointerIndex, 6);
@@ -934,7 +958,7 @@ namespace mhedit.GameControllers
             }
             //Static Maze Walls
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mztdal"], WordToByteArray(index6Data), pointerIndex, 6);
@@ -947,7 +971,7 @@ namespace mhedit.GameControllers
             }
             //Dynamic Maze Walls
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mztd"], WordToByteArray(index6Data), pointerIndex, 6);
@@ -960,7 +984,7 @@ namespace mhedit.GameControllers
             }
             //One Way Walls
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mone"], WordToByteArray(index6Data), pointerIndex, 6);
@@ -980,7 +1004,7 @@ namespace mhedit.GameControllers
             }
             //Spikes
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mtite"], WordToByteArray(index6Data), pointerIndex, 6);
@@ -994,7 +1018,7 @@ namespace mhedit.GameControllers
 
             //locks and keys, for now, there has to be an even number of locks and keys
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mlock"], WordToByteArray(index6Data), pointerIndex, 6);
@@ -1012,7 +1036,7 @@ namespace mhedit.GameControllers
             //Transporters
             pointerIndex = 0;
 
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mtran"], WordToByteArray(index6Data), pointerIndex, 6);
@@ -1034,7 +1058,7 @@ namespace mhedit.GameControllers
             }
             //De Hand
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mhand"], WordToByteArray(index6Data), pointerIndex, 6);
@@ -1050,7 +1074,7 @@ namespace mhedit.GameControllers
             }
             //Clock
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mclock"], WordToByteArray(index6Data), pointerIndex, 6);
@@ -1063,7 +1087,7 @@ namespace mhedit.GameControllers
             }
             //Boots
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mboots"], WordToByteArray(index6Data), pointerIndex, 6);
@@ -1077,7 +1101,7 @@ namespace mhedit.GameControllers
 
             int mpodAddressBase = _exports["mpod"];
             //Escape Pod
-            for (int i = 1; i < 24; i+=4)
+            for (int i = 1; i < numMazes; i+=4)
             {
                 //Pod Data
                 EscapePod pod = mazeCollection.Mazes[i].MazeObjects.OfType<EscapePod>().FirstOrDefault();
@@ -1089,7 +1113,7 @@ namespace mhedit.GameControllers
             }
             //Out Time
             int outAddressBase = _exports["outime"];
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Pod Data
                 byte reactorTimer = 0;
@@ -1101,13 +1125,13 @@ namespace mhedit.GameControllers
             }
             //OxygenReward
             int oxyAddressBase = _exports["oxybonus"];
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 oxyAddressBase += WriteROM((ushort)oxyAddressBase, new byte[] { (byte)mazeCollection.Mazes[i].OxygenReward }, 0, 6);
             }
             //Trip Actions
             pointerIndex = 0;
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["trtbll"], WordToByteArray(index6Data), pointerIndex, 6);
@@ -1137,7 +1161,7 @@ namespace mhedit.GameControllers
             cannonPointersBase += WriteROM((ushort)cannonPointersBase, new byte[] { 0x00, 0x00 }, 0, 6);
             int cannonDataBase = cannonPointersBase + allocationOffsetIndex;
 
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < numMazes; i++)
             {
                 if (mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>().Count() == 0)
                 {
@@ -1158,10 +1182,6 @@ namespace mhedit.GameControllers
 
             }
 
-
-
-
-
             if (index6Data >= 0x2000)
             {
                 //this is bad
@@ -1174,6 +1194,16 @@ namespace mhedit.GameControllers
 
             success = true;
             return success;
+        }
+
+        private byte GetByteHash(byte[] bytes)
+        {
+            byte hash = 0;
+            foreach(byte b in bytes)
+            {
+                hash ^= b;
+            }
+            return hash;
         }
 
         private int WriteObjectsGeneric(byte[] bytes, int tablePointer, int tablePointerPageBase, int dataPointer, int dataPointerPageBase, List<MazeObject> objects)

@@ -940,15 +940,24 @@ namespace mhedit.GameControllers
 
             //do lightning (Force Fields)
             offset = 0;
-            foreach (LightningH lightning in maze.MazeObjects.OfType<LightningH>())
+            if ((maze.MazeObjects.OfType<LightningH>().Count() > 0) ||
+                (maze.MazeObjects.OfType<LightningV>().Count() > 0))
             {
-                offset += Write("mzlg0", lightning.ToBytes(), offset);
-            }
-            //end horizontal with 0xff
-            offset += Write("mzlg0", (byte)0xff, offset);
-            foreach (LightningV lightning in maze.MazeObjects.OfType<LightningV>())
-            {
-                offset += Write("mzlg0", lightning.ToBytes(), offset);
+                {
+                    foreach (LightningH lightning in maze.MazeObjects.OfType<LightningH>())
+                    {
+                        offset += Write("mzlg0", lightning.ToBytes(), offset);
+                    }
+                    if (maze.MazeObjects.OfType<LightningV>().Count() > 0)
+                    {
+                        //end horizontal with 0xff
+                        offset += Write("mzlg0", (byte)0xff, offset);
+                        foreach (LightningV lightning in maze.MazeObjects.OfType<LightningV>())
+                        {
+                            offset += Write("mzlg0", lightning.ToBytes(), offset);
+                        }
+                    }
+                }
             }
             //end all with 0x00
             Write("mzlg0", (byte)0, offset);
