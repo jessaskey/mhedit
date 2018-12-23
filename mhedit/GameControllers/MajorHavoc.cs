@@ -207,6 +207,25 @@ namespace mhedit.GameControllers
                     arrowValue = ReadByte(arrowBaseAddress, 0);
                 }
 
+                //build output arrows now, levels 1 -3 only.
+                if (i < 3)
+                {
+                    ushort outputArrowBaseAddress = ReadWord(0x25F9, i * 2);
+                    byte outputArrowValue = ReadByte(outputArrowBaseAddress, 0);
+
+                    while (outputArrowValue != 0x00)
+                    {
+                        ArrowOut arrow = new ArrowOut();
+                        arrow.LoadPosition(outputArrowValue);
+                        outputArrowBaseAddress++;
+                        outputArrowValue = ReadByte(outputArrowBaseAddress, 0);
+                        arrow.ArrowDirection = (Containers.MazeObjects.ArrowDirection)outputArrowValue;
+                        maze.AddObject(arrow);
+                        outputArrowBaseAddress++;
+                        outputArrowValue = ReadByte(outputArrowBaseAddress, 0);
+                    }
+                }
+
                 //maze walls
                 //static first
                 ushort wallBaseAddress = ReadWord(0x2647, i * 2);
@@ -970,10 +989,16 @@ namespace mhedit.GameControllers
             }
             Write("mzar0", (byte)0, offset);
 
-            //maze walls
-            //static first
+            //build output arrows now
             offset = 0;
-            
+            foreach (ArrowOut arrowOut in maze.MazeObjects.OfType<ArrowOut>())
+            {
+                offset += Write("mzor0", arrowOut.ToBytes(), offset);
+            }
+            Write("mzor0", (byte)0, offset);
+
+            //maze walls - static first
+            offset = 0;
             foreach (MazeWall wall in maze.MazeObjects.OfType<MazeWall>().Where(w=>!w.IsDynamicWall))
             {
                 offset += Write("mzta0", wall.ToBytes(maze), offset);

@@ -88,6 +88,7 @@
     <Compile Include="MazeEnemies\TripPad.cs" />
     <Compile Include="MazeEnemies\TripPadPyroid.cs" />
     <Compile Include="MazeFactory.cs" />
+    <Compile Include="MazeObjects\ArrowOut.cs" />
     <Compile Include="MazeObjects\Arrow.cs" />
     <Compile Include="MazeObjects\Boots.cs" />
     <Compile Include="MazeObjects\Clock.cs" />

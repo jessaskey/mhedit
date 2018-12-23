@@ -192,6 +192,22 @@ namespace mhedit.GameControllers
                     arrowValue = ReadByte(arrowBaseAddress, 0, 6);
                 }
 
+                //build Out arrows now
+                ushort outArrowBaseAddress = ReadWord(_exports["mzor"], i * 2, 6);
+                byte outArrowValue = ReadByte(outArrowBaseAddress, 0, 6);
+
+                while (outArrowValue != 0x00)
+                {
+                    ArrowOut arrow = new ArrowOut();
+                    arrow.LoadPosition(outArrowValue);
+                    outArrowBaseAddress++;
+                    outArrowValue = ReadByte(outArrowBaseAddress, 0, 6);
+                    arrow.ArrowDirection = (Containers.MazeObjects.ArrowDirection)outArrowValue;
+                    maze.AddObject(arrow);
+                    outArrowBaseAddress++;
+                    outArrowValue = ReadByte(outArrowBaseAddress, 0, 6);
+                }
+
                 //maze walls
                 //static first
                 ushort wallBaseAddress = ReadWord(_exports["mztdal"], i * 2, 6);
@@ -940,7 +956,11 @@ namespace mhedit.GameControllers
             {
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mzor"], WordToByteArray(index6Data), pointerIndex, 6);
-                //Never Defined
+                //ArrowOut data
+                foreach (ArrowOut arrow in mazeCollection.Mazes[i].MazeObjects.OfType<ArrowOut>())
+                {
+                    index6Data += WriteROM((ushort)index6Data, arrow.ToBytes(), 0, 6);
+                }
                 index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
             }
             //Trip Points
