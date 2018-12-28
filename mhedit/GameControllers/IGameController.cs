@@ -20,7 +20,7 @@ namespace mhedit.GameControllers
 
         byte ReadByte(ushort address, int offset);
 
-        MazeCollection LoadMazes(string sourceFilePath);
+        MazeCollection LoadMazes(string sourceFilePath, List<string> loadMessages);
 
         string LastError { get; }
     }

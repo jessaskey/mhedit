@@ -125,7 +125,7 @@ namespace mhedit.Containers.MazeEnemies
                 {
                     CannonMovementPause pause = (CannonMovementPause)movement;
                     command = 0xc0;
-                    command += (byte)(pause.WaitFrames & 0x3F);
+                    command += (byte)((pause.WaitFrames >> 2) & 0x3F);
                     bytes.Add(command);
                 }
                 else if (movement is CannonMovementReturn)

@@ -19,7 +19,7 @@ mclock           .EQU  $2323
 mboots           .EQU  $233f
 mpod             .EQU  $235b
 mcan             .EQU  $23fa
-mcanst           .EQU  $2cf2
+mcanst           .EQU  $2ed5
 mzsc00           .EQU  $2012
 outime           .EQU  $2362
 oxybonus         .EQU  $237e

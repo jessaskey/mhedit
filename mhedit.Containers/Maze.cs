@@ -46,8 +46,8 @@ namespace mhedit.Containers
         private decimal _zoom = 1;
         private string _mazeHint = String.Empty;
         private int _oxygenReward = 16;
-        private bool _repainted = false;   
-
+        private bool _repainted = false;
+        private List<bool> _transportabilityFlags = new List<bool>();
         private PropertyGrid _propertyGrid = null;
         private ComboBox _comboBoxObjects = null;
 
@@ -194,6 +194,14 @@ namespace mhedit.Containers
         {
             get { return _mazeDescription; }
             set { _mazeDescription = value; }
+        }
+
+        [BrowsableAttribute(true)]
+        [DescriptionAttribute("The bitflags defining which objects are able to be transported.")]
+        public List<bool> TransportabilityFlags
+        {
+            get { return _transportabilityFlags; }
+            set { _transportabilityFlags = value; }
         }
 
         [DescriptionAttribute("The structure type of the maze.")]

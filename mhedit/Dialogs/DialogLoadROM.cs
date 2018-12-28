@@ -90,8 +90,16 @@ namespace mhedit
                 {
                     controller = new MajorHavocPromisedEnd(_templatePath);
                 }
-                
-                _mazeCollection = controller.LoadMazes(textBoxROMPath.Text);
+
+                List<string> loadMessages = new List<string>();
+                _mazeCollection = controller.LoadMazes(textBoxROMPath.Text, loadMessages);
+
+            if (loadMessages.Count > 0)
+            {
+                DialogMessages dm = new DialogMessages();
+                dm.SetMessages(loadMessages);
+                dm.ShowDialog();
+            }
 
                 DialogResult = DialogResult.OK;
                 Close();

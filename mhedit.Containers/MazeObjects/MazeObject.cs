@@ -47,6 +47,7 @@ namespace mhedit.Containers
     {
         private List<string> _validationErrors = new List<string>();
         private bool _isValid = false;
+        private Guid _objectId = Guid.NewGuid();
 
 
         //protected MazeObjectType mazeObjectType = MazeObjectType.None;
@@ -65,6 +66,16 @@ namespace mhedit.Containers
         //Methods for Serialization
         public abstract byte[] ToBytes();
         public abstract byte[] ToBytes(object obj);
+
+
+        [BrowsableAttribute(false)]
+        public Guid ObjectId
+        {
+            get
+            {
+                return _objectId;
+            }
+        }
 
         [BrowsableAttribute(false)]
         public Point RenderOffset 

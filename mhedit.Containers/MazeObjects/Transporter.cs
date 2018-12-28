@@ -31,6 +31,8 @@ namespace mhedit.Containers.MazeObjects
         private Image _img;
         private BitArray _transportability = new BitArray(32, true);
         private ObjectColor _color = ObjectColor.Red;
+        private bool _isBroken = false;
+        private bool _isHidden = false;
 
         public Transporter()
         {
@@ -62,7 +64,8 @@ namespace mhedit.Containers.MazeObjects
             set { _direction = value; }
         }
 
-        [CategoryAttribute("Transportability")]
+        //This is here for backwards compatibility but it is NOT USED
+        [BrowsableAttribute(false)]
         [DescriptionAttribute("Flags setting the transportability data for moving objects in the maze.")]
         public BitArray Transportability
         {
@@ -74,6 +77,20 @@ namespace mhedit.Containers.MazeObjects
         public override int MaxObjects
         {
             get { return _MAXOBJECTS; }
+        }
+
+        [DescriptionAttribute("Marks if the transporter is shown as 'Broken' (only for Promised End")]
+        public bool IsBroken
+        {
+            get { return _isBroken; }
+            set { _isBroken = value; }
+        }
+
+        [DescriptionAttribute("Marks if the transporter is invisible (only for Promised End")]
+        public bool IsHidden
+        {
+            get { return _isHidden; }
+            set { _isHidden = value; }
         }
 
         [DescriptionAttribute("The color of the door. Doors can only be opened by keys of the same color.")]
@@ -89,6 +106,7 @@ namespace mhedit.Containers.MazeObjects
             get { return new Point(_SNAP_X, _SNAP_Y); }
         }
 
+
         [BrowsableAttribute(false)]
         public override byte[] ToBytes()
         {
@@ -98,6 +116,14 @@ namespace mhedit.Containers.MazeObjects
             if (_direction == TransporterDirection.Right)
             {
                 colorByte += 0x10;
+            }
+            if (_isBroken)
+            {
+                colorByte += 0x40;
+            }
+            if (_isHidden)
+            {
+                colorByte += 0x80;
             }
             bytes.Add(colorByte);
             bytes.AddRange(Context.PointToByteArrayPacked(new Point(_position.X, _position.Y + 64)));

@@ -116,6 +116,12 @@
     <Compile Include="Dialogs\DialogLoadROM.Designer.cs">
       <DependentUpon>DialogLoadROM.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\DialogMessages.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DialogMessages.Designer.cs">
+      <DependentUpon>DialogMessages.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\DialogMHPLogin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -160,6 +166,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\DialogLoadROM.resx">
       <DependentUpon>DialogLoadROM.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\DialogMessages.resx">
+      <DependentUpon>DialogMessages.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\DialogMHPLogin.resx">
       <DependentUpon>DialogMHPLogin.cs</DependentUpon>

@@ -81,7 +81,7 @@ namespace mhedit.GameControllers
             }
         }
 
-        public MazeCollection LoadMazes(string sourceROMFilePath)
+        public MazeCollection LoadMazes(string sourceROMFilePath, List<string> loadMessages)
         {
             
             MazeCollection mazeCollection = new MazeCollection("Production Mazes");
@@ -396,12 +396,30 @@ namespace mhedit.GameControllers
                     {
                         transporter.Direction = TransporterDirection.Right;
                     }
-                    transporter.Color = (ObjectColor)(colorValue & 0x07);
+                    transporter.Color = (ObjectColor)(colorValue & 0x0F);
                     maze.AddObject(transporter);
                     transporterBaseAddress++;
                     colorValue = ReadByte(transporterBaseAddress, 0);
                 }
-
+                transporterBaseAddress++;
+                //transportability rules follow for the entire level...
+                int transportabilityValue = ReadByte(transporterBaseAddress, 0);
+                List<bool> transportabilityData = new List<bool>();
+                while (transportabilityValue != 0xEE)
+                {
+                    for (int b = 0; b < 8; b++)
+                    {
+                        transportabilityValue = transportabilityValue << 1;
+                        transportabilityData.Add((transportabilityValue & 0x100) != 0);
+                    }
+                    transporterBaseAddress++;
+                    transportabilityValue = ReadByte(transporterBaseAddress, 0);
+                }
+                if (transportabilityData.Count > 0)
+                {
+                    maze.TransportabilityFlags = transportabilityData;
+                }
+             
                 //Laser Cannon
                 // Ok, So looking at why the cannons are shifted down on level 16.
                 // The issue is that the cannon goes up and down. The key is where
