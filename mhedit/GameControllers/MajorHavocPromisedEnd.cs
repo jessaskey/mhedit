@@ -138,6 +138,9 @@ namespace mhedit.GameControllers
                     oxoidValue = ReadByte(oxygenBaseAddress, 0, 6);
                 }
 
+                //Oxygen reward
+                maze.OxygenReward = ReadByte(_exports["oxybonus"], i, 6);
+
                 //do lightning (Force Fields)
                 ushort lightningBaseAddress = ReadWord(_exports["mzlg"], i * 2, 6);
 
@@ -1098,7 +1101,7 @@ namespace mhedit.GameControllers
             }
             //now build Indexes and Pointers
             pointerIndex = 0;
-            int cannonIndexValue = 0;
+            int cannonIndexValue = 0x02;
             //empty data word for levels with no Cannons, pointerIndex = 0
             int cannonPointerEmpty = index6Data;
             index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00, 0x00 }, 0, 6);
@@ -1110,14 +1113,14 @@ namespace mhedit.GameControllers
                     //set empty pointers and index
                     //index6Data += WriteROM((ushort)index6Data, WordToByteArray(cannonPointerEmpty), 0, 6); 
                     pointerIndex += WriteROM((ushort)_exports["mcan"], new byte[] { 0x00 }, pointerIndex, 6);
-                    cannonIndexValue += 2;
+                    //cannonIndexValue += 2;
                 }
                 else
                 {
                     //set this ponter index value and increment
                     pointerIndex += WriteROM((ushort)_exports["mcan"], new byte[] { (byte)cannonIndexValue }, pointerIndex, 6);
-                    cannonIndexValue += 2;
-                    foreach(Cannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>())
+                    cannonIndexValue += (mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>().Count() * 2) + 2;
+                    foreach (Cannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>())
                     {
                         index6Data += WriteROM((ushort)index6Data, WordToByteArray(cannonDataPointers[cannon.ObjectId]), 0, 6);
                     }
@@ -1277,12 +1280,13 @@ namespace mhedit.GameControllers
             for (int i = 0; i < numMazes; i++)
             {
                 //Pod Data
-                byte reactorTimer = 0;
+                int reactorTimer = 0;
+                reactoid = mazeCollection.Mazes[i].MazeObjects.OfType<Reactoid>().FirstOrDefault();
                 if (reactoid != null)
                 {
-                    reactorTimer = (byte)reactoid.Timer;
+                    reactorTimer = ToDecimal(reactoid.Timer);
                 }
-                outAddressBase += WriteROM((ushort)outAddressBase, new byte[] { reactorTimer }, 0, 6);
+                outAddressBase += WriteROM((ushort)outAddressBase, new byte[] { (byte)reactorTimer }, 0, 6);
             }
             //OxygenReward
             int oxyAddressBase = _exports["oxybonus"];
