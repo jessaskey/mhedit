@@ -331,10 +331,13 @@ namespace mhedit.GameControllers
                 {
                     ushort podBaseAddress = _exports["mpod"];
                     byte podValue = ReadByte(podBaseAddress, i >> 2, 6);
-
                     if (podValue > 0)
                     {
                         EscapePod pod = new EscapePod();
+                        if ((podValue & 0x02) > 0)
+                        {
+                            pod.Option = EscapePodOption.Required;
+                        }
                         maze.AddObject(pod);
                     }
                 }
@@ -529,9 +532,14 @@ namespace mhedit.GameControllers
                 if (handData != 0)
                 {
                     handBaseAddress++;
-                    handData = ReadByte(handBaseAddress, 0, 6);
+                    //position is long format, but with no lsb
+                    byte[] position = new byte[4];
+                    position[0] = 0;        //X LSB
+                    position[1] = handData; //X MSB
+                    position[2] = 0;        //Y LSB
+                    position[3] = ReadByte(handBaseAddress, 0, 6); //Y MSB
                     Hand hand = new Hand();
-                    hand.LoadPosition(handData);
+                    hand.LoadPosition(position);
                     maze.AddObject(hand);
                 }
                 mazeCollection.AddMaze(maze);
@@ -1202,40 +1210,51 @@ namespace mhedit.GameControllers
                 //Write Table Pointer
                 pointerIndex += WriteROM((ushort)_exports["mhand"], WordToByteArray(index6Data), pointerIndex, 6);
                 //Hand Data
-                foreach (Hand hand in mazeCollection.Mazes[i].MazeObjects.OfType<Hand>())
+                Hand hand = mazeCollection.Mazes[i].MazeObjects.OfType<Hand>().FirstOrDefault();
+                if (hand != null)
                 {
-                    if (reactoid != null)
+                    Reactoid r = mazeCollection.Mazes[i].MazeObjects.OfType<Reactoid>().FirstOrDefault();
+                    if (r != null)
                     {
-                        index6Data += WriteROM((ushort)index6Data, hand.ToBytes(reactoid.Position), 0, 6);
+                        index6Data += WriteROM((ushort)index6Data, hand.ToBytes(r.Position), 0, 6);
                     }
                 }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                else
+                {
+                    index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                }
             }
             //Clock
-            pointerIndex = 0;
+            int clockIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["mclock"], WordToByteArray(index6Data), pointerIndex, 6);
+                //pointerIndex += WriteROM((ushort)_exports["mclock"], WordToByteArray(index6Data), pointerIndex, 6);
                 //Clock Data
-                foreach (Clock clock in mazeCollection.Mazes[i].MazeObjects.OfType<Clock>())
+                Clock clock = mazeCollection.Mazes[i].MazeObjects.OfType<Clock>().FirstOrDefault();
+                if (clock != null)
                 {
-                    index6Data += WriteROM((ushort)index6Data, clock.ToBytes(), 0, 6);
+                    clockIndex += WriteROM((ushort)_exports["mclock"], clock.ToBytes(), clockIndex, 6);
                 }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                else
+                {
+                    clockIndex += WriteROM((ushort)_exports["mclock"], new byte[] { 0x00 }, clockIndex, 6);
+                }
             }
             //Boots
-            pointerIndex = 0;
+            int bootsIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
-                //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["mboots"], WordToByteArray(index6Data), pointerIndex, 6);
+                Boots boots = mazeCollection.Mazes[i].MazeObjects.OfType<Boots>().FirstOrDefault();
                 //Boots Data
-                foreach (Boots boots in mazeCollection.Mazes[i].MazeObjects.OfType<Boots>())
+                if (boots != null)
                 {
-                    index6Data += WriteROM((ushort)index6Data, boots.ToBytes(), 0, 6);
+                    bootsIndex += WriteROM((ushort)_exports["mboots"], boots.ToBytes(), bootsIndex, 6);
                 }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                else
+                {
+                    bootsIndex += WriteROM((ushort)_exports["mboots"], new byte[] { 0x00 }, bootsIndex, 6);
+                }
             }
 
             int mpodAddressBase = _exports["mpod"];
@@ -1248,7 +1267,10 @@ namespace mhedit.GameControllers
                 {
                     mpodAddressBase += WriteROM((ushort)mpodAddressBase, pod.ToBytes(), 0, 6);
                 }
-                mpodAddressBase += WriteROM((ushort)mpodAddressBase, new byte[] { 0x00 }, 0, 6);
+                else
+                {
+                    mpodAddressBase += WriteROM((ushort)mpodAddressBase, new byte[] { 0x00 }, 0, 6);
+                }
             }
             //Out Time
             int outAddressBase = _exports["outime"];

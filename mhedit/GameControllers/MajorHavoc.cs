@@ -356,10 +356,13 @@ namespace mhedit.GameControllers
                 {
                     ushort podBaseAddress = 0x32FF;
                     byte podValue = ReadByte(podBaseAddress, i >> 2);
-
                     if (podValue > 0)
                     {
                         EscapePod pod = new EscapePod();
+                        if ((podValue & 0x02) > 0)
+                        {
+                            pod.Option = EscapePodOption.Required;
+                        }
                         maze.AddObject(pod);
                     }
                 }
@@ -561,21 +564,19 @@ namespace mhedit.GameControllers
                 // Level 7 and up.
                 if (i > 5)
                 {
-                    byte[] longBytes = new byte[4];
-
-                    //longBytes[ 0 ] = 0;
-                    //longBytes[ 2 ] = 0;
-
                     ushort handBaseAddress = ReadWord((ushort)(0x2721 + ((i - 6) * 2)), 0);
-                    longBytes[1] = ReadByte(handBaseAddress, 0);
-                    if (longBytes[1] != 0)
+                    byte handXData = ReadByte(handBaseAddress, 0);
+                    if (handXData != 0)
                     {
                         handBaseAddress++;
-                        longBytes[3] = ReadByte(handBaseAddress, 0);
-
+                        //position is long format, but with no lsb
+                        byte[] position = new byte[4];
+                        position[0] = 0;        //X LSB
+                        position[1] = handXData; //X MSB
+                        position[2] = 0;        //Y LSB
+                        position[3] = ReadByte(handBaseAddress, 0); //Y MSB
                         Hand hand = new Hand();
-
-                        hand.LoadPosition(longBytes);
+                        hand.LoadPosition(position);
                         maze.AddObject(hand);
                     }
                 }
@@ -1142,9 +1143,14 @@ namespace mhedit.GameControllers
 
             //de hand finally
             offset = 0;
-            if (maze.MazeObjects.OfType<Hand>().First() != null)
+            Hand hand = maze.MazeObjects.OfType<Hand>().FirstOrDefault();
+            if (hand != null)
             {
-                offset += Write("hand0", maze.MazeObjects.OfType<Hand>().First().ToBytes(), offset);
+                offset += Write("hand0", hand.ToBytes(), offset);
+            }
+            else
+            {
+                offset += Write("hand0", new byte[] { 0x00 }, offset);
             }
 
             success = true;

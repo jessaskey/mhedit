@@ -23,8 +23,9 @@ namespace mhedit.Containers.MazeObjects
         public Hand()
         {
             LoadDefaultImage();
-            renderOffset.X = -8;
-            renderOffset.Y = 24;
+            //these are both by 'feel' nothing defined
+            renderOffset.X = 10;
+            renderOffset.Y = 10;
             staticLsb = new Point(0x3c, 0x01);
         }
 
@@ -69,10 +70,12 @@ namespace mhedit.Containers.MazeObjects
                 Point reactoidPosition = (Point)obj;
                 byte[] handLocation = Context.PointToByteArrayShort(_position);
                 bytes.AddRange(handLocation);
+                //Context.PointToByteArrayLong(Context.ConvertPixelsToVector(_position))
                 byte[] reactoidLocation = Context.PointToByteArrayShort(reactoidPosition);
-                int xAccordians = Math.Abs(reactoidLocation[0] - handLocation[0]);
-                int yAccordians = Math.Abs(handLocation[1] - reactoidLocation[1]);
-                bytes.AddRange(new byte[] { (byte)((xAccordians * 2) + 1), (byte)(yAccordians * 2), 0x3F, 0x0B, 0x1F, 0x05, 0x03 });
+                byte[] reactoidLocation2 = Context.PointToByteArrayLong(Context.ConvertPixelsToVector(reactoidPosition));
+                int xAccordians = reactoidLocation[0] - handLocation[0] + 1;
+                int yAccordians = (handLocation[1] - reactoidLocation[1]) * 2 ; //double Y-accordians
+                bytes.AddRange(new byte[] { (byte)xAccordians, (byte)yAccordians, 0x3F, 0x0B, 0x1F, 0x05, 0x03 });
             }
             else
             {
