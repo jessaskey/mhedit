@@ -45,6 +45,7 @@ namespace mhedit.Containers
         private int _mazeStampsY = 0;
         private decimal _zoom = 1;
         private string _mazeHint = String.Empty;
+        private string _mazeHint2 = String.Empty;
         private int _oxygenReward = 16;
         private bool _repainted = false;
         private List<bool> _transportabilityFlags = new List<bool>();
@@ -64,7 +65,8 @@ namespace mhedit.Containers
           "Name",
           "MazeType",
           "FileName",
-          "Hint"
+          "Hint",
+          "Hint2"
         }; 
 
         #endregion
@@ -189,6 +191,14 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(true)]
+        [DescriptionAttribute("The second line of text shown at the top of the screen when entering the maze. Valid characters are ' 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:'")]
+        public string Hint2
+        {
+            get { return _mazeHint2; }
+            set { _mazeHint2 = value; }
+        }
+
+        [BrowsableAttribute(true)]
         [DescriptionAttribute("A description of gameplay and strategy for this maze.")]
         public string Description
         {
@@ -250,6 +260,7 @@ namespace mhedit.Containers
             try
             {
                 _mazeHint = (string)info.GetValue("Hint", typeof(string));
+                _mazeHint2 = (string)info.GetValue("Hint2", typeof(string));
             }
             catch { };
             _fileName = (string)info.GetValue("FileName", typeof(string));
@@ -270,6 +281,7 @@ namespace mhedit.Containers
             info.AddValue("Name", _mazeName);
             info.AddValue("Description", _mazeDescription);
             info.AddValue("Hint", _mazeHint);
+            info.AddValue("Hint2", _mazeHint2);
             info.AddValue("FileName", _fileName);
             info.AddValue("Width", base.Width);
             info.AddValue("Height", base.Height);

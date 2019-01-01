@@ -99,6 +99,14 @@
             the contents of this method with the code editor.
             </summary>
         </member>
+        <member name="M:mhedit.GameControllers.MajorHavocPromisedEnd.GetTextPosition(System.String)">
+            <summary>
+            Returns a negative byte offset from center screen to get text centered
+            Assumes letters are 6 units wide
+            </summary>
+            <param name="text">The text to use for calculations</param>
+            <returns>Signed byte value to center align text</returns>
+        </member>
         <member name="T:mhedit.GameProfile">
             <summary>
             Ghost of the XSD GameProfile class, this will go away when we merge code, but for now, I 

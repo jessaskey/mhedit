@@ -82,9 +82,17 @@ namespace mhedit.GameControllers
 
                 Maze maze = new Maze((MazeType)mazeType, "Level " + (i + 1).ToString());
 
-                //hint text - only first 12 mazes tho
-                byte messageIndex = ReadByte(_exports["mazehint"], i, 6);
-                maze.Hint = GetMessage(messageIndex);
+                //hint text
+                byte hintIndex = ReadByte(_exports["mazehints"], i * 2, 7);
+                byte hintIndex2 = ReadByte(_exports["mazehints"], (i * 2) + 1, 7);
+                if (hintIndex != 0xff)
+                {
+                    maze.Hint = GetMessage(hintIndex);
+                }
+                if (hintIndex2 != 0xff)
+                {
+                    maze.Hint2 = GetMessage(hintIndex2);
+                }
                 //build reactor
                 ushort mazeInitIndex = ReadWord(_exports["mzinit"], i * 2, 6);
                 Reactoid reactor = new Reactoid();
@@ -96,7 +104,7 @@ namespace mhedit.GameControllers
 
                 //pyroids
                 byte firstValue = ReadByte(mazeInitIndex, 0, 7);
-                while (firstValue != 0xff)
+                while (firstValue != 0xff && firstValue != 0xfe)
                 {
                     Pyroid pyroid = new Pyroid();
                     pyroid.LoadPosition(ReadBytes(mazeInitIndex, 4, 7));
@@ -104,23 +112,47 @@ namespace mhedit.GameControllers
                     mazeInitIndex += (byte)LoadIncrementingVelocity(pyroid.Velocity, pyroid.IncrementingVelocity, mazeInitIndex);
                     maze.AddObject(pyroid);
                     firstValue = ReadByte(mazeInitIndex, 0, 7);
-
-                    if (firstValue == 0xfe)
-                    {
-                        mazeInitIndex++;
-                        //perkoids now...
-                        break;
-                    }
+                    //if (firstValue == 0xfe)
+                    //{
+                    //    mazeInitIndex++;
+                    //    //perkoids now...
+                    //    break;
+                    //}
+                }
+                if (firstValue == 0xfe)
+                {
+                    mazeInitIndex++;
+                    //signals pyroids were done/skipped, get next value
+                    firstValue = ReadByte(mazeInitIndex, 0, 7);
                 }
 
                 // Perkoids 
-                while (firstValue != 0xff)
+                while (firstValue != 0xff && firstValue != 0xfe)
                 {
                     Perkoid perkoid = new Perkoid();
                     perkoid.LoadPosition(ReadBytes(mazeInitIndex, 4, 7));
                     mazeInitIndex += 4;
                     mazeInitIndex += (byte)LoadIncrementingVelocity(perkoid.Velocity, perkoid.IncrementingVelocity, mazeInitIndex);
                     maze.AddObject(perkoid);
+                    firstValue = ReadByte(mazeInitIndex, 0, 7);
+                }
+                if (firstValue == 0xfe)
+                {
+                    mazeInitIndex++;
+                    //signals perkoids were done/skipped, get next value
+                    firstValue = ReadByte(mazeInitIndex, 0, 7);
+                }
+
+                while (firstValue != 0xff)
+                {
+                    Maxoid maxoid = new Maxoid();
+                    maxoid.LoadPosition(ReadBytes(mazeInitIndex, 4, 7));
+                    mazeInitIndex += 4;
+                    byte[] maxData = ReadBytes(mazeInitIndex, 1, 7);
+                    mazeInitIndex++;
+                    maxoid.TriggerDistance = (maxData[0] & 0x0f);
+                    maxoid.Speed = (Maxoid.MaxSpeed)((maxData[0] >> 4) & 0x3);
+                    maze.AddObject(maxoid);
                     firstValue = ReadByte(mazeInitIndex, 0, 7);
                 }
 
@@ -782,17 +814,17 @@ namespace mhedit.GameControllers
         //returns a text value for the given message index.
         public string GetMessage(byte index)
         {
-            ushort messageTableBase = 0xe48b;
-            ushort messageBase = ReadWord(messageTableBase, index, 7);
+            byte messageTableLow = ReadByte(_exports["zmessptrl"], index, 7);
+            byte messageTableHigh = ReadByte(_exports["zmessptrh"], index, 7);
+            int messagePointer = (messageTableHigh << 8) + messageTableLow;
             //get real index 
-            return GetText(messageBase);
+            return GetText((ushort)messagePointer);
         }
 
         private string GetText(ushort textBase)
         {
             StringBuilder sb = new StringBuilder();
-            //start @ 1 because first byte is color?
-            int index = 1;
+            int index = 0;
             byte charValue = ReadByte(textBase, index, 7);
             while (index < 255)
             {
@@ -831,6 +863,39 @@ namespace mhedit.GameControllers
             throw new Exception("Major Havoc - The Promised End does not support serializing of single mazes.");
         }
 
+        //public byte SerializeHint(int level, string hint, ref int messageIndexer, ref int bytePointer)
+        //{
+        //    byte noMessageIndex = 0xff;
+        //    //Write Table Pointer
+        //    if (!String.IsNullOrEmpty(hint))
+        //    {
+        //        bytePointer += WriteROM((ushort)bytePointer, GetBytesFromString(hint), 0, 7);
+        //    }
+        //    pointerIndex += WriteROM((ushort)_exports["mazehint"], WordToByteArray(index7Data), pointerIndex, 6);
+        //    //Maze Data
+        //    if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint.Replace(" ", "")))
+        //    {
+        //        message = mazeCollection.Mazes[i].Hint;
+        //        pointerIndex += WriteROM((ushort)_exports["mazehint"], GetBytesFromString(message), pointerIndex, 7);
+        //    }
+        //    index7Data += WriteROM((ushort)index7Data, GetBytesFromString(message), 0, 7);
+
+
+        //    return noMessageIndex;
+        //}
+        /// <summary>
+        /// Returns a negative byte offset from center screen to get text centered
+        /// Assumes letters are 6 units wide
+        /// </summary>
+        /// <param name="text">The text to use for calculations</param>
+        /// <returns>Signed byte value to center align text</returns>
+        public byte GetTextPosition(string text)
+        {
+            int len = text.Length * 6;
+            byte offset = (byte)((-len / 2) & 0xFF);
+            return offset;
+        }
+
         public bool SerializeObjects(MazeCollection mazeCollection, Maze maze)
         {
             bool success = false;
@@ -849,8 +914,51 @@ namespace mhedit.GameControllers
             // 2. Verify no strange boundaries were crossed
             // 3. Update the CSUM's on each ROM that was written.
 
-            int index7Data = _exports["mzsc00"];
-            Reactoid reactoid = null;
+            int index7Data = _exports["messagesbase"];
+            //Maze Hints
+            byte messageIndexer = 0;
+            for (int i = 0; i < numMazes; i++)
+            {
+                if (mazeCollection.Mazes[i] != null)
+                {
+                    //Write Table Pointer - First Hint
+                    if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint))
+                    {
+                        //update pointers and locations
+                        WriteROM((ushort)_exports["zmessptrl"], new byte[] { (byte)(index7Data & 0xFF) }, messageIndexer, 7);
+                        WriteROM((ushort)_exports["zmessptrh"], new byte[] { (byte)((index7Data >> 8) & 0xFF) }, messageIndexer, 7);
+                        WriteROM((ushort)_exports["zmessypos"], new byte[] { 0x48 }, messageIndexer, 7);
+                        WriteROM((ushort)_exports["zmessxpos"], new byte[] { GetTextPosition(mazeCollection.Mazes[i].Hint) }, messageIndexer, 7);
+                        //write the data stream
+                        index7Data += WriteROM((ushort)index7Data, GetBytesFromString(mazeCollection.Mazes[i].Hint), 0, 7);
+                        //finally, book the index and increment
+                        WriteROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2) + 1, 7);
+                        messageIndexer++;
+                    }
+                    else
+                    {
+                        WriteROM((ushort)_exports["mazehints"], new byte[] { 0xff }, i * 2, 7);
+                    }
+                    //Write Table Pointer - Second Hint
+                    if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint2))
+                    {
+                        //update pointers and locations
+                        WriteROM((ushort)_exports["zmessptrl"], new byte[] { (byte)(index7Data & 0xFF) }, messageIndexer, 7);
+                        WriteROM((ushort)_exports["zmessptrh"], new byte[] { (byte)((index7Data >> 8) & 0xFF) }, messageIndexer, 7);
+                        WriteROM((ushort)_exports["zmessypos"], new byte[] { 0x50 }, messageIndexer, 7);
+                        WriteROM((ushort)_exports["zmessxpos"], new byte[] { GetTextPosition(mazeCollection.Mazes[i].Hint2) }, messageIndexer, 7);
+                        //write the data stream
+                        index7Data += WriteROM((ushort)index7Data, GetBytesFromString(mazeCollection.Mazes[i].Hint2), 0, 7);
+                        //finally, book the index and increment
+                        WriteROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2)+1, 7);
+                        messageIndexer++;
+                    }
+                    else
+                    {
+                        WriteROM((ushort)_exports["mazehints"], new byte[] { 0xff }, (i * 2)+1, 7);
+                    }
+                }
+            }
 
             int pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
@@ -861,7 +969,7 @@ namespace mhedit.GameControllers
                     //Write Table Pointer
                     pointerIndex += WriteROM((ushort)_exports["mzinit"], WordToByteArray(index7Data), pointerIndex, 6);
                     //Reactoid
-                    reactoid = mazeCollection.Mazes[i].MazeObjects.OfType<Reactoid>().FirstOrDefault();
+                    Reactoid reactoid = mazeCollection.Mazes[i].MazeObjects.OfType<Reactoid>().FirstOrDefault();
                     if (reactoid != null)
                     {
                         index7Data += WriteROM((ushort)index7Data, reactoid.ToBytes(reactoid.Position), 0, 7);
@@ -881,6 +989,11 @@ namespace mhedit.GameControllers
                         //Maxoids
                         if (mazeCollection.Mazes[i].MazeObjects.OfType<Maxoid>().Count() > 0)
                         {
+                            //make sure we did perkoids already
+                            if (mazeCollection.Mazes[i].MazeObjects.OfType<Perkoid>().Count() == 0)
+                            {
+                                index7Data += WriteROM((ushort)index7Data, new byte[] { 0xfe }, 0, 7);
+                            }
                             index7Data += WriteROM((ushort)index7Data, new byte[] { 0xfe }, 0, 7);
                             foreach (Maxoid max in mazeCollection.Mazes[i].MazeObjects.OfType<Maxoid>())
                             {
@@ -891,24 +1004,6 @@ namespace mhedit.GameControllers
                 }
                 //Done Flag
                 index7Data += WriteROM((ushort)index7Data, new byte[] { 0xff }, 0, 7);
-            }
-
-            //Maze Hints
-            pointerIndex = 0;
-            for (int i = 0; i < numMazes; i++)
-            {
-                string message = " ";   //default to a single blank space
-                if (mazeCollection.Mazes[i] != null)
-                {
-                    //Write Table Pointer
-                    pointerIndex += WriteROM((ushort)_exports["mazehint"], WordToByteArray(index7Data), pointerIndex, 6);
-                    //Maze Data
-                    if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint.Replace(" ", "")))
-                    {
-                        message = mazeCollection.Mazes[i].Hint;
-                    }
-                }
-                index7Data += WriteROM((ushort)index7Data, GetBytesFromString(message), 0, 7);
             }
 
             //********************************
@@ -1281,7 +1376,7 @@ namespace mhedit.GameControllers
             {
                 //Pod Data
                 int reactorTimer = 0;
-                reactoid = mazeCollection.Mazes[i].MazeObjects.OfType<Reactoid>().FirstOrDefault();
+                Reactoid reactoid = mazeCollection.Mazes[i].MazeObjects.OfType<Reactoid>().FirstOrDefault();
                 if (reactoid != null)
                 {
                     reactorTimer = ToDecimal(reactoid.Timer);
