@@ -767,11 +767,20 @@ namespace mhedit.GameControllers
             WriteROM((ushort)(0x2000 + length - 1), new byte[] { finalCsum }, 0, page);
         }
 
+        private void MarkROM(int page)
+        {
+            byte[] currentMajorVersion = ReadROM(0x2002, 0, 1, page);
+            WriteROM(0x2002, new byte[] { (byte)(currentMajorVersion[0] | 0xE0) }, 0, page);
+        }
+
         public bool WriteFiles(string mamePath)
         {
             //fix csums...
             WriteChecksum(0x4000, 0x2000, 6, 0x08);
             WriteChecksum(0x6000, 0x2000, 7, 0x09);
+
+            MarkROM(6);
+            MarkROM(7);
 
             string page67FileNameMame = mamePath + _page2367ROM;
     
