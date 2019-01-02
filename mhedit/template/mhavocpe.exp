@@ -21,7 +21,7 @@ mcan             .EQU  $23de
 mcanst           .EQU  $2eb9
 mazehints        .EQU  $2012
 messagesbase     .EQU  $210f
-mzsc00           .EQU  $241c
+mzsc00           .EQU  $2410
 outime           .EQU  $2346
 oxybonus         .EQU  $2362
 trtbll           .EQU  $237e

@@ -101,7 +101,7 @@ namespace mhedit.Containers.MazeEnemies
                 }
                 else
                 {
-                    bytes.Add((byte)(0x70 | _incrementingVelocity.X));
+                    bytes.Add((byte)(0x70 | (_incrementingVelocity.X & 0xF)));
                 }
             }
             bytes.Add((byte)_velocity.X);
@@ -114,7 +114,7 @@ namespace mhedit.Containers.MazeEnemies
                 }
                 else
                 {
-                    bytes.Add((byte)(0x70 | _incrementingVelocity.Y));
+                    bytes.Add((byte)(0x70 | (_incrementingVelocity.Y & 0xF)));
                 }
             }
             bytes.Add((byte)_velocity.Y);

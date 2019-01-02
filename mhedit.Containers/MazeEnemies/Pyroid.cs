@@ -99,13 +99,27 @@ namespace mhedit.Containers.MazeEnemies
 
             if (_incrementingVelocity.X != 0)
             {
-                bytes.Add((byte)_incrementingVelocity.X);
+                if (_incrementingVelocity.X > 0)
+                {
+                    bytes.Add((byte)(0x80 | _incrementingVelocity.X));
+                }
+                else
+                {
+                    bytes.Add((byte)(0x70 | (_incrementingVelocity.X & 0xF)));
+                }
             }
             bytes.Add((byte)_velocity.X);
 
             if (_incrementingVelocity.Y != 0)
             {
-                bytes.Add((byte)_incrementingVelocity.Y);
+                if (_incrementingVelocity.Y > 0)
+                {
+                    bytes.Add((byte)(0x80 | _incrementingVelocity.Y));
+                }
+                else
+                {
+                    bytes.Add((byte)(0x70 | (_incrementingVelocity.Y & 0xF)));
+                }
             }
             bytes.Add((byte)_velocity.Y);
 

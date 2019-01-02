@@ -755,23 +755,26 @@ namespace mhedit.GameControllers
 
 
 
+        private void WriteChecksum(int lowerBounds, int length, int page, byte csum)
+        {
+            byte calculatedCsum = 0;
+            for (int i = lowerBounds; i < (lowerBounds + length - 1); i++)
+            {
+                calculatedCsum += _page2367[i];
+            }
+            //ROM needs to equal csum when it is all said and done
+            byte finalCsum = (byte)((csum - calculatedCsum) & 0xff);
+            WriteROM((ushort)(0x2000 + length - 1), new byte[] { finalCsum }, 0, page);
+        }
+
         public bool WriteFiles(string mamePath)
         {
-
             //fix csums...
-            //Alpha High first
-            //int csumAlphaHigh = 0;
-            //foreach (byte b in _alphaHigh)
-            //{
-            //    csumAlphaHigh += b;
-            //}
-            //Write(ROMAddress.cksumah, 0x00, 0);
+            WriteChecksum(0x4000, 0x2000, 6, 0x08);
+            WriteChecksum(0x6000, 0x2000, 7, 0x09);
 
-            //Crc32 crc32 = new Crc32();
-            //String hash = String.Empty;
-            //foreach (byte b in crc32.ComputeHash(_alphaHigh)) hash += b.ToString("x2").ToLower();
             string page67FileNameMame = mamePath + _page2367ROM;
-
+    
             //save each
             File.WriteAllBytes(page67FileNameMame, _page2367);
 
@@ -789,7 +792,6 @@ namespace mhedit.GameControllers
             {
                 File.Copy(_templatePath + rom, mamePath + rom, true);
             }
-
             return true;
         }
 
@@ -809,7 +811,6 @@ namespace mhedit.GameControllers
             ushort wordH = bytes[1];
             return (ushort)(((ushort)wordH << 8) + (ushort)bytes[0]);
         }
-
 
         //returns a text value for the given message index.
         public string GetMessage(byte index)
@@ -862,27 +863,7 @@ namespace mhedit.GameControllers
         {
             throw new Exception("Major Havoc - The Promised End does not support serializing of single mazes.");
         }
-
-        //public byte SerializeHint(int level, string hint, ref int messageIndexer, ref int bytePointer)
-        //{
-        //    byte noMessageIndex = 0xff;
-        //    //Write Table Pointer
-        //    if (!String.IsNullOrEmpty(hint))
-        //    {
-        //        bytePointer += WriteROM((ushort)bytePointer, GetBytesFromString(hint), 0, 7);
-        //    }
-        //    pointerIndex += WriteROM((ushort)_exports["mazehint"], WordToByteArray(index7Data), pointerIndex, 6);
-        //    //Maze Data
-        //    if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint.Replace(" ", "")))
-        //    {
-        //        message = mazeCollection.Mazes[i].Hint;
-        //        pointerIndex += WriteROM((ushort)_exports["mazehint"], GetBytesFromString(message), pointerIndex, 7);
-        //    }
-        //    index7Data += WriteROM((ushort)index7Data, GetBytesFromString(message), 0, 7);
-
-
-        //    return noMessageIndex;
-        //}
+        
         /// <summary>
         /// Returns a negative byte offset from center screen to get text centered
         /// Assumes letters are 6 units wide
