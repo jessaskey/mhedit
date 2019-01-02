@@ -1013,10 +1013,11 @@ namespace mhedit.GameControllers
                 {
                     //Write Table Pointer
                     pointerIndex += WriteROM((ushort)_exports["mzdc"], WordToByteArray(index6Data), pointerIndex, 6);
-                    index6Data += WriteROM((ushort)index6Data, oxoidBytes.ToArray(), 0, 6);
-                    index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
                     //save to dictionary
                     existingOxoids.Add(byteHash, (ushort)index6Data);
+                    index6Data += WriteROM((ushort)index6Data, oxoidBytes.ToArray(), 0, 6);
+                    index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                    
                 }
             }
             //Lightning
@@ -1063,12 +1064,11 @@ namespace mhedit.GameControllers
             int blankOutArrowsPointer = index6Data;
             pointerIndex += WriteROM((ushort)_exports["mzor"], WordToByteArray(index6Data), pointerIndex, 6);
             index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
-
             for (int i = 0; i < numMazes; i++)
             {
                 if (mazeCollection.Mazes[i].MazeObjects.OfType<ArrowOut>().Count() > 0) {
                     //Write Table Pointer
-                    pointerIndex += WriteROM((ushort)_exports["mzor"], WordToByteArray(index6Data), pointerIndex, 6);
+                    pointerIndex += WriteROM((ushort)_exports["mzor"], WordToByteArray(index6Data), (i * 2), 6);
                     //ArrowOut data
                     foreach (ArrowOut arrow in mazeCollection.Mazes[i].MazeObjects.OfType<ArrowOut>())
                     {
@@ -1079,7 +1079,7 @@ namespace mhedit.GameControllers
                 else
                 {
                     //no out arrows, point to the blank entry defined at the top
-                    pointerIndex += WriteROM((ushort)_exports["mzor"], WordToByteArray(blankOutArrowsPointer), pointerIndex, 6);
+                    pointerIndex += WriteROM((ushort)_exports["mzor"], WordToByteArray(blankOutArrowsPointer), (i * 2), 6);
                 }
             }
             //Trip Points
