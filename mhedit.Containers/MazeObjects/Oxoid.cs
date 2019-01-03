@@ -77,7 +77,7 @@ namespace mhedit.Containers.MazeObjects
         [BrowsableAttribute(false)]
         public override byte[] ToBytes()
         {
-            return Context.PointToByteArrayPacked(_position);
+            return DataConverter.PointToByteArrayPacked(_position);
         }
 
         [BrowsableAttribute(false)]

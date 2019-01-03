@@ -13,6 +13,7 @@ using System.Text;
 using System.Windows.Forms;
 using Silver.UI;
 using mhedit.Containers.MazeObjects;
+using mhedit.Containers.MazeEnemies;
 
 namespace mhedit.Containers
 {
@@ -1262,6 +1263,7 @@ namespace mhedit.Containers
             this.ResumeLayout(false);
 
         }
+
 
     }
 }

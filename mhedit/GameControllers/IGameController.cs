@@ -16,7 +16,7 @@ namespace mhedit.GameControllers
 
         bool WriteFiles(string mamePath);
 
-        bool SerializeObjects(MazeCollection collection, Maze maze);
+        bool EncodeObjects(MazeCollection collection, Maze maze);
 
         byte ReadByte(ushort address, int offset);
 

@@ -19,8 +19,10 @@ namespace mhedit.GameControllers
         private string _templatePath = String.Empty;
         //private string _mamePath = String.Empty;
         private byte[] _page2367 = new byte[0x8000];
+        private byte[] _alphaHigh = new byte[0x4000];
         private Dictionary<string, ushort> _exports = new Dictionary<string, ushort>();
         private string _page2367ROM = "mhpe.1np";
+        private string _alphaHighROM = "mhpe.1l";
         private string _validText = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:";
 
         private int _page6Base = 0x4000;
@@ -62,6 +64,7 @@ namespace mhedit.GameControllers
             try
             {
                 _page2367 = File.ReadAllBytes(templatePath + _page2367ROM);
+                _alphaHigh = File.ReadAllBytes(templatePath + _alphaHighROM);
             }
             catch (Exception Exception)
             {
@@ -98,7 +101,7 @@ namespace mhedit.GameControllers
                 Reactoid reactor = new Reactoid();
                 reactor.LoadPosition(ReadBytes(mazeInitIndex, 4, 7));
                 mazeInitIndex += 4;
-                int timer = FromDecimal((int)ReadByte(_exports["outime"], i, 6));
+                int timer = DataConverter.FromDecimal((int)ReadByte(_exports["outime"], i, 6));
                 reactor.Timer = timer;
                 maze.AddObject(reactor);
 
@@ -112,12 +115,6 @@ namespace mhedit.GameControllers
                     mazeInitIndex += (byte)LoadIncrementingVelocity(pyroid.Velocity, pyroid.IncrementingVelocity, mazeInitIndex);
                     maze.AddObject(pyroid);
                     firstValue = ReadByte(mazeInitIndex, 0, 7);
-                    //if (firstValue == 0xfe)
-                    //{
-                    //    mazeInitIndex++;
-                    //    //perkoids now...
-                    //    break;
-                    //}
                 }
                 if (firstValue == 0xfe)
                 {
@@ -692,7 +689,7 @@ namespace mhedit.GameControllers
             return address;
         }
 
-        private byte[] ReadROM(ushort address, int offset, int length, int page)
+        private byte[] ReadPagedROM(ushort address, int offset, int length, int page)
         {
             byte[] bytes = new byte[length];
             int page67Base = 0x4000; //since addresses come in with a base of 0x2000 already, we just need to add this amount
@@ -708,9 +705,31 @@ namespace mhedit.GameControllers
             return bytes;
         }
 
+        private byte[] ReadAlphaHigh(ushort address, int length)
+        {
+            byte[] bytes = new byte[length];
+            int alphaHighBase = 0xC000; //since addresses come in with a base of 0xC000 already, we just need to add this amount
+
+            if (address >= 0xC000 && address <= 0xffff)
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    bytes[i] = _alphaHigh[address - alphaHighBase + i];
+                }
+            }
+            return bytes;
+        }
+
+        private int WriteAlphaHigh(ushort address, byte data)
+        {
+            ushort alphaHighBase = 0xc000;
+            address -= alphaHighBase;
+            _alphaHigh[address] = data;
+            return 1;
+        }
 
 
-        private int WriteROM(ushort address, byte[] bytes, int offset, int page)
+        private int WritePagedROM(ushort address, byte[] bytes, int offset, int page)
         {
             int page67Base = 0x4000;
             if (page == 7) page67Base = 0x6000;
@@ -733,29 +752,7 @@ namespace mhedit.GameControllers
         }
 
 
-        public int Write(string location, byte data, int offset)
-        {
-            Tuple<ushort, int> addressInfo = GetAddress(location);
-            return WriteROM(addressInfo.Item1, new byte[] { data }, offset, addressInfo.Item2);
-        }
-
-        public int Write(string location, UInt16 data, int offset)
-        {
-            Tuple<ushort, int> addressInfo = GetAddress(location);
-            byte datahigh = (byte)(data >> 8);
-            byte datalow = (byte)(data & 0xff);
-            return WriteROM(addressInfo.Item1, new byte[] { datalow, datahigh }, offset, addressInfo.Item2);
-        }
-
-        public int Write(string location, byte[] data, int offset)
-        {
-            Tuple<ushort, int> addressInfo = GetAddress(location);
-            return WriteROM(addressInfo.Item1, data, offset, addressInfo.Item2);
-        }
-
-
-
-        private void WriteChecksum(int lowerBounds, int length, int page, byte csum)
+        private void WritePagedChecksum(int lowerBounds, int length, int page, byte csum)
         {
             byte calculatedCsum = 0;
             for (int i = lowerBounds; i < (lowerBounds + length - 1); i++)
@@ -764,33 +761,55 @@ namespace mhedit.GameControllers
             }
             //ROM needs to equal csum when it is all said and done
             byte finalCsum = (byte)((csum - calculatedCsum) & 0xff);
-            WriteROM((ushort)(0x2000 + length - 1), new byte[] { finalCsum }, 0, page);
+            WritePagedROM((ushort)(0x2000 + length - 1), new byte[] { finalCsum }, 0, page);
         }
 
-        private void MarkROM(int page)
+        private void WriteAlphaHighChecksum(int lowerBounds, int length, byte csum)
         {
-            byte[] currentMajorVersion = ReadROM(0x2002, 0, 1, page);
-            WriteROM(0x2002, new byte[] { (byte)(currentMajorVersion[0] | 0xE0) }, 0, page);
+            byte calculatedCsum = 0;
+            for (int i = lowerBounds; i < (lowerBounds + length - 1); i++)
+            {
+                calculatedCsum += _alphaHigh[i];
+            }
+            //ROM needs to equal csum when it is all said and done
+            byte finalCsum = (byte)((csum - calculatedCsum) & 0xff);
+            WriteAlphaHigh((ushort)(_exports["chka2"]), finalCsum );
+        }
+
+        private void MarkPagedROM(int page)
+        {
+            byte[] currentMajorVersion = ReadPagedROM(0x2002, 0, 1, page);
+            WritePagedROM(0x2002, new byte[] { (byte)(currentMajorVersion[0] | 0xE0) }, 0, page);
+        }
+
+        private void MarkAlphaHighROM()
+        {
+            ushort alphaHighCsumAddress = 0xC002;
+            byte[] currentMajorVersion = ReadAlphaHigh(alphaHighCsumAddress, 1);
+            WriteAlphaHigh(alphaHighCsumAddress, (byte)(currentMajorVersion[0] | 0xE0));
         }
 
         public bool WriteFiles(string mamePath)
         {
             //fix csums...
-            WriteChecksum(0x4000, 0x2000, 6, 0x08);
-            WriteChecksum(0x6000, 0x2000, 7, 0x09);
+            WritePagedChecksum(0x4000, 0x2000, 6, 0x08);
+            WritePagedChecksum(0x6000, 0x2000, 7, 0x09);
+            WriteAlphaHighChecksum(0x0000, 0x4000, 0x01);
 
-            MarkROM(6);
-            MarkROM(7);
+            MarkPagedROM(6);
+            MarkPagedROM(7);
+            MarkAlphaHighROM();
 
             string page67FileNameMame = mamePath + _page2367ROM;
-    
+            string alphaHighFileNameMane = mamePath + _alphaHighROM;
+
             //save each
             File.WriteAllBytes(page67FileNameMame, _page2367);
+            File.WriteAllBytes(alphaHighFileNameMane, _alphaHigh);
 
             //copy others 
             List<string> otherROMs = new List<string>();
             otherROMs.Add("mhpe.1mn");
-            otherROMs.Add("mhpe.1l");
             otherROMs.Add("mhpe.1q");
             otherROMs.Add("mhpe.6kl");
             otherROMs.Add("mhpe.6h");
@@ -806,17 +825,17 @@ namespace mhedit.GameControllers
 
         public byte ReadByte(ushort address, int offset, int page)
         {
-            return ReadROM(address, offset, 1, page)[0];
+            return ReadPagedROM(address, offset, 1, page)[0];
         }
 
         public byte[] ReadBytes(ushort address, int length, int page)
         {
-            return ReadROM(address, 0, length, page);
+            return ReadPagedROM(address, 0, length, page);
         }
 
         public ushort ReadWord(ushort address, int offset, int page)
         {
-            byte[] bytes = ReadROM(address, offset, 2, page);
+            byte[] bytes = ReadPagedROM(address, offset, 2, page);
             ushort wordH = bytes[1];
             return (ushort)(((ushort)wordH << 8) + (ushort)bytes[0]);
         }
@@ -858,20 +877,6 @@ namespace mhedit.GameControllers
             return "";
         }
 
-        public int ToDecimal(int value)
-        {
-            return Convert.ToInt16(("0x" + value.ToString()), 16);
-        }
-
-        public int FromDecimal(int value)
-        {
-            return Convert.ToInt16(value.ToString("X2"), 10);
-        }
-
-        public bool SerializeObjects(Maze maze)
-        {
-            throw new Exception("Major Havoc - The Promised End does not support serializing of single mazes.");
-        }
         
         /// <summary>
         /// Returns a negative byte offset from center screen to get text centered
@@ -886,14 +891,14 @@ namespace mhedit.GameControllers
             return offset;
         }
 
-        public bool SerializeObjects(MazeCollection mazeCollection, Maze maze)
+        public bool EncodeObjects(MazeCollection mazeCollection, Maze maze)
         {
             bool success = false;
             int numMazes = 28;
 
             if (mazeCollection.MazeCount > numMazes)
             {
-                _lastError = "Maze collection contained more than 24 mazes.";
+                _lastError = "Maze collection contained more than " + numMazes.ToString() + " mazes.";
                 return false;
             }
             //serialization in The Promised End is a little more fluid... in general the steps are
@@ -904,7 +909,7 @@ namespace mhedit.GameControllers
             // 2. Verify no strange boundaries were crossed
             // 3. Update the CSUM's on each ROM that was written.
 
-            int index7Data = _exports["messagesbase"];
+            int currentAddressPage7 = _exports["messagesbase"];
             //Maze Hints
             byte messageIndexer = 0;
             for (int i = 0; i < numMazes; i++)
@@ -915,37 +920,37 @@ namespace mhedit.GameControllers
                     if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint))
                     {
                         //update pointers and locations
-                        WriteROM((ushort)_exports["zmessptrl"], new byte[] { (byte)(index7Data & 0xFF) }, messageIndexer, 7);
-                        WriteROM((ushort)_exports["zmessptrh"], new byte[] { (byte)((index7Data >> 8) & 0xFF) }, messageIndexer, 7);
-                        WriteROM((ushort)_exports["zmessypos"], new byte[] { 0x48 }, messageIndexer, 7);
-                        WriteROM((ushort)_exports["zmessxpos"], new byte[] { GetTextPosition(mazeCollection.Mazes[i].Hint) }, messageIndexer, 7);
+                        WritePagedROM((ushort)_exports["zmessptrl"], new byte[] { (byte)(currentAddressPage7 & 0xFF) }, messageIndexer, 7);
+                        WritePagedROM((ushort)_exports["zmessptrh"], new byte[] { (byte)((currentAddressPage7 >> 8) & 0xFF) }, messageIndexer, 7);
+                        WritePagedROM((ushort)_exports["zmessypos"], new byte[] { 0x48 }, messageIndexer, 7);
+                        WritePagedROM((ushort)_exports["zmessxpos"], new byte[] { GetTextPosition(mazeCollection.Mazes[i].Hint) }, messageIndexer, 7);
                         //write the data stream
-                        index7Data += WriteROM((ushort)index7Data, GetBytesFromString(mazeCollection.Mazes[i].Hint), 0, 7);
+                        currentAddressPage7 += WritePagedROM((ushort)currentAddressPage7, GetBytesFromString(mazeCollection.Mazes[i].Hint), 0, 7);
                         //finally, book the index and increment
-                        WriteROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2) + 1, 7);
+                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2) + 1, 7);
                         messageIndexer++;
                     }
                     else
                     {
-                        WriteROM((ushort)_exports["mazehints"], new byte[] { 0xff }, i * 2, 7);
+                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { 0xff }, i * 2, 7);
                     }
                     //Write Table Pointer - Second Hint
                     if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint2))
                     {
                         //update pointers and locations
-                        WriteROM((ushort)_exports["zmessptrl"], new byte[] { (byte)(index7Data & 0xFF) }, messageIndexer, 7);
-                        WriteROM((ushort)_exports["zmessptrh"], new byte[] { (byte)((index7Data >> 8) & 0xFF) }, messageIndexer, 7);
-                        WriteROM((ushort)_exports["zmessypos"], new byte[] { 0x50 }, messageIndexer, 7);
-                        WriteROM((ushort)_exports["zmessxpos"], new byte[] { GetTextPosition(mazeCollection.Mazes[i].Hint2) }, messageIndexer, 7);
+                        WritePagedROM((ushort)_exports["zmessptrl"], new byte[] { (byte)(currentAddressPage7 & 0xFF) }, messageIndexer, 7);
+                        WritePagedROM((ushort)_exports["zmessptrh"], new byte[] { (byte)((currentAddressPage7 >> 8) & 0xFF) }, messageIndexer, 7);
+                        WritePagedROM((ushort)_exports["zmessypos"], new byte[] { 0x50 }, messageIndexer, 7);
+                        WritePagedROM((ushort)_exports["zmessxpos"], new byte[] { GetTextPosition(mazeCollection.Mazes[i].Hint2) }, messageIndexer, 7);
                         //write the data stream
-                        index7Data += WriteROM((ushort)index7Data, GetBytesFromString(mazeCollection.Mazes[i].Hint2), 0, 7);
+                        currentAddressPage7 += WritePagedROM((ushort)currentAddressPage7, GetBytesFromString(mazeCollection.Mazes[i].Hint2), 0, 7);
                         //finally, book the index and increment
-                        WriteROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2)+1, 7);
+                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2)+1, 7);
                         messageIndexer++;
                     }
                     else
                     {
-                        WriteROM((ushort)_exports["mazehints"], new byte[] { 0xff }, (i * 2)+1, 7);
+                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { 0xff }, (i * 2)+1, 7);
                     }
                 }
             }
@@ -956,77 +961,35 @@ namespace mhedit.GameControllers
                 if (mazeCollection.Mazes[i] != null)
                 {
                     //Reactoid, Pyroid, Perkoids and Maxoids
-                    //Write Table Pointer
-                    pointerIndex += WriteROM((ushort)_exports["mzinit"], WordToByteArray(index7Data), pointerIndex, 6);
-                    //Reactoid
-                    Reactoid reactoid = mazeCollection.Mazes[i].MazeObjects.OfType<Reactoid>().FirstOrDefault();
-                    if (reactoid != null)
-                    {
-                        index7Data += WriteROM((ushort)index7Data, reactoid.ToBytes(reactoid.Position), 0, 7);
-                        foreach (Pyroid pyroid in mazeCollection.Mazes[i].MazeObjects.OfType<Pyroid>())
-                        {
-                            index7Data += WriteROM((ushort)index7Data, pyroid.ToBytes(), 0, 7);
-                        }
-                        //Perkoids
-                        if (mazeCollection.Mazes[i].MazeObjects.OfType<Perkoid>().Count() > 0)
-                        {
-                            index7Data += WriteROM((ushort)index7Data, new byte[] { 0xfe }, 0, 7);
-                            foreach (Perkoid perkoid in mazeCollection.Mazes[i].MazeObjects.OfType<Perkoid>())
-                            {
-                                index7Data += WriteROM((ushort)index7Data, perkoid.ToBytes(), 0, 7);
-                            }
-                        }
-                        //Maxoids
-                        if (mazeCollection.Mazes[i].MazeObjects.OfType<Maxoid>().Count() > 0)
-                        {
-                            //make sure we did perkoids already
-                            if (mazeCollection.Mazes[i].MazeObjects.OfType<Perkoid>().Count() == 0)
-                            {
-                                index7Data += WriteROM((ushort)index7Data, new byte[] { 0xfe }, 0, 7);
-                            }
-                            index7Data += WriteROM((ushort)index7Data, new byte[] { 0xfe }, 0, 7);
-                            foreach (Maxoid max in mazeCollection.Mazes[i].MazeObjects.OfType<Maxoid>())
-                            {
-                                index7Data += WriteROM((ushort)index7Data, max.ToBytes(), 0, 7);
-                            }
-                        }
-                    }
+                    pointerIndex += WritePagedROM((ushort)_exports["mzinit"], WordToByteArray(currentAddressPage7), pointerIndex, 6);
+                    currentAddressPage7 += WritePagedROM((ushort)currentAddressPage7, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.ReactoidPyroidPerkoidMax), 0, 7);
                 }
-                //Done Flag
-                index7Data += WriteROM((ushort)index7Data, new byte[] { 0xff }, 0, 7);
             }
 
             //********************************
-            // Page 6 Data Now
+            // Page 6 Dynamic Now
             //********************************
-            int index6Data = _exports["dynamic_base"];
+            int currentAddressPage6 = _exports["dynamic_base"];
             Dictionary<byte, ushort> existingOxoids = new Dictionary<byte, ushort>();
             //Oxygen Discs
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
                 //Oxoid data
-                List<byte> oxoidBytes = new List<byte>();
-                foreach (Oxoid oxoid in mazeCollection.Mazes[i].MazeObjects.OfType<Oxoid>())
-                {
-                    oxoidBytes.AddRange(oxoid.ToBytes());
-                }
-
-                byte byteHash = GetByteHash(oxoidBytes.ToArray());
+                byte[] oxoidBytes = EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Oxoids);
+                byte byteHash = GetByteHash(oxoidBytes);
                 if (existingOxoids.ContainsKey(byteHash))
                 {
                     //already defined, use this pointer
-                    pointerIndex += WriteROM((ushort)_exports["mzdc"], WordToByteArray(existingOxoids[byteHash]), pointerIndex, 6);
+                    pointerIndex += WritePagedROM((ushort)_exports["mzdc"], WordToByteArray(existingOxoids[byteHash]), pointerIndex, 6);
                 }
                 else //didn't exist, write it out
                 {
                     //Write Table Pointer
-                    pointerIndex += WriteROM((ushort)_exports["mzdc"], WordToByteArray(index6Data), pointerIndex, 6);
+                    pointerIndex += WritePagedROM((ushort)_exports["mzdc"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
                     //save to dictionary
-                    existingOxoids.Add(byteHash, (ushort)index6Data);
-                    index6Data += WriteROM((ushort)index6Data, oxoidBytes.ToArray(), 0, 6);
-                    index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
-                    
+                    existingOxoids.Add(byteHash, (ushort)currentAddressPage6);
+                    currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, oxoidBytes, 0, 6);
                 }
             }
             //Lightning
@@ -1034,61 +997,35 @@ namespace mhedit.GameControllers
             for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["mzlg"], WordToByteArray(index6Data), pointerIndex, 6);
-                if ((mazeCollection.Mazes[i].MazeObjects.OfType<LightningH>().Count() > 0) || 
-                    (mazeCollection.Mazes[i].MazeObjects.OfType<LightningV>().Count() > 0 ))
-                {
-                    //Oxoid data
-                    foreach (LightningH lightningH in mazeCollection.Mazes[i].MazeObjects.OfType<LightningH>())
-                    {
-                        index6Data += WriteROM((ushort)index6Data, lightningH.ToBytes(), 0, 6);
-                    }
-                    if (mazeCollection.Mazes[i].MazeObjects.OfType<LightningV>().Count() > 0)
-                    {
-                        index6Data += WriteROM((ushort)index6Data, new byte[] { 0xff }, 0, 6);
-                        foreach (LightningV lightningV in mazeCollection.Mazes[i].MazeObjects.OfType<LightningV>())
-                        {
-                            index6Data += WriteROM((ushort)index6Data, lightningV.ToBytes(), 0, 6);
-                        }
-                    }
-                }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                pointerIndex += WritePagedROM((ushort)_exports["mzlg"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Lightning), 0, 6);
             }
             //Arrows
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["mzar"], WordToByteArray(index6Data), pointerIndex, 6);
+                pointerIndex += WritePagedROM((ushort)_exports["mzar"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
                 //Arrow data
-                foreach (Arrow arrow in mazeCollection.Mazes[i].MazeObjects.OfType<Arrow>())
-                {
-                    index6Data += WriteROM((ushort)index6Data, arrow.ToBytes(), 0, 6);
-                }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Arrows), 0, 6);
             }
             //Exit Arrows
             pointerIndex = 0;
             //create a placeholder pointer which is for blank levels
-            int blankOutArrowsPointer = index6Data;
-            pointerIndex += WriteROM((ushort)_exports["mzor"], WordToByteArray(index6Data), pointerIndex, 6);
-            index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+            int blankOutArrowsPointer = currentAddressPage6;
+            pointerIndex += WritePagedROM((ushort)_exports["mzor"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
+            currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, new byte[] { 0x00 }, 0, 6);
             for (int i = 0; i < numMazes; i++)
             {
                 if (mazeCollection.Mazes[i].MazeObjects.OfType<ArrowOut>().Count() > 0) {
                     //Write Table Pointer
-                    pointerIndex += WriteROM((ushort)_exports["mzor"], WordToByteArray(index6Data), (i * 2), 6);
-                    //ArrowOut data
-                    foreach (ArrowOut arrow in mazeCollection.Mazes[i].MazeObjects.OfType<ArrowOut>())
-                    {
-                        index6Data += WriteROM((ushort)index6Data, arrow.ToBytes(), 0, 6);
-                    }
-                    index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                    pointerIndex += WritePagedROM((ushort)_exports["mzor"], WordToByteArray(currentAddressPage6), (i * 2), 6);
+                    currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.ArrowsOut), 0, 6);
                 }
                 else
                 {
                     //no out arrows, point to the blank entry defined at the top
-                    pointerIndex += WriteROM((ushort)_exports["mzor"], WordToByteArray(blankOutArrowsPointer), (i * 2), 6);
+                    pointerIndex += WritePagedROM((ushort)_exports["mzor"], WordToByteArray(blankOutArrowsPointer), (i * 2), 6);
                 }
             }
             //Trip Points
@@ -1096,72 +1033,40 @@ namespace mhedit.GameControllers
             for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["mztr"], WordToByteArray(index6Data), pointerIndex, 6);
-                //Trip Point data
-                foreach (TripPad trip in mazeCollection.Mazes[i].MazeObjects.OfType<TripPad>())
-                {
-                    index6Data += WriteROM((ushort)index6Data, trip.ToBytes(), 0, 6);
-                }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                pointerIndex += WritePagedROM((ushort)_exports["mztr"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.TripPoints), 0, 6);
             }
             //Trip Actions
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["trtbll"], WordToByteArray(index6Data), pointerIndex, 6);
-                //Trip Action Data
-                foreach (TripPad trip in mazeCollection.Mazes[i].MazeObjects.OfType<TripPad>())
-                {
-                    index6Data += WriteROM((ushort)index6Data, trip.Pyroid.ToBytes(), 0, 6);
-                }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00, 0x00, 0x00 }, 0, 6);
+                pointerIndex += WritePagedROM((ushort)_exports["trtbll"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.TripActions), 0, 6);
             }
             //Static Maze Walls
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["mztdal"], WordToByteArray(index6Data), pointerIndex, 6);
-                //Wall data, all walls in maze
-                foreach (MazeWall wall in mazeCollection.Mazes[i].MazeObjects.OfType<MazeWall>().Where(w =>!w.IsDynamicWall))
-                {
-                    index6Data += WriteROM((ushort)index6Data, wall.ToBytes(mazeCollection.Mazes[i]), 0, 6);
-                }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                pointerIndex += WritePagedROM((ushort)_exports["mztdal"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.StaticWalls), 0, 6);
             }
             //Dynamic Maze Walls
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["mztd"], WordToByteArray(index6Data), pointerIndex, 6);
-                //wall data, only dynamic walls
-                foreach (MazeWall wall in mazeCollection.Mazes[i].MazeObjects.OfType<MazeWall>().Where(w => w.IsDynamicWall))
-                {
-                    index6Data += WriteROM((ushort)index6Data, wall.ToBytes(mazeCollection.Mazes[i]), 0, 6);
-                }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                pointerIndex += WritePagedROM((ushort)_exports["mztd"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.DynamicWalls), 0, 6);
             }
             //One Way Walls
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["mone"], WordToByteArray(index6Data), pointerIndex, 6);
-                //Trip Point data
-                foreach (OneWay wall in mazeCollection.Mazes[i].MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Right))
-                {
-                    index6Data += WriteROM((ushort)index6Data, wall.ToBytes(mazeCollection.Mazes[i]), 0, 6);
-                }
-                if (mazeCollection.Mazes[i].MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Left).Count() > 0) {
-                    foreach (OneWay wall in mazeCollection.Mazes[i].MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Left))
-                    {
-                        index6Data += WriteROM((ushort)index6Data, new byte[] { 0xff }, 0, 6);
-                        index6Data += WriteROM((ushort)index6Data, wall.ToBytes(mazeCollection.Mazes[i]), 0, 6);
-                    }
-                }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                pointerIndex += WritePagedROM((ushort)_exports["mone"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OneWay), 0, 6);
             }
 
             //Ion Cannon, warning, this is very messy due to data compaction techniques
@@ -1176,11 +1081,11 @@ namespace mhedit.GameControllers
             {
                 if (mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>().Count() > 0)
                 {
-                    cannonLevelPointers.Add(i, index6Data);
+                    cannonLevelPointers.Add(i, currentAddressPage6);
                     foreach (Cannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>())
                     {
-                        cannonDataPointers.Add(cannon.ObjectId, index6Data);
-                        index6Data += WriteROM((ushort)index6Data, cannon.ToBytes(), 0, 6);
+                        cannonDataPointers.Add(cannon.ObjectId, currentAddressPage6);
+                        currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, cannon.ToBytes(), 0, 6);
                     }
                 }
             }
@@ -1188,28 +1093,26 @@ namespace mhedit.GameControllers
             pointerIndex = 0;
             int cannonIndexValue = 0x02;
             //empty data word for levels with no Cannons, pointerIndex = 0
-            int cannonPointerEmpty = index6Data;
-            index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00, 0x00 }, 0, 6);
+            int cannonPointerEmpty = currentAddressPage6;
+            currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, new byte[] { 0x00, 0x00 }, 0, 6);
 
             for (int i = 0; i < numMazes; i++)
             {
                 if (mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>().Count() == 0)
                 {
                     //set empty pointers and index
-                    //index6Data += WriteROM((ushort)index6Data, WordToByteArray(cannonPointerEmpty), 0, 6); 
-                    pointerIndex += WriteROM((ushort)_exports["mcan"], new byte[] { 0x00 }, pointerIndex, 6);
-                    //cannonIndexValue += 2;
+                    pointerIndex += WritePagedROM((ushort)_exports["mcan"], new byte[] { 0x00 }, pointerIndex, 6);
                 }
                 else
                 {
                     //set this ponter index value and increment
-                    pointerIndex += WriteROM((ushort)_exports["mcan"], new byte[] { (byte)cannonIndexValue }, pointerIndex, 6);
+                    pointerIndex += WritePagedROM((ushort)_exports["mcan"], new byte[] { (byte)cannonIndexValue }, pointerIndex, 6);
                     cannonIndexValue += (mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>().Count() * 2) + 2;
                     foreach (Cannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>())
                     {
-                        index6Data += WriteROM((ushort)index6Data, WordToByteArray(cannonDataPointers[cannon.ObjectId]), 0, 6);
+                        currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, WordToByteArray(cannonDataPointers[cannon.ObjectId]), 0, 6);
                     }
-                    index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00, 0x00 }, 0, 6);
+                    currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, new byte[] { 0x00, 0x00 }, 0, 6);
                 }
             }
 
@@ -1218,13 +1121,8 @@ namespace mhedit.GameControllers
             for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["mtite"], WordToByteArray(index6Data), pointerIndex, 6);
-                //Trip Point data
-                foreach (Spikes spike in mazeCollection.Mazes[i].MazeObjects.OfType<Spikes>())
-                {
-                    index6Data += WriteROM((ushort)index6Data, spike.ToBytes(mazeCollection.Mazes[i]), 0, 6);
-                }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                pointerIndex += WritePagedROM((ushort)_exports["mtite"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Spikes), 0, 6);
             }
 
             //locks and keys, for now, there has to be an even number of locks and keys
@@ -1232,17 +1130,8 @@ namespace mhedit.GameControllers
             for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["mlock"], WordToByteArray(index6Data), pointerIndex, 6);
-
-                foreach (Lock lock_ in mazeCollection.Mazes[i].MazeObjects.OfType<Lock>())
-                {
-                    Key thisKey = mazeCollection.Mazes[i].MazeObjects.OfType<Key>().Where(k => k.KeyColor == lock_.LockColor).FirstOrDefault();
-                    if (thisKey != null)
-                    {
-                        index6Data += WriteROM((ushort)index6Data, lock_.ToBytes(thisKey), 0, 6);
-                    }
-                }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
+                pointerIndex += WritePagedROM((ushort)_exports["mlock"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.LocksKeys), 0, 6);
             }
 
             //Transporters
@@ -1250,142 +1139,66 @@ namespace mhedit.GameControllers
             for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["mtran"], WordToByteArray(index6Data), pointerIndex, 6);
-
-                var transporterGroups = mazeCollection.Mazes[i].MazeObjects.OfType<Transporter>().GroupBy(t => t.Color).Select(group => new { Key = group.Key, Count = group.Count() });
-
-                foreach (var transporterPair in transporterGroups)
-                {
-                    List<Transporter> coloredTranporterMatches = mazeCollection.Mazes[i].MazeObjects.OfType<Transporter>().Where(t => t.Color == transporterPair.Key).ToList();
-                    foreach (Transporter t in coloredTranporterMatches)
-                    {
-                        index6Data += WriteROM((ushort)index6Data, t.ToBytes(), 0, 6);
-                    }
-                }
-                //write end of transports
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
-                //write transportability data
-                if (mazeCollection.Mazes[i].TransportabilityFlags.Count > 0)
-                {
-                    int flagCount = 0;
-                    int flagValue = 0;
-                    for(int f = 0; f < mazeCollection.Mazes[i].TransportabilityFlags.Count; f++)
-                    {
-                        flagValue = flagValue << 1;
-                        if (f < mazeCollection.Mazes[i].TransportabilityFlags.Count)
-                        {
-                            if (mazeCollection.Mazes[i].TransportabilityFlags[f])
-                            {
-                                flagValue += 1;
-                            }
-                        }
-                        
-                        flagCount++;
-                        if (flagCount > 7)
-                        {
-                            index6Data += WriteROM((ushort)index6Data, new byte[] { (byte)flagValue }, 0, 6);
-                            flagCount = 0;
-                            flagValue = 0;
-                        }
-                    }
-                }
-                index6Data += WriteROM((ushort)index6Data, new byte[] { 0xee }, 0,6);
+                pointerIndex += WritePagedROM((ushort)_exports["mtran"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Transporters), 0, 6);
             }
             //De Hand
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
                 //Write Table Pointer
-                pointerIndex += WriteROM((ushort)_exports["mhand"], WordToByteArray(index6Data), pointerIndex, 6);
-                //Hand Data
-                Hand hand = mazeCollection.Mazes[i].MazeObjects.OfType<Hand>().FirstOrDefault();
-                if (hand != null)
-                {
-                    Reactoid r = mazeCollection.Mazes[i].MazeObjects.OfType<Reactoid>().FirstOrDefault();
-                    if (r != null)
-                    {
-                        index6Data += WriteROM((ushort)index6Data, hand.ToBytes(r.Position), 0, 6);
-                    }
-                }
-                else
-                {
-                    index6Data += WriteROM((ushort)index6Data, new byte[] { 0x00 }, 0, 6);
-                }
+                pointerIndex += WritePagedROM((ushort)_exports["mhand"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Hand), 0, 6);
             }
             //Clock
             int clockIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
-                //Write Table Pointer
-                //pointerIndex += WriteROM((ushort)_exports["mclock"], WordToByteArray(index6Data), pointerIndex, 6);
-                //Clock Data
-                Clock clock = mazeCollection.Mazes[i].MazeObjects.OfType<Clock>().FirstOrDefault();
-                if (clock != null)
-                {
-                    clockIndex += WriteROM((ushort)_exports["mclock"], clock.ToBytes(), clockIndex, 6);
-                }
-                else
-                {
-                    clockIndex += WriteROM((ushort)_exports["mclock"], new byte[] { 0x00 }, clockIndex, 6);
-                }
+                clockIndex += WritePagedROM((ushort)_exports["mclock"], EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Clock), clockIndex, 6);
             }
             //Boots
             int bootsIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
-                Boots boots = mazeCollection.Mazes[i].MazeObjects.OfType<Boots>().FirstOrDefault();
-                //Boots Data
-                if (boots != null)
-                {
-                    bootsIndex += WriteROM((ushort)_exports["mboots"], boots.ToBytes(), bootsIndex, 6);
-                }
-                else
-                {
-                    bootsIndex += WriteROM((ushort)_exports["mboots"], new byte[] { 0x00 }, bootsIndex, 6);
-                }
+                bootsIndex += WritePagedROM((ushort)_exports["mboots"], EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Boots), bootsIndex, 6);
             }
 
             int mpodAddressBase = _exports["mpod"];
             //Escape Pod
             for (int i = 1; i < numMazes; i+=4)
             {
-                //Pod Data
-                EscapePod pod = mazeCollection.Mazes[i].MazeObjects.OfType<EscapePod>().FirstOrDefault();
-                if (pod != null)
-                {
-                    mpodAddressBase += WriteROM((ushort)mpodAddressBase, pod.ToBytes(), 0, 6);
-                }
-                else
-                {
-                    mpodAddressBase += WriteROM((ushort)mpodAddressBase, new byte[] { 0x00 }, 0, 6);
-                }
+                mpodAddressBase += WritePagedROM((ushort)mpodAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.EscapePod), 0, 6);
             }
             //Out Time
             int outAddressBase = _exports["outime"];
             for (int i = 0; i < numMazes; i++)
             {
-                //Pod Data
-                int reactorTimer = 0;
-                Reactoid reactoid = mazeCollection.Mazes[i].MazeObjects.OfType<Reactoid>().FirstOrDefault();
-                if (reactoid != null)
-                {
-                    reactorTimer = ToDecimal(reactoid.Timer);
-                }
-                outAddressBase += WriteROM((ushort)outAddressBase, new byte[] { (byte)reactorTimer }, 0, 6);
+                outAddressBase += WritePagedROM((ushort)outAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OutTime), 0, 6);
             }
             //OxygenReward
             int oxyAddressBase = _exports["oxybonus"];
             for (int i = 0; i < numMazes; i++)
             {
-                oxyAddressBase += WriteROM((ushort)oxyAddressBase, new byte[] { (byte)mazeCollection.Mazes[i].OxygenReward }, 0, 6);
+                oxyAddressBase += WritePagedROM((ushort)oxyAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OxygenReward), 0, 6);
             }
 
-            if (index6Data >= 0x2000)
+            //set up starting level
+            for(int i = 0; i < numMazes; i++)
+            {
+                if (mazeCollection.Mazes[i] == maze)
+                {
+                    byte startLevel = (byte)i;
+                    if (startLevel > 24) startLevel = 24;
+                    WriteAlphaHigh((ushort)(_exports["levelst"]+1), startLevel);
+                }
+            }
+
+            if (currentAddressPage6 >= 0x2000)
             {
                 //this is bad
 
             }
-            if (index7Data >= 0x2000 )
+            if (currentAddressPage7 >= 0x2000 )
             {
                 //this is bad, it means we have overflowed our Paged ROM end boundary
             }
@@ -1404,16 +1217,293 @@ namespace mhedit.GameControllers
             return hash;
         }
 
-        private int WriteObjectsGeneric(byte[] bytes, int tablePointer, int tablePointerPageBase, int dataPointer, int dataPointerPageBase, List<MazeObject> objects)
+        public enum EncodingGroup : int
         {
-            int currentIndex = 0;
+            ReactoidPyroidPerkoidMax,
+            Oxoids,
+            Lightning,
+            Arrows,
+            ArrowsOut,
+            TripPoints,
+            TripActions,
+            StaticWalls,
+            DynamicWalls,
+            OneWay,
+            Spikes,
+            LocksKeys,
+            Transporters,
+            Hand,
+            Clock,
+            Boots,
+            EscapePod,
+            OutTime,
+            OxygenReward
+        }
 
-            foreach (MazeObject obj in objects)
+        /// <summary>
+        /// Used to encode individual maze object types, I had to abstract it so that it was easy to
+        /// pull out serialized data one type at a time so it was easy to get data from the designed mazes
+        /// into the source code of the main mhavocpe project.
+        /// </summary>
+        /// <param name="maze">The target maze</param>
+        /// <param name="group">The target group to encode</param>
+        /// <returns></returns>
+        public byte[] EncodeObjects(Maze maze, EncodingGroup group)
+        {
+            List<byte> bytes = new List<byte>();
+            Reactoid reactoid = maze.MazeObjects.OfType<Reactoid>().FirstOrDefault();
+
+            switch (group)
             {
-                currentIndex += bytes[dataPointer + dataPointerPageBase];
+                case EncodingGroup.ReactoidPyroidPerkoidMax:
+                    //Reactoid
+                    if (reactoid != null)
+                    {
+                        bytes.AddRange(reactoid.ToBytes(reactoid.Position));
+                        foreach (Pyroid pyroid in maze.MazeObjects.OfType<Pyroid>())
+                        {
+                            bytes.AddRange(pyroid.ToBytes());
+                        }
+                        //Perkoids
+                        if (maze.MazeObjects.OfType<Perkoid>().Count() > 0)
+                        {
+                            bytes.Add(0xfe);
+                            foreach (Perkoid perkoid in maze.MazeObjects.OfType<Perkoid>())
+                            {
+                                bytes.AddRange(perkoid.ToBytes());
+                            }
+                        }
+                        //Maxoids
+                        if (maze.MazeObjects.OfType<Maxoid>().Count() > 0)
+                        {
+                            //make sure we did perkoids already
+                            if (maze.MazeObjects.OfType<Perkoid>().Count() == 0)
+                            {
+                                bytes.Add(0xfe);
+                            }
+                            bytes.Add(0xfe);
+                            foreach (Maxoid max in maze.MazeObjects.OfType<Maxoid>())
+                            {
+                                bytes.AddRange(max.ToBytes());
+                            }
+                        }
+                        bytes.Add(0xff); //Data End Flag
+                    }
+                    break;
+                case EncodingGroup.Oxoids:
+                    foreach (Oxoid oxoid in maze.MazeObjects.OfType<Oxoid>())
+                    {
+                        bytes.AddRange(oxoid.ToBytes());
+                    }
+                    bytes.Add(0x00);
+                    break;
+                case EncodingGroup.Lightning:
+                    if ((maze.MazeObjects.OfType<LightningH>().Count() > 0) || (maze.MazeObjects.OfType<LightningV>().Count() > 0))
+                    {
+                        //Oxoid data
+                        foreach (LightningH lightningH in maze.MazeObjects.OfType<LightningH>())
+                        {
+                            bytes.AddRange(lightningH.ToBytes());
+                        }
+                        if (maze.MazeObjects.OfType<LightningV>().Count() > 0)
+                        {
+                            bytes.Add(0xff);
+                            foreach (LightningV lightningV in maze.MazeObjects.OfType<LightningV>())
+                            {
+                                bytes.AddRange(lightningV.ToBytes());
+                            }
+                        }
+                    }
+                    bytes.Add(0x00);
+                    break;
+                case EncodingGroup.Arrows:
+                    foreach (Arrow arrow in maze.MazeObjects.OfType<Arrow>())
+                    {
+                        bytes.AddRange(arrow.ToBytes());
+                    }
+                    bytes.Add(0x00);
+                    break;
+                case EncodingGroup.ArrowsOut:
+                    foreach (ArrowOut arrow in maze.MazeObjects.OfType<ArrowOut>())
+                    {
+                        bytes.AddRange(arrow.ToBytes());
+                    }
+                    bytes.Add(0x00);
+                    break;
+                case EncodingGroup.TripPoints:
+                    //Trip Point data
+                    foreach (TripPad trip in maze.MazeObjects.OfType<TripPad>())
+                    {
+                        bytes.AddRange(trip.ToBytes());
+                    }
+                    bytes.Add(0x00);
+                    break;
+                case EncodingGroup.TripActions:
+                    //Trip Action Data
+                    foreach (TripPad trip in maze.MazeObjects.OfType<TripPad>())
+                    {
+                        bytes.AddRange(trip.Pyroid.ToBytes());
+                    }
+                    bytes.AddRange(new byte[] { 0x00, 0x00, 0x00 });
+                    break;
+                case EncodingGroup.StaticWalls:
+                    //Wall data, all walls in maze
+                    foreach (MazeWall wall in maze.MazeObjects.OfType<MazeWall>().Where(w => !w.IsDynamicWall))
+                    {
+                        bytes.AddRange(wall.ToBytes(this));
+                    }
+                    bytes.Add(0x00);
+                    break;
+                case EncodingGroup.DynamicWalls:
+                    //wall data, only dynamic walls
+                    foreach (MazeWall wall in maze.MazeObjects.OfType<MazeWall>().Where(w => w.IsDynamicWall))
+                    {
+                        bytes.AddRange(wall.ToBytes(this));
+                    }
+                    bytes.Add(0x00);
+                    break;
+                case EncodingGroup.OneWay:
+                    //Trip Point data
+                    foreach (OneWay wall in maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Right))
+                    {
+                        bytes.AddRange(wall.ToBytes(this));
+                    }
+                    if (maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Left).Count() > 0)
+                    {
+                        foreach (OneWay wall in maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Left))
+                        {
+                            bytes.Add(0xff);
+                            bytes.AddRange(wall.ToBytes(this));
+                        }
+                    }
+                    bytes.Add(0x00);
+                    break;
+                case EncodingGroup.Spikes:
+                    foreach (Spikes spike in maze.MazeObjects.OfType<Spikes>())
+                    {
+                        bytes.AddRange(spike.ToBytes());
+                    }
+                    bytes.Add(0x00);
+                    break;
+                case EncodingGroup.LocksKeys:
+                    foreach (Lock lock_ in maze.MazeObjects.OfType<Lock>())
+                    {
+                        Key thisKey = maze.MazeObjects.OfType<Key>().Where(k => k.KeyColor == lock_.LockColor).FirstOrDefault();
+                        if (thisKey != null)
+                        {
+                            bytes.AddRange(lock_.ToBytes(thisKey));
+                        }
+                    }
+                    bytes.Add(0x00);
+                    break;
+                case EncodingGroup.Transporters:
+
+                    var transporterGroups = maze.MazeObjects.OfType<Transporter>().GroupBy(t => t.Color).Select(tg => new { Key = tg.Key, Count = tg.Count() });
+
+                    foreach (var transporterPair in transporterGroups)
+                    {
+                        List<Transporter> coloredTranporterMatches = maze.MazeObjects.OfType<Transporter>().Where(t => t.Color == transporterPair.Key).ToList();
+                        foreach (Transporter t in coloredTranporterMatches)
+                        {
+                            bytes.AddRange(t.ToBytes());
+                        }
+                    }
+                    //write end of transports
+                    bytes.Add(0x00);
+                    //write transportability data
+                    if (maze.TransportabilityFlags.Count > 0)
+                    {
+                        int flagCount = 0;
+                        int flagValue = 0;
+                        for (int f = 0; f < maze.TransportabilityFlags.Count; f++)
+                        {
+                            flagValue = flagValue << 1;
+                            if (f < maze.TransportabilityFlags.Count)
+                            {
+                                if (maze.TransportabilityFlags[f])
+                                {
+                                    flagValue += 1;
+                                }
+                            }
+
+                            flagCount++;
+                            if (flagCount > 7)
+                            {
+                                bytes.Add((byte)flagValue);
+                                flagCount = 0;
+                                flagValue = 0;
+                            }
+                        }
+                    }
+                    bytes.Add(0xee);
+                    break;
+                case EncodingGroup.Hand:
+                    Hand hand = maze.MazeObjects.OfType<Hand>().FirstOrDefault();
+                    if (hand != null)
+                    {
+                        Reactoid r = maze.MazeObjects.OfType<Reactoid>().FirstOrDefault();
+                        if (r != null)
+                        {
+                            bytes.AddRange(hand.ToBytes(r.Position));
+                        }
+                    }
+                    else
+                    {
+                        bytes.Add(0x00);
+                    }
+                    break;
+                case EncodingGroup.Clock:
+                    //Clock Data
+                    Clock clock = maze.MazeObjects.OfType<Clock>().FirstOrDefault();
+                    if (clock != null)
+                    {
+                        bytes.AddRange(clock.ToBytes());
+                    }
+                    else
+                    {
+                        bytes.Add(0x00);
+                    }
+                    break;
+                case EncodingGroup.Boots:
+                    //Boots Data
+                    Boots boots = maze.MazeObjects.OfType<Boots>().FirstOrDefault();
+                    if (boots != null)
+                    {
+                        bytes.AddRange(boots.ToBytes());
+                    }
+                    else
+                    {
+                        bytes.Add(0x00);
+                    }
+                    break;
+                case EncodingGroup.EscapePod:
+                    //Pod Data
+                    EscapePod pod = maze.MazeObjects.OfType<EscapePod>().FirstOrDefault();
+                    if (pod != null)
+                    {
+                        bytes.AddRange(pod.ToBytes());
+                    }
+                    else
+                    {
+                        bytes.Add(0x00);
+                    }
+                    break;
+                case EncodingGroup.OutTime:
+                    //Pod Data
+                    int reactorTimer = 0;
+                    if (reactoid != null)
+                    {
+                        reactorTimer = DataConverter.ToDecimal(reactoid.Timer);
+                    }
+                    bytes.Add((byte)reactorTimer);
+                    break;
+                case EncodingGroup.OxygenReward:
+                    bytes.Add((byte)maze.OxygenReward);
+                    break;
             }
 
-            return currentIndex;
+            return bytes.ToArray();
         }
+
     }
 }

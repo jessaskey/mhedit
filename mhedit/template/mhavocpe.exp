@@ -1,6 +1,8 @@
-.module aux7
+.module alpha
 
+chka2            .EQU  $fe62
 dynamic_base     .EQU  $2783
+levelst          .EQU  $da06
 mzinit           .EQU  $2011
 mzdc             .EQU  $2049
 mzlg             .EQU  $2081

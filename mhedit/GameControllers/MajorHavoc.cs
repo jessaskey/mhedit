@@ -928,7 +928,7 @@ namespace mhedit.GameControllers
         }
 
 
-        public bool SerializeObjects(MazeCollection collection, Maze maze)
+        public bool EncodeObjects(MazeCollection collection, Maze maze)
         {
             bool success = false;
             

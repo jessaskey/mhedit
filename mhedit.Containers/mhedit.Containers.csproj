@@ -54,7 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Context.cs" />
+    <Compile Include="DataConverter.cs" />
     <Compile Include="Interfaces\ITreeObject.cs" />
     <Compile Include="Maze.cs">
       <SubType>Component</SubType>

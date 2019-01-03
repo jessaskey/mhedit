@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace mhedit.Containers
 {
-    public static class Context
+    public static class DataConverter
     {
         //Scale Factor between Atari and Canvas
         private static int _vectorGridSize = 256;
@@ -122,6 +122,16 @@ namespace mhedit.Containers
             byte xh = (byte)((vector.X & 0x0f00) >> 8);
             byte yh = (byte)((vector.Y & 0x0f00) >> 4);
             return new byte[] { (byte)(xh | yh) };
+        }
+
+        public static int ToDecimal(int value)
+        {
+            return Convert.ToInt16(("0x" + value.ToString()), 16);
+        }
+
+        public static int FromDecimal(int value)
+        {
+            return Convert.ToInt16(value.ToString("X2"), 10);
         }
 
 

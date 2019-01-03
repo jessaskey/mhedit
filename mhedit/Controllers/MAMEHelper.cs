@@ -64,7 +64,7 @@ namespace mhedit.Controllers
             {
                 //we will always serialize to target 'The Promised End' here in this editor.
                 IGameController controller = new MajorHavocPromisedEnd(templatePath);
-                bool serializeSuccess = controller.SerializeObjects(collection, maze);
+                bool serializeSuccess = controller.EncodeObjects(collection, maze);
                 if (serializeSuccess)
                 {
                     success = controller.WriteFiles(mamePath);
