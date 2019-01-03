@@ -59,7 +59,7 @@ namespace mhedit.Containers.MazeEnemies
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(Context.PointToByteArrayPacked(_position));
+            bytes.AddRange(DataConverter.PointToByteArrayPacked(_position));
             return bytes.ToArray();
         }
 

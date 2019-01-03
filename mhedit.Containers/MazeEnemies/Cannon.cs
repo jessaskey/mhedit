@@ -85,7 +85,7 @@ namespace mhedit.Containers.MazeEnemies
         {
             List<byte> bytes = new List<byte>();
 
-            bytes.AddRange(Context.PointToByteArrayLong(Context.ConvertPixelsToVector(_position)));
+            bytes.AddRange(DataConverter.PointToByteArrayLong(DataConverter.ConvertPixelsToVector(_position)));
             //now cannon commands
             foreach (iCannonMovement movement in _movements)
             {

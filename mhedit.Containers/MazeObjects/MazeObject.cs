@@ -102,7 +102,7 @@ namespace mhedit.Containers
         {
             get
             {
-                return Context.ConvertPixelsToVector(Position);
+                return DataConverter.ConvertPixelsToVector(Position);
             }
         }
 
@@ -193,13 +193,13 @@ namespace mhedit.Containers
 
         public void LoadPosition(byte bytePosition)
         {
-            Tuple<short, short> oxoidVector = Context.BytePackedToVector(bytePosition, staticLsb);
-            Position = Context.ConvertVectorToPixels(oxoidVector);
+            Tuple<short, short> oxoidVector = DataConverter.BytePackedToVector(bytePosition, staticLsb);
+            Position = DataConverter.ConvertVectorToPixels(oxoidVector);
         }
 
         public void LoadPosition(byte[] longPosition)
         {
-            Position = Context.ConvertVectorToPixels(Context.ByteArrayLongToPoint(longPosition));
+            Position = DataConverter.ConvertVectorToPixels(DataConverter.ByteArrayLongToPoint(longPosition));
         }
 
     }

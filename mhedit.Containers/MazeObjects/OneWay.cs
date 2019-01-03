@@ -81,7 +81,7 @@ namespace mhedit.Containers.MazeObjects
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(Context.PointToByteArrayPacked(new Point(_position.X, _position.Y + 64)));
+            bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(_position.X, _position.Y + 64)));
             return bytes.ToArray();
         }
 

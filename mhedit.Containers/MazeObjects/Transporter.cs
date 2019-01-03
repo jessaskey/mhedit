@@ -126,7 +126,7 @@ namespace mhedit.Containers.MazeObjects
                 colorByte += 0x80;
             }
             bytes.Add(colorByte);
-            bytes.AddRange(Context.PointToByteArrayPacked(new Point(_position.X, _position.Y + 64)));
+            bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(_position.X, _position.Y + 64)));
 
             return bytes.ToArray();
         }

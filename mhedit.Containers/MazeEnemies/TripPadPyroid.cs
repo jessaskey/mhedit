@@ -97,7 +97,7 @@ namespace mhedit.Containers.MazeEnemies
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            byte[] position = Context.PointToByteArrayShort(new Point(_position.X, _position.Y + 64));
+            byte[] position = DataConverter.PointToByteArrayShort(new Point(_position.X, _position.Y + 64));
             if (_pyroidStyle == PyroidStyle.Single)
             {
                 position[0] |= 0x80;

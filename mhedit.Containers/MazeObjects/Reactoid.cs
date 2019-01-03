@@ -83,7 +83,7 @@ namespace mhedit.Containers.MazeObjects
             if (obj is Point)
             {
                 //Position
-                bytes.AddRange(Context.PointToByteArrayLong(Context.ConvertPixelsToVector(_position)));
+                bytes.AddRange(DataConverter.PointToByteArrayLong(DataConverter.ConvertPixelsToVector(_position)));
             }
             else if (obj is int)
             {

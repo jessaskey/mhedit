@@ -95,7 +95,7 @@ namespace mhedit.Containers.MazeEnemies
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(Context.PointToByteArrayLong(Context.ConvertPixelsToVector(_position)));
+            bytes.AddRange(DataConverter.PointToByteArrayLong(DataConverter.ConvertPixelsToVector(_position)));
 
             if (_incrementingVelocity.X != 0)
             {

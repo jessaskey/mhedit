@@ -76,8 +76,8 @@ namespace mhedit.Containers.MazeObjects
             if (obj is Key)
             {
                 bytes.Add((byte)_color);
-                bytes.AddRange(Context.PointToByteArrayPacked(((Key)obj).Position));
-                bytes.AddRange(Context.PointToByteArrayPacked(new Point(_position.X, _position.Y + 64)));
+                bytes.AddRange(DataConverter.PointToByteArrayPacked(((Key)obj).Position));
+                bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(_position.X, _position.Y + 64)));
             }
             else
             {

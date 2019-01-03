@@ -68,11 +68,11 @@ namespace mhedit.Containers.MazeObjects
             if (obj is Point)
             {
                 Point reactoidPosition = (Point)obj;
-                byte[] handLocation = Context.PointToByteArrayShort(_position);
+                byte[] handLocation = DataConverter.PointToByteArrayShort(_position);
                 bytes.AddRange(handLocation);
                 //Context.PointToByteArrayLong(Context.ConvertPixelsToVector(_position))
-                byte[] reactoidLocation = Context.PointToByteArrayShort(reactoidPosition);
-                byte[] reactoidLocation2 = Context.PointToByteArrayLong(Context.ConvertPixelsToVector(reactoidPosition));
+                byte[] reactoidLocation = DataConverter.PointToByteArrayShort(reactoidPosition);
+                byte[] reactoidLocation2 = DataConverter.PointToByteArrayLong(DataConverter.ConvertPixelsToVector(reactoidPosition));
                 int xAccordians = ((reactoidLocation[0] - handLocation[0]) * 2) - 1;
                 int yAccordians = (handLocation[1] - reactoidLocation[1]) * 2 ; //double Y-accordians
                 int xSize = 0x03; //static 3
