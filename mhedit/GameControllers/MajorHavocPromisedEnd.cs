@@ -1350,7 +1350,7 @@ namespace mhedit.GameControllers
                     //Wall data, all walls in maze
                     foreach (MazeWall wall in maze.MazeObjects.OfType<MazeWall>().Where(w => !w.IsDynamicWall))
                     {
-                        bytes.AddRange(wall.ToBytes(this));
+                        bytes.AddRange(wall.ToBytes(maze));
                     }
                     bytes.Add(0x00);
                     break;
@@ -1358,7 +1358,7 @@ namespace mhedit.GameControllers
                     //wall data, only dynamic walls
                     foreach (MazeWall wall in maze.MazeObjects.OfType<MazeWall>().Where(w => w.IsDynamicWall))
                     {
-                        bytes.AddRange(wall.ToBytes(this));
+                        bytes.AddRange(wall.ToBytes(maze));
                     }
                     bytes.Add(0x00);
                     break;
@@ -1366,14 +1366,14 @@ namespace mhedit.GameControllers
                     //Trip Point data
                     foreach (OneWay wall in maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Right))
                     {
-                        bytes.AddRange(wall.ToBytes(this));
+                        bytes.AddRange(wall.ToBytes(maze));
                     }
                     if (maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Left).Count() > 0)
                     {
                         foreach (OneWay wall in maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Left))
                         {
                             bytes.Add(0xff);
-                            bytes.AddRange(wall.ToBytes(this));
+                            bytes.AddRange(wall.ToBytes(maze));
                         }
                     }
                     bytes.Add(0x00);
