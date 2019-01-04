@@ -90,6 +90,7 @@
             this.textBoxROMPath.Name = "textBoxROMPath";
             this.textBoxROMPath.Size = new System.Drawing.Size(270, 20);
             this.textBoxROMPath.TabIndex = 2;
+            this.textBoxROMPath.TextChanged += new System.EventHandler(this.Textbox_TextChanged);
             // 
             // buttonBrowseFolder
             // 
@@ -103,6 +104,7 @@
             // 
             // buttonOK
             // 
+            this.buttonOK.Enabled = false;
             this.buttonOK.Location = new System.Drawing.Point(231, 142);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);

@@ -16,38 +16,27 @@ namespace mhedit
 {
     public partial class DialogLoadROM : Form
     {
+        private const string DefaultRomRootPath = @"C:\SVN\havoc\mame\roms\";
         private MazeCollection _mazeCollection = null;
-        private string _templatePath = null;
+
+        //public DialogLoadROM( string relativeTemplatePath )
+        //{
+        //    InitializeComponent();
+
+        //    textBoxROMPath.Text = Directory.Exists( relativeTemplatePath ) ?
+        //        relativeTemplatePath :
+        //        string.Empty;
+
+        //    //set defaults
+        //    FindDefaultPaths();
+        //}
+
         public DialogLoadROM()
         {
             InitializeComponent();
 
             //set defaults
             FindDefaultPaths();
-        }
-
-        public string ROMPath
-        {
-            get
-            {
-                return textBoxROMPath.Text;
-            }
-            set
-            {
-                textBoxROMPath.Text = value;
-            }
-        }
-
-        public string TemplatePath
-        {
-            get
-            {
-                return _templatePath;
-            }
-            set
-            {
-                _templatePath = value;
-            }
         }
 
         public MazeCollection Mazes
@@ -60,55 +49,47 @@ namespace mhedit
 
         private void FindDefaultPaths()
         {
-            string romPath = "";
-            if (radioButtonMH.Checked)
+            /// Only auto-populate the path if it's not been previously set
+            /// or isn't rooted in the default.
+            if ( string.IsNullOrWhiteSpace( textBoxROMPath.Text ) ||
+                 textBoxROMPath.Text.StartsWith( DefaultRomRootPath ) )
             {
-                romPath = @"C:\SVN\havoc\mame\roms\mhavoc\";
-            }
-            if (radioButtonMHPE.Checked)
-            {
-                romPath = @"C:\SVN\havoc\mame\roms\mhavocpe\";
-            }
-            if (Directory.Exists(romPath))
-            {
-                textBoxROMPath.Text = romPath;
+                string romPath = DefaultRomRootPath +
+                    ( radioButtonMH.Checked ? @"mhavoc\" : @"mhavocpe\" );
+
+                if ( Directory.Exists( romPath ) )
+                {
+                    textBoxROMPath.Text = romPath;
+                }
             }
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
             //Load ROM's here
-            //try
-            //{
-                IGameController controller = null;
-
-                if (radioButtonMH.Checked)
-                {
-                    controller = new MajorHavoc(_templatePath);
-                }
-                if (radioButtonMHPE.Checked)
-                {
-                    controller = new MajorHavocPromisedEnd(_templatePath);
-                }
+            try
+            {
+                IGameController controller = radioButtonMH.Checked ?
+                    (IGameController)new MajorHavoc( textBoxROMPath.Text ) :
+                     new MajorHavocPromisedEnd( textBoxROMPath.Text );
 
                 List<string> loadMessages = new List<string>();
-                _mazeCollection = controller.LoadMazes(textBoxROMPath.Text, loadMessages);
+                _mazeCollection = controller.LoadMazes( textBoxROMPath.Text, loadMessages );
 
-            if (loadMessages.Count > 0)
-            {
-                DialogMessages dm = new DialogMessages();
-                dm.SetMessages(loadMessages);
-                dm.ShowDialog();
-            }
+                if ( loadMessages.Count > 0 )
+                {
+                    DialogMessages dm = new DialogMessages();
+                    dm.SetMessages( loadMessages );
+                    dm.ShowDialog();
+                }
 
                 DialogResult = DialogResult.OK;
                 Close();
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message, "ROM Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            //}
-
+            }
+            catch ( Exception ex )
+            {
+                MessageBox.Show( ex.Message, "ROM Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+            }
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -131,6 +112,11 @@ namespace mhedit
         private void radioButton_CheckedChanged(object sender, EventArgs e)
         {
             FindDefaultPaths();
+        }
+
+        private void Textbox_TextChanged( object sender, EventArgs e )
+        {
+            buttonOK.Enabled = !string.IsNullOrWhiteSpace( textBoxROMPath.Text );
         }
     }
 }
