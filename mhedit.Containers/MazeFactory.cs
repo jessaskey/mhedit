@@ -32,7 +32,7 @@ namespace mhedit.Containers
         TypeD = 3
     }
 
-    static class MazeFactory
+    public static class MazeFactory
     {
         public struct MazeBaseData
         {

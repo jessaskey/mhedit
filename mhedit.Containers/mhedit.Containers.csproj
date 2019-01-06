@@ -55,10 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataConverter.cs" />
-    <Compile Include="Interfaces\ITreeObject.cs" />
-    <Compile Include="Maze.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Maze.cs" />
     <Compile Include="MazeCollection.cs" />
     <Compile Include="MazeEnemies\Cannon.cs" />
     <Compile Include="MazeEnemies\CannonEditor.cs" />
@@ -117,9 +114,6 @@
     <Compile Include="TypeConverters\VelocityTypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Maze.resx">
-      <DependentUpon>Maze.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MazeEnemies\CannonMovementEditor.resx">
       <DependentUpon>CannonMovementEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -176,6 +170,9 @@
     <EmbeddedResource Include="Images\Objects\wall_rightdown_64.ico" />
     <EmbeddedResource Include="Images\Objects\wall_rightup_64.ico" />
     <EmbeddedResource Include="Images\Objects\wall_vertical_64.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
