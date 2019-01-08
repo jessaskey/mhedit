@@ -11,6 +11,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
 using mhedit.Containers;
+using System.Xml.Serialization;
+using ICSharpCode.SharpZipLib.BZip2;
+using System.Xml;
 
 namespace mhedit
 {
@@ -23,7 +26,7 @@ namespace mhedit
         private const int MAX_MAZES = 32;
         private MazeCollection _mazeCollection = new MazeCollection();
 
-        private string fileName = null;
+        private string _fileName = null;
 
         private bool gridlines = true;
 
@@ -138,10 +141,10 @@ namespace mhedit
         [DescriptionAttribute("The filename of this collection on disk.")]
         public string FileName
         {
-            get { return fileName; }
+            get { return _fileName; }
             set
             {
-                fileName = value;
+                _fileName = value;
                 _mazeCollection.IsDirty = true;
             }
         }
@@ -206,6 +209,54 @@ namespace mhedit
         }
 
         #endregion
+
+
+        public static MazeCollection DeserializeFromFile(string fileName)
+        {
+            MazeCollection mazeCollection = null;
+            using (FileStream fStream = new FileStream(fileName, FileMode.Open))
+            {
+                mazeCollection = DeserializeFromStream(fStream);
+            }
+            return mazeCollection;
+        }
+
+        public static MazeCollection DeserializeFromStream(Stream inputStream)
+        {
+            MazeCollection mazeCollection = null;
+            using (MemoryStream mStream = new MemoryStream())
+            {
+                BZip2.Decompress(inputStream, mStream, false);
+                mStream.Position = 0;
+                var serializer = new XmlSerializer(typeof(Maze));
+                using (var reader = XmlReader.Create(mStream))
+                {
+                    mazeCollection = (MazeCollection)serializer.Deserialize(reader);
+                }
+            }
+            return mazeCollection;
+        }
+
+        public static bool SerializeToFile(MazeCollection mazeCollection, string fileName)
+        {
+            bool result = false;
+            using (FileStream fStream = new FileStream(fileName, FileMode.Create))
+            {
+                using (MemoryStream mStream = new MemoryStream())
+                {
+                    var serializer = new XmlSerializer(mazeCollection.GetType());
+                    using (var writer = XmlWriter.Create(mStream))
+                    {
+                        serializer.Serialize(writer, mazeCollection);
+                    }
+                    mStream.Position = 0;
+                    BZip2.Compress(mStream, fStream, true, 4096);
+                    result = true;
+                }
+            }
+            return result;
+        }
+
 
         //#region ISerializable
 

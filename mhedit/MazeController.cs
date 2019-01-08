@@ -2,19 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Windows.Forms;
+using System.Xml.Serialization;
+using System.Xml;
+
 using Silver.UI;
 using mhedit.Containers.MazeObjects;
 using mhedit.Containers.MazeEnemies;
 using mhedit.Containers;
+using ICSharpCode.SharpZipLib.BZip2;
 
 namespace mhedit
 {
@@ -22,7 +23,7 @@ namespace mhedit
 
     [DefaultPropertyAttribute("Name")]
     [Serializable]
-    public class MazeController : Panel, ISerializable, ITreeObject, ICustomTypeDescriptor
+    public class MazeController : Panel, ITreeObject, ICustomTypeDescriptor
     {
 
         #region Declarations
@@ -253,6 +254,55 @@ namespace mhedit
 
         #endregion
 
+        public static Maze DeserializeFromFile(string fileName)
+        {
+            Maze maze = null;
+            using (FileStream fStream = new FileStream(fileName, FileMode.Open))
+            {
+                maze = DeserializeFromStream(fStream);
+            }
+            return maze;
+        }
+
+        public static Maze DeserializeFromStream(Stream inputStream)
+        {
+            Maze maze = null;
+            using (MemoryStream mStream = new MemoryStream())
+            {
+                BZip2.Decompress(inputStream, mStream, false);
+                mStream.Position = 0;
+                var serializer = new XmlSerializer(typeof(Maze));
+                using (var reader = XmlReader.Create(mStream))
+                {
+                    maze = (Maze)serializer.Deserialize(reader);
+                }
+            }
+            return maze;
+        }
+
+        public static bool SerializeToFile(Maze maze, string fileName)
+        {
+            bool result = false;
+            using (FileStream fStream = new FileStream(fileName, FileMode.Create))
+            {
+                using (MemoryStream mStream = new MemoryStream())
+                {
+                    var serializer = new XmlSerializer(maze.GetType());
+                    using (var writer = XmlWriter.Create(mStream))
+                    {
+                        serializer.Serialize(writer, maze);
+                    }
+                    //BinaryFormatter b = new BinaryFormatter();
+                    //b.Serialize(mStream, mazeController.Maze);
+                    mStream.Position = 0;
+                    BZip2.Compress(mStream, fStream, true, 4096);
+                    result = true;
+                }
+            }
+            return result;
+        }
+
+
         #region ISerializable
 
         //Deserialization constructor.
@@ -274,7 +324,7 @@ namespace mhedit
             _maze.MazeType = (MazeType)info.GetValue("MazeType", typeof(MazeType));
             _maze.MazeStampsX = (int)info.GetValue("MazeStampsX", typeof(int));
             _maze.MazeStampsY = (int)info.GetValue("MazeStampsY", typeof(int));
-            _maze.MazeWallBase = (MazeWall[])info.GetValue("MazeWallBase", typeof(MazeWall[]));
+            _maze.MazeWallBase = (List<MazeWall>)info.GetValue("MazeWallBase", typeof(MazeWall[]));
             _maze.MazeObjects = (List<MazeObject>)info.GetValue("MazeObjects", typeof(List<MazeObject>));
         }
                 
@@ -456,7 +506,7 @@ namespace mhedit
             //we will use the base wall 'selected' property to denote
             //if there is not a wall in that stamp location
             //first reset all 'selected properties to 0
-            for (int i = 0; i < MAXWALLS; i++)
+            for (int i = 0; i < _maze.MazeWallBase.Count ; i++)
             {
                 if (_maze.MazeWallBase[i] != null)
                 {
@@ -470,7 +520,7 @@ namespace mhedit
                 if (mazeObject.GetType() == typeof(MazeWall))
                 {
                     currentStamp = PointToStamp(mazeObject.Position);
-                    if (currentStamp >= 0 && currentStamp < _maze.MazeWallBase.Length)
+                    if (currentStamp >= 0 && currentStamp < _maze.MazeWallBase.Count)
                     {
                         if (_maze.MazeWallBase[currentStamp] != null)
                         {

@@ -43,7 +43,7 @@ namespace mhedit.Containers
         private string _mazeHint = String.Empty;
         private string _mazeHint2 = String.Empty;
         private int _oxygenReward = 16;
-        private MazeWall[] _mazeWallBase;
+        private List<MazeWall> _mazeWallBase;
         private List<MazeObject> _mazeObjects;
         private string _lastError = "";
         private List<bool> _transportabilityFlags = new List<bool>();
@@ -95,7 +95,7 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
-        public MazeWall[] MazeWallBase
+        public List<MazeWall> MazeWallBase
         {
             get
             {
@@ -108,7 +108,7 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
-        public Guid Id
+        public Guid I
         {
             get { return _id; }
             set { _id = value; }
@@ -230,7 +230,7 @@ namespace mhedit.Containers
             _mazeType = (MazeType)info.GetValue("MazeType", typeof(MazeType));
             _mazeStampsX = (int)info.GetValue("MazeStampsX", typeof(int));
             _mazeStampsY = (int)info.GetValue("MazeStampsY", typeof(int));
-            _mazeWallBase = (MazeWall[])info.GetValue("MazeWallBase", typeof(MazeWall[]));
+            _mazeWallBase = (List<MazeWall>)info.GetValue("MazeWallBase", typeof(MazeWall[]));
             _mazeObjects = (List<MazeObject>)info.GetValue("MazeObjects", typeof(List<MazeObject>));
         }
                 
@@ -287,7 +287,7 @@ namespace mhedit.Containers
 
         private void Init()
         {
-            _mazeWallBase = new MazeWall[MAXWALLS];
+            _mazeWallBase = new List<MazeWall>();
             _mazeObjects = new List<MazeObject>();
             InitBaseMap();
         }

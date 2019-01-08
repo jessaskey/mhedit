@@ -59,6 +59,10 @@ namespace mhedit.Containers
         private int _alternateWallTimeout;
         private int _wallIndex;
 
+        public MazeWall()
+        {
+            InitWall(MazeWallType.Empty, new Point(0, 0));
+        }
         public MazeWall(MazeWallType type, Point position, int wallIndex)
         {
             InitWall(type, position);
