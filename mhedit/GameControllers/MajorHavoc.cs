@@ -31,7 +31,7 @@ namespace mhedit.GameControllers
         public MajorHavoc(string templatePath)
         {
             _templatePath = templatePath;
-            LoadROMS(templatePath);
+            LoadTemplate(templatePath);
         }
 
         public string LastError
@@ -39,7 +39,7 @@ namespace mhedit.GameControllers
             get { return _lastError; }
         }
 
-        private void LoadROMS(string templatePath)
+        private void LoadTemplate(string templatePath)
         {
             //load our exports
             string exportFile = Path.Combine(templatePath, "havoc.exp");

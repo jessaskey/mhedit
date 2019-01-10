@@ -35,7 +35,7 @@ namespace mhedit.GameControllers
         public MajorHavocPromisedEnd(string templatePath)
         {
             _templatePath = templatePath;
-            LoadROMS(_templatePath);
+            LoadTemplate(_templatePath);
         }
 
         public string LastError
@@ -43,33 +43,48 @@ namespace mhedit.GameControllers
             get { return _lastError; }
         }
 
-        private void LoadROMS(string templatePath)
+        private void LoadTemplate(string templatePath)
         {
-            //load our exports
-            if (File.Exists(templatePath + "mhavocpe.exp"))
-            {
-                string[] exportLines = File.ReadAllLines(templatePath + "mhavocpe.exp");
-                foreach (string exportLine in exportLines)
-                {
-                    string[] def = exportLine.Replace(" ", "").Replace("\t", "").Replace(".EQU", "|").Split('|');
-                    if (def.Length == 2)
-                    {
-                        int value = int.Parse(def[1].Replace("$", ""), System.Globalization.NumberStyles.HexNumber);
-                        _exports.Add(def[0], (ushort)value);
-                    }
-                }
-            }
 
             //load up our roms for now...
             try
             {
-                _page2367 = File.ReadAllBytes(templatePath + _page2367ROM);
-                _alphaHigh = File.ReadAllBytes(templatePath + _alphaHighROM);
+                _page2367 = File.ReadAllBytes(Path.Combine(templatePath,_page2367ROM));
+                _alphaHigh = File.ReadAllBytes(Path.Combine(templatePath,_alphaHighROM));
             }
             catch (Exception Exception)
             {
-                throw new Exception("ROM Load Error - Page0/1: " + Exception.Message);
+                throw new Exception("ROM Load Error - Page6/7: " + Exception.Message);
             }
+
+            byte[] versionNumbers = ReadPagedROM(0x2002, 0, 2, 6);
+
+            if (versionNumbers[0] >= 0)
+            {
+                if (versionNumbers[1] >= 0x22)
+                {
+                    //load our exports
+                    string exportFile = Path.Combine(templatePath, "mhavocpe_022.exp");
+                    if (File.Exists(exportFile))
+                    {
+                        string[] exportLines = File.ReadAllLines(exportFile);
+                        foreach (string exportLine in exportLines)
+                        {
+                            string[] def = exportLine.Replace(" ", "").Replace("\t", "").Replace(".EQU", "|").Split('|');
+                            if (def.Length == 2)
+                            {
+                                int value = int.Parse(def[1].Replace("$", ""), System.Globalization.NumberStyles.HexNumber);
+                                _exports.Add(def[0], (ushort)value);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception("ROM Version has to be 0.22 or higher.");
+                }
+            }
+
         }
 
         public MazeCollection LoadMazes(string sourceROMFilePath, List<string> loadMessages)
@@ -97,7 +112,7 @@ namespace mhedit.GameControllers
                     maze.Hint2 = GetMessage(hintIndex2);
                 }
                 //build reactor
-                ushort mazeInitIndex = ReadWord(_exports["mzinit"], i * 2, 6);
+                ushort mazeInitIndex = ReadWord(_exports["mzinit"], i * 2, 7);
                 Reactoid reactor = new Reactoid();
                 reactor.LoadPosition(ReadBytes(mazeInitIndex, 4, 7));
                 mazeInitIndex += 4;

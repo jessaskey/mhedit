@@ -67,12 +67,13 @@ namespace mhedit
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
+            string templateFolder = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "template");
             //Load ROM's here
             try
             {
                 IGameController controller = radioButtonMH.Checked ?
-                    (IGameController)new MajorHavoc( textBoxROMPath.Text ) :
-                     new MajorHavocPromisedEnd( textBoxROMPath.Text );
+                    (IGameController)new MajorHavoc(templateFolder ) :
+                     new MajorHavocPromisedEnd(templateFolder );
 
                 List<string> loadMessages = new List<string>();
                 _mazeCollection = controller.LoadMazes( textBoxROMPath.Text, loadMessages );
