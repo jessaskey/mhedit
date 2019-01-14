@@ -96,14 +96,14 @@ namespace mhedit.Containers
                         BuildMazeWalls(new List<MazeWallType>() { MazeWallType.Empty,MazeWallType.Empty,MazeWallType.Empty,MazeWallType.Empty,
                                                                 MazeWallType.Empty,MazeWallType.Empty,MazeWallType.LeftDown,MazeWallType.RightDown,
                                                                 MazeWallType.Horizontal,MazeWallType.Horizontal,MazeWallType.Horizontal,MazeWallType.Horizontal,
-                                                                MazeWallType.LeftDown,MazeWallType.Empty,MazeWallType.Empty,MazeWallType.Empty,MazeWallType.Empty }));
+                                                                MazeWallType.LeftDown,MazeWallType.Empty,MazeWallType.Empty,MazeWallType.Empty}));
 
                     //row2
                     mazeWallBase.AddRange(
-                        BuildMazeWalls(new List<MazeWallType>() { MazeWallType.Empty,MazeWallType.Empty,MazeWallType.Empty,MazeWallType.Empty,
-                                                                MazeWallType.RightDown,MazeWallType.LeftUp,MazeWallType.RightUp,MazeWallType.Empty,
-                                                                MazeWallType.Horizontal,MazeWallType.Horizontal,MazeWallType.LeftDown,MazeWallType.RightUp,
-                                                                MazeWallType.LeftDown,MazeWallType.Empty,MazeWallType.Empty,MazeWallType.Empty }));
+                        BuildMazeWalls(new List<MazeWallType>() { MazeWallType.Empty, MazeWallType.Empty,MazeWallType.Empty,MazeWallType.Empty,
+                                                                MazeWallType.Empty,MazeWallType.RightDown,MazeWallType.LeftUp,MazeWallType.RightUp,
+                                                                MazeWallType.Empty,MazeWallType.Horizontal,MazeWallType.Horizontal,MazeWallType.LeftDown,
+                                                                MazeWallType.RightUp,MazeWallType.LeftDown,MazeWallType.Empty,MazeWallType.Empty }));
 
                     //row3
                     mazeWallBase.AddRange(
