@@ -21,7 +21,7 @@ namespace mhedit.Containers
 
     [DefaultPropertyAttribute("Name")]
     [Serializable]
-    public class Maze : ISerializable
+    public class Maze 
     {
 
         #region Declarations
@@ -205,46 +205,6 @@ namespace mhedit.Containers
             {
                 _oxygenReward = value ;
             }
-        }
-
-        #endregion
-
-        #region ISerializable
-
-        //Deserialization constructor.
-        public Maze(SerializationInfo info, StreamingContext ctxt)
-        {
-            _mazeName = (string)info.GetValue("Name", typeof(string));
-            _mazeDescription = (string)info.GetValue("Description", typeof(string));
-            try
-            {
-                _mazeHint = (string)info.GetValue("Hint", typeof(string));
-                _mazeHint2 = (string)info.GetValue("Hint2", typeof(string));
-            }
-            catch { };
-            _fileName = (string)info.GetValue("FileName", typeof(string));
-            _isDirty = (bool)info.GetValue("IsDirty", typeof(bool));
-            _mazeType = (MazeType)info.GetValue("MazeType", typeof(MazeType));
-            _mazeStampsX = (int)info.GetValue("MazeStampsX", typeof(int));
-            _mazeStampsY = (int)info.GetValue("MazeStampsY", typeof(int));
-            _mazeWallBase = (List<MazeWall>)info.GetValue("MazeWallBase", typeof(MazeWall[]));
-            _mazeObjects = (List<MazeObject>)info.GetValue("MazeObjects", typeof(List<MazeObject>));
-        }
-                
-        //Serialization function.
-        public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
-        {
-            info.AddValue("Name", _mazeName);
-            info.AddValue("Description", _mazeDescription);
-            info.AddValue("Hint", _mazeHint);
-            info.AddValue("Hint2", _mazeHint2);
-            info.AddValue("FileName", _fileName);
-            info.AddValue("IsDirty", false);
-            info.AddValue("MazeType", _mazeType);
-            info.AddValue("MazeStampsX", _mazeStampsX);
-            info.AddValue("MazeStampsY", _mazeStampsY);
-            info.AddValue("MazeWallBase", _mazeWallBase);
-            info.AddValue("MazeObjects", _mazeObjects);
         }
 
         #endregion

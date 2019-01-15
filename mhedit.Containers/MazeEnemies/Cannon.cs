@@ -168,22 +168,5 @@ namespace mhedit.Containers.MazeEnemies
             _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.cannon_obj.ico");
         }
 
-        //#region ISerializable
-
-        ////Deserialization constructor.
-        //public Cannon(SerializationInfo info, StreamingContext ctxt)
-        //{
-        //    _movements = (List<iCannonMovement>)info.GetValue("Movements", typeof(List<iCannonMovement>));
-        //    _position = (Point)info.GetValue("Position", typeof(Point));
-        //}
-                
-        ////Serialization function.
-        //public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
-        //{
-        //    info.AddValue("Movements", _movements);
-        //    info.AddValue("Position", _position);
-        //}
-
-        //#endregion
     }
 }

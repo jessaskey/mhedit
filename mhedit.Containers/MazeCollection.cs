@@ -196,36 +196,6 @@ namespace mhedit.Containers
 
         #endregion
 
-        //#region ISerializable
-
-        ////Deserialization constructor.
-        //public MazeCollection(SerializationInfo info, StreamingContext ctxt)
-        //{
-        //    collectionName = (string)info.GetValue("Name", typeof(string));
-        //    authorName = (string)info.GetValue("AuthorName", typeof(string));
-        //    authorEmail = (string)info.GetValue("AuthorEmail", typeof(string));
-        //    //fileName = (string)info.GetValue("FileName", typeof(string));
-        //    //Width = (int)info.GetValue("Width", typeof(int));
-        //    //Height = (int)info.GetValue("Height", typeof(int));
-        //    //AllowDrop = (bool)info.GetValue("AllowDrop", typeof(bool));
-        //    _isDirty = (bool)info.GetValue("IsDirty", typeof(bool));
-        //}
-                
-        //////Serialization function.
-        //public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
-        //{
-        //    info.AddValue("Name", collectionName);
-        //    info.AddValue("AuthorName", authorName);
-        //    info.AddValue("AuthorEmail", authorEmail);
-        //    //info.AddValue("FileName", fileName);
-        //    //info.AddValue("Width", Width);
-        //    //info.AddValue("Height", Height);
-        //    //info.AddValue("AllowDrop", AllowDrop);
-        //    info.AddValue("IsDirty", false);
-        //}
-
-        //#endregion
-
         //#region ICustomTypeDescriptor
 
         //private PropertyDescriptorCollection FilterProperties(PropertyDescriptorCollection pdc)

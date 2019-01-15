@@ -302,53 +302,6 @@ namespace mhedit
             return result;
         }
 
-
-        #region ISerializable
-
-        //Deserialization constructor.
-        public MazeController(SerializationInfo info, StreamingContext ctxt)
-        {
-            _maze.Name = (string)info.GetValue("Name", typeof(string));
-            _maze.Description = (string)info.GetValue("Description", typeof(string));
-            try
-            {
-                _maze.Hint = (string)info.GetValue("Hint", typeof(string));
-                _maze.Hint2 = (string)info.GetValue("Hint2", typeof(string));
-            }
-            catch { };
-            _fileName = (string)info.GetValue("FileName", typeof(string));
-            base.Width = (int)info.GetValue("Width", typeof(int));
-            base.Height = (int)info.GetValue("Height", typeof(int));
-            base.AllowDrop = (bool)info.GetValue("AllowDrop", typeof(bool));
-            _maze.IsDirty = (bool)info.GetValue("IsDirty", typeof(bool));
-            _maze.MazeType = (MazeType)info.GetValue("MazeType", typeof(MazeType));
-            _maze.MazeStampsX = (int)info.GetValue("MazeStampsX", typeof(int));
-            _maze.MazeStampsY = (int)info.GetValue("MazeStampsY", typeof(int));
-            _maze.MazeWallBase = (List<MazeWall>)info.GetValue("MazeWallBase", typeof(MazeWall[]));
-            _maze.MazeObjects = (List<MazeObject>)info.GetValue("MazeObjects", typeof(List<MazeObject>));
-        }
-                
-        //Serialization function.
-        public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
-        {
-            info.AddValue("Name", _maze.Name);
-            info.AddValue("Description", _maze.Description);
-            info.AddValue("Hint", _maze.Hint);
-            info.AddValue("Hint2", _maze.Hint2);
-            info.AddValue("FileName", _fileName);
-            info.AddValue("Width", base.Width);
-            info.AddValue("Height", base.Height);
-            info.AddValue("AllowDrop", base.AllowDrop);
-            info.AddValue("IsDirty", false);
-            info.AddValue("MazeType", _maze.MazeType);
-            info.AddValue("MazeStampsX", _maze.MazeStampsX);
-            info.AddValue("MazeStampsY", _maze.MazeStampsY);
-            info.AddValue("MazeWallBase", _maze.MazeWallBase);
-            info.AddValue("MazeObjects", _maze.MazeObjects);
-        }
-
-        #endregion
-
         #region ICustomTypeDescriptor
 
         private PropertyDescriptorCollection FilterProperties(PropertyDescriptorCollection pdc)
