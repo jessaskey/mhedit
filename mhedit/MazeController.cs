@@ -290,7 +290,7 @@ namespace mhedit
                     var serializer = new XmlSerializer(maze.GetType());
                     using (var writer = XmlWriter.Create(mStream))
                     {
-                        serializer.Serialize(writer, maze);
+                        serializer.Serialize(writer, maze, Constants.XmlNamespace);
                     }
                     //BinaryFormatter b = new BinaryFormatter();
                     //b.Serialize(mStream, mazeController.Maze);

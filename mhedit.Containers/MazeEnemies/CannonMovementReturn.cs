@@ -6,7 +6,7 @@ using System.Text;
 namespace mhedit.Containers.MazeEnemies
 {
     [Serializable]
-    public class CannonMovementReturn : iCannonMovement
+    public class CannonMovementReturn : CannonMovement
     {
         public override string ToString()
         {

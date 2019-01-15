@@ -29,7 +29,7 @@ namespace mhedit.Containers.MazeObjects
         private Point _position;
         private TransporterDirection _direction = TransporterDirection.Right;
         private Image _img;
-        private BitArray _transportability = new BitArray(32, true);
+        private List<bool> _transportability = new List<bool>();
         private ObjectColor _color = ObjectColor.Red;
         private bool _isBroken = false;
         private bool _isHidden = false;
@@ -67,7 +67,7 @@ namespace mhedit.Containers.MazeObjects
         //This is here for backwards compatibility but it is NOT USED
         [BrowsableAttribute(false)]
         [DescriptionAttribute("Flags setting the transportability data for moving objects in the maze.")]
-        public BitArray Transportability
+        public List<bool> Transportability
         {
             get { return _transportability; }
             set { _transportability = value; }

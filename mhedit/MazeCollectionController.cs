@@ -244,10 +244,10 @@ namespace mhedit
             {
                 using (MemoryStream mStream = new MemoryStream())
                 {
-                    var serializer = new XmlSerializer(mazeCollection.GetType());
+                    var serializer = new XmlSerializer(typeof(MazeCollection));
                     using (var writer = XmlWriter.Create(mStream))
                     {
-                        serializer.Serialize(writer, mazeCollection);
+                        serializer.Serialize(writer, mazeCollection, Constants.XmlNamespace);
                     }
                     mStream.Position = 0;
                     BZip2.Compress(mStream, fStream, true, 4096);

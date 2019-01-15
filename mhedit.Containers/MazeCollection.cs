@@ -10,12 +10,41 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Windows.Forms;
 using System.Globalization;
+using System.Xml.Serialization;
 
+using mhedit.Containers;
+using mhedit.Containers.MazeObjects;
+using mhedit.Containers.MazeEnemies;
 
 namespace mhedit.Containers
 {
     [DefaultPropertyAttribute("Name")]
     [Serializable]
+    [XmlInclude(typeof(Cannon))]
+    [XmlInclude(typeof(CannonMovementPosition))]
+    [XmlInclude(typeof(CannonMovementPause))]
+    [XmlInclude(typeof(CannonMovementMove))]
+    [XmlInclude(typeof(CannonMovementReturn))]
+    [XmlInclude(typeof(LightningH))]
+    [XmlInclude(typeof(LightningV))]
+    [XmlInclude(typeof(Maxoid))]
+    [XmlInclude(typeof(Perkoid))]
+    [XmlInclude(typeof(Pyroid))]
+    [XmlInclude(typeof(TripPad))]
+    [XmlInclude(typeof(TripPadPyroid))]
+    [XmlInclude(typeof(Arrow))]
+    [XmlInclude(typeof(ArrowOut))]
+    [XmlInclude(typeof(Boots))]
+    [XmlInclude(typeof(Clock))]
+    [XmlInclude(typeof(EscapePod))]
+    [XmlInclude(typeof(Hand))]
+    [XmlInclude(typeof(Key))]
+    [XmlInclude(typeof(Lock))]
+    [XmlInclude(typeof(OneWay))]
+    [XmlInclude(typeof(Oxoid))]
+    [XmlInclude(typeof(Reactoid))]
+    [XmlInclude(typeof(Spikes))]
+    [XmlInclude(typeof(Transporter))]
     public class MazeCollection 
     {
         #region Declarations
@@ -167,35 +196,35 @@ namespace mhedit.Containers
 
         #endregion
 
-        #region ISerializable
+        //#region ISerializable
 
-        //Deserialization constructor.
-        public MazeCollection(SerializationInfo info, StreamingContext ctxt)
-        {
-            collectionName = (string)info.GetValue("Name", typeof(string));
-            authorName = (string)info.GetValue("AuthorName", typeof(string));
-            authorEmail = (string)info.GetValue("AuthorEmail", typeof(string));
-            //fileName = (string)info.GetValue("FileName", typeof(string));
-            //Width = (int)info.GetValue("Width", typeof(int));
-            //Height = (int)info.GetValue("Height", typeof(int));
-            //AllowDrop = (bool)info.GetValue("AllowDrop", typeof(bool));
-            _isDirty = (bool)info.GetValue("IsDirty", typeof(bool));
-        }
+        ////Deserialization constructor.
+        //public MazeCollection(SerializationInfo info, StreamingContext ctxt)
+        //{
+        //    collectionName = (string)info.GetValue("Name", typeof(string));
+        //    authorName = (string)info.GetValue("AuthorName", typeof(string));
+        //    authorEmail = (string)info.GetValue("AuthorEmail", typeof(string));
+        //    //fileName = (string)info.GetValue("FileName", typeof(string));
+        //    //Width = (int)info.GetValue("Width", typeof(int));
+        //    //Height = (int)info.GetValue("Height", typeof(int));
+        //    //AllowDrop = (bool)info.GetValue("AllowDrop", typeof(bool));
+        //    _isDirty = (bool)info.GetValue("IsDirty", typeof(bool));
+        //}
                 
-        ////Serialization function.
-        public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
-        {
-            info.AddValue("Name", collectionName);
-            info.AddValue("AuthorName", authorName);
-            info.AddValue("AuthorEmail", authorEmail);
-            //info.AddValue("FileName", fileName);
-            //info.AddValue("Width", Width);
-            //info.AddValue("Height", Height);
-            //info.AddValue("AllowDrop", AllowDrop);
-            info.AddValue("IsDirty", false);
-        }
+        //////Serialization function.
+        //public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+        //{
+        //    info.AddValue("Name", collectionName);
+        //    info.AddValue("AuthorName", authorName);
+        //    info.AddValue("AuthorEmail", authorEmail);
+        //    //info.AddValue("FileName", fileName);
+        //    //info.AddValue("Width", Width);
+        //    //info.AddValue("Height", Height);
+        //    //info.AddValue("AllowDrop", AllowDrop);
+        //    info.AddValue("IsDirty", false);
+        //}
 
-        #endregion
+        //#endregion
 
         //#region ICustomTypeDescriptor
 

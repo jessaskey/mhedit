@@ -7,7 +7,7 @@ using System.Text;
 namespace mhedit.Containers.MazeEnemies
 {
     [Serializable]
-    public class CannonMovementMove : iCannonMovement
+    public class CannonMovementMove : CannonMovement
     {
         [TypeConverter(typeof(TypeConverters.SignedVelocityTypeConverter))]
         public SignedVelocity Velocity { get; set; }

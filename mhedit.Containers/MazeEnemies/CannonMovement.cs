@@ -5,7 +5,20 @@ using System.Text;
 
 namespace mhedit.Containers
 {
-    public enum CannonMovementType
+
+    [Serializable]
+    public class CannonMovement
+    {
+        public CannonMovementType MovementType { get; set; }
+        public SignedVelocity Velocity { get; set; }
+        public CannonGunPosition GunPosition { get; set; }
+        public int WaitFrames { get; set; }
+        public CannonGunSpeed GunSpeed { get; set; }
+        public byte FireSpeed { get; set; }
+    }
+
+    [Serializable]
+    public enum CannonMovementType : int
     {
         Return,
         Position,
@@ -13,7 +26,8 @@ namespace mhedit.Containers
         Pause
     }
 
-    public enum CannonGunPosition
+    [Serializable]
+    public enum CannonGunPosition : int
     {
         TopRight = 0,
         MiddleRight,
@@ -24,7 +38,8 @@ namespace mhedit.Containers
         BottomLeft
     }
 
-    public enum CannonGunSpeed
+    [Serializable]
+    public enum CannonGunSpeed : int
     {
         Slow = 0,
         Medium,

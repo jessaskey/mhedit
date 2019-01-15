@@ -5,9 +5,8 @@ using System.Text;
 
 namespace mhedit.Containers.MazeEnemies
 {
-    public interface iCannonMovement
+    public interface ICannonMovement
     {
-
         CannonMovementType GetMovementType();
         SignedVelocity GetVelocity();
         CannonGunPosition GetGunPosition();

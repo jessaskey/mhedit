@@ -8,40 +8,10 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers
 {
-    /// <summary>
-    /// The velocity class contains both X and Y components of velocity
-    /// </summary>
-    [Serializable]
-    public class Velocity
-    {
-        public byte X { get; set; }
-        public byte Y { get; set; }
-    }
-
-    /// <summary>
-    /// The signed velocity class contains both X and Y components of velocity
-    /// and is used exclusively for IonCannons
-    /// </summary>
-    [Serializable]
-    public class SignedVelocity
-    {
-        public sbyte X { get; set; }
-        public sbyte Y { get; set; }
-    }
-
-    /// <summary>
-    /// The vector class contains a start and end point
-    /// </summary>
-    [Serializable]
-    public class Vector
-    {
-        public Point Start { get; set; }
-        public Point End { get; set; }
-    }
-
     [Serializable]
     public abstract class MazeObject : ICloneable
     {

@@ -70,7 +70,7 @@ namespace mhedit.Containers.MazeObjects
         {
             List<byte> bytes = new List<byte>();
             bytes.AddRange(DataConverter.PointToByteArrayPacked(_position));
-            bytes.Add((byte)_arrowDirection);
+            bytes.Add((byte)(_arrowDirection+8)); //Offset for OUT Arrow values
             return bytes.ToArray();
         }
 

@@ -50,9 +50,6 @@ namespace mhedit.Containers
         private int _mazeStampsX = 0;
         private int _mazeStampsY = 0;
 
-
-
-
         #endregion
 
         #region Constructors

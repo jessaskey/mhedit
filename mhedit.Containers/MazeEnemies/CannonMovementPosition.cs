@@ -6,7 +6,7 @@ using System.Text;
 namespace mhedit.Containers.MazeEnemies
 {
     [Serializable]
-    public class CannonMovementPosition : iCannonMovement
+    public class CannonMovementPosition : CannonMovement
     {
         public CannonGunPosition Position { get; set; }
         public CannonGunSpeed Speed { get; set; }

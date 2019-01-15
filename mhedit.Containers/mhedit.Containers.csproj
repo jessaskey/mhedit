@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="DataConverter.cs" />
     <Compile Include="Maze.cs" />
     <Compile Include="MazeCollection.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="MazeEnemies\TripPad.cs" />
     <Compile Include="MazeEnemies\TripPadPyroid.cs" />
     <Compile Include="MazeFactory.cs" />
+    <Compile Include="MazeObject.cs" />
     <Compile Include="MazeObjects\ArrowOut.cs" />
     <Compile Include="MazeObjects\Arrow.cs" />
     <Compile Include="MazeObjects\Boots.cs" />
@@ -93,7 +95,6 @@
     <Compile Include="MazeObjects\Hand.cs" />
     <Compile Include="MazeObjects\Key.cs" />
     <Compile Include="MazeObjects\Lock.cs" />
-    <Compile Include="MazeObjects\MazeObject.cs" />
     <Compile Include="MazeObjects\ObjectColor.cs" />
     <Compile Include="MazeObjects\OneWay.cs" />
     <Compile Include="MazeObjects\Oxoid.cs" />
@@ -108,10 +109,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ResourceFactory.cs" />
+    <Compile Include="SignedVelocity.cs" />
     <Compile Include="TypeConverters\SignedVelocityTypeConverter.cs" />
     <Compile Include="TypeConverters\TripPadPyroidTypeConverter.cs" />
     <Compile Include="TypeConverters\VectorPositionTypeConverter.cs" />
     <Compile Include="TypeConverters\VelocityTypeConverter.cs" />
+    <Compile Include="Vector.cs" />
+    <Compile Include="Velocity.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MazeEnemies\CannonMovementEditor.resx">

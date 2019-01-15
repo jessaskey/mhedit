@@ -6,6 +6,7 @@ using System.ComponentModel.Design;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies
 {
@@ -13,7 +14,7 @@ namespace mhedit.Containers.MazeEnemies
     /// The Cannon class shows the Ion Cannon in the maze.
     /// </summary>
     [Serializable]
-    public class Cannon : MazeObject, ISerializable
+    public class Cannon : MazeObject
     {
         private const int _SNAP_X = 4;
         private const int _SNAP_Y = 4;
@@ -21,11 +22,11 @@ namespace mhedit.Containers.MazeEnemies
 
         private Point _position;
         private Image _img;
-        private List<iCannonMovement> _movements = null;
+        private List<CannonMovement> _movements = null;
 
         public Cannon()
         {
-            _movements = new List<iCannonMovement>();
+            _movements = new List<CannonMovement>();
             LoadDefaultImage();
             renderOffset.X = 32;
             renderOffset.Y = 32;
@@ -54,7 +55,7 @@ namespace mhedit.Containers.MazeEnemies
         [CategoryAttribute("Custom")]
         [DescriptionAttribute("The movement script for the cannon")]
         [EditorAttribute(typeof(CannonEditor), typeof(System.Drawing.Design.UITypeEditor))]
-        public List<iCannonMovement> Movements
+        public List<CannonMovement> Movements
         {
             get { return _movements; }
             set { _movements = value; }
@@ -67,6 +68,7 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [BrowsableAttribute(false)]
+        [XmlIgnoreAttribute]
         public override Image Image
         {
             get
@@ -87,7 +89,7 @@ namespace mhedit.Containers.MazeEnemies
 
             bytes.AddRange(DataConverter.PointToByteArrayLong(DataConverter.ConvertPixelsToVector(_position)));
             //now cannon commands
-            foreach (iCannonMovement movement in _movements)
+            foreach (CannonMovement movement in _movements)
             {
                 byte command = 0;
                 if (movement is CannonMovementMove)
@@ -166,22 +168,22 @@ namespace mhedit.Containers.MazeEnemies
             _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.cannon_obj.ico");
         }
 
-        #region ISerializable
+        //#region ISerializable
 
-        //Deserialization constructor.
-        public Cannon(SerializationInfo info, StreamingContext ctxt)
-        {
-            _movements = (List<iCannonMovement>)info.GetValue("Movements", typeof(List<iCannonMovement>));
-            _position = (Point)info.GetValue("Position", typeof(Point));
-        }
+        ////Deserialization constructor.
+        //public Cannon(SerializationInfo info, StreamingContext ctxt)
+        //{
+        //    _movements = (List<iCannonMovement>)info.GetValue("Movements", typeof(List<iCannonMovement>));
+        //    _position = (Point)info.GetValue("Position", typeof(Point));
+        //}
                 
-        //Serialization function.
-        public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
-        {
-            info.AddValue("Movements", _movements);
-            info.AddValue("Position", _position);
-        }
+        ////Serialization function.
+        //public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+        //{
+        //    info.AddValue("Movements", _movements);
+        //    info.AddValue("Position", _position);
+        //}
 
-        #endregion
+        //#endregion
     }
 }

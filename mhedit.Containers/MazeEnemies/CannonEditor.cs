@@ -27,8 +27,8 @@ namespace mhedit.Containers
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
             CannonMovementEditor editor = new CannonMovementEditor();
-            List<iCannonMovement> currentMovements = (((List<iCannonMovement>)value).ToArray()).ToList();
-            editor.Movements = (List<iCannonMovement>)value;
+            List<CannonMovement> currentMovements = (((List<CannonMovement>)value).ToArray()).ToList();
+            editor.Movements = (List<CannonMovement>)value;
             DialogResult result = editor.ShowDialog();
             if (result == DialogResult.Cancel)
             {

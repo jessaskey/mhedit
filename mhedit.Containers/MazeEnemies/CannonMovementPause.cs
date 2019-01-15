@@ -6,7 +6,7 @@ using System.Text;
 namespace mhedit.Containers.MazeEnemies
 {
     [Serializable]
-    public class CannonMovementPause : iCannonMovement
+    public class CannonMovementPause : CannonMovement
     {
         public int WaitFrames { get; set; }
 

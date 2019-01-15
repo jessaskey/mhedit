@@ -11,12 +11,12 @@ namespace mhedit.Containers.MazeEnemies
 {
     public partial class CannonMovementPreview : Form
     {
-        private List<iCannonMovement> _movements;
+        private List<CannonMovement> _movements;
         private int _currentIndex = 0;
         private Point _currentPosition = new Point(32, 32);
         private Velocity _currentVelocity = new Velocity();
 
-        public CannonMovementPreview(List<iCannonMovement> movements)
+        public CannonMovementPreview(List<CannonMovement> movements)
         {
             InitializeComponent();
             _movements = movements;

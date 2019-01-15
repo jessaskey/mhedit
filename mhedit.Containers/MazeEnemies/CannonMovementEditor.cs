@@ -17,9 +17,9 @@ namespace mhedit.Containers
 {
     public partial class CannonMovementEditor : Form
     {
-        List<iCannonMovement> _movements = new List<iCannonMovement>();
+        List<CannonMovement> _movements = new List<CannonMovement>();
 
-        public List<iCannonMovement> Movements
+        public List<CannonMovement> Movements
         {
             get
             {
@@ -70,7 +70,7 @@ namespace mhedit.Containers
         private void toolStripButtonAddMove_Click(object sender, EventArgs e)
         {
             CannonMovementMove movement = new CannonMovementMove();
-            _movements.Add((iCannonMovement)movement);
+            _movements.Add((CannonMovement)movement);
             BindListBox();
             listBoxMovements.SelectedIndex = _movements.Count - 1;
         }
@@ -78,7 +78,7 @@ namespace mhedit.Containers
         private void toolStripButtonAddAngle_Click(object sender, EventArgs e)
         {
             CannonMovementPosition movement = new CannonMovementPosition();
-            _movements.Add((iCannonMovement)movement);
+            _movements.Add((CannonMovement)movement);
             BindListBox();
             listBoxMovements.SelectedIndex = _movements.Count - 1;
         }
@@ -86,7 +86,7 @@ namespace mhedit.Containers
         private void toolStripButtonAddPause_Click(object sender, EventArgs e)
         {
             CannonMovementPause movement = new CannonMovementPause();
-            _movements.Add((iCannonMovement)movement);
+            _movements.Add((CannonMovement)movement);
             BindListBox();
             listBoxMovements.SelectedIndex = _movements.Count - 1;
         }
@@ -94,7 +94,7 @@ namespace mhedit.Containers
         private void toolStripButtonAddRepeat_Click(object sender, EventArgs e)
         {
             CannonMovementReturn movement = new CannonMovementReturn();
-            _movements.Add((iCannonMovement)movement);
+            _movements.Add((CannonMovement)movement);
             BindListBox();
             listBoxMovements.SelectedIndex = _movements.Count - 1;
         }
@@ -113,7 +113,7 @@ namespace mhedit.Containers
             if (listBoxMovements.SelectedIndex > 0)
             {
                 int index = listBoxMovements.SelectedIndex;
-                iCannonMovement o = _movements[index];
+                CannonMovement o = _movements[index];
                 _movements.RemoveAt(index);
                 _movements.Insert(index - 1, o);
                 BindListBox();
@@ -126,7 +126,7 @@ namespace mhedit.Containers
             if (listBoxMovements.SelectedIndex < (listBoxMovements.Items.Count - 2))
             {
                 int index = listBoxMovements.SelectedIndex;
-                iCannonMovement o = _movements[index];
+                CannonMovement o = _movements[index];
                 _movements.RemoveAt(index);
                 _movements.Insert(index + 1, o);
                 BindListBox();
@@ -142,7 +142,7 @@ namespace mhedit.Containers
         private void BindListBox()
         {
             listBoxMovements.Items.Clear();
-            foreach (iCannonMovement movement in _movements)
+            foreach (CannonMovement movement in _movements)
             {
                 listBoxMovements.Items.Add(movement);
             }
@@ -194,7 +194,7 @@ namespace mhedit.Containers
             }
         }
 
-        private bool MovementsValid(List<iCannonMovement> movements)
+        private bool MovementsValid(List<CannonMovement> movements)
         {
             bool movementsValid = false;
 
@@ -224,7 +224,7 @@ namespace mhedit.Containers
                 using (FileStream fStream = new FileStream(movementFile, FileMode.Open))
                 {
                     BinaryFormatter b = new BinaryFormatter();
-                    _movements= (List<iCannonMovement>)b.Deserialize(fStream);
+                    _movements= (List<CannonMovement>)b.Deserialize(fStream);
                     BindListBox();
                 }
             }
