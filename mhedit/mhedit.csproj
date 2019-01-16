@@ -264,6 +264,36 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\MHEditServiceReference\MHEditService.wsdl" />
+    <EmbeddedResource Include="images\buttons\arrow_32.png" />
+    <EmbeddedResource Include="images\buttons\booties_32.png" />
+    <EmbeddedResource Include="images\buttons\cannon_32.png" />
+    <EmbeddedResource Include="images\buttons\clock_32.png" />
+    <EmbeddedResource Include="images\buttons\hand_32.png" />
+    <EmbeddedResource Include="images\buttons\key_32.png" />
+    <EmbeddedResource Include="images\buttons\lightning_32.png" />
+    <EmbeddedResource Include="images\buttons\lightning_v_32.png" />
+    <EmbeddedResource Include="images\buttons\lock_32.png" />
+    <EmbeddedResource Include="images\buttons\oneway_32.png" />
+    <EmbeddedResource Include="images\buttons\oxoid_32.png" />
+    <EmbeddedResource Include="images\buttons\perkoid_32.png" />
+    <EmbeddedResource Include="images\buttons\pod_32.png" />
+    <EmbeddedResource Include="images\buttons\pyroid.png" />
+    <EmbeddedResource Include="images\buttons\pyroid_32.png" />
+    <EmbeddedResource Include="images\buttons\reactoid_32.png" />
+    <EmbeddedResource Include="images\buttons\roboid_32.png" />
+    <EmbeddedResource Include="images\buttons\spikes_32.png" />
+    <EmbeddedResource Include="images\buttons\transporter_32.png" />
+    <EmbeddedResource Include="images\buttons\trippad_32.png" />
+    <EmbeddedResource Include="images\buttons\wall_empty_32.png" />
+    <EmbeddedResource Include="images\buttons\wall_horizontal_32.png" />
+    <EmbeddedResource Include="images\buttons\wall_leftdown_32.png" />
+    <EmbeddedResource Include="images\buttons\wall_leftup_32.png" />
+    <EmbeddedResource Include="images\buttons\wall_rightdown_32.png" />
+    <EmbeddedResource Include="images\buttons\wall_rightup_32.png" />
+    <EmbeddedResource Include="images\buttons\wall_vertical_32.png" />
+    <Content Include="images\toolbarbuttons\login.png" />
+    <Content Include="images\toolbarbuttons\rom.png" />
+    <Content Include="images\toolbarbuttons\script-binary-icon.png" />
     <Content Include="template\mhpe.1l">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -301,14 +331,6 @@
       <DependentUpon>DialogConfiguration.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="images\buttons\trippad_32.ico" />
-    <EmbeddedResource Include="images\buttons\lock_32.ico" />
-    <EmbeddedResource Include="images\buttons\hand_32.ico" />
-    <EmbeddedResource Include="images\buttons\spikes_32.ico" />
-    <EmbeddedResource Include="images\buttons\booties_32.ico" />
-    <EmbeddedResource Include="images\buttons\transporter_32.ico" />
-    <EmbeddedResource Include="images\buttons\pod_32.ico" />
-    <EmbeddedResource Include="images\buttons\lightning_v_32.ico" />
     <Content Include="images\toolbarbuttons\ActionRequired_03.bmp" />
     <Content Include="images\toolbarbuttons\BuilderDialog_delete.bmp" />
     <Content Include="images\toolbarbuttons\BuilderDialog_movedown.bmp" />
@@ -386,25 +408,6 @@
     <Content Include="template\havoc.exp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="images\buttons\arrow_32.ico" />
-    <EmbeddedResource Include="images\buttons\cannon_32.ico" />
-    <EmbeddedResource Include="images\buttons\clock_32.ico" />
-    <EmbeddedResource Include="images\buttons\key_32.ico" />
-    <EmbeddedResource Include="images\buttons\lightning_32.ico" />
-    <EmbeddedResource Include="images\buttons\oneway_32.ico" />
-    <EmbeddedResource Include="images\buttons\oxoid_32.ico" />
-    <EmbeddedResource Include="images\buttons\perkoid_32.ico" />
-    <EmbeddedResource Include="images\buttons\pyroid.ico" />
-    <EmbeddedResource Include="images\buttons\pyroid_32.ico" />
-    <EmbeddedResource Include="images\buttons\reactoid_32.ico" />
-    <EmbeddedResource Include="images\buttons\roboid_32.ico" />
-    <EmbeddedResource Include="images\buttons\wall_empty_32.ico" />
-    <EmbeddedResource Include="images\buttons\wall_horizontal_32.ico" />
-    <EmbeddedResource Include="images\buttons\wall_leftdown_32.ico" />
-    <EmbeddedResource Include="images\buttons\wall_leftup_32.ico" />
-    <EmbeddedResource Include="images\buttons\wall_rightdown_32.ico" />
-    <EmbeddedResource Include="images\buttons\wall_rightup_32.ico" />
-    <EmbeddedResource Include="images\buttons\wall_vertical_32.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
