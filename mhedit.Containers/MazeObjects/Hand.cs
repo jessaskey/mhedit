@@ -102,7 +102,7 @@ namespace mhedit.Containers.MazeObjects
 
          private void LoadDefaultImage()
         {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.hand_obj.ico");
+            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.hand_obj.png");
         }
     }
 }

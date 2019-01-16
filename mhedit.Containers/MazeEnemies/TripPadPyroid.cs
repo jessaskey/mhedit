@@ -130,7 +130,7 @@ namespace mhedit.Containers.MazeEnemies
 
         private void LoadDefaultImage()
         {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.pyroidr_obj.ico");
+            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.pyroidr_obj.png");
         }
     }
 }

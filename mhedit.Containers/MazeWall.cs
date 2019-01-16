@@ -176,29 +176,29 @@ namespace mhedit.Containers
                 switch (_wallType)
                 {
                     case MazeWallType.Empty:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_empty_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_empty_64.png");
                         break;
                     case MazeWallType.Horizontal:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_horizontal_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_horizontal_64.png");
                         break;
                     case MazeWallType.LeftDown:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_leftdown_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_leftdown_64.png");
                         break;
                     case MazeWallType.LeftUp:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_leftup_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_leftup_64.png");
                         break;
                     case MazeWallType.RightDown:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_rightdown_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_rightdown_64.png");
                         break;
                     case MazeWallType.RightUp:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_rightup_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_rightup_64.png");
                         break;
                     case MazeWallType.Vertical:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_vertical_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_vertical_64.png");
                         break;
                     default:
                         //just in case
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_empty_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_empty_64.png");
                         break;
                 }
             }
@@ -207,25 +207,25 @@ namespace mhedit.Containers
                 switch (_wallType)
                 {
                     case MazeWallType.Empty:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_empty_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_empty_64.png");
                         break;
                     case MazeWallType.Horizontal:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_horizontal_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_horizontal_64.png");
                         break;
                     case MazeWallType.LeftDown:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_leftdown_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_leftdown_64.png");
                         break;
                     case MazeWallType.LeftUp:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_leftup_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_leftup_64.png");
                         break;
                     case MazeWallType.RightDown:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_rightdown_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_rightdown_64.png");
                         break;
                     case MazeWallType.RightUp:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_rightup_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_rightup_64.png");
                         break;
                     case MazeWallType.Vertical:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_vertical_64.ico");
+                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_vertical_64.png");
                         break;
                 }
             }

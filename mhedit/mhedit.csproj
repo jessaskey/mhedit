@@ -264,10 +264,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\MHEditServiceReference\MHEditService.wsdl" />
-    <Content Include="Scripts\moment-with-locales.js" />
-    <Content Include="Scripts\moment-with-locales.min.js" />
-    <Content Include="Scripts\moment.js" />
-    <Content Include="Scripts\moment.min.js" />
     <Content Include="template\mhpe.1l">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -201,7 +201,7 @@ namespace mhedit.GameControllers
                     arrow.LoadPosition(arrowValue);
                     arrowBaseAddress++;
                     arrowValue = ReadByte(arrowBaseAddress, 0);
-                    arrow.ArrowDirection = (Containers.MazeObjects.ArrowDirection)arrowValue;
+                    arrow.ArrowDirection = (Containers.ArrowDirection)arrowValue;
                     maze.AddObject(arrow);
                     arrowBaseAddress++;
                     arrowValue = ReadByte(arrowBaseAddress, 0);
@@ -219,7 +219,7 @@ namespace mhedit.GameControllers
                         arrow.LoadPosition(outputArrowValue);
                         outputArrowBaseAddress++;
                         outputArrowValue = ReadByte(outputArrowBaseAddress, 0);
-                        arrow.ArrowDirection = (Containers.MazeObjects.ArrowDirection)outputArrowValue;
+                        arrow.ArrowDirection = (ArrowOutDirection)outputArrowValue;
                         maze.AddObject(arrow);
                         outputArrowBaseAddress++;
                         outputArrowValue = ReadByte(outputArrowBaseAddress, 0);

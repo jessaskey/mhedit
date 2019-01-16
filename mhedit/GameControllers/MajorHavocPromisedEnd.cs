@@ -163,7 +163,7 @@ namespace mhedit.GameControllers
                     byte[] maxData = ReadBytes(mazeInitIndex, 1, 7);
                     mazeInitIndex++;
                     maxoid.TriggerDistance = (maxData[0] & 0x0f);
-                    maxoid.Speed = (Maxoid.MaxSpeed)((maxData[0] >> 4) & 0x3);
+                    maxoid.Speed = (MaxSpeed)((maxData[0] >> 4) & 0x3);
                     maze.AddObject(maxoid);
                     firstValue = ReadByte(mazeInitIndex, 0, 7);
                 }
@@ -233,7 +233,7 @@ namespace mhedit.GameControllers
                     arrow.LoadPosition(arrowValue);
                     arrowBaseAddress++;
                     arrowValue = ReadByte(arrowBaseAddress, 0, 6);
-                    arrow.ArrowDirection = (Containers.MazeObjects.ArrowDirection)arrowValue;
+                    arrow.ArrowDirection = (Containers.ArrowDirection)arrowValue;
                     maze.AddObject(arrow);
                     arrowBaseAddress++;
                     arrowValue = ReadByte(arrowBaseAddress, 0, 6);
@@ -249,7 +249,7 @@ namespace mhedit.GameControllers
                     arrow.LoadPosition(outArrowValue);
                     outArrowBaseAddress++;
                     outArrowValue = ReadByte(outArrowBaseAddress, 0, 6);
-                    arrow.ArrowDirection = (Containers.MazeObjects.ArrowDirection)outArrowValue-8;
+                    arrow.ArrowDirection = (ArrowOutDirection)outArrowValue-8;
                     maze.AddObject(arrow);
                     outArrowBaseAddress++;
                     outArrowValue = ReadByte(outArrowBaseAddress, 0, 6);

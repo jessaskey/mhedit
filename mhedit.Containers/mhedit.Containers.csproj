@@ -137,47 +137,49 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\Objects\arrow_angle_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\arrow_question_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\arrow_square_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\booties_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\cannon_barrel_right.ico" />
-    <EmbeddedResource Include="Images\Objects\cannon_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\clock_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\hand_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\key_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\lightning_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\lightning_v_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\lock_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\oneway_l_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\oneway_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\oxoid_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\perkoid_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\pod_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\pyroidr_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\pyroid_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\reactoid_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\roboid_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\spikes_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\transporter_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\trippad_obj.ico" />
-    <EmbeddedResource Include="Images\Objects\wallc_empty_64.ico" />
-    <EmbeddedResource Include="Images\Objects\wallc_horizontal_64.ico" />
-    <EmbeddedResource Include="Images\Objects\wallc_leftdown_64.ico" />
-    <EmbeddedResource Include="Images\Objects\wallc_leftup_64.ico" />
-    <EmbeddedResource Include="Images\Objects\wallc_rightdown_64.ico" />
-    <EmbeddedResource Include="Images\Objects\wallc_rightup_64.ico" />
-    <EmbeddedResource Include="Images\Objects\wallc_vertical_64.ico" />
-    <EmbeddedResource Include="Images\Objects\wall_empty_64.ico" />
-    <EmbeddedResource Include="Images\Objects\wall_horizontal_64.ico" />
-    <EmbeddedResource Include="Images\Objects\wall_leftdown_64.ico" />
-    <EmbeddedResource Include="Images\Objects\wall_leftup_64.ico" />
-    <EmbeddedResource Include="Images\Objects\wall_rightdown_64.ico" />
-    <EmbeddedResource Include="Images\Objects\wall_rightup_64.ico" />
-    <EmbeddedResource Include="Images\Objects\wall_vertical_64.ico" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Interfaces\" />
+    <EmbeddedResource Include="Images\Objects\arrow_angle_obj.png" />
+    <EmbeddedResource Include="Images\Objects\arrow_question_obj.png" />
+    <EmbeddedResource Include="Images\Objects\arrow_square_obj.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Objects\booties_obj.png" />
+    <EmbeddedResource Include="Images\Objects\cannon_barrel_right.png" />
+    <EmbeddedResource Include="Images\Objects\cannon_obj.png" />
+    <EmbeddedResource Include="Images\Objects\clock_obj.png" />
+    <EmbeddedResource Include="Images\Objects\hand_obj.png" />
+    <EmbeddedResource Include="Images\Objects\key_obj.png" />
+    <EmbeddedResource Include="Images\Objects\lightning_obj.png" />
+    <EmbeddedResource Include="Images\Objects\lightning_v_obj.png" />
+    <EmbeddedResource Include="Images\Objects\lock_obj.png" />
+    <EmbeddedResource Include="Images\Objects\oneway_l_obj.png" />
+    <EmbeddedResource Include="Images\Objects\oneway_obj.png" />
+    <EmbeddedResource Include="Images\Objects\oxoid_obj.png" />
+    <EmbeddedResource Include="Images\Objects\perkoid_obj.png" />
+    <EmbeddedResource Include="Images\Objects\pod_obj.png" />
+    <EmbeddedResource Include="Images\Objects\pyroidr_obj.png" />
+    <EmbeddedResource Include="Images\Objects\pyroid_obj.png" />
+    <EmbeddedResource Include="Images\Objects\reactoid_obj.png" />
+    <EmbeddedResource Include="Images\Objects\roboid_obj.png" />
+    <EmbeddedResource Include="Images\Objects\spikes_obj.png" />
+    <EmbeddedResource Include="Images\Objects\transporter_obj.png" />
+    <EmbeddedResource Include="Images\Objects\trippad_obj.png" />
+    <EmbeddedResource Include="Images\Objects\wallc_empty_64.png" />
+    <EmbeddedResource Include="Images\Objects\wallc_horizontal_64.png" />
+    <EmbeddedResource Include="Images\Objects\wallc_leftdown_64.png" />
+    <EmbeddedResource Include="Images\Objects\wallc_leftup_64.png" />
+    <EmbeddedResource Include="Images\Objects\wallc_rightdown_64.png" />
+    <EmbeddedResource Include="Images\Objects\wallc_rightup_64.png" />
+    <EmbeddedResource Include="Images\Objects\wallc_vertical_64.png" />
+    <EmbeddedResource Include="Images\Objects\wall_empty_64.png" />
+    <EmbeddedResource Include="Images\Objects\wall_horizontal_64.png" />
+    <EmbeddedResource Include="Images\Objects\wall_leftdown_64.png" />
+    <EmbeddedResource Include="Images\Objects\wall_leftup_64.png" />
+    <EmbeddedResource Include="Images\Objects\wall_rightdown_64.png" />
+    <EmbeddedResource Include="Images\Objects\wall_rightup_64.png" />
+    <EmbeddedResource Include="Images\Objects\wall_vertical_64.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

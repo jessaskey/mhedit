@@ -47,7 +47,7 @@ namespace mhedit.Containers.MazeObjects
 
         [CategoryAttribute("Custom")]
         [DescriptionAttribute("Defined the direction that the arrow is pointing.")]
-        public ArrowDirection ArrowDirection
+        public ArrowOutDirection ArrowDirection
         {
             get { return _arrowDirection; }
             set { _arrowDirection = value; }
@@ -98,17 +98,17 @@ namespace mhedit.Containers.MazeObjects
         {
             switch (_arrowDirection)
             {
-                case ArrowDirection.Right:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrowout_right_obj.ico");
+                case ArrowOutDirection.Right:
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
                     break;
-                case ArrowDirection.Down:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrowout_down_obj.ico");
+                case ArrowOutDirection.Down:
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
                     break;
-                case ArrowDirection.Left:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrowout_left_obj.ico");
+                case ArrowOutDirection.Left:
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
                     break;
-                case ArrowDirection.Up:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrowout_right_obj.ico");
+                case ArrowOutDirection.Up:
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
                     break;
             }
         }

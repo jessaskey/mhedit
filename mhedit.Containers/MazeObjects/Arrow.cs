@@ -100,39 +100,39 @@ namespace mhedit.Containers.MazeObjects
             switch (_arrowDirection)
             {
                 case ArrowDirection.Right:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.ico");
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
                     //rotation is okay
                     break;
                 case ArrowDirection.Down:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.ico");
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
                     _img.RotateFlip(RotateFlipType.Rotate90FlipNone);
                     break;
                 case ArrowDirection.Left:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.ico");
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
                     _img.RotateFlip(RotateFlipType.Rotate180FlipNone);
                     break;
                 case ArrowDirection.Up:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.ico");
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
                     _img.RotateFlip(RotateFlipType.Rotate270FlipNone);
                     break;
                 case ArrowDirection.UpRight:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.ico");
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.png");
                     //rotation okay
                     break;
                 case ArrowDirection.DownRight:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.ico");
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.png");
                     _img.RotateFlip(RotateFlipType.Rotate90FlipNone);
                     break;
                 case ArrowDirection.DownLeft:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.ico");
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.png");
                     _img.RotateFlip(RotateFlipType.Rotate180FlipNone);
                     break;
                 case ArrowDirection.UpLeft:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.ico");
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.png");
                     _img.RotateFlip(RotateFlipType.Rotate270FlipNone);
                     break;
                 case ArrowDirection.Question:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_question_obj.ico");
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_question_obj.png");
                     break;
             }
         }

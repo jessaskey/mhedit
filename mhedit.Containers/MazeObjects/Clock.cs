@@ -83,7 +83,7 @@ namespace mhedit.Containers.MazeObjects
 
         private void LoadDefaultImage()
         {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.clock_obj.ico");
+            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.clock_obj.png");
         }
     }
 }

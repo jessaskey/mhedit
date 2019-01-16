@@ -96,12 +96,12 @@ namespace mhedit.Containers.MazeObjects
 
         private void LoadLeftImage()
         {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.oneway_l_obj.ico");
+            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.oneway_l_obj.png");
         }
 
         private void LoadRightImage()
         {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.oneway_obj.ico");
+            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.oneway_obj.png");
         }
     }
 }
