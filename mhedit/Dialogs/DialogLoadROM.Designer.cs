@@ -31,7 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DialogLoadROM));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.radioButtonMHPE = new System.Windows.Forms.RadioButton();
-            this.radioButtonMH = new System.Windows.Forms.RadioButton();
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxROMPath = new System.Windows.Forms.TextBox();
             this.buttonBrowseFolder = new System.Windows.Forms.Button();
@@ -43,7 +42,6 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.radioButtonMHPE);
-            this.groupBox1.Controls.Add(this.radioButtonMH);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(387, 72);
@@ -54,7 +52,8 @@
             // radioButtonMHPE
             // 
             this.radioButtonMHPE.AutoSize = true;
-            this.radioButtonMHPE.Location = new System.Drawing.Point(177, 32);
+            this.radioButtonMHPE.Checked = true;
+            this.radioButtonMHPE.Location = new System.Drawing.Point(24, 31);
             this.radioButtonMHPE.Name = "radioButtonMHPE";
             this.radioButtonMHPE.Size = new System.Drawing.Size(182, 17);
             this.radioButtonMHPE.TabIndex = 1;
@@ -62,18 +61,6 @@
             this.radioButtonMHPE.Text = "Major Havoc - The Promised End";
             this.radioButtonMHPE.UseVisualStyleBackColor = true;
             this.radioButtonMHPE.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
-            // 
-            // radioButtonMH
-            // 
-            this.radioButtonMH.AutoSize = true;
-            this.radioButtonMH.Location = new System.Drawing.Point(26, 32);
-            this.radioButtonMH.Name = "radioButtonMH";
-            this.radioButtonMH.Size = new System.Drawing.Size(101, 17);
-            this.radioButtonMH.TabIndex = 0;
-            this.radioButtonMH.TabStop = true;
-            this.radioButtonMH.Text = "Major Havoc v3";
-            this.radioButtonMH.UseVisualStyleBackColor = true;
-            this.radioButtonMH.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
             // 
             // label1
             // 
@@ -151,7 +138,6 @@
 
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton radioButtonMHPE;
-        private System.Windows.Forms.RadioButton radioButtonMH;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBoxROMPath;
         private System.Windows.Forms.Button buttonBrowseFolder;

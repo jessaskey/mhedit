@@ -55,8 +55,7 @@ namespace mhedit
             if ( string.IsNullOrWhiteSpace( textBoxROMPath.Text ) ||
                  textBoxROMPath.Text.StartsWith( DefaultRomRootPath ) )
             {
-                string romPath = DefaultRomRootPath +
-                    ( radioButtonMH.Checked ? @"mhavoc\" : @"mhavocpe\" );
+                string romPath = DefaultRomRootPath + @"mhavocpe\";
 
                 if ( Directory.Exists( romPath ) )
                 {
@@ -71,9 +70,7 @@ namespace mhedit
             //Load ROM's here
             try
             {
-                IGameController controller = radioButtonMH.Checked ?
-                    (IGameController)new MajorHavoc(templateFolder ) :
-                     new MajorHavocPromisedEnd(templateFolder );
+                IGameController controller = new MajorHavocPromisedEnd(templateFolder );
 
                 List<string> loadMessages = new List<string>();
                 _mazeCollection = controller.LoadMazes( textBoxROMPath.Text, loadMessages );
