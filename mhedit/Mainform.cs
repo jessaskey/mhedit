@@ -84,6 +84,7 @@ namespace mhedit
 
         private void LoadToolbox()
         {
+            toolBox.AllowSwappingByDragDrop = false;
             //create our image lists...
             ImageList toolboxImageList = new ImageList();
             Size iconSize = new Size(32,32);
@@ -942,16 +943,16 @@ namespace mhedit
         {
             if (_currentMazeController != null)
             {
-                MazeCollection collection = null;
+                MazeCollectionController collectionController = null;
                 if (treeView.SelectedNode != null)
                 {
                     if (treeView.SelectedNode.Parent != null)
                     {
-                        collection = treeView.SelectedNode.Parent.Tag as MazeCollection;
+                        collectionController = treeView.SelectedNode.Parent.Tag as MazeCollectionController;
                     }
                 }
 
-                if (MAMEHelper.SaveROM(collection, _currentMazeController.Maze))
+                if (MAMEHelper.SaveROM(collectionController.MazeCollection, _currentMazeController.Maze))
                 {
                     try
                     {

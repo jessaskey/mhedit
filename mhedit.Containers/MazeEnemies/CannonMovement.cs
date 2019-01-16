@@ -17,33 +17,6 @@ namespace mhedit.Containers
         public byte FireSpeed { get; set; }
     }
 
-    [Serializable]
-    public enum CannonMovementType : int
-    {
-        Return,
-        Position,
-        Move,
-        Pause
-    }
 
-    [Serializable]
-    public enum CannonGunPosition : int
-    {
-        TopRight = 0,
-        MiddleRight,
-        BottomRight,
-        Down,
-        TopLeft,
-        MiddleLeft,
-        BottomLeft
-    }
-
-    [Serializable]
-    public enum CannonGunSpeed : int
-    {
-        Slow = 0,
-        Medium,
-        Fast
-    }
 
 }

@@ -6,20 +6,6 @@ using System.Text;
 
 namespace mhedit.Containers.MazeObjects
 {
-    /// <summary>
-    /// Oxoid type defines whether an oxoid point value is fixed or increases exponentially
-    /// </summary>
-    public enum OxoidType
-    {
-        /// <summary>
-        /// Fixed oxoids award 500 points
-        /// </summary>
-        Fixed = 0,
-        /// <summary>
-        /// Increasing oxoid points start at 200 and increase to 400, 600, 800, 1000, 1200
-        /// </summary>
-        Increasing
-    }
 
     [Serializable]
     public class Oxoid : MazeObject

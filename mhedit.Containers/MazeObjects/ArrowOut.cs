@@ -18,7 +18,7 @@ namespace mhedit.Containers.MazeObjects
         private const int _MAXOBJECTS = 10;
 
         private Point _position;
-        private ArrowDirection _arrowDirection = ArrowDirection.Right;
+        private ArrowOutDirection _arrowDirection = ArrowOutDirection.Right;
         private Image _img;
 
         public ArrowOut()
@@ -99,39 +99,16 @@ namespace mhedit.Containers.MazeObjects
             switch (_arrowDirection)
             {
                 case ArrowDirection.Right:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.ico");
-                    //rotation is okay
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrowout_right_obj.ico");
                     break;
                 case ArrowDirection.Down:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.ico");
-                    _img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrowout_down_obj.ico");
                     break;
                 case ArrowDirection.Left:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.ico");
-                    _img.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrowout_left_obj.ico");
                     break;
                 case ArrowDirection.Up:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.ico");
-                    _img.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                    break;
-                case ArrowDirection.UpRight:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.ico");
-                    //rotation okay
-                    break;
-                case ArrowDirection.DownRight:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.ico");
-                    _img.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                    break;
-                case ArrowDirection.DownLeft:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.ico");
-                    _img.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                    break;
-                case ArrowDirection.UpLeft:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.ico");
-                    _img.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                    break;
-                case ArrowDirection.Question:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_question_obj.ico");
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrowout_right_obj.ico");
                     break;
             }
         }

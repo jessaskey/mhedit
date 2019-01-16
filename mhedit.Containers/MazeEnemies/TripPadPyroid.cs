@@ -6,11 +6,6 @@ using System.Text;
 
 namespace mhedit.Containers.MazeEnemies
 {
-    public enum PyroidStyle
-    {
-        Double = 0,
-        Single = 1
-    }
     /// <summary>
     /// Pyroids are the common 'spark-like' enemies in the maze. They have a speed and velocity
     /// component and freeze when the reactoid is touched.

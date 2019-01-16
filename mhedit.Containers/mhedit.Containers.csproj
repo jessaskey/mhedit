@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="DataConverter.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="Maze.cs" />
     <Compile Include="MazeCollection.cs" />
     <Compile Include="MazeEnemies\Cannon.cs" />

@@ -30,8 +30,10 @@ namespace mhedit
 
         public const int MAXWALLS = 209;
 
+        private const int PADDING = 10;
         private const int GRIDUNITS = 8;
         private const int GRIDUNITSTAMPS = 8;
+        private const int STAMPS_TRIM_LEFT = 3;
         //private Point objectOffset = new Point(-16, 16);
 
         private Maze _maze = null;
@@ -391,8 +393,6 @@ namespace mhedit
             //stopwatch.Start();
             Console.Write("OnPaint Begin\n");
 
- 	        //base.OnPaint(e);
-
             Pen bigGridPen = new Pen(Color.DimGray, 1);
             Pen smallGridPen = new Pen(Color.DimGray, 1);
             Pen backgroundPen = new Pen(Color.Gray, 1);
@@ -403,8 +403,8 @@ namespace mhedit
             int currentStamp;
 
             //base.DisplayRectangle = new Rectangle(base.Left, base.Top,(int)(base.Width * zoom),(int)(base.Height * zoom));
-            base.Height = (int)(GRIDUNITS * _maze.MazeStampsY * GRIDUNITSTAMPS * _zoom);
-            base.Width = (int)(GRIDUNITS * _maze.MazeStampsX * GRIDUNITSTAMPS * _zoom);
+            base.Height = (int)(GRIDUNITS * _maze.MazeStampsY * GRIDUNITSTAMPS * _zoom) + (PADDING *2);
+            base.Width = (int)((GRIDUNITS * _maze.MazeStampsX * GRIDUNITSTAMPS * _zoom) + (PADDING*2) - (GRIDUNITS * STAMPS_TRIM_LEFT * GRIDUNITSTAMPS * _zoom));
 
             mazeHeight = (int)(base.Height);
             mazeWidth = (int)(base.Width);
@@ -421,14 +421,14 @@ namespace mhedit
             {
                 //now draw the major grid lines
                 //vertical
-                for (int i = (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom); i <= mazeWidth; i += (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom))
+                for (int i = 0; i <= mazeWidth; i += (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom))
                 {
-                    g.DrawLine(bigGridPen, (int)(i), 0, (int)(i), mazeHeight);
+                    g.DrawLine(bigGridPen, (int)(i+PADDING), 0, (int)(i+PADDING), mazeHeight);
                 }
-                //horizontal
-                for (int i = (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom); i <= mazeHeight; i += (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom))
+                //horizontal, start at zero 
+                for (int i = 0; i <= mazeHeight; i += (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom))
                 {
-                    g.DrawLine(bigGridPen, 0, (int)(i), mazeWidth, (int)(i));
+                    g.DrawLine(bigGridPen, 0, (int)(i+ PADDING), mazeWidth, (int)(i+PADDING));
                 }
             }
 
@@ -440,13 +440,13 @@ namespace mhedit
                 for (int i = Math.Abs(xOffset); i <= _maze.MazeStampsX; i++)
                 {
                     int gridValue = i + xOffset;
-                    g.DrawString(gridValue.ToString("X"), Font, referenceBrush, new Point(i * (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom), 1));
+                    g.DrawString(gridValue.ToString("X"), Font, referenceBrush, new Point((i * (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom)) + PADDING, 1));
                 }
                 //Y
                 for (int i = 0; i <= _maze.MazeStampsY; i ++)
                 {
                     int gridValue = ((-i) + 12);
-                    g.DrawString(gridValue.ToString("X"), Font, referenceBrush, new Point(1, i * (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom)));
+                    g.DrawString(gridValue.ToString("X"), Font, referenceBrush, new Point(1, (i * (int)(GRIDUNITS * GRIDUNITSTAMPS * _zoom)) + PADDING));
                 }
             }
 
@@ -485,10 +485,10 @@ namespace mhedit
             //now draw all walls that don't have a user defined wall at that location
             for (int rows = 0; rows < _maze.MazeStampsY; rows++)
             {
-                for (int cols = 0; cols < _maze.MazeStampsX; cols++)
+                for (int cols = STAMPS_TRIM_LEFT - 1; cols < _maze.MazeStampsX; cols++)
                 {
                     currentStamp = (rows * _maze.MazeStampsX) + cols;
-                    if (currentStamp < MAXWALLS)
+                    if (currentStamp < _maze.MazeWallBase.Count)
                     {
                         if (_maze.MazeWallBase[currentStamp] != null)
                         {
@@ -502,7 +502,7 @@ namespace mhedit
                                         Image scaledImage = currentImage.GetThumbnailImage((int)(currentImage.Width * _zoom), (int)(currentImage.Height * _zoom), null, System.IntPtr.Zero);
                                         if (scaledImage != null)
                                         {
-                                            g.DrawImage(scaledImage, new Point((int)((cols * GRIDUNITS * GRIDUNITSTAMPS * _zoom)), (int)((rows * GRIDUNITS * GRIDUNITSTAMPS * _zoom))));
+                                            g.DrawImage(scaledImage, new Point((int)((cols * GRIDUNITS * GRIDUNITSTAMPS * _zoom)+ PADDING -(GRIDUNITS * STAMPS_TRIM_LEFT * GRIDUNITSTAMPS * _zoom)), (int)((rows * GRIDUNITS * GRIDUNITSTAMPS * _zoom)+ PADDING)));
                                         }
                                     }
                                 }
@@ -525,7 +525,7 @@ namespace mhedit
                 if (mazeObject.GetType() == typeof(MazeWall))
                 {
                     Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * _zoom), (int)(mazeObject.Image.Height * _zoom), null, System.IntPtr.Zero);
-                    g.DrawImage(scaledImage, new Point((int)((mazeObject.Position.X * _zoom)), (int)((mazeObject.Position.Y * _zoom))));
+                    g.DrawImage(scaledImage, new Point((int)((mazeObject.Position.X * _zoom)+ PADDING - (GRIDUNITS * STAMPS_TRIM_LEFT * GRIDUNITSTAMPS * _zoom)), (int)((mazeObject.Position.Y * _zoom)+ PADDING)));
                 }
             }
 
@@ -540,7 +540,7 @@ namespace mhedit
                 if (mazeObject.GetType() != typeof(MazeWall))
                 {
                     Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * _zoom), (int)(mazeObject.Image.Height * _zoom), null, System.IntPtr.Zero);
-                    g.DrawImage(scaledImage, new Point((int)(mazeObject.RenderPosition.X * _zoom), (int)(mazeObject.RenderPosition.Y * _zoom)));
+                    g.DrawImage(scaledImage, new Point((int)((mazeObject.RenderPosition.X * _zoom)+ PADDING - (GRIDUNITS * STAMPS_TRIM_LEFT * GRIDUNITSTAMPS * _zoom)), (int)(mazeObject.RenderPosition.Y * _zoom)+ PADDING));
                 }
             }
 
@@ -897,8 +897,8 @@ namespace mhedit
             _maze.MazeStampsX = mazeBaseData.mazeStampsX;
             _maze.MazeStampsY = mazeBaseData.mazeStampsY;
             _maze.MazeWallBase = mazeBaseData.mazeWallBase;
-            base.Height = GRIDUNITS * _maze.MazeStampsY * GRIDUNITSTAMPS;
-            base.Width = GRIDUNITS * _maze.MazeStampsX * GRIDUNITSTAMPS;
+            base.Height = (GRIDUNITS * _maze.MazeStampsY * GRIDUNITSTAMPS) + (PADDING*2);
+            base.Width = (GRIDUNITS * _maze.MazeStampsX * GRIDUNITSTAMPS) + (PADDING*2);
         }
 
         private void DataChanged()
@@ -1082,7 +1082,7 @@ namespace mhedit
         {
             int row = point.X / (GRIDUNITS * GRIDUNITSTAMPS);
             int col = point.Y / (GRIDUNITS * GRIDUNITSTAMPS);
-            return Math.Max(Math.Min((col * _maze.MazeStampsX) + row, MAXWALLS), 0);
+            return Math.Max(Math.Min((col * _maze.MazeStampsX) + row, _maze.MazeWallBase.Count), 0);
         }
 
         public Point PointFromStamp(int stamp)
@@ -1141,11 +1141,13 @@ namespace mhedit
 
         private MazeObject SelectObject(Point location)
         {
+            //Adjust select point based upon some of our Panel dimension 'hacks'.
+            Point adjustedLocation = new Point((int)(location.X - PADDING + (GRIDUNITS * STAMPS_TRIM_LEFT * GRIDUNITSTAMPS * _zoom)), location.Y - PADDING);
             //go through each object from the top down
             //and see if we clicked on it's area...
             for (int i = _maze.MazeObjects.Count - 1; i >= 0; i--)
             {
-                if (PointInObject((MazeObject)_maze.MazeObjects[i],location))
+                if (PointInObject((MazeObject)_maze.MazeObjects[i], adjustedLocation))
                 {
                     if (((MazeObject)_maze.MazeObjects[i]).Selected == false)
                     {
@@ -1236,8 +1238,9 @@ namespace mhedit
         {
             this.SuspendLayout();
             // 
-            // Maze
+            // MazeController
             // 
+            this.BackColor = System.Drawing.Color.Black;
             this.Font = new System.Drawing.Font("Courier New", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ResumeLayout(false);
 

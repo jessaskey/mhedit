@@ -6,48 +6,6 @@ using System.Text;
 
 namespace mhedit.Containers.MazeObjects
 {
-    /// <summary>
-    /// ArrowDirection defines which way the current arrow is pointing. Unknown will display a question mark.
-    /// </summary>
-    public enum ArrowDirection : int
-    {
-        /// <summary>
-        /// Arrow pointing Right
-        /// </summary>
-        Right = 0,
-        /// <summary>
-        /// Arrow pointing Left
-        /// </summary>
-        Left,
-        /// <summary>
-        /// Arrow pointing Up
-        /// </summary>
-        Up,
-        /// <summary>
-        /// Arrow pointing Down
-        /// </summary>
-        Down,
-        /// <summary>
-        /// Arrow pointing Up and to the Right
-        /// </summary>
-        UpRight,
-        /// <summary>
-        /// Arrow pointing Down and to the Left
-        /// </summary>
-        DownLeft,
-        /// <summary>
-        /// Arrow pointing Up and to the Left
-        /// </summary>
-        UpLeft,
-        /// <summary>
-        /// Arrow pointing Down and to the Right
-        /// </summary>
-        DownRight,
-        /// <summary>
-        /// A question mark
-        /// </summary>
-        Question
-    }
 
     /// <summary>
     /// Arrow objects are placed in the maze to give the player help in finding the correct way to the 

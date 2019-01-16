@@ -13,14 +13,6 @@ namespace mhedit.Containers.MazeEnemies
     [Serializable]
     public class Maxoid : MazeObject
     {
-        public enum MaxSpeed : int
-        {
-            Slowest = 0,
-            Slow,
-            Medium,
-            Agressive
-        }
-
         private const int _SNAP_X = 4;
         private const int _SNAP_Y = 4;
         private const int _MAXOBJECTS = 8;

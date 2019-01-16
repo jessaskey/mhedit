@@ -7,21 +7,6 @@ using System.Text;
 namespace mhedit.Containers.MazeObjects
 {
     /// <summary>
-    /// The direction that a OneWay allows the player to pass.
-    /// </summary>
-    public enum OneWayDirection : int
-    {
-        /// <summary>
-        /// One Way Arrows allowing travel left to right
-        /// </summary>
-        Right = 0,
-        /// <summary>
-        /// One Way Arrows allowing travel right to left
-        /// </summary>
-        Left
-    }
-
-    /// <summary>
     /// OneWay signs only allow the player to pass through in the direction specified.
     /// </summary>
     [Serializable]

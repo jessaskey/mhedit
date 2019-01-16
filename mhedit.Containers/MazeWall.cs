@@ -7,41 +7,6 @@ using System.Text;
 
 namespace mhedit.Containers
 {
-    /// <summary>
-    /// Describes the different wall types available.
-    /// </summary>
-    public enum MazeWallType : int
-    {
-        /// <summary>
-        /// Horizontal Wall Type
-        /// </summary>
-        Horizontal = 1,
-        /// <summary>
-        /// Left Down Wall Type
-        /// </summary>
-        LeftDown,
-        /// <summary>
-        /// Left Up Wall Type
-        /// </summary>
-        LeftUp,
-        /// <summary>
-        /// Right Up Wall Type
-        /// </summary>
-        RightUp,
-        /// <summary>
-        /// Right Down Wall Type
-        /// </summary>
-        RightDown,
-        /// <summary>
-        /// Vertical Wall Type
-        /// </summary>
-        Vertical,
-        /// <summary>
-        /// Empty Wall Type 
-        /// </summary>
-        Empty
-    }
-
     [Serializable]
     public class MazeWall : MazeObject
     {

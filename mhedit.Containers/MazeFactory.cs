@@ -8,30 +8,6 @@ using System.Linq;
 
 namespace mhedit.Containers
 {
-    /// <summary>
-    /// MazeType defines the 4 basic mazes found in Major Havoc. The base dimensions and walls are different
-    /// for each MazeType
-    /// </summary>
-    public enum MazeType : int
-    {
-        /// <summary>
-        /// Type A Mazes are on levels 1,5,9,13,etc. This maze area is the smallest of the four
-        /// and has a bounding grid of 16x7 stamps.
-        /// </summary>
-        TypeA = 0,
-        /// <summary>
-        /// Type B Mazes are on levels 2,6,10,14,etc. This maze area has a bounding grid of 21x8 stamps.
-        /// </summary>
-        TypeB = 1,
-        /// <summary>
-        /// Type C Mazes are on levels 3,7,11,15,etc. This maze area has a bounding grid of 21x9 stamps.
-        /// </summary>
-        TypeC = 2,
-        /// <summary>
-        /// Type D Mazes are on levels 4,8,12,16,etc. This maze area has a bounding grid of 19x11 stamps.
-        /// </summary>
-        TypeD = 3
-    }
 
     public static class MazeFactory
     {

@@ -7,17 +7,6 @@ using System.Text;
 
 namespace mhedit.Containers.MazeObjects
 {
-    public enum TransporterDirection : int
-    {
-        /// <summary>
-        /// Open to the right
-        /// </summary>
-        Right = 0,
-        /// <summary>
-        /// Open to the left
-        /// </summary>
-        Left
-    }
 
     [Serializable]
     public class Transporter : MazeObject

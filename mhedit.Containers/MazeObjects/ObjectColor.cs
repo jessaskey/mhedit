@@ -75,6 +75,5 @@ namespace mhedit.Containers.MazeObjects
         /// Greenr
         /// </summary>
         Greenr,
-
     }
 }
