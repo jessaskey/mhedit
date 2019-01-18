@@ -85,7 +85,7 @@ namespace mhedit
                     try
                     {
                         Cursor.Current = Cursors.WaitCursor;
-                        MazeController.Maze.Description = textBoxDescription.Text;
+                        MazeController.Maze.Name = textBoxDescription.Text;
 
                         MHEditServiceReference.SecurityToken token = null;
                         if (String.IsNullOrEmpty(_savedPasswordKey))

@@ -43,6 +43,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxDescription = new System.Windows.Forms.TextBox();
             this.textBoxMazeName = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMaze)).BeginInit();
             this.SuspendLayout();
             // 
@@ -89,7 +90,7 @@
             // 
             // buttonOk
             // 
-            this.buttonOk.Location = new System.Drawing.Point(373, 270);
+            this.buttonOk.Location = new System.Drawing.Point(374, 295);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(75, 23);
             this.buttonOk.TabIndex = 6;
@@ -111,7 +112,7 @@
             this.pictureBoxMaze.BackColor = System.Drawing.Color.Black;
             this.pictureBoxMaze.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.pictureBoxMaze.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxMaze.Location = new System.Drawing.Point(28, 303);
+            this.pictureBoxMaze.Location = new System.Drawing.Point(29, 324);
             this.pictureBoxMaze.Name = "pictureBoxMaze";
             this.pictureBoxMaze.Size = new System.Drawing.Size(420, 181);
             this.pictureBoxMaze.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -151,7 +152,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(26, 190);
+            this.label6.Location = new System.Drawing.Point(26, 212);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(81, 13);
             this.label6.TabIndex = 15;
@@ -159,7 +160,7 @@
             // 
             // textBoxDescription
             // 
-            this.textBoxDescription.Location = new System.Drawing.Point(119, 187);
+            this.textBoxDescription.Location = new System.Drawing.Point(119, 212);
             this.textBoxDescription.Multiline = true;
             this.textBoxDescription.Name = "textBoxDescription";
             this.textBoxDescription.Size = new System.Drawing.Size(236, 106);
@@ -169,14 +170,24 @@
             // 
             this.textBoxMazeName.Location = new System.Drawing.Point(119, 160);
             this.textBoxMazeName.Name = "textBoxMazeName";
-            this.textBoxMazeName.Size = new System.Drawing.Size(123, 20);
+            this.textBoxMazeName.Size = new System.Drawing.Size(236, 20);
             this.textBoxMazeName.TabIndex = 17;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(120, 187);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(248, 13);
+            this.label7.TabIndex = 18;
+            this.label7.Text = "(upload with same maze name to overwrite existing)";
             // 
             // DialogMHPLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(473, 517);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.textBoxMazeName);
             this.Controls.Add(this.textBoxDescription);
             this.Controls.Add(this.label6);
@@ -221,5 +232,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBoxDescription;
         private System.Windows.Forms.TextBox textBoxMazeName;
+        private System.Windows.Forms.Label label7;
     }
 }
