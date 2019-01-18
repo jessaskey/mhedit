@@ -13,7 +13,7 @@ using System.Xml.Serialization;
 namespace mhedit.Containers
 {
     [Serializable]
-    public abstract class MazeObject : ICloneable
+    public abstract class MazeObject //: ICloneable
     {
         private List<string> _validationErrors = new List<string>();
         private bool _isValid = false;
@@ -25,9 +25,11 @@ namespace mhedit.Containers
         protected string name;
         protected Point renderOffset = new Point(0, 0);
         protected Point staticLsb = new Point(0,0);
+        protected Point dragDropFix = new Point(0,0);
 
 
         public abstract Point SnapSize { get; }
+        public Point DragDropFix { get { return dragDropFix; } }
         public abstract Size Size { get; }
         public abstract Point Position { get; set; }
         public abstract Image Image { get; }
@@ -130,16 +132,16 @@ namespace mhedit.Containers
             set { staticLsb = value; }
         }
 
-        public object Clone()
-        {
-            MemoryStream ms = new MemoryStream();
-            BinaryFormatter bf = new BinaryFormatter();
-            bf.Serialize(ms, this);
-            ms.Position = 0;
-            object obj = bf.Deserialize(ms);
-            ms.Close();
-            return obj;
-        }
+        //public object Clone()
+        //{
+        //    MemoryStream ms = new MemoryStream();
+        //    BinaryFormatter bf = new BinaryFormatter();
+        //    bf.Serialize(ms, this);
+        //    ms.Position = 0;
+        //    object obj = bf.Deserialize(ms);
+        //    ms.Close();
+        //    return obj;
+        //}
 
         protected Image ImageSelected(Image img)
         {

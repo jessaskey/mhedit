@@ -291,6 +291,7 @@
     <EmbeddedResource Include="images\buttons\wall_rightdown_32.png" />
     <EmbeddedResource Include="images\buttons\wall_rightup_32.png" />
     <EmbeddedResource Include="images\buttons\wall_vertical_32.png" />
+    <EmbeddedResource Include="images\buttons\arrow_out_32.png" />
     <Content Include="images\toolbarbuttons\login.png" />
     <Content Include="images\toolbarbuttons\rom.png" />
     <Content Include="images\toolbarbuttons\script-binary-icon.png" />

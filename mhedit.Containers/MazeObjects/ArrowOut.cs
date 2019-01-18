@@ -70,7 +70,7 @@ namespace mhedit.Containers.MazeObjects
         {
             List<byte> bytes = new List<byte>();
             bytes.AddRange(DataConverter.PointToByteArrayPacked(_position));
-            bytes.Add((byte)(_arrowDirection+8)); //Offset for OUT Arrow values
+            bytes.Add((byte)(_arrowDirection+9)); //Offset for OUT Arrow values
             return bytes.ToArray();
         }
 
@@ -98,17 +98,17 @@ namespace mhedit.Containers.MazeObjects
         {
             switch (_arrowDirection)
             {
-                case ArrowOutDirection.Right:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
+                case ArrowOutDirection.Left:
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_out_left_obj.png");
                     break;
                 case ArrowOutDirection.Down:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
-                    break;
-                case ArrowOutDirection.Left:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_out_down_obj.png");
                     break;
                 case ArrowOutDirection.Up:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_out_up_obj.png");
+                    break;
+                case ArrowOutDirection.Right:
+                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_out_right_obj.png");
                     break;
             }
         }

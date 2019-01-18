@@ -116,6 +116,7 @@ namespace mhedit
             toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.transporter_32.png"));
             toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.pod_32.png"));
             toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.roboid_32.png"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.arrow_out_32.png"));
             toolBox.SmallImageList = toolboxImageList;
 
             int tabIndex;
@@ -140,6 +141,7 @@ namespace mhedit
             tabIndex = toolBox.AddTab("Maze Objects", -1);
             itemIndex = toolBox[tabIndex].AddItem("Reactoid", 8, true, new Reactoid());
             itemIndex = toolBox[tabIndex].AddItem("Arrow", 13, true, new Arrow());
+            itemIndex = toolBox[tabIndex].AddItem("Out Arrow", 27, true, new ArrowOut());
             itemIndex = toolBox[tabIndex].AddItem("Oxoid", 11, true, new Oxoid());
             itemIndex = toolBox[tabIndex].AddItem("One Way", 18, true, new OneWay());
             itemIndex = toolBox[tabIndex].AddItem("Stalactites", 22, true, new Spikes());

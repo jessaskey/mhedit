@@ -33,7 +33,7 @@ namespace mhedit
         private const int PADDING = 10;
         private const int GRIDUNITS = 8;
         private const int GRIDUNITSTAMPS = 8;
-        private const int STAMPS_TRIM_LEFT = 3;
+        //private const int STAMPS_TRIM_LEFT = 3;
         //private Point objectOffset = new Point(-16, 16);
 
         private Maze _maze = null;
@@ -404,7 +404,7 @@ namespace mhedit
 
             //base.DisplayRectangle = new Rectangle(base.Left, base.Top,(int)(base.Width * zoom),(int)(base.Height * zoom));
             base.Height = (int)(GRIDUNITS * _maze.MazeStampsY * GRIDUNITSTAMPS * _zoom) + (PADDING *2);
-            base.Width = (int)((GRIDUNITS * _maze.MazeStampsX * GRIDUNITSTAMPS * _zoom) + (PADDING*2) - (GRIDUNITS * STAMPS_TRIM_LEFT * GRIDUNITSTAMPS * _zoom));
+            base.Width = (int)((GRIDUNITS * _maze.MazeStampsX * GRIDUNITSTAMPS * _zoom) + (PADDING * 2)); // - (GRIDUNITS * STAMPS_TRIM_LEFT * GRIDUNITSTAMPS * _zoom));
 
             mazeHeight = (int)(base.Height);
             mazeWidth = (int)(base.Width);
@@ -485,7 +485,7 @@ namespace mhedit
             //now draw all walls that don't have a user defined wall at that location
             for (int rows = 0; rows < _maze.MazeStampsY; rows++)
             {
-                for (int cols = STAMPS_TRIM_LEFT - 1; cols < _maze.MazeStampsX; cols++)
+                for (int cols = 0; cols < _maze.MazeStampsX; cols++)
                 {
                     currentStamp = (rows * _maze.MazeStampsX) + cols;
                     if (currentStamp < _maze.MazeWallBase.Count)
@@ -502,7 +502,7 @@ namespace mhedit
                                         Image scaledImage = currentImage.GetThumbnailImage((int)(currentImage.Width * _zoom), (int)(currentImage.Height * _zoom), null, System.IntPtr.Zero);
                                         if (scaledImage != null)
                                         {
-                                            g.DrawImage(scaledImage, new Point((int)((cols * GRIDUNITS * GRIDUNITSTAMPS * _zoom)+ PADDING -(GRIDUNITS * STAMPS_TRIM_LEFT * GRIDUNITSTAMPS * _zoom)), (int)((rows * GRIDUNITS * GRIDUNITSTAMPS * _zoom)+ PADDING)));
+                                            g.DrawImage(scaledImage, new Point((int)((cols * GRIDUNITS * GRIDUNITSTAMPS * _zoom)+ PADDING), (int)((rows * GRIDUNITS * GRIDUNITSTAMPS * _zoom)+ PADDING)));
                                         }
                                     }
                                 }
@@ -525,7 +525,7 @@ namespace mhedit
                 if (mazeObject.GetType() == typeof(MazeWall))
                 {
                     Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * _zoom), (int)(mazeObject.Image.Height * _zoom), null, System.IntPtr.Zero);
-                    g.DrawImage(scaledImage, new Point((int)((mazeObject.Position.X * _zoom)+ PADDING - (GRIDUNITS * STAMPS_TRIM_LEFT * GRIDUNITSTAMPS * _zoom)), (int)((mazeObject.Position.Y * _zoom)+ PADDING)));
+                    g.DrawImage(scaledImage, new Point((int)((mazeObject.Position.X * _zoom)+ PADDING), (int)((mazeObject.Position.Y * _zoom)+ PADDING)));
                 }
             }
 
@@ -540,7 +540,7 @@ namespace mhedit
                 if (mazeObject.GetType() != typeof(MazeWall))
                 {
                     Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * _zoom), (int)(mazeObject.Image.Height * _zoom), null, System.IntPtr.Zero);
-                    g.DrawImage(scaledImage, new Point((int)((mazeObject.RenderPosition.X * _zoom)+ PADDING - (GRIDUNITS * STAMPS_TRIM_LEFT * GRIDUNITSTAMPS * _zoom)), (int)(mazeObject.RenderPosition.Y * _zoom)+ PADDING));
+                    g.DrawImage(scaledImage, new Point((int)((mazeObject.RenderPosition.X * _zoom)+ PADDING ), (int)(mazeObject.RenderPosition.Y * _zoom)+ PADDING));
                 }
             }
 
@@ -675,7 +675,7 @@ namespace mhedit
             //this.Select();
             ToolBoxItem dragItem = null;
             Point panelXY = PointToClient(new Point(drgevent.X, drgevent.Y));
-            //Point adjustedXY = new Point(panelXY.X - ((Panel)this.Parent).AutoScrollPosition.X, panelXY.Y - ((Panel)this.Parent).AutoScrollPosition.Y);
+
             if (drgevent.Data.GetDataPresent(typeof(Silver.UI.ToolBoxItem)))
             {
                 dragItem = drgevent.Data.GetData(typeof(Silver.UI.ToolBoxItem)) as ToolBoxItem;
@@ -688,7 +688,8 @@ namespace mhedit
                     }
                     else
                     {
-                        if (AddObjectClone(dragItem.Object, panelXY))
+                        MazeObject clonedObject = AddObjectClone(dragItem.Object, panelXY);
+                        if (clonedObject != null)
                         {
                             _maze.IsDirty = true; 
                             RefreshMaze();
@@ -947,9 +948,9 @@ namespace mhedit
         }
 
 
-        public bool AddObjectClone(object obj, Point point)
+        public MazeObject AddObjectClone(object obj, Point point)
         {
-            bool wasAdded = false;
+            MazeObject clonedObject = null;
             if (((MazeObject)obj).MaxObjects > _maze.GetObjectTypeCount(obj.GetType()))
             {
                 ClearSelectedObjects();
@@ -968,7 +969,7 @@ namespace mhedit
                     _maze.MazeObjects.Add(wall);
                     BindComboBoxObjects(wall);
                     if (_propertyGrid != null) _propertyGrid.SelectedObject = wall;
-                    wasAdded = true;
+                    clonedObject = wall;
                 }
                 else
                 {
@@ -990,14 +991,14 @@ namespace mhedit
                     }
                     BindComboBoxObjects(mazeObject);
                     if (_propertyGrid != null) _propertyGrid.SelectedObject = mazeObject;
-                    wasAdded = true;
+                    clonedObject = mazeObject;
                 }
             }
             else
             {
                 MessageBox.Show("You can't add any more objects of this type.", "The Homeworld is near", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            return wasAdded;
+            return clonedObject;
         }
 
         private void BindComboBoxObjects(MazeObject obj)
@@ -1057,23 +1058,30 @@ namespace mhedit
 
         private Point GetAdjustedPosition(MazeObject obj, Point point)
         {
-            //Point snapPosition = new Point();
             Point finalPosition = new Point();
             //adjust for size of object so mouse appears to be at center point
             finalPosition.X = point.X - (obj.Size.Width / 2);
             finalPosition.Y = point.Y - (obj.Size.Height / 2);
+
+            //padding adjustment
+            finalPosition.X = finalPosition.X - PADDING;
+            finalPosition.Y = finalPosition.Y - PADDING;
+
             //apply the objects snapto grid
             finalPosition.X = finalPosition.X - (finalPosition.X % obj.SnapSize.X);
             finalPosition.Y = finalPosition.Y - (finalPosition.Y % obj.SnapSize.Y);
 
-            //apply any offset
+            //apply any render offset
             finalPosition.X = finalPosition.X + obj.RenderOffset.X;
             finalPosition.Y = finalPosition.Y + obj.RenderOffset.Y;
-            
+
+            //apply drag drop fixes
+            finalPosition.X = finalPosition.X + obj.DragDropFix.X;
+            finalPosition.Y = finalPosition.Y + obj.DragDropFix.Y;
+
             //bounds check
             if (finalPosition.X < 0) finalPosition.X = 0;
             if (finalPosition.Y < 0) finalPosition.Y = 0;
-            
             
             return finalPosition;
         }
@@ -1142,7 +1150,7 @@ namespace mhedit
         private MazeObject SelectObject(Point location)
         {
             //Adjust select point based upon some of our Panel dimension 'hacks'.
-            Point adjustedLocation = new Point((int)(location.X - PADDING + (GRIDUNITS * STAMPS_TRIM_LEFT * GRIDUNITSTAMPS * _zoom)), location.Y - PADDING);
+            Point adjustedLocation = new Point((int)(location.X - PADDING), location.Y - PADDING);
             //go through each object from the top down
             //and see if we clicked on it's area...
             for (int i = _maze.MazeObjects.Count - 1; i >= 0; i--)

@@ -181,6 +181,16 @@
     <EmbeddedResource Include="Images\Objects\wall_rightup_64.png" />
     <EmbeddedResource Include="Images\Objects\wall_vertical_64.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Objects\arrow_out_up_obj.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Objects\arrow_out_down_obj.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Objects\arrow_out_left_obj.png" />
+    <EmbeddedResource Include="Images\Objects\arrow_out_right_obj.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

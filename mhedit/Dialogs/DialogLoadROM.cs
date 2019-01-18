@@ -19,23 +19,9 @@ namespace mhedit
         private const string DefaultRomRootPath = @"C:\SVN\havoc\mame\roms\";
         private MazeCollection _mazeCollection = null;
 
-        //public DialogLoadROM( string relativeTemplatePath )
-        //{
-        //    InitializeComponent();
-
-        //    textBoxROMPath.Text = Directory.Exists( relativeTemplatePath ) ?
-        //        relativeTemplatePath :
-        //        string.Empty;
-
-        //    //set defaults
-        //    FindDefaultPaths();
-        //}
-
-
         public DialogLoadROM()
         {
             InitializeComponent();
-
             //set defaults
             FindDefaultPaths();
         }
@@ -50,13 +36,10 @@ namespace mhedit
 
         private void FindDefaultPaths()
         {
-            /// Only auto-populate the path if it's not been previously set
-            /// or isn't rooted in the default.
-            if ( string.IsNullOrWhiteSpace( textBoxROMPath.Text ) ||
-                 textBoxROMPath.Text.StartsWith( DefaultRomRootPath ) )
+            // Only auto-populate the path if it's not been previously set or isn't rooted in the default.
+            if ( string.IsNullOrWhiteSpace( textBoxROMPath.Text ) || textBoxROMPath.Text.StartsWith( DefaultRomRootPath ) )
             {
                 string romPath = DefaultRomRootPath + @"mhavocpe\";
-
                 if ( Directory.Exists( romPath ) )
                 {
                     textBoxROMPath.Text = romPath;
@@ -71,7 +54,6 @@ namespace mhedit
             try
             {
                 IGameController controller = new MajorHavocPromisedEnd(templateFolder );
-
                 List<string> loadMessages = new List<string>();
                 _mazeCollection = controller.LoadMazes( textBoxROMPath.Text, loadMessages );
 

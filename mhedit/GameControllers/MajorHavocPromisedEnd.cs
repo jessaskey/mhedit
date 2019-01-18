@@ -249,7 +249,7 @@ namespace mhedit.GameControllers
                     arrow.LoadPosition(outArrowValue);
                     outArrowBaseAddress++;
                     outArrowValue = ReadByte(outArrowBaseAddress, 0, 6);
-                    arrow.ArrowDirection = (ArrowOutDirection)outArrowValue-8;
+                    arrow.ArrowDirection = (ArrowOutDirection)outArrowValue-9;
                     maze.AddObject(arrow);
                     outArrowBaseAddress++;
                     outArrowValue = ReadByte(outArrowBaseAddress, 0, 6);

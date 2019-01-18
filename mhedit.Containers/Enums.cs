@@ -150,19 +150,19 @@ namespace mhedit.Containers
         /// <summary>
         /// Out Arrow pointing Right
         /// </summary>
-        Right = 0,
+        Up = 0, 
         /// <summary>
         /// Out Arrow pointing Left
         /// </summary>
-        Left,
+        Right, //Left
         /// <summary>
         /// Out Arrow pointing Up
         /// </summary>
-        Up,
+        Down,
         /// <summary>
         /// Out Arrow pointing Down
         /// </summary>
-        Down
+        Left
     }
 
     [Serializable]
