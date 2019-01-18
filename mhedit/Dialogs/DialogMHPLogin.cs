@@ -18,7 +18,7 @@ namespace mhedit
     public partial class DialogMHPLogin : Form
     {
         private string _savedPasswordKey = "";
-        private Maze _maze = null;
+        private MazeController _maze = null;
 
         public DialogMHPLogin()
         {
@@ -57,7 +57,7 @@ namespace mhedit
             }
         }
 
-        public Maze MazeToUpload {
+        public MazeController MazeController {
             get
             {
                 return _maze;
@@ -66,7 +66,7 @@ namespace mhedit
             {
                 _maze = value;
                 textBoxDescription.Text = _maze.Description;
-                labelMazeName.Text = _maze.Name;
+                textBoxMazeName.Text = _maze.Name;
             }
         }
 
@@ -85,7 +85,7 @@ namespace mhedit
                     try
                     {
                         Cursor.Current = Cursors.WaitCursor;
-                        MazeToUpload.Description = textBoxDescription.Text;
+                        MazeController.Maze.Description = textBoxDescription.Text;
 
                         MHEditServiceReference.SecurityToken token = null;
                         if (String.IsNullOrEmpty(_savedPasswordKey))
@@ -113,23 +113,7 @@ namespace mhedit
 
                             try
                             {
-                                byte[] mazeBytes = null;
-
-                                using (MemoryStream oStream = new MemoryStream())
-                                {
-                                    using (MemoryStream mStream = new MemoryStream())
-                                    {
-                                        BinaryFormatter b = new BinaryFormatter();
-                                        b.Serialize(mStream, MazeToUpload);
-                                        mStream.Position = 0;
-                                        BZip2.Compress(mStream, oStream, false, 4096);
-
-                                        oStream.Position = 0;
-                                        mazeBytes = new byte[oStream.Length];
-                                        oStream.Read(mazeBytes, 0, (int)oStream.Length);
-                                    }
-                                }
-
+                                byte[] mazeBytes = MazeController.SerializeToByteArray(MazeController.Maze);
                                 byte[] imageBytes = null;
                                 using (MemoryStream memoryStream = new MemoryStream())
                                 {
@@ -150,15 +134,15 @@ namespace mhedit
                                         MessageBox.Show("There was an error uploading the maze. Contact Jess.", "Major Havoc Project", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     }
                                 }
+                                Cursor.Current = Cursors.Default;
+                                Close();
                             }
                             catch (Exception ex)
                             {
                                 Cursor.Current = Cursors.Default;
                                 MessageBox.Show("There was a problem uploading the maze info, check your internet connection or try again later.", "Upload Issue", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
-
                             Cursor.Current = Cursors.Default;
-                            Close();
                         }
                         else
                         {
@@ -191,11 +175,11 @@ namespace mhedit
         {
             string badRegex = @"(\s)*level(\s)*(\d)*";
             Regex regex = new Regex(badRegex, RegexOptions.IgnoreCase);
-            Match match = regex.Match(labelMazeName.Text);
+            Match match = regex.Match(textBoxMazeName.Text);
             if (match.Success)
             {
                 //not good, they have to give it a better name.
-                MessageBox.Show("Your maze name of '" + labelMazeName.Text + "' seems to be pretty generic. You have to go edit the maze name to something more descriptive as this will be how we label the maze on the gallery.", "Crappy Maze Name", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Your maze name of '" + textBoxMazeName.Text + "' seems to be pretty generic. You have to go edit the maze name to something more descriptive as this will be how we label the maze on the gallery.", "Crappy Maze Name", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
             if (String.IsNullOrEmpty(textBoxDescription.Text))

@@ -36,13 +36,13 @@
             this.label3 = new System.Windows.Forms.Label();
             this.buttonOk = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
-            this.labelMazeName = new System.Windows.Forms.Label();
             this.pictureBoxMaze = new System.Windows.Forms.PictureBox();
             this.checkBoxSavePassword = new System.Windows.Forms.CheckBox();
             this.linkLabelWebLink = new System.Windows.Forms.LinkLabel();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.textBoxDescription = new System.Windows.Forms.TextBox();
+            this.textBoxMazeName = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMaze)).BeginInit();
             this.SuspendLayout();
             // 
@@ -106,17 +106,6 @@
             this.label4.TabIndex = 8;
             this.label4.Text = "Maze Name:";
             // 
-            // labelMazeName
-            // 
-            this.labelMazeName.AutoSize = true;
-            this.labelMazeName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelMazeName.ForeColor = System.Drawing.Color.Blue;
-            this.labelMazeName.Location = new System.Drawing.Point(126, 163);
-            this.labelMazeName.Name = "labelMazeName";
-            this.labelMazeName.Size = new System.Drawing.Size(113, 13);
-            this.labelMazeName.TabIndex = 9;
-            this.labelMazeName.Text = "<maze name here>";
-            // 
             // pictureBoxMaze
             // 
             this.pictureBoxMaze.BackColor = System.Drawing.Color.Black;
@@ -176,18 +165,25 @@
             this.textBoxDescription.Size = new System.Drawing.Size(236, 106);
             this.textBoxDescription.TabIndex = 16;
             // 
+            // textBoxMazeName
+            // 
+            this.textBoxMazeName.Location = new System.Drawing.Point(119, 160);
+            this.textBoxMazeName.Name = "textBoxMazeName";
+            this.textBoxMazeName.Size = new System.Drawing.Size(123, 20);
+            this.textBoxMazeName.TabIndex = 17;
+            // 
             // DialogMHPLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(473, 517);
+            this.Controls.Add(this.textBoxMazeName);
             this.Controls.Add(this.textBoxDescription);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.linkLabelWebLink);
             this.Controls.Add(this.checkBoxSavePassword);
             this.Controls.Add(this.pictureBoxMaze);
-            this.Controls.Add(this.labelMazeName);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.textBoxPassword);
@@ -218,12 +214,12 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button buttonOk;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label labelMazeName;
         private System.Windows.Forms.PictureBox pictureBoxMaze;
         private System.Windows.Forms.CheckBox checkBoxSavePassword;
         private System.Windows.Forms.LinkLabel linkLabelWebLink;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox textBoxDescription;
+        private System.Windows.Forms.TextBox textBoxMazeName;
     }
 }

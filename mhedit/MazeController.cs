@@ -304,6 +304,28 @@ namespace mhedit
             return result;
         }
 
+        public static byte[] SerializeToByteArray(Maze maze)
+        {
+            byte[] bytes = null;
+            using (MemoryStream oStream = new MemoryStream())
+            {
+                using (MemoryStream mStream = new MemoryStream())
+                {
+                    var serializer = new XmlSerializer(maze.GetType());
+                    using (var writer = XmlWriter.Create(mStream))
+                    {
+                        serializer.Serialize(writer, maze, Constants.XmlNamespace);
+                    }
+                    mStream.Position = 0;
+                    BZip2.Compress(mStream, oStream, false, 4096);
+                }
+                bytes = new byte[oStream.Length];
+                oStream.Position = 0;
+                oStream.Read(bytes, 0, (int)oStream.Length);
+            }
+            return bytes;
+        }
+
         #region ICustomTypeDescriptor
 
         private PropertyDescriptorCollection FilterProperties(PropertyDescriptorCollection pdc)

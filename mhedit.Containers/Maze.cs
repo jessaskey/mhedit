@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using Silver.UI;
 using mhedit.Containers.MazeObjects;
 using mhedit.Containers.MazeEnemies;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers
 {
@@ -21,6 +22,31 @@ namespace mhedit.Containers
 
     [DefaultPropertyAttribute("Name")]
     [Serializable]
+    [XmlInclude(typeof(Cannon))]
+    [XmlInclude(typeof(CannonMovementPosition))]
+    [XmlInclude(typeof(CannonMovementPause))]
+    [XmlInclude(typeof(CannonMovementMove))]
+    [XmlInclude(typeof(CannonMovementReturn))]
+    [XmlInclude(typeof(LightningH))]
+    [XmlInclude(typeof(LightningV))]
+    [XmlInclude(typeof(Maxoid))]
+    [XmlInclude(typeof(Perkoid))]
+    [XmlInclude(typeof(Pyroid))]
+    [XmlInclude(typeof(TripPad))]
+    [XmlInclude(typeof(TripPadPyroid))]
+    [XmlInclude(typeof(Arrow))]
+    [XmlInclude(typeof(ArrowOut))]
+    [XmlInclude(typeof(Boots))]
+    [XmlInclude(typeof(Clock))]
+    [XmlInclude(typeof(EscapePod))]
+    [XmlInclude(typeof(Hand))]
+    [XmlInclude(typeof(Key))]
+    [XmlInclude(typeof(Lock))]
+    [XmlInclude(typeof(OneWay))]
+    [XmlInclude(typeof(Oxoid))]
+    [XmlInclude(typeof(Reactoid))]
+    [XmlInclude(typeof(Spikes))]
+    [XmlInclude(typeof(Transporter))]
     public class Maze 
     {
 
