@@ -228,7 +228,7 @@ namespace mhedit
             {
                 BZip2.Decompress(inputStream, mStream, false);
                 mStream.Position = 0;
-                var serializer = new XmlSerializer(typeof(Maze));
+                var serializer = new XmlSerializer(typeof(MazeCollection));
                 using (var reader = XmlReader.Create(mStream))
                 {
                     mazeCollection = (MazeCollection)serializer.Deserialize(reader);

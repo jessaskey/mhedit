@@ -459,74 +459,9 @@ namespace mhedit
         private void OpenCollection(string fileName)
         {
             Cursor.Current = Cursors.WaitCursor;
-            List<Maze> mazes = new List<Maze>();
             Application.DoEvents();
-            MazeCollection mazeCollection = null;
-
-            using (FileStream fStream = new FileStream(fileName, FileMode.Open))
-            {
-                using (ZipInputStream zip = new ZipInputStream(fStream))
-                {
-                    ZipEntry entry;
-                    while ((entry = zip.GetNextEntry()) != null)
-                    {
-                        switch (Path.GetExtension(entry.Name))
-                        {
-                            case ".mhz":
-                                using (MemoryStream mStream = new MemoryStream())
-                                {
-                                    Byte[] buffer = new Byte[2048];
-                                    int size = 2048;
-                                    while (true)
-                                    {
-                                        size = zip.Read(buffer, 0, buffer.Length);
-                                        if (size > 0)
-                                        {
-                                            mStream.Write(buffer, 0, size);
-                                        }
-                                        else
-                                        {
-                                            break;
-                                        }
-                                    }
-                                    //memorystream has our maze objects..
-                                    mStream.Position = 0;
-                                    Maze maze = MazeController.DeserializeFromStream(mStream);
-                                    long i = zip.Position;
-                                    string filename = Path.GetFileNameWithoutExtension(entry.Name);
-                                    int mazeIndex = int.Parse(filename);
-                                    mazes.Add(maze);
-                                }
-                                break;
-                            case ".dat":
-                                MemoryStream mStreamCollection = new MemoryStream();
-                                Byte[] bufferCollection = new Byte[2048];
-                                int sizeCollection = 2048;
-                                while (true)
-                                {
-                                    sizeCollection = zip.Read(bufferCollection, 0, bufferCollection.Length);
-                                    if (sizeCollection > 0)
-                                    {
-                                        mStreamCollection.Write(bufferCollection, 0, sizeCollection);
-                                    }
-                                    else
-                                    {
-                                        break;
-                                    }
-                                }
-                                //memorystream has our maze objects..
-                                mStreamCollection.Position = 0;
-                                mazeCollection = MazeCollectionController.DeserializeFromStream(mStreamCollection);
-                                //BinaryFormatter bCollection = new BinaryFormatter();
-                                //mazeCollection = (MazeCollection)bCollection.Deserialize(mStreamCollection);
-                                break;
-                        }
-                    }
-                }
-            }
-
+            MazeCollection mazeCollection = MazeCollectionController.DeserializeFromFile(fileName);
             MazeCollectionController mazeCollectionControl = new MazeCollectionController(mazeCollection);
-            mazeCollection.Mazes = mazes;
             mazeCollectionControl.FileName = fileName;
             TreeNode node = treeView.Nodes.Add(mazeCollection.Name);
             node.Tag = mazeCollection;
