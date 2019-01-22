@@ -25,7 +25,9 @@ namespace mhedit.Containers.MazeEnemies
             LoadDefaultImage();
             renderOffset.X = 32;
             renderOffset.Y = 64;
-            staticLsb = new Point(0x00, 0x00);  //offset of 128d is in vectors
+            base.dragDropFix.Y = 32;
+            base.dragDropFix.X = 32;
+            staticLsb = new Point(0x00, 0);  //offset of 128d is in vectors
         }
 
         [BrowsableAttribute(false)]

@@ -573,7 +573,7 @@ namespace mhedit
         {
             if (treeView.SelectedNode != null)
             {
-                treeView.SelectedNode.Text = ((Maze)sender).Name;
+                treeView.SelectedNode.Text = ((MazeController)sender).Name;
             }
         }
 
