@@ -12,6 +12,8 @@ using mhedit.Containers.MazeEnemies;
 using System.IO;
 using Microsoft.VisualBasic;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
+using System.Xml;
 
 namespace mhedit.Containers
 {
@@ -185,8 +187,11 @@ namespace mhedit.Containers
                     {
                         using (FileStream fStream = new FileStream(pathFielName, FileMode.Create))
                         {
-                            BinaryFormatter b = new BinaryFormatter();
-                            b.Serialize(fStream, _movements);
+                            var serializer = new XmlSerializer(typeof(List<CannonMovement>));
+                            using (var writer = XmlWriter.Create(fStream))
+                            {
+                                serializer.Serialize(writer, _movements, Constants.XmlNamespace);
+                            }
                         }
                         LoadPresets();
                     }
@@ -223,8 +228,11 @@ namespace mhedit.Containers
             {
                 using (FileStream fStream = new FileStream(movementFile, FileMode.Open))
                 {
-                    BinaryFormatter b = new BinaryFormatter();
-                    _movements= (List<CannonMovement>)b.Deserialize(fStream);
+                    var serializer = new XmlSerializer(typeof(List<CannonMovement>));
+                    using (var reader = XmlReader.Create(fStream))
+                    {
+                        _movements = (List<CannonMovement>)serializer.Deserialize(reader);
+                    }
                     BindListBox();
                 }
             }

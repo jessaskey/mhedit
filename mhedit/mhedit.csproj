@@ -204,28 +204,28 @@
     <Content Include="cannonMovements\Atari Level 13 Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 14 Cannon 1.can">
+    <Content Include="cannonMovements\Atari Level 14a Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 14 Cannon 2.can">
+    <Content Include="cannonMovements\Atari Level 14b Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 15 Cannon 1.can">
+    <Content Include="cannonMovements\Atari Level 15a Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 15 Cannon 2.can">
+    <Content Include="cannonMovements\Atari Level 15b Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 16 Cannon 1.can">
+    <Content Include="cannonMovements\Atari Level 16a Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 16 Cannon 2.can">
+    <Content Include="cannonMovements\Atari Level 16b Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 16 Cannon 3.can">
+    <Content Include="cannonMovements\Atari Level 16c Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 16 Cannon 4.can">
+    <Content Include="cannonMovements\Atari Level 16d Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Havoc.pfx" />

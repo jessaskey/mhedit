@@ -11,9 +11,6 @@ namespace mhedit.Containers
     public static class Constants
     {
         private static XmlQualifiedName xmlName = new XmlQualifiedName("MHEdit", "http://mhedit.askey.org");
-
-
-
         public static XmlSerializerNamespaces XmlNamespace = new XmlSerializerNamespaces(new XmlQualifiedName[] { xmlName });
     }
 }

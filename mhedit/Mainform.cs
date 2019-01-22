@@ -469,7 +469,7 @@ namespace mhedit
             node.ImageIndex = 0;
             node.SelectedImageIndex = node.ImageIndex;
             treeView.SelectedNode = node;
-
+            _currentMazeCollectionController = mazeCollectionControl;
             Cursor.Current = Cursors.Default;
         }
 
