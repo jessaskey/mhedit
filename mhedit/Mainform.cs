@@ -428,13 +428,19 @@ namespace mhedit
         private void toolStripButtonNewCollection_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            MazeCollectionController collection = new MazeCollectionController(GetNewName("MazeCollection"));
+            MazeCollectionController collectionController = new MazeCollectionController(GetNewName("MazeCollection"));
             //assign callbacks
             //foreach (Maze maze in collection.Mazes)
             //{
             //    maze.OnMazePropertiesUpdated += new MazePropertiesUpdated(RefreshMazeName);
             //}
-            TreeNode node = collection.TreeRender(treeView, null, toolStripButtonGrid.Checked);
+            for(int i = 0; i < 28; i++)
+            {
+                MazeType mazeType = (MazeType)(i & 0x03);
+                Maze maze = new Maze((MazeType)mazeType, "Level " + (i + 1).ToString());
+                collectionController.Mazes.Add(maze);
+            }
+            TreeNode node = collectionController.TreeRender(treeView, null, toolStripButtonGrid.Checked);
             node.ImageIndex = 0;
             node.SelectedImageIndex = node.ImageIndex;
             //Removed
