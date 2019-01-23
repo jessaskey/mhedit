@@ -20,9 +20,18 @@ namespace mhedit
         private MazeCollection _mazeCollection = null;
 
         public DialogLoadROM()
+            : this( string.Empty )
+        {}
+
+        public DialogLoadROM( string relativeTemplatePath )
         {
             InitializeComponent();
-            //set defaults
+
+            textBoxROMPath.Text = Directory.Exists( relativeTemplatePath ) ?
+                relativeTemplatePath :
+                string.Empty;
+
+             //set defaults
             FindDefaultPaths();
         }
 
@@ -36,10 +45,13 @@ namespace mhedit
 
         private void FindDefaultPaths()
         {
-            // Only auto-populate the path if it's not been previously set or isn't rooted in the default.
-            if ( string.IsNullOrWhiteSpace( textBoxROMPath.Text ) || textBoxROMPath.Text.StartsWith( DefaultRomRootPath ) )
+            /// Only auto-populate the path if it's not been previously set
+            /// or isn't rooted in the default.
+            if ( string.IsNullOrWhiteSpace( textBoxROMPath.Text ) ||
+                 textBoxROMPath.Text.StartsWith( DefaultRomRootPath ) )
             {
                 string romPath = DefaultRomRootPath + @"mhavocpe\";
+
                 if ( Directory.Exists( romPath ) )
                 {
                     textBoxROMPath.Text = romPath;
@@ -51,9 +63,13 @@ namespace mhedit
         {
             string templateFolder = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "template");
             //Load ROM's here
+#if DEBUG
+#else
             try
+#endif
             {
                 IGameController controller = new MajorHavocPromisedEnd(templateFolder );
+
                 List<string> loadMessages = new List<string>();
                 _mazeCollection = controller.LoadMazes( textBoxROMPath.Text, loadMessages );
 
@@ -67,10 +83,13 @@ namespace mhedit
                 DialogResult = DialogResult.OK;
                 Close();
             }
+#if DEBUG
+#else
             catch ( Exception ex )
             {
                 MessageBox.Show( ex.Message, "ROM Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
             }
+#endif
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
