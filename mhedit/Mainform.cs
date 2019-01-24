@@ -884,18 +884,9 @@ namespace mhedit
 
         private void toolStripButtonAnimate_Click(object sender, EventArgs e)
         {
-            if (_currentMazeController != null)
+            if (_currentMazeCollectionController != null && _currentMazeController != null)
             {
-                MazeCollectionController collectionController = null;
-                if (treeView.SelectedNode != null)
-                {
-                    if (treeView.SelectedNode.Parent != null)
-                    {
-                        collectionController = treeView.SelectedNode.Parent.Tag as MazeCollectionController;
-                    }
-                }
-
-                if (MAMEHelper.SaveROM(collectionController.MazeCollection, _currentMazeController.Maze))
+                if (MAMEHelper.SaveROM(_currentMazeCollectionController.MazeCollection, _currentMazeController.Maze))
                 {
                     try
                     {
@@ -931,9 +922,13 @@ namespace mhedit
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("There was an error launching MAME, verify your MAME paths in the configuration." + ex.Message );
+                        MessageBox.Show("There was an error launching MAME, verify your MAME paths in the configuration." + ex.Message);
                     }
                 }
+            }
+            else
+            {
+                MessageBox.Show("The current maze is not loaded correctly. This is most likely an issue with the application. Please contact Jess.");
             }
         }
 
