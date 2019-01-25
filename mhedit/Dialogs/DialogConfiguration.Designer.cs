@@ -34,6 +34,7 @@
             this.tabPageOptions = new System.Windows.Forms.TabPage();
             this.checkBoxShowGridCoordinateReferences = new System.Windows.Forms.CheckBox();
             this.tabPageMAME = new System.Windows.Forms.TabPage();
+            this.checkBoxMAMEWindow = new System.Windows.Forms.CheckBox();
             this.checkBoxDebug = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.textBoxMameDriver = new System.Windows.Forms.TextBox();
@@ -42,10 +43,14 @@
             this.textBoxMameExecutable = new System.Windows.Forms.TextBox();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.checkBoxMAMEWindow = new System.Windows.Forms.CheckBox();
+            this.tabPageLocations = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBoxTemplatesLocation = new System.Windows.Forms.TextBox();
+            this.buttonBrowseTemplatesFolder = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPageOptions.SuspendLayout();
             this.tabPageMAME.SuspendLayout();
+            this.tabPageLocations.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonSave
@@ -62,6 +67,7 @@
             // 
             this.tabControl1.Controls.Add(this.tabPageOptions);
             this.tabControl1.Controls.Add(this.tabPageMAME);
+            this.tabControl1.Controls.Add(this.tabPageLocations);
             this.tabControl1.Location = new System.Drawing.Point(5, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -104,6 +110,16 @@
             this.tabPageMAME.TabIndex = 0;
             this.tabPageMAME.Text = "MAME";
             this.tabPageMAME.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxMAMEWindow
+            // 
+            this.checkBoxMAMEWindow.AutoSize = true;
+            this.checkBoxMAMEWindow.Location = new System.Drawing.Point(109, 97);
+            this.checkBoxMAMEWindow.Name = "checkBoxMAMEWindow";
+            this.checkBoxMAMEWindow.Size = new System.Drawing.Size(199, 17);
+            this.checkBoxMAMEWindow.TabIndex = 19;
+            this.checkBoxMAMEWindow.Text = "Run MAME with \'-window\' parameter";
+            this.checkBoxMAMEWindow.UseVisualStyleBackColor = true;
             // 
             // checkBoxDebug
             // 
@@ -173,15 +189,44 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // checkBoxMAMEWindow
+            // tabPageLocations
             // 
-            this.checkBoxMAMEWindow.AutoSize = true;
-            this.checkBoxMAMEWindow.Location = new System.Drawing.Point(109, 97);
-            this.checkBoxMAMEWindow.Name = "checkBoxMAMEWindow";
-            this.checkBoxMAMEWindow.Size = new System.Drawing.Size(199, 17);
-            this.checkBoxMAMEWindow.TabIndex = 19;
-            this.checkBoxMAMEWindow.Text = "Run MAME with \'-window\' parameter";
-            this.checkBoxMAMEWindow.UseVisualStyleBackColor = true;
+            this.tabPageLocations.Controls.Add(this.buttonBrowseTemplatesFolder);
+            this.tabPageLocations.Controls.Add(this.textBoxTemplatesLocation);
+            this.tabPageLocations.Controls.Add(this.label1);
+            this.tabPageLocations.Location = new System.Drawing.Point(4, 22);
+            this.tabPageLocations.Name = "tabPageLocations";
+            this.tabPageLocations.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageLocations.Size = new System.Drawing.Size(536, 132);
+            this.tabPageLocations.TabIndex = 3;
+            this.tabPageLocations.Text = "Locations";
+            this.tabPageLocations.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 3);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(100, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Templates Location";
+            // 
+            // textBoxTemplatesLocation
+            // 
+            this.textBoxTemplatesLocation.Location = new System.Drawing.Point(19, 19);
+            this.textBoxTemplatesLocation.Name = "textBoxTemplatesLocation";
+            this.textBoxTemplatesLocation.Size = new System.Drawing.Size(472, 20);
+            this.textBoxTemplatesLocation.TabIndex = 1;
+            // 
+            // buttonBrowseTemplatesFolder
+            // 
+            this.buttonBrowseTemplatesFolder.Location = new System.Drawing.Point(501, 19);
+            this.buttonBrowseTemplatesFolder.Name = "buttonBrowseTemplatesFolder";
+            this.buttonBrowseTemplatesFolder.Size = new System.Drawing.Size(29, 23);
+            this.buttonBrowseTemplatesFolder.TabIndex = 15;
+            this.buttonBrowseTemplatesFolder.Text = "...";
+            this.buttonBrowseTemplatesFolder.UseVisualStyleBackColor = true;
+            this.buttonBrowseTemplatesFolder.Click += new System.EventHandler(this.buttonBrowseTemplatesFolder_Click);
             // 
             // DialogConfiguration
             // 
@@ -206,6 +251,8 @@
             this.tabPageOptions.PerformLayout();
             this.tabPageMAME.ResumeLayout(false);
             this.tabPageMAME.PerformLayout();
+            this.tabPageLocations.ResumeLayout(false);
+            this.tabPageLocations.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -226,5 +273,9 @@
         private System.Windows.Forms.TabPage tabPageOptions;
         private System.Windows.Forms.CheckBox checkBoxShowGridCoordinateReferences;
         private System.Windows.Forms.CheckBox checkBoxMAMEWindow;
+        private System.Windows.Forms.TabPage tabPageLocations;
+        private System.Windows.Forms.TextBox textBoxTemplatesLocation;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button buttonBrowseTemplatesFolder;
     }
 }

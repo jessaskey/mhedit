@@ -16,23 +16,17 @@ namespace mhedit
 {
     public partial class DialogLoadROM : Form
     {
-        private const string DefaultRomRootPath = @"C:\SVN\havoc\mame\roms\";
         private MazeCollection _mazeCollection = null;
 
         public DialogLoadROM()
             : this( string.Empty )
         {}
 
-        public DialogLoadROM( string relativeTemplatePath )
+        public DialogLoadROM( string templatePath )
         {
             InitializeComponent();
 
-            textBoxROMPath.Text = Directory.Exists( relativeTemplatePath ) ?
-                relativeTemplatePath :
-                string.Empty;
-
-             //set defaults
-            FindDefaultPaths();
+            textBoxROMPath.Text = templatePath;
         }
 
         public MazeCollection Mazes
@@ -43,32 +37,15 @@ namespace mhedit
             }
         }
 
-        private void FindDefaultPaths()
-        {
-            /// Only auto-populate the path if it's not been previously set
-            /// or isn't rooted in the default.
-            if ( string.IsNullOrWhiteSpace( textBoxROMPath.Text ) ||
-                 textBoxROMPath.Text.StartsWith( DefaultRomRootPath ) )
-            {
-                string romPath = DefaultRomRootPath + @"mhavocpe\";
-
-                if ( Directory.Exists( romPath ) )
-                {
-                    textBoxROMPath.Text = romPath;
-                }
-            }
-        }
-
         private void buttonOK_Click(object sender, EventArgs e)
         {
-            string templateFolder = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "template");
-            //Load ROM's here
 #if DEBUG
 #else
             try
 #endif
             {
-                IGameController controller = new MajorHavocPromisedEnd(templateFolder );
+                //Load ROM's here
+                IGameController controller = new MajorHavocPromisedEnd( textBoxROMPath.Text );
 
                 List<string> loadMessages = new List<string>();
                 _mazeCollection = controller.LoadMazes( textBoxROMPath.Text, loadMessages );
@@ -100,18 +77,23 @@ namespace mhedit
 
         private void buttonBrowseFolder_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog fb = new FolderBrowserDialog();
-            fb.Description = "Take me to your production ROMs";
-            DialogResult dr = fb.ShowDialog();
-            if (dr == System.Windows.Forms.DialogResult.OK)
+            using ( var fbd = new FolderBrowserDialog() )
             {
-                textBoxROMPath.Text = fb.SelectedPath + "\\";
+                fbd.Description = "Take me to your production ROMs";
+
+                fbd.SelectedPath = Path.GetFullPath( textBoxROMPath.Text );
+
+                DialogResult result = fbd.ShowDialog();
+
+                if ( result == DialogResult.OK && !string.IsNullOrWhiteSpace( fbd.SelectedPath ) )
+                {
+                    textBoxROMPath.Text = fbd.SelectedPath + "\\";
+                }
             }
         }
 
         private void radioButton_CheckedChanged(object sender, EventArgs e)
         {
-            FindDefaultPaths();
         }
 
         private void Textbox_TextChanged( object sender, EventArgs e )

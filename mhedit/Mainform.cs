@@ -981,12 +981,10 @@ namespace mhedit
 
         private void toolStripButtonLoadFromROM_Click(object sender, EventArgs e)
         {
-#if BRYAN
-            DialogLoadROM dlr = new DialogLoadROM(
-                Path.Combine( Path.GetDirectoryName( Application.ExecutablePath ), @"template\" ) );
-#else
-            DialogLoadROM dlr = new DialogLoadROM();
-#endif
+
+            DialogLoadROM dlr = new DialogLoadROM( Path.GetFullPath(
+                Properties.Settings.Default.TemplatesLocation ) );
+
             DialogResult dr = dlr.ShowDialog();
 
             if (dr == DialogResult.OK)

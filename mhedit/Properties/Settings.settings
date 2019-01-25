@@ -29,5 +29,8 @@
     <Setting Name="MameWindow" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="TemplatesLocation" Type="System.String" Scope="User">
+      <Value Profile="(Default)">.\template</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

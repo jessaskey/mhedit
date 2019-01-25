@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -21,6 +22,9 @@ namespace mhedit
             checkBoxDebug.Checked = Properties.Settings.Default.MameDebug;
             checkBoxShowGridCoordinateReferences.Checked = Properties.Settings.Default.ShowGridReferences;
             checkBoxMAMEWindow.Checked = Properties.Settings.Default.MameWindow;
+
+            //locations
+            textBoxTemplatesLocation.Text = Properties.Settings.Default.TemplatesLocation;
         }
 
         private void linkLabelMHP_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -38,6 +42,10 @@ namespace mhedit
             Properties.Settings.Default.MameDebug = checkBoxDebug.Checked;
             Properties.Settings.Default.ShowGridReferences = checkBoxShowGridCoordinateReferences.Checked;
             Properties.Settings.Default.MameWindow = checkBoxMAMEWindow.Checked;
+
+            //locations
+            Properties.Settings.Default.TemplatesLocation = textBoxTemplatesLocation.Text;
+
             Properties.Settings.Default.Save();
             Close();
         }
@@ -55,5 +63,19 @@ namespace mhedit
             }
         }
 
+        private void buttonBrowseTemplatesFolder_Click( object sender, EventArgs e )
+        {
+            using ( var fbd = new FolderBrowserDialog() )
+            {
+                fbd.SelectedPath = Path.GetFullPath( textBoxTemplatesLocation.Text );
+
+                DialogResult result = fbd.ShowDialog();
+
+                if ( result == DialogResult.OK && !string.IsNullOrWhiteSpace( fbd.SelectedPath ) )
+                {
+                    textBoxTemplatesLocation.Text = fbd.SelectedPath;
+                }
+            }
+        }
     }
 }
