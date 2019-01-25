@@ -12,6 +12,8 @@ namespace mhedit
 {
     public partial class DialogConfiguration : Form
     {
+        private ToolTip tt;
+
         public DialogConfiguration()
         {
             InitializeComponent();
@@ -76,6 +78,26 @@ namespace mhedit
                     textBoxTemplatesLocation.Text = fbd.SelectedPath;
                 }
             }
+        }
+
+        private void textBoxTT_MouseHover( object sender, EventArgs e )
+        {
+            TextBox textBox = (TextBox)sender;
+
+            tt = new ToolTip();
+            tt.InitialDelay = 0;
+
+            if ( !string.IsNullOrWhiteSpace( textBox.Text ) )
+            {
+                tt.Show( textBox.Text, textBox );
+            }
+        }
+
+        private void textBoxTT_MouseLeave( object sender, EventArgs e )
+        {
+            tt?.Dispose();
+
+            tt = null;
         }
     }
 }

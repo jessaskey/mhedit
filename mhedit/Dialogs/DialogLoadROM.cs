@@ -16,6 +16,7 @@ namespace mhedit
 {
     public partial class DialogLoadROM : Form
     {
+        private ToolTip tt;
         private MazeCollection _mazeCollection = null;
 
         public DialogLoadROM()
@@ -99,6 +100,26 @@ namespace mhedit
         private void Textbox_TextChanged( object sender, EventArgs e )
         {
             buttonOK.Enabled = !string.IsNullOrWhiteSpace( textBoxROMPath.Text );
+        }
+
+        private void textBoxTT_MouseHover( object sender, EventArgs e )
+        {
+            TextBox textBox = (TextBox)sender;
+
+            tt = new ToolTip();
+            tt.InitialDelay = 0;
+
+            if ( !string.IsNullOrWhiteSpace( textBox.Text ) )
+            {
+                tt.Show( textBox.Text, textBox );
+            }
+        }
+
+        private void textBoxTT_MouseLeave( object sender, EventArgs e )
+        {
+            tt?.Dispose();
+
+            tt = null;
         }
     }
 }

@@ -78,6 +78,8 @@
             this.textBoxROMPath.Size = new System.Drawing.Size(270, 20);
             this.textBoxROMPath.TabIndex = 2;
             this.textBoxROMPath.TextChanged += new System.EventHandler(this.Textbox_TextChanged);
+            this.textBoxROMPath.MouseHover += new System.EventHandler(this.textBoxTT_MouseHover);
+            this.textBoxROMPath.MouseLeave += new System.EventHandler(this.textBoxTT_MouseLeave);
             // 
             // buttonBrowseFolder
             // 

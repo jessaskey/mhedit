@@ -41,12 +41,12 @@
             this.label6 = new System.Windows.Forms.Label();
             this.buttonBrowseMameExecutable = new System.Windows.Forms.Button();
             this.textBoxMameExecutable = new System.Windows.Forms.TextBox();
+            this.tabPageLocations = new System.Windows.Forms.TabPage();
+            this.buttonBrowseTemplatesFolder = new System.Windows.Forms.Button();
+            this.textBoxTemplatesLocation = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.tabPageLocations = new System.Windows.Forms.TabPage();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBoxTemplatesLocation = new System.Windows.Forms.TextBox();
-            this.buttonBrowseTemplatesFolder = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPageOptions.SuspendLayout();
             this.tabPageMAME.SuspendLayout();
@@ -173,6 +173,49 @@
             this.textBoxMameExecutable.Name = "textBoxMameExecutable";
             this.textBoxMameExecutable.Size = new System.Drawing.Size(377, 20);
             this.textBoxMameExecutable.TabIndex = 13;
+            this.textBoxMameExecutable.MouseHover += new System.EventHandler(this.textBoxTT_MouseHover);
+            this.textBoxMameExecutable.MouseLeave += new System.EventHandler(this.textBoxTT_MouseLeave);
+            // 
+            // tabPageLocations
+            // 
+            this.tabPageLocations.Controls.Add(this.buttonBrowseTemplatesFolder);
+            this.tabPageLocations.Controls.Add(this.textBoxTemplatesLocation);
+            this.tabPageLocations.Controls.Add(this.label1);
+            this.tabPageLocations.Location = new System.Drawing.Point(4, 22);
+            this.tabPageLocations.Name = "tabPageLocations";
+            this.tabPageLocations.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageLocations.Size = new System.Drawing.Size(536, 132);
+            this.tabPageLocations.TabIndex = 3;
+            this.tabPageLocations.Text = "Locations";
+            this.tabPageLocations.UseVisualStyleBackColor = true;
+            // 
+            // buttonBrowseTemplatesFolder
+            // 
+            this.buttonBrowseTemplatesFolder.Location = new System.Drawing.Point(501, 19);
+            this.buttonBrowseTemplatesFolder.Name = "buttonBrowseTemplatesFolder";
+            this.buttonBrowseTemplatesFolder.Size = new System.Drawing.Size(29, 23);
+            this.buttonBrowseTemplatesFolder.TabIndex = 15;
+            this.buttonBrowseTemplatesFolder.Text = "...";
+            this.buttonBrowseTemplatesFolder.UseVisualStyleBackColor = true;
+            this.buttonBrowseTemplatesFolder.Click += new System.EventHandler(this.buttonBrowseTemplatesFolder_Click);
+            // 
+            // textBoxTemplatesLocation
+            // 
+            this.textBoxTemplatesLocation.Location = new System.Drawing.Point(19, 19);
+            this.textBoxTemplatesLocation.Name = "textBoxTemplatesLocation";
+            this.textBoxTemplatesLocation.Size = new System.Drawing.Size(472, 20);
+            this.textBoxTemplatesLocation.TabIndex = 1;
+            this.textBoxTemplatesLocation.MouseHover += new System.EventHandler(this.textBoxTT_MouseHover);
+            this.textBoxTemplatesLocation.MouseLeave += new System.EventHandler(this.textBoxTT_MouseLeave);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 3);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(100, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Templates Location";
             // 
             // buttonCancel
             // 
@@ -188,45 +231,6 @@
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // tabPageLocations
-            // 
-            this.tabPageLocations.Controls.Add(this.buttonBrowseTemplatesFolder);
-            this.tabPageLocations.Controls.Add(this.textBoxTemplatesLocation);
-            this.tabPageLocations.Controls.Add(this.label1);
-            this.tabPageLocations.Location = new System.Drawing.Point(4, 22);
-            this.tabPageLocations.Name = "tabPageLocations";
-            this.tabPageLocations.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageLocations.Size = new System.Drawing.Size(536, 132);
-            this.tabPageLocations.TabIndex = 3;
-            this.tabPageLocations.Text = "Locations";
-            this.tabPageLocations.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 3);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Templates Location";
-            // 
-            // textBoxTemplatesLocation
-            // 
-            this.textBoxTemplatesLocation.Location = new System.Drawing.Point(19, 19);
-            this.textBoxTemplatesLocation.Name = "textBoxTemplatesLocation";
-            this.textBoxTemplatesLocation.Size = new System.Drawing.Size(472, 20);
-            this.textBoxTemplatesLocation.TabIndex = 1;
-            // 
-            // buttonBrowseTemplatesFolder
-            // 
-            this.buttonBrowseTemplatesFolder.Location = new System.Drawing.Point(501, 19);
-            this.buttonBrowseTemplatesFolder.Name = "buttonBrowseTemplatesFolder";
-            this.buttonBrowseTemplatesFolder.Size = new System.Drawing.Size(29, 23);
-            this.buttonBrowseTemplatesFolder.TabIndex = 15;
-            this.buttonBrowseTemplatesFolder.Text = "...";
-            this.buttonBrowseTemplatesFolder.UseVisualStyleBackColor = true;
-            this.buttonBrowseTemplatesFolder.Click += new System.EventHandler(this.buttonBrowseTemplatesFolder_Click);
             // 
             // DialogConfiguration
             // 
