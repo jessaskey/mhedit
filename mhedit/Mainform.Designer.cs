@@ -46,11 +46,11 @@ namespace mhedit
             this.toolStripButtonGrid = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonZoomIn = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonZoomOut = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonMAME = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButtonLoadFromROM = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonMAME = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonHome = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonAbout = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonLoadFromROM = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonConfiguration = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -270,6 +270,21 @@ namespace mhedit
             this.toolStripButtonZoomOut.ToolTipText = "Zoom Out";
             this.toolStripButtonZoomOut.Click += new System.EventHandler(this.toolStripButtonZoomOut_Click);
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripButtonLoadFromROM
+            // 
+            this.toolStripButtonLoadFromROM.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonLoadFromROM.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonLoadFromROM.Image")));
+            this.toolStripButtonLoadFromROM.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonLoadFromROM.Name = "toolStripButtonLoadFromROM";
+            this.toolStripButtonLoadFromROM.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonLoadFromROM.Text = "Load Mazes from ROMs";
+            this.toolStripButtonLoadFromROM.Click += new System.EventHandler(this.toolStripButtonLoadFromROM_Click);
+            // 
             // toolStripButtonMAME
             // 
             this.toolStripButtonMAME.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -281,11 +296,6 @@ namespace mhedit
             this.toolStripButtonMAME.Text = "Run Maze in MAME";
             this.toolStripButtonMAME.ToolTipText = "Run Maze in MAME - Hint, click on the maze in the tree first!";
             this.toolStripButtonMAME.Click += new System.EventHandler(this.toolStripButtonAnimate_Click);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
             // toolStripButtonHome
             // 
@@ -310,16 +320,6 @@ namespace mhedit
             this.toolStripButtonAbout.Text = "toolStripButton1";
             this.toolStripButtonAbout.ToolTipText = "About this program";
             this.toolStripButtonAbout.Click += new System.EventHandler(this.toolStripButtonAbout_Click);
-            // 
-            // toolStripButtonLoadFromROM
-            // 
-            this.toolStripButtonLoadFromROM.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonLoadFromROM.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonLoadFromROM.Image")));
-            this.toolStripButtonLoadFromROM.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonLoadFromROM.Name = "toolStripButtonLoadFromROM";
-            this.toolStripButtonLoadFromROM.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonLoadFromROM.Text = "Load Mazes from ROMs";
-            this.toolStripButtonLoadFromROM.Click += new System.EventHandler(this.toolStripButtonLoadFromROM_Click);
             // 
             // toolStripSeparator4
             // 
@@ -581,6 +581,7 @@ namespace mhedit
             this.Text = "Major Havoc Level Editor";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Mainform_FormClosing);
+            this.Load += new System.EventHandler(this.Mainform_Load);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.toolStrip.ResumeLayout(false);
