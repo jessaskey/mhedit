@@ -26,7 +26,7 @@ namespace mhedit.Containers.MazeObjects
         public Transporter()
         {
             LoadDefaultImage();
-            //renderOffset.X = 32;
+            renderOffset.X = 24;
             renderOffset.Y = 32;
             staticLsb = new Point(0x80, 0x80);
         }
@@ -50,7 +50,12 @@ namespace mhedit.Containers.MazeObjects
         public TransporterDirection Direction
         {
             get { return _direction; }
-            set { _direction = value; }
+            set
+            {
+                _direction = value;
+
+                renderOffset.X = value == TransporterDirection.Right ? 24 : 40;
+            }
         }
 
         //This is here for backwards compatibility but it is NOT USED
