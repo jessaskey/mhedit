@@ -9,6 +9,8 @@ using System.Windows.Forms;
 
 using mhedit.Containers.MazeEnemies;
 using mhedit.Containers.MazeEnemies.IonCannon;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace mhedit.Containers
 {
@@ -29,19 +31,27 @@ namespace mhedit.Containers
         {
             CannonProgramEditor editor = new CannonProgramEditor();
 
-
-            editor.Program = (IonCannonProgram)value;
-
-            /// BUG: Not making copies of the commands....
-            IonCannonProgram savedProgram = editor.Program;
+            /// Make a complete copy of the passed program to edit..
+            editor.Program = DeepClone( (IonCannonProgram)value );
 
             DialogResult result = editor.ShowDialog();
-            if (result == DialogResult.Cancel)
+
+            /// On user OK we can return the newly edited program, otherwise just return the original.
+            return result == DialogResult.OK ? editor.Program : value;
+        }
+
+        public static T DeepClone<T>( T obj )
+        {
+            using ( var ms = new MemoryStream() )
             {
-                //restore previous movements
-                return savedProgram;
+                var formatter = new BinaryFormatter();
+
+                formatter.Serialize( ms, obj );
+
+                ms.Position = 0;
+
+                return (T)formatter.Deserialize( ms );
             }
-            return editor.Program;
         }
     }
 

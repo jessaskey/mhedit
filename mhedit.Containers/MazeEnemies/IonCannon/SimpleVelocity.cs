@@ -2,6 +2,7 @@
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
+    [Serializable]
     public class SimpleVelocity
     {
         private int _x;
