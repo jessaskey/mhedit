@@ -78,8 +78,8 @@
             this.textBoxROMPath.Size = new System.Drawing.Size(270, 20);
             this.textBoxROMPath.TabIndex = 2;
             this.textBoxROMPath.TextChanged += new System.EventHandler(this.Textbox_TextChanged);
-            this.textBoxROMPath.MouseHover += new System.EventHandler(this.textBoxTT_MouseHover);
             this.textBoxROMPath.MouseLeave += new System.EventHandler(this.textBoxTT_MouseLeave);
+            this.textBoxROMPath.MouseHover += new System.EventHandler(this.textBoxTT_MouseHover);
             // 
             // buttonBrowseFolder
             // 
@@ -93,6 +93,7 @@
             // 
             // buttonOK
             // 
+            this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonOK.Enabled = false;
             this.buttonOK.Location = new System.Drawing.Point(231, 142);
             this.buttonOK.Name = "buttonOK";
@@ -104,6 +105,7 @@
             // 
             // buttonCancel
             // 
+            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Location = new System.Drawing.Point(324, 142);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
@@ -114,8 +116,10 @@
             // 
             // DialogLoadROM
             // 
+            this.AcceptButton = this.buttonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(411, 177);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
