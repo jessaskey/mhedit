@@ -1,5 +1,6 @@
 ﻿using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
+using mhedit.Containers.MazeEnemies.IonCannon;
 using mhedit.Containers.MazeObjects;
 using System;
 using System.Collections.Generic;
@@ -445,7 +446,7 @@ namespace mhedit.GameControllers
                     maze.TransportabilityFlags = transportabilityData;
                 }
 
-                //Laser Cannon
+                //Laser IonCannon
                 // Ok, So looking at why the cannons are shifted down on level 16.
                 // The issue is that the cannon goes up and down. The key is where
                 // the cannon starts with respect to the ceiling. Cannons 2 and 3
@@ -459,7 +460,7 @@ namespace mhedit.GameControllers
 
                     while (cannonPointerAddress != 0)
                     {
-                        Cannon cannon = new Cannon();
+                        IonCannon cannon = new IonCannon();
                         cannon.LoadPosition(ReadBytes(cannonPointerAddress, 4, 6));
                         //now read data until we hit a cannon_end byte ($00)
                         int cannonCommandOffset = 4;
@@ -467,29 +468,29 @@ namespace mhedit.GameControllers
                         bool hasData = true;
                         while (hasData)
                         {
-                            int cannonCommand = commandStartByte >> 6;
+                            Commands cannonCommand = (Commands)(commandStartByte >> 6);
                             switch (cannonCommand)
                             {
-                                case 0:     //loop
-                                    cannon.Movements.Add(new CannonMovementReturn());
+                                case Commands.ReturnToStart:     //loop
+                                    cannon.Program.Add(new ReturnToStart());
                                     hasData = false;
                                     break;
-                                case 1:     //Move Gun
-                                    CannonMovementPosition cannonPosition = new CannonMovementPosition();
+                                case Commands.OrientAndFire:     //Move Gun
+                                    OrientAndFire cannonPosition = new OrientAndFire();
                                     int gunAngle = (commandStartByte & 0x38) >> 3;
-                                    cannonPosition.Position = (CannonGunPosition)gunAngle;
+                                    cannonPosition.Orientation = (Orientation)gunAngle;
                                     int rotationSpeed = (commandStartByte & 0x06) >> 1;
-                                    cannonPosition.Speed = (CannonGunSpeed)rotationSpeed;
+                                    cannonPosition.RotateSpeed = (RotateSpeed)rotationSpeed;
                                     int fireBit = (commandStartByte & 0x01);
                                     if (fireBit > 0)
                                     {
                                         cannonCommandOffset++;
                                         cannonPosition.ShotSpeed = (byte)ReadByte(cannonPointerAddress, cannonCommandOffset, 6);
                                     }
-                                    cannon.Movements.Add(cannonPosition);
+                                    cannon.Program.Add(cannonPosition);
                                     break;
-                                case 2:     //Move Position
-                                    CannonMovementMove cannonMovement = new CannonMovementMove();
+                                case Commands.Move:     //Move Position
+                                    Move cannonMovement = new Move();
                                     int waitFrames = (commandStartByte & 0x3F) << 2;
                                     cannonMovement.WaitFrames = waitFrames;
                                     if (waitFrames > 0)
@@ -500,12 +501,12 @@ namespace mhedit.GameControllers
                                         cannonMovement.Velocity.Y = (sbyte)ReadByte(cannonPointerAddress, cannonCommandOffset, 6);
                                     }
                                     //cannonMovement.
-                                    cannon.Movements.Add(cannonMovement);
+                                    cannon.Program.Add(cannonMovement);
                                     break;
-                                case 3:     //Pause
-                                    CannonMovementPause cannonPause = new CannonMovementPause();
+                                case Commands.Pause:     //Pause
+                                    Pause cannonPause = new Pause();
                                     cannonPause.WaitFrames = (commandStartByte & 0x3F) << 2;
-                                    cannon.Movements.Add(cannonPause);
+                                    cannon.Program.Add(cannonPause);
                                     break;
                             }
                             cannonCommandOffset++;
@@ -1084,7 +1085,7 @@ namespace mhedit.GameControllers
                 currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OneWay), 0, 6);
             }
 
-            //Ion Cannon, warning, this is very messy due to data compaction techniques
+            //Ion IonCannon, warning, this is very messy due to data compaction techniques
             //Three levels of data pointers
             // 1. Byte: Index into Pointers - mcan - Static Data Area - 28 Bytes - Written Last
             // 2. Word: Pointers to Data - mcanst - Dynamic Data Area - Written Second
@@ -1094,10 +1095,10 @@ namespace mhedit.GameControllers
 
             for (int i = 0; i < numMazes; i++)
             {
-                if (mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>().Count() > 0)
+                if (mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().Count() > 0)
                 {
                     cannonLevelPointers.Add(i, currentAddressPage6);
-                    foreach (Cannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>())
+                    foreach (IonCannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>())
                     {
                         cannonDataPointers.Add(cannon.ObjectId, currentAddressPage6);
                         currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, cannon.ToBytes(), 0, 6);
@@ -1113,7 +1114,7 @@ namespace mhedit.GameControllers
 
             for (int i = 0; i < numMazes; i++)
             {
-                if (mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>().Count() == 0)
+                if (mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().Count() == 0)
                 {
                     //set empty pointers and index
                     pointerIndex += WritePagedROM((ushort)_exports["mcan"], new byte[] { 0x00 }, pointerIndex, 6);
@@ -1122,8 +1123,8 @@ namespace mhedit.GameControllers
                 {
                     //set this ponter index value and increment
                     pointerIndex += WritePagedROM((ushort)_exports["mcan"], new byte[] { (byte)cannonIndexValue }, pointerIndex, 6);
-                    cannonIndexValue += (mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>().Count() * 2) + 2;
-                    foreach (Cannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<Cannon>())
+                    cannonIndexValue += (mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().Count() * 2) + 2;
+                    foreach (IonCannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>())
                     {
                         currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, WordToByteArray(cannonDataPointers[cannon.ObjectId]), 0, 6);
                     }

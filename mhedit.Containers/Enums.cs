@@ -68,35 +68,6 @@ namespace mhedit.Containers
         TypeD = 3
     }
 
-    [Serializable]
-    public enum CannonMovementType : int
-    {
-        Return,
-        Position,
-        Move,
-        Pause
-    }
-
-    [Serializable]
-    public enum CannonGunPosition : int
-    {
-        TopRight = 0,
-        MiddleRight,
-        BottomRight,
-        Down,
-        TopLeft,
-        MiddleLeft,
-        BottomLeft
-    }
-
-    [Serializable]
-    public enum CannonGunSpeed : int
-    {
-        Slow = 0,
-        Medium,
-        Fast
-    }
-
     /// <summary>
     /// ArrowDirection defines which way the current arrow is pointing. Unknown will display a question mark.
     /// </summary>

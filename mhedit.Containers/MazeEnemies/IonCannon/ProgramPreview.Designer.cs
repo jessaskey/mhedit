@@ -1,6 +1,6 @@
-﻿namespace mhedit.Containers.MazeEnemies
+﻿namespace mhedit.Containers.MazeEnemies.IonCannon
 {
-    partial class CannonMovementPreview
+    partial class CannonProgramPreview
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CannonMovementPreview));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CannonProgramPreview));
             this.panelPreview = new System.Windows.Forms.Panel();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
@@ -82,7 +82,7 @@
             this.toolStripLabelSequenceCounter.Size = new System.Drawing.Size(24, 22);
             this.toolStripLabelSequenceCounter.Text = "1/1";
             // 
-            // CannonMovementPreview
+            // CannonProgramPreview
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -90,10 +90,10 @@
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.panelPreview);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "CannonMovementPreview";
+            this.Name = "CannonProgramPreview";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Cannon Preview";
+            this.Text = "IonCannon Preview";
             this.TopMost = true;
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();

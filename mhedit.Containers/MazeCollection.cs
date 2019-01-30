@@ -1,26 +1,18 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Windows.Forms;
-using System.Globalization;
 using System.Xml.Serialization;
-
-using mhedit.Containers;
 using mhedit.Containers.MazeObjects;
 using mhedit.Containers.MazeEnemies;
+using mhedit.Containers.MazeEnemies.IonCannon;
 
 namespace mhedit.Containers
 {
     [DefaultPropertyAttribute("Name")]
     [Serializable]
-    [XmlInclude(typeof(Cannon))]
+    [XmlInclude(typeof(IonCannon))]
     [XmlInclude(typeof(LightningH))]
     [XmlInclude(typeof(LightningV))]
     [XmlInclude(typeof(Maxoid))]

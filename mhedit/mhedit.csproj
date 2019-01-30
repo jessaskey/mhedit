@@ -198,34 +198,34 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="cannonMovements\Atari Level 02 Cannon.can">
+    <Content Include="IonCannonPrograms\Atari Level 02 Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 13 Cannon.can">
+    <Content Include="IonCannonPrograms\Atari Level 13 Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 14a Cannon.can">
+    <Content Include="IonCannonPrograms\Atari Level 14a Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 14b Cannon.can">
+    <Content Include="IonCannonPrograms\Atari Level 14b Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 15a Cannon.can">
+    <Content Include="IonCannonPrograms\Atari Level 15a Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 15b Cannon.can">
+    <Content Include="IonCannonPrograms\Atari Level 15b Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 16a Cannon.can">
+    <Content Include="IonCannonPrograms\Atari Level 16a Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 16b Cannon.can">
+    <Content Include="IonCannonPrograms\Atari Level 16b Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 16c Cannon.can">
+    <Content Include="IonCannonPrograms\Atari Level 16c Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="cannonMovements\Atari Level 16d Cannon.can">
+    <Content Include="IonCannonPrograms\Atari Level 16d Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Havoc.pfx" />

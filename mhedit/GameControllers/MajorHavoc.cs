@@ -1,5 +1,6 @@
 ﻿using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
+using mhedit.Containers.MazeEnemies.IonCannon;
 using mhedit.Containers.MazeObjects;
 using System;
 using System.Collections.Generic;
@@ -423,7 +424,7 @@ namespace mhedit.GameControllers
                     maze.TransportabilityFlags = transportabilityData;
                 }
              
-                //Laser Cannon
+                //Laser IonCannon
                 // Ok, So looking at why the cannons are shifted down on level 16.
                 // The issue is that the cannon goes up and down. The key is where
                 // the cannon starts with respect to the ceiling. Cannons 2 and 3
@@ -437,7 +438,7 @@ namespace mhedit.GameControllers
 
                     while (cannonPointerAddress != 0)
                     {
-                        Cannon cannon = new Cannon();
+                        IonCannon cannon = new IonCannon();
                         cannon.LoadPosition(ReadBytes(cannonPointerAddress, 4));
                         //now read data until we hit a cannon_end byte ($00)
                         int cannonCommandOffset = 4;
@@ -445,45 +446,45 @@ namespace mhedit.GameControllers
                         bool hasData = true;
                         while (hasData)
                         {
-                            int cannonCommand = commandStartByte >> 6;
-                            switch (cannonCommand)
+                            Commands cannonCommand = (Commands)( commandStartByte >> 6 );
+                            switch ( cannonCommand )
                             {
-                                case 0:     //loop
-                                    cannon.Movements.Add(new CannonMovementReturn());
+                                case Commands.ReturnToStart:     //loop
+                                    cannon.Program.Add( new ReturnToStart() );
                                     hasData = false;
                                     break;
-                                case 1:     //Move Gun
-                                    CannonMovementPosition cannonPosition = new CannonMovementPosition();
-                                    int gunAngle = (commandStartByte & 0x38) >> 3;
-                                    cannonPosition.Position = (CannonGunPosition)gunAngle;
-                                    int rotationSpeed = (commandStartByte & 0x06) >> 1;
-                                    cannonPosition.Speed = (CannonGunSpeed)rotationSpeed;
-                                    int fireBit = (commandStartByte & 0x01);
-                                    if (fireBit > 0)
+                                case Commands.OrientAndFire:     //Move Gun
+                                    OrientAndFire cannonPosition = new OrientAndFire();
+                                    int gunAngle = ( commandStartByte & 0x38 ) >> 3;
+                                    cannonPosition.Orientation = (Orientation)gunAngle;
+                                    int rotationSpeed = ( commandStartByte & 0x06 ) >> 1;
+                                    cannonPosition.RotateSpeed = (RotateSpeed)rotationSpeed;
+                                    int fireBit = ( commandStartByte & 0x01 );
+                                    if ( fireBit > 0 )
                                     {
                                         cannonCommandOffset++;
-                                        cannonPosition.ShotSpeed = (byte)ReadByte(cannonPointerAddress, cannonCommandOffset);
+                                        cannonPosition.ShotSpeed = (byte)ReadByte( cannonPointerAddress, cannonCommandOffset );
                                     }
-                                    cannon.Movements.Add(cannonPosition);
+                                    cannon.Program.Add( cannonPosition );
                                     break;
-                                case 2:     //Move Position
-                                    CannonMovementMove cannonMovement = new CannonMovementMove();
-                                    int waitFrames = (commandStartByte & 0x3F) << 2;
+                                case Commands.Move:     //Move Position
+                                    Move cannonMovement = new Move();
+                                    int waitFrames = ( commandStartByte & 0x3F ) << 2;
                                     cannonMovement.WaitFrames = waitFrames;
-                                    if (waitFrames > 0)
+                                    if ( waitFrames > 0 )
                                     {
                                         cannonCommandOffset++;
-                                        cannonMovement.Velocity.X = (sbyte)ReadByte(cannonPointerAddress, cannonCommandOffset);
+                                        cannonMovement.Velocity.X = (sbyte)ReadByte( cannonPointerAddress, cannonCommandOffset );
                                         cannonCommandOffset++;
-                                        cannonMovement.Velocity.Y = (sbyte)ReadByte(cannonPointerAddress, cannonCommandOffset);
+                                        cannonMovement.Velocity.Y = (sbyte)ReadByte( cannonPointerAddress, cannonCommandOffset );
                                     }
                                     //cannonMovement.
-                                    cannon.Movements.Add(cannonMovement);
+                                    cannon.Program.Add( cannonMovement );
                                     break;
-                                case 3:     //Pause
-                                    CannonMovementPause cannonPause = new CannonMovementPause();
-                                    cannonPause.WaitFrames = (commandStartByte & 0x3F) << 2;
-                                    cannon.Movements.Add(cannonPause);
+                                case Commands.Pause:     //Pause
+                                    Pause cannonPause = new Pause();
+                                    cannonPause.WaitFrames = ( commandStartByte & 0x3F ) << 2;
+                                    cannon.Program.Add( cannonPause );
                                     break;
                             }
                             cannonCommandOffset++;
@@ -1114,14 +1115,14 @@ namespace mhedit.GameControllers
             //write transportability data
             offset += Write("tran0", new byte[] { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xee }, offset);
 
-            //Laser Cannon
+            //Laser IonCannon
             offset = 0;
             int pointer = 0;
-            if (maze.MazeObjects.OfType<Cannon>().Count() > 0)
+            if (maze.MazeObjects.OfType<IonCannon>().Count() > 0)
             {
                 Write("mcan", new byte[] { 0x02, 0x02, 0x02, 0x02 }, 0);
             }
-            foreach (Cannon cannon in maze.MazeObjects.OfType<Cannon>())
+            foreach (IonCannon cannon in maze.MazeObjects.OfType<IonCannon>())
             {
                 pointer += Write("mcan0", (UInt16)(GetAddress("mcand").Item1 + offset), pointer);
                 //cannon location first...

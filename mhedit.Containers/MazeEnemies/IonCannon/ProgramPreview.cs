@@ -1,4 +1,5 @@
-﻿using System;
+﻿using mhedit.Containers.MazeEnemies.IonCannon;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,28 +8,28 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace mhedit.Containers.MazeEnemies
+namespace mhedit.Containers.MazeEnemies.IonCannon
 {
-    public partial class CannonMovementPreview : Form
+    public partial class CannonProgramPreview : Form
     {
-        private List<CannonMovement> _movements;
+        private IonCannonProgram _program;
         private int _currentIndex = 0;
         private Point _currentPosition = new Point(32, 32);
         private Velocity _currentVelocity = new Velocity();
 
-        public CannonMovementPreview(List<CannonMovement> movements)
+        public CannonProgramPreview( IonCannonProgram movements )
         {
             InitializeComponent();
-            _movements = movements;
+            _program = movements;
             timerMain.Enabled = true;
         }
 
         private void timerMain_Tick(object sender, EventArgs e)
         {
             _currentIndex++;
-            toolStripLabelSequenceCounter.Text = "(" + _currentIndex.ToString() + "/" + _movements.Count.ToString() + ")";
+            toolStripLabelSequenceCounter.Text = "(" + _currentIndex.ToString() + "/" + _program.Count.ToString() + ")";
         
-            if (_currentIndex > _movements.Count)
+            if (_currentIndex > _program.Count)
             {
                 _currentIndex = 0;
 

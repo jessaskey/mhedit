@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using mhedit.Containers.MazeEnemies;
+using mhedit.Containers.MazeEnemies.IonCannon;
 
 namespace mhedit.Containers
 {
@@ -16,7 +17,7 @@ namespace mhedit.Containers
     // to be changed at design time using a customized UI element
     // that is invoked by the Properties window. The UI is provided
     // by the LightShapeSelectionControl class.
-    internal class CannonEditor : UITypeEditor
+    internal class IonCannonEditor : UITypeEditor
     {
 
         public override UITypeEditorEditStyle GetEditStyle(System.ComponentModel.ITypeDescriptorContext context)
@@ -26,16 +27,21 @@ namespace mhedit.Containers
 
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
-            CannonMovementEditor editor = new CannonMovementEditor();
-            List<CannonMovement> currentMovements = (((List<CannonMovement>)value).ToArray()).ToList();
-            editor.Movements = (List<CannonMovement>)value;
+            CannonProgramEditor editor = new CannonProgramEditor();
+
+
+            editor.Program = (IonCannonProgram)value;
+
+            /// BUG: Not making copies of the commands....
+            IonCannonProgram savedProgram = editor.Program;
+
             DialogResult result = editor.ShowDialog();
             if (result == DialogResult.Cancel)
             {
                 //restore previous movements
-                return currentMovements;
+                return savedProgram;
             }
-            return editor.Movements;
+            return editor.Program;
         }
     }
 

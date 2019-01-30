@@ -15,6 +15,7 @@ using Silver.UI;
 using mhedit.Containers.MazeObjects;
 using mhedit.Containers.MazeEnemies;
 using System.Xml.Serialization;
+using mhedit.Containers.MazeEnemies.IonCannon;
 
 namespace mhedit.Containers
 {
@@ -22,7 +23,7 @@ namespace mhedit.Containers
 
     [DefaultPropertyAttribute("Name")]
     [Serializable]
-    [XmlInclude(typeof(Cannon))]
+    [XmlInclude(typeof(IonCannon))]
     [XmlInclude(typeof(LightningH))]
     [XmlInclude(typeof(LightningV))]
     [XmlInclude(typeof(Maxoid))]

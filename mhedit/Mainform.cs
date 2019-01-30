@@ -16,6 +16,7 @@ using ICSharpCode.SharpZipLib.Zip;
 
 using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
+using mhedit.Containers.MazeEnemies.IonCannon;
 using mhedit.Containers.MazeObjects;
 using mhedit.Controllers;
 
@@ -135,7 +136,7 @@ namespace mhedit
             itemIndex = toolBox[tabIndex].AddItem("Maxoid", 26, true, new Maxoid());
             itemIndex = toolBox[tabIndex].AddItem("Force Field", 14, true, new LightningH());
             itemIndex = toolBox[tabIndex].AddItem("Force Field", 15, true, new LightningV());
-            itemIndex = toolBox[tabIndex].AddItem("Ion Cannon", 17, true, new Cannon());
+            itemIndex = toolBox[tabIndex].AddItem("Ion IonCannon", 17, true, new IonCannon());
             itemIndex = toolBox[tabIndex].AddItem("Trip Pad", 19, true, new TripPad());
             //toolBox[tabIndex].AddItem("Roboid", 10, true, null);
             tabIndex = toolBox.AddTab("Maze Objects", -1);

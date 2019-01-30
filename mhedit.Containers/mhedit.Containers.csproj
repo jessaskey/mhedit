@@ -59,26 +59,30 @@
     <Compile Include="Enums.cs" />
     <Compile Include="Maze.cs" />
     <Compile Include="MazeCollection.cs" />
-    <Compile Include="MazeEnemies\Cannon.cs" />
-    <Compile Include="MazeEnemies\CannonEditor.cs" />
-    <Compile Include="MazeEnemies\CannonMovement.cs" />
-    <Compile Include="MazeEnemies\CannonMovementEditor.cs">
+    <Compile Include="MazeEnemies\IonCannon\IonCannon.cs" />
+    <Compile Include="MazeEnemies\IonCannon\IonCannonEditor.cs" />
+    <Compile Include="MazeEnemies\IonCannon\ProgramEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MazeEnemies\CannonMovementEditor.Designer.cs">
-      <DependentUpon>CannonMovementEditor.cs</DependentUpon>
+    <Compile Include="MazeEnemies\IonCannon\ProgramEditor.Designer.cs">
+      <DependentUpon>ProgramEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="MazeEnemies\CannonMovementMove.cs" />
-    <Compile Include="MazeEnemies\CannonMovementPause.cs" />
-    <Compile Include="MazeEnemies\CannonMovementPosition.cs" />
-    <Compile Include="MazeEnemies\CannonMovementPreview.cs">
+    <Compile Include="MazeEnemies\IonCannon\ProgramPreview.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MazeEnemies\CannonMovementPreview.Designer.cs">
-      <DependentUpon>CannonMovementPreview.cs</DependentUpon>
+    <Compile Include="MazeEnemies\IonCannon\ProgramPreview.Designer.cs">
+      <DependentUpon>ProgramPreview.cs</DependentUpon>
     </Compile>
-    <Compile Include="MazeEnemies\CannonMovementReturn.cs" />
-    <Compile Include="MazeEnemies\iCannonMovement.cs" />
+    <Compile Include="MazeEnemies\IonCannon\Commands.cs" />
+    <Compile Include="MazeEnemies\IonCannon\IonCannonBehavior.cs" />
+    <Compile Include="MazeEnemies\IonCannon\IonCannonProgram.cs" />
+    <Compile Include="MazeEnemies\IonCannon\Move.cs" />
+    <Compile Include="MazeEnemies\IonCannon\OrientAndFire.cs" />
+    <Compile Include="MazeEnemies\IonCannon\Orientation.cs" />
+    <Compile Include="MazeEnemies\IonCannon\Pause.cs" />
+    <Compile Include="MazeEnemies\IonCannon\ReturnToStart.cs" />
+    <Compile Include="MazeEnemies\IonCannon\RotateSpeed.cs" />
+    <Compile Include="MazeEnemies\IonCannon\SimpleVelocity.cs" />
     <Compile Include="MazeEnemies\LightningH.cs" />
     <Compile Include="MazeEnemies\LightningV.cs" />
     <Compile Include="MazeEnemies\Maxoid.cs" />
@@ -112,6 +116,7 @@
     <Compile Include="ResourceFactory.cs" />
     <Compile Include="SignedVelocity.cs" />
     <Compile Include="TypeConverters\SignedVelocityTypeConverter.cs" />
+    <Compile Include="TypeConverters\SimpleVelocityTypeConverter.cs" />
     <Compile Include="TypeConverters\TripPadPyroidTypeConverter.cs" />
     <Compile Include="TypeConverters\VectorPositionTypeConverter.cs" />
     <Compile Include="TypeConverters\VelocityTypeConverter.cs" />
@@ -119,11 +124,11 @@
     <Compile Include="Velocity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MazeEnemies\CannonMovementEditor.resx">
-      <DependentUpon>CannonMovementEditor.cs</DependentUpon>
+    <EmbeddedResource Include="MazeEnemies\IonCannon\ProgramEditor.resx">
+      <DependentUpon>ProgramEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MazeEnemies\CannonMovementPreview.resx">
-      <DependentUpon>CannonMovementPreview.cs</DependentUpon>
+    <EmbeddedResource Include="MazeEnemies\IonCannon\ProgramPreview.resx">
+      <DependentUpon>ProgramPreview.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

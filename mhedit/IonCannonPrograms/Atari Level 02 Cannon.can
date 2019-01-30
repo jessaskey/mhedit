@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfIonCannonBehavior xmlns:MHEdit="http://mhedit.askey.org">
+  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>UpRight</Orientation>
+    <RotateSpeed>Slow</RotateSpeed>
+    <ShotSpeed>24</ShotSpeed>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>Right</Orientation>
+    <RotateSpeed>Slow</RotateSpeed>
+    <ShotSpeed>24</ShotSpeed>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>DownRight</Orientation>
+    <RotateSpeed>Slow</RotateSpeed>
+    <ShotSpeed>24</ShotSpeed>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>80</WaitFrames>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>0</WaitFrames>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>UpLeft</Orientation>
+    <RotateSpeed>Slow</RotateSpeed>
+    <ShotSpeed>24</ShotSpeed>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>Left</Orientation>
+    <RotateSpeed>Slow</RotateSpeed>
+    <ShotSpeed>24</ShotSpeed>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>DownLeft</Orientation>
+    <RotateSpeed>Slow</RotateSpeed>
+    <ShotSpeed>24</ShotSpeed>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>80</WaitFrames>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>0</WaitFrames>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>UpRight</Orientation>
+    <RotateSpeed>Slow</RotateSpeed>
+    <ShotSpeed>0</ShotSpeed>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>UpLeft</Orientation>
+    <RotateSpeed>Slow</RotateSpeed>
+    <ShotSpeed>0</ShotSpeed>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>16</WaitFrames>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>0</WaitFrames>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>Down</Orientation>
+    <RotateSpeed>Slow</RotateSpeed>
+    <ShotSpeed>8</ShotSpeed>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>32</WaitFrames>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>0</WaitFrames>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>Left</Orientation>
+    <RotateSpeed>Slow</RotateSpeed>
+    <ShotSpeed>8</ShotSpeed>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>UpRight</Orientation>
+    <RotateSpeed>Slow</RotateSpeed>
+    <ShotSpeed>0</ShotSpeed>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>32</WaitFrames>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>0</WaitFrames>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>Right</Orientation>
+    <RotateSpeed>Slow</RotateSpeed>
+    <ShotSpeed>0</ShotSpeed>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>16</WaitFrames>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>0</WaitFrames>
+  </IonCannonBehavior>
+  <IonCannonBehavior p3:type="ReturnToStart" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance" />
+</ArrayOfIonCannonBehavior>
