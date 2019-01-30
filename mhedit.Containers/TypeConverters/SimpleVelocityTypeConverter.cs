@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
-using static mhedit.Containers.MazeEnemies.IonCannon.Move;
+using mhedit.Containers.MazeEnemies.IonCannon;
 
 namespace mhedit.Containers.TypeConverters
 {
