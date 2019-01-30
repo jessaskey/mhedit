@@ -42,5 +42,10 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                 _y = value;
             }
         }
+
+        //public override string ToString()
+        //{
+        //    return $"Velocity  X:{this.X}, Y:{this.Y}";
+        //}
     }
 }

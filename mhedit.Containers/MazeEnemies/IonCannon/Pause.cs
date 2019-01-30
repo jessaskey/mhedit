@@ -48,6 +48,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         public override string ToString()
         {
             return $"Pause";
+            //return $"Pause  [ WaitFrames:{this.WaitFrames} ]";
         }
     }
 }

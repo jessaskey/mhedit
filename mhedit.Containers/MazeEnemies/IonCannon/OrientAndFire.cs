@@ -94,6 +94,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         public override string ToString()
         {
             return $"Orient and Fire";
+            //return $"Orient and Fire [ {this.Orientation}, {this.RotateSpeed}, ShotSpeed:{this.ShotSpeed}]";
         }
     }
 }
