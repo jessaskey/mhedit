@@ -63,17 +63,11 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         {
             bytes.Add( this.SerializeCommand( (byte)( this._waitFrames >> 2 ) ) );
 
-            if ( this._waitFrames > 0 &&
-                 this._velocity.X != 0 && this._velocity.Y != 0 )
+            if ( this._waitFrames > 0 )
             {
                 bytes.Add( (byte)this._velocity.X );
 
                 bytes.Add( (byte)this._velocity.Y );
-            }
-            else
-            {
-                throw new InvalidOperationException(
-                    $"Wait Frames and Velocity must both be 0." );
             }
         }
 
