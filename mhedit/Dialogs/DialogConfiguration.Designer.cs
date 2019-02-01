@@ -46,7 +46,6 @@
             this.textBoxTemplatesLocation = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.tabControl1.SuspendLayout();
             this.tabPageOptions.SuspendLayout();
             this.tabPageMAME.SuspendLayout();
@@ -173,8 +172,8 @@
             this.textBoxMameExecutable.Name = "textBoxMameExecutable";
             this.textBoxMameExecutable.Size = new System.Drawing.Size(377, 20);
             this.textBoxMameExecutable.TabIndex = 13;
-            this.textBoxMameExecutable.MouseHover += new System.EventHandler(this.textBoxTT_MouseHover);
             this.textBoxMameExecutable.MouseLeave += new System.EventHandler(this.textBoxTT_MouseLeave);
+            this.textBoxMameExecutable.MouseHover += new System.EventHandler(this.textBoxTT_MouseHover);
             // 
             // tabPageLocations
             // 
@@ -205,8 +204,8 @@
             this.textBoxTemplatesLocation.Name = "textBoxTemplatesLocation";
             this.textBoxTemplatesLocation.Size = new System.Drawing.Size(472, 20);
             this.textBoxTemplatesLocation.TabIndex = 1;
-            this.textBoxTemplatesLocation.MouseHover += new System.EventHandler(this.textBoxTT_MouseHover);
             this.textBoxTemplatesLocation.MouseLeave += new System.EventHandler(this.textBoxTT_MouseLeave);
+            this.textBoxTemplatesLocation.MouseHover += new System.EventHandler(this.textBoxTT_MouseHover);
             // 
             // label1
             // 
@@ -227,10 +226,6 @@
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
             // 
             // DialogConfiguration
             // 
@@ -272,7 +267,6 @@
         private System.Windows.Forms.Button buttonBrowseMameExecutable;
         private System.Windows.Forms.TextBox textBoxMameExecutable;
         private System.Windows.Forms.Button buttonCancel;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.CheckBox checkBoxDebug;
         private System.Windows.Forms.TabPage tabPageOptions;
         private System.Windows.Forms.CheckBox checkBoxShowGridCoordinateReferences;

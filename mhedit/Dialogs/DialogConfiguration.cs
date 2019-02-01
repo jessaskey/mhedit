@@ -59,9 +59,18 @@ namespace mhedit
 
         private void buttonBrowseMameExecutable_Click(object sender, EventArgs e)
         {
-            if (openFileDialog1.ShowDialog() != DialogResult.Cancel)
+            OpenFileDialog ofd = new OpenFileDialog
             {
-                textBoxMameExecutable.Text = openFileDialog1.FileName;
+                Title = "Select the path to the MAME executable",
+                InitialDirectory = Path.GetDirectoryName( textBoxMameExecutable.Text ),
+                FileName = Path.GetFileNameWithoutExtension( textBoxMameExecutable.Text ),
+                CheckFileExists = true,
+                Filter = "Mame Executable (*.exe)|*.exe"
+            };
+
+            if ( ofd.ShowDialog() == DialogResult.OK )
+            {
+                textBoxMameExecutable.Text = ofd.FileName;
             }
         }
 
