@@ -245,7 +245,7 @@ namespace mhedit
                 using (MemoryStream mStream = new MemoryStream())
                 {
                     var serializer = new XmlSerializer(typeof(MazeCollection));
-                    using (var writer = XmlWriter.Create(mStream))
+                    using (var writer = XmlWriter.Create(mStream, new XmlWriterSettings { Indent = true } ) )
                     {
                         serializer.Serialize(writer, mazeCollection, Constants.XmlNamespace);
                     }

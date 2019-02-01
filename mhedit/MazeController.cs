@@ -290,7 +290,7 @@ namespace mhedit
                 using (MemoryStream mStream = new MemoryStream())
                 {
                     var serializer = new XmlSerializer(maze.GetType());
-                    using (var writer = XmlWriter.Create(mStream))
+                    using (var writer = XmlWriter.Create(mStream, new XmlWriterSettings { Indent = true } ) )
                     {
                         serializer.Serialize(writer, maze, Constants.XmlNamespace);
                     }
@@ -312,7 +312,7 @@ namespace mhedit
                 using (MemoryStream mStream = new MemoryStream())
                 {
                     var serializer = new XmlSerializer(maze.GetType());
-                    using (var writer = XmlWriter.Create(mStream))
+                    using (var writer = XmlWriter.Create(mStream, new XmlWriterSettings { Indent = true } ) )
                     {
                         serializer.Serialize(writer, maze, Constants.XmlNamespace);
                     }
