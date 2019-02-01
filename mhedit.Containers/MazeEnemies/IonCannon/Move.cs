@@ -13,7 +13,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     public sealed partial class Move : IonCannonBehavior
     {
         private int _waitFrames;
-        private readonly SimpleVelocity _velocity = new SimpleVelocity();
+        private SimpleVelocity _velocity = new SimpleVelocity();
 
         public Move()
             : base( Commands.Move )
@@ -56,6 +56,10 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             get
             {
                 return _velocity;
+            }
+            set
+            {
+                this._velocity = value;
             }
         }
 
