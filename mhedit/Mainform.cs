@@ -823,58 +823,55 @@ namespace mhedit
 
         }
 
-        private void treeView_Click(object sender, EventArgs e)
+        private void treeView_MouseUp( object sender, MouseEventArgs args )
         {
-            MouseEventArgs args = (MouseEventArgs)e;
-
-            if (args.Button == MouseButtons.Right)
+            TreeNode node = treeView.GetNodeAt( args.Location );
+            if ( node != null )
             {
-                TreeNode node = treeView.GetNodeAt(new Point(args.X, args.Y));
-                if (node != null)
+                if ( node.Bounds.Contains( args.Location ) )
                 {
                     treeView.SelectedNode = node;
-                    if (node.Parent == null)
+
+                    if ( args.Button == MouseButtons.Right )
                     {
-                        if (treeView.SelectedNode.Tag.GetType() == typeof(MazeController))
+                        if ( node.Parent == null )
                         {
-                            saveToolStripMenuItemSave.Text = "Save Maze";
-                            closeToolStripMenuItemClose.Text = "Close Maze";
-                            saveMazeToolStripMenuItem.Visible = false;
+                            if ( treeView.SelectedNode.Tag.GetType() == typeof( MazeController ) )
+                            {
+                                saveToolStripMenuItemSave.Text = "Save Maze";
+                                closeToolStripMenuItemClose.Text = "Close Maze";
+                                saveMazeToolStripMenuItem.Visible = false;
+                            }
+                            if ( treeView.SelectedNode.Tag.GetType() == typeof( MazeCollectionController ) )
+                            {
+                                saveToolStripMenuItemSave.Text = "Save Collection";
+                                closeToolStripMenuItemClose.Text = "Close Collection";
+                                saveMazeToolStripMenuItem.Enabled = false;
+                                saveMazeToolStripMenuItem.Visible = true;
+                            }
                         }
-                        if (treeView.SelectedNode.Tag.GetType() == typeof(MazeCollectionController))
+                        else
                         {
                             saveToolStripMenuItemSave.Text = "Save Collection";
                             closeToolStripMenuItemClose.Text = "Close Collection";
-                            saveMazeToolStripMenuItem.Enabled = false;
+                            saveMazeToolStripMenuItem.Enabled = true;
                             saveMazeToolStripMenuItem.Visible = true;
                         }
+
+                        contextMenuStripTree.Show( treeView, args.Location );
                     }
-                    else
+                    else if ( args.Button == MouseButtons.Left )
                     {
-                        saveToolStripMenuItemSave.Text = "Save Collection";
-                        closeToolStripMenuItemClose.Text = "Close Collection";
-                        saveMazeToolStripMenuItem.Enabled = true;
-                        saveMazeToolStripMenuItem.Visible = true;
-                    }
-                    contextMenuStripTree.Show(new Point(args.X, args.Y), ToolStripDropDownDirection.BelowRight);
-                }
-            }
-            else if (args.Button == MouseButtons.Left)
-            {
-                //typical selection
-                TreeNode node = treeView.GetNodeAt(new Point(args.X, args.Y));
-                if (node != null)
-                {
-                    treeView.SelectedNode = node;
-                    if (treeView.SelectedNode.Tag.GetType() == typeof(MazeController))
-                    {
-                        MazeController mazeController = treeView.SelectedNode.Tag as MazeController;
-                        toolStripButtonMAME.Enabled = true;
-                        mazeController.PropertyGrid = propertyGrid;
-                        mazeController.ComboBoxObjects = comboBoxMazeObjects;
-                        //show the maze properties on tree click
-                        propertyGrid.SelectedObject = _currentMazeController;
-                        _currentMazeController = mazeController;
+                        if ( treeView.SelectedNode.Tag.GetType() == typeof( MazeController ) )
+                        {
+                            MazeController mazeController = treeView.SelectedNode.Tag as MazeController;
+                            toolStripButtonMAME.Enabled = true;
+                            mazeController.PropertyGrid = propertyGrid;
+                            mazeController.ComboBoxObjects = comboBoxMazeObjects;
+                            //show the maze properties on tree click
+                            propertyGrid.SelectedObject = _currentMazeController;
+                            _currentMazeController = mazeController;
+                        }
                     }
                 }
             }
