@@ -869,8 +869,8 @@ namespace mhedit
                             mazeController.PropertyGrid = propertyGrid;
                             mazeController.ComboBoxObjects = comboBoxMazeObjects;
                             //show the maze properties on tree click
-                            propertyGrid.SelectedObject = _currentMazeController;
                             _currentMazeController = mazeController;
+                            propertyGrid.SelectedObject = _currentMazeController;
                         }
                     }
                 }
