@@ -8,7 +8,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     /// Base class for cannon behavior programming.
     /// </summary>
     [Serializable]
-    public sealed class OrientAndFire : IonCannonBehavior
+    public sealed class OrientAndFire : IonCannonInstruction
     {
         private Orientation _orientation = Orientation.Down;
         private RotateSpeed _rotateSpeed = RotateSpeed.Slow;

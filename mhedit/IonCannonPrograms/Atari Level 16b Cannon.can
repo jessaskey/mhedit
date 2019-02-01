@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ArrayOfIonCannonBehavior xmlns:MHEdit="http://mhedit.askey.org">
-  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+<ArrayOfIonCannonInstruction xmlns:MHEdit="http://mhedit.askey.org">
+  <IonCannonInstruction p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <Orientation>DownRight</Orientation>
     <RotateSpeed>Medium</RotateSpeed>
     <ShotSpeed>10</ShotSpeed>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <Orientation>DownRight</Orientation>
     <RotateSpeed>Medium</RotateSpeed>
     <ShotSpeed>20</ShotSpeed>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="ReturnToStart" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance" />
-</ArrayOfIonCannonBehavior>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="ReturnToStart" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance" />
+</ArrayOfIonCannonInstruction>

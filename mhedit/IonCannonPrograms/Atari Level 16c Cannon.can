@@ -1,146 +1,322 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ArrayOfIonCannonBehavior xmlns:MHEdit="http://mhedit.askey.org">
-  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+<ArrayOfIonCannonInstruction xmlns:MHEdit="http://mhedit.askey.org">
+  <IonCannonInstruction p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <Orientation>DownRight</Orientation>
     <RotateSpeed>Fast</RotateSpeed>
     <ShotSpeed>0</ShotSpeed>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>12</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>-6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>-12</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>-6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>12</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>-6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>-4</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>-6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>12</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>12</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>0</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>0</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <Orientation>UpLeft</Orientation>
     <RotateSpeed>Fast</RotateSpeed>
     <ShotSpeed>0</ShotSpeed>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>-6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>-12</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>-6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>12</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>-6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>-12</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>-6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>12</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>-6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>-12</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>-6</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>4</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Velocity>
+      <X>-12</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>0</WaitFrames>
-  </IonCannonBehavior>
-  <IonCannonBehavior p3:type="ReturnToStart" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance" />
-</ArrayOfIonCannonBehavior>
+    <Velocity>
+      <X>0</X>
+      <Y>0</Y>
+    </Velocity>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="ReturnToStart" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance" />
+</ArrayOfIonCannonInstruction>

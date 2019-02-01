@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
@@ -8,11 +9,15 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     /// Base class for cannon behavior programming.
     /// </summary>
     [Serializable]
-    public abstract class IonCannonBehavior
+    [XmlInclude( typeof( ReturnToStart ) )]
+    [XmlInclude( typeof( OrientAndFire ) )]
+    [XmlInclude( typeof( Move ) )]
+    [XmlInclude( typeof( Pause ) )]
+    public abstract class IonCannonInstruction
     {
         private readonly Commands _command;
 
-        public IonCannonBehavior( Commands command )
+        public IonCannonInstruction( Commands command )
         {
             this._command = command;
         }

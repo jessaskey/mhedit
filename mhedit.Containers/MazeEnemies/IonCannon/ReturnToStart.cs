@@ -8,7 +8,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     /// Base class for cannon behavior programming.
     /// </summary>
     [Serializable]
-    public sealed class ReturnToStart : IonCannonBehavior
+    public sealed class ReturnToStart : IonCannonInstruction
     {
         public ReturnToStart() 
             : base( Commands.ReturnToStart )

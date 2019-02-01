@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Windows.Forms;
+using System.Collections.Generic;
 using System.IO;
-using System.Xml.Serialization;
-using System.Xml;
-using mhedit.Containers.MazeEnemies.IonCannon;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
@@ -106,7 +106,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             if (listBoxProgram.SelectedIndex > 0)
             {
                 int index = listBoxProgram.SelectedIndex;
-                IonCannonBehavior o = _program[index];
+                IonCannonInstruction o = _program[index];
                 _program.RemoveAt(index);
                 _program.Insert(index - 1, o);
                 BindListBox();
@@ -119,7 +119,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             if (listBoxProgram.SelectedIndex < (listBoxProgram.Items.Count - 2))
             {
                 int index = listBoxProgram.SelectedIndex;
-                IonCannonBehavior o = _program[index];
+                IonCannonInstruction o = _program[index];
                 _program.RemoveAt(index);
                 _program.Insert(index + 1, o);
                 BindListBox();
@@ -135,7 +135,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         private void BindListBox()
         {
             listBoxProgram.Items.Clear();
-            foreach ( IonCannonBehavior behavior in _program)
+            foreach ( IonCannonInstruction behavior in _program)
             {
                 listBoxProgram.Items.Add(behavior);
             }
@@ -202,13 +202,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                     {
                         using ( FileStream fStream = new FileStream( saveFileDialog.FileName, FileMode.Create ) )
                         {
-                            var serializer = new XmlSerializer( typeof( IonCannonProgram ), new Type[]
-                                {
-                                    typeof( ReturnToStart ),
-                                    typeof( OrientAndFire ),
-                                    typeof( Move ),
-                                    typeof( Pause )
-                                } );
+                            var serializer = new XmlSerializer( typeof( IonCannonProgram ) );
 
                             using ( var writer = XmlWriter.Create( fStream, new XmlWriterSettings { Indent = true } ) )
                             {
@@ -245,13 +239,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                 {
                     using ( FileStream fStream = new FileStream( programFile, FileMode.Open ) )
                     {
-                        var serializer = new XmlSerializer( typeof( IonCannonProgram ), new Type[]
-                            {
-                            typeof( ReturnToStart ),
-                            typeof( OrientAndFire ),
-                            typeof( Move ),
-                            typeof( Pause )
-                            } );
+                        var serializer = new XmlSerializer( typeof( IonCannonProgram ) );
 
                         using ( var reader = XmlReader.Create( fStream ) )
                         {

@@ -8,7 +8,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     /// Base class for cannon behavior programming.
     /// </summary>
     [Serializable]
-    public sealed class Pause : IonCannonBehavior
+    public sealed class Pause : IonCannonInstruction
     {
         private int _waitFrames;
 

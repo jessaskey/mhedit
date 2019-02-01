@@ -74,7 +74,7 @@
       <DependentUpon>ProgramPreview.cs</DependentUpon>
     </Compile>
     <Compile Include="MazeEnemies\IonCannon\Commands.cs" />
-    <Compile Include="MazeEnemies\IonCannon\IonCannonBehavior.cs" />
+    <Compile Include="MazeEnemies\IonCannon\IonCannonInstruction.cs" />
     <Compile Include="MazeEnemies\IonCannon\IonCannonProgram.cs" />
     <Compile Include="MazeEnemies\IonCannon\Move.cs" />
     <Compile Include="MazeEnemies\IonCannon\OrientAndFire.cs" />

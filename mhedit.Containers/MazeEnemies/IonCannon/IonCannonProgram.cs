@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
     [Serializable]
-    public sealed class IonCannonProgram : List<IonCannonBehavior>
+    public sealed class IonCannonProgram : List<IonCannonInstruction>
     {
         public IonCannonProgram()
             : base()

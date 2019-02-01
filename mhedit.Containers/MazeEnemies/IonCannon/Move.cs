@@ -10,7 +10,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     /// Base class for cannon behavior programming.
     /// </summary>
     [Serializable]
-    public sealed partial class Move : IonCannonBehavior
+    public sealed partial class Move : IonCannonInstruction
     {
         private int _waitFrames;
         private SimpleVelocity _velocity = new SimpleVelocity();
