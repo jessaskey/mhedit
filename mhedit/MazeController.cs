@@ -651,11 +651,15 @@ namespace mhedit
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
-            this.Select();
-            //look for objects here...
-            MazeObject mObject = SelectObject(new Point(e.X, e.Y));
-            RefreshMaze();
-            base.OnMouseClick(e);
+            if ( e.Button == MouseButtons.Left )
+            {
+                this.Select();
+                //look for objects here...
+                MazeObject mObject = SelectObject( e.Location );
+                RefreshMaze();
+            }
+
+            base.OnMouseClick( e );
         }
 
         protected override void OnDragOver(DragEventArgs drgevent)
