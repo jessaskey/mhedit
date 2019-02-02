@@ -185,37 +185,39 @@ namespace mhedit
             toolStripButtonSaveMaze.Enabled = false;
             //toolStripButtonConfiguration.Enabled = false;
 
-            if (treeView.SelectedNode != null)
+            if (treeView.SelectedNode?.Tag != null)
             {
-                if (treeView.SelectedNode.Tag != null)
+                if ( treeView.SelectedNode.Tag is MazeController mazeController )
                 {
-                    if (treeView.SelectedNode.Tag.GetType() == typeof(MazeController))
+                    treeView.ContextMenu = null;
+                    treeView.ContextMenu = mazeController.GetTreeContextMenu();
+
+                    panelContent.Controls.Clear();
+                    panelContent.Controls.Add( mazeController );
+                    mazeController.Left = Math.Max( ( panelContent.Width - mazeController.Width ) / 2, 0 );
+                    mazeController.Top = ( panelContent.Height - mazeController.Height ) / 2;
+
+
+                    toolStripButtonMAME.Enabled = true;
+                    mazeController.PropertyGrid = propertyGrid;
+                    mazeController.ComboBoxObjects = comboBoxMazeObjects;
+                    //show the maze properties on tree click
+                    _currentMazeController = mazeController;
+                    propertyGrid.SelectedObject = _currentMazeController;
+
+                    toolStripButtonSaveMaze.Enabled = true;
+
+                    if ( treeView.SelectedNode.Parent != null )
                     {
-                        MazeController maze = treeView.SelectedNode.Tag as MazeController;
-                        if (maze != null)
-                        {
-                            treeView.ContextMenu = null;
-                            treeView.ContextMenu = maze.GetTreeContextMenu();
-                            propertyGrid.SelectedObject = maze;
-                            panelContent.Controls.Clear();
-                            panelContent.Controls.Add(maze);
-                            maze.Left = Math.Max((panelContent.Width - maze.Width) / 2, 0);
-                            maze.Top = (panelContent.Height - maze.Height) / 2;
-                        }
-                        toolStripButtonSaveMaze.Enabled = true;
-                        if (treeView.SelectedNode.Parent != null)
-                        {
-                            toolStripButtonSaveCollection.Enabled = true;
-                            toolStripButtonConfiguration.Enabled = true;
-                        }
+                        toolStripButtonSaveCollection.Enabled = true;
+                        toolStripButtonConfiguration.Enabled = true;
                     }
-                    else if (treeView.SelectedNode.Tag.GetType() == typeof(MazeCollectionController))
-                    {
-                            MazeCollectionController collection = treeView.SelectedNode.Tag as MazeCollectionController;
-                            propertyGrid.SelectedObject = collection;
-                            toolStripButtonSaveCollection.Enabled = true;
-                            toolStripButtonConfiguration.Enabled = true;
-                    }
+                }
+                else if ( treeView.SelectedNode.Tag.GetType() == typeof(MazeCollectionController) )
+                {
+                    propertyGrid.SelectedObject = treeView.SelectedNode.Tag;
+                    toolStripButtonSaveCollection.Enabled = true;
+                    toolStripButtonConfiguration.Enabled = true;
                 }
             }
             else
@@ -825,54 +827,39 @@ namespace mhedit
 
         private void treeView_MouseUp( object sender, MouseEventArgs args )
         {
-            TreeNode node = treeView.GetNodeAt( args.Location );
-            if ( node != null )
+            if ( args.Button == MouseButtons.Right )
             {
-                if ( node.Bounds.Contains( args.Location ) )
+                TreeNode node = treeView.GetNodeAt( args.Location );
+
+                if ( node != null && node.Bounds.Contains( args.Location ) )
                 {
                     treeView.SelectedNode = node;
 
-                    if ( args.Button == MouseButtons.Right )
-                    {
-                        if ( node.Parent == null )
-                        {
-                            if ( treeView.SelectedNode.Tag.GetType() == typeof( MazeController ) )
-                            {
-                                saveToolStripMenuItemSave.Text = "Save Maze";
-                                closeToolStripMenuItemClose.Text = "Close Maze";
-                                saveMazeToolStripMenuItem.Visible = false;
-                            }
-                            if ( treeView.SelectedNode.Tag.GetType() == typeof( MazeCollectionController ) )
-                            {
-                                saveToolStripMenuItemSave.Text = "Save Collection";
-                                closeToolStripMenuItemClose.Text = "Close Collection";
-                                saveMazeToolStripMenuItem.Enabled = false;
-                                saveMazeToolStripMenuItem.Visible = true;
-                            }
-                        }
-                        else
-                        {
-                            saveToolStripMenuItemSave.Text = "Save Collection";
-                            closeToolStripMenuItemClose.Text = "Close Collection";
-                            saveMazeToolStripMenuItem.Enabled = true;
-                            saveMazeToolStripMenuItem.Visible = true;
-                        }
-
-                        contextMenuStripTree.Show( treeView, args.Location );
-                    }
-                    else if ( args.Button == MouseButtons.Left )
+                    if ( node.Parent == null )
                     {
                         if ( treeView.SelectedNode.Tag.GetType() == typeof( MazeController ) )
                         {
-                            MazeController mazeController = treeView.SelectedNode.Tag as MazeController;
-                            toolStripButtonMAME.Enabled = true;
-                            mazeController.PropertyGrid = propertyGrid;
-                            mazeController.ComboBoxObjects = comboBoxMazeObjects;
-                            //show the maze properties on tree click
-                            _currentMazeController = mazeController;
-                            propertyGrid.SelectedObject = _currentMazeController;
+                            saveToolStripMenuItemSave.Text = "Save Maze";
+                            closeToolStripMenuItemClose.Text = "Close Maze";
+                            saveMazeToolStripMenuItem.Visible = false;
+                        }
+                        if ( treeView.SelectedNode.Tag.GetType() == typeof( MazeCollectionController ) )
+                        {
+                            saveToolStripMenuItemSave.Text = "Save Collection";
+                            closeToolStripMenuItemClose.Text = "Close Collection";
+                            saveMazeToolStripMenuItem.Enabled = false;
+                            saveMazeToolStripMenuItem.Visible = true;
                         }
                     }
+                    else
+                    {
+                        saveToolStripMenuItemSave.Text = "Save Collection";
+                        closeToolStripMenuItemClose.Text = "Close Collection";
+                        saveMazeToolStripMenuItem.Enabled = true;
+                        saveMazeToolStripMenuItem.Visible = true;
+                    }
+
+                    contextMenuStripTree.Show( treeView, args.Location );
                 }
             }
         }
