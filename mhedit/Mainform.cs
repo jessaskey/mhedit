@@ -982,14 +982,14 @@ namespace mhedit
 
         private void treeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
-            if (e.Node.Tag.GetType() == typeof(Maze))
+            if ( e.Node.Tag is MazeController controller )
             {
-                ((Maze)e.Node.Tag).Name = e.Label;
+                controller.Name = e.Label;
                 propertyGrid.Refresh();
             }
-            if (e.Node.Tag.GetType() == typeof(MazeCollection))
-            {   
-                ((MazeCollection)e.Node.Tag).Name = e.Label;
+            else if ( e.Node.Tag is MazeCollectionController collectionController )
+            {
+                collectionController.Name = e.Label;
                 propertyGrid.Refresh();
             }
         }
