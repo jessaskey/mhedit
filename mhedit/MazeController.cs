@@ -43,7 +43,6 @@ namespace mhedit
         private PropertyGrid _propertyGrid = null;
         private ComboBox _comboBoxObjects = null;
         private bool _gridLines = false;
-        private bool _error = false;
         private string _lastError = string.Empty;
 
         #endregion
@@ -881,7 +880,6 @@ namespace mhedit
                 }
                 catch (Exception ex)
                 {
-                    _error = true;
                     _lastError = ex.Message;
                 }
                 finally
@@ -891,7 +889,6 @@ namespace mhedit
             }
             else
             {
-                _error = true;
                 _lastError = "Tree not defined.";
             }
             return mazeNode;

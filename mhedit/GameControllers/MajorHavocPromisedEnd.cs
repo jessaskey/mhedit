@@ -24,10 +24,7 @@ namespace mhedit.GameControllers
         private Dictionary<string, ushort> _exports = new Dictionary<string, ushort>();
         private string _page2367ROM = "mhpe.1np";
         private string _alphaHighROM = "mhpe.1l";
-        private string _validText = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:";
 
-        private int _page6Base = 0x4000;
-        private int _page7Base = 0x6000;
         private string _lastError = "";
 
         #endregion

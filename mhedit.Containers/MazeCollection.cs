@@ -105,7 +105,7 @@ namespace mhedit.Containers
 
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The name of this maze collection.")]
-        public new string Name
+        public string Name
         {
             get { return collectionName; }
             set 

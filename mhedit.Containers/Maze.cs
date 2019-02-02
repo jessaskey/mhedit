@@ -58,7 +58,6 @@ namespace mhedit.Containers
         private Guid _id = Guid.NewGuid();
         private string _mazeName = null;
         private string _mazeDescription = String.Empty;
-        private string _fileName = null;
         private bool _isDirty = false;
         private bool _isValid = false;
         private List<string> _validationMessage = new List<string>();
@@ -68,7 +67,6 @@ namespace mhedit.Containers
         private int _oxygenReward = 16;
         private List<MazeWall> _mazeWallBase;
         private List<MazeObject> _mazeObjects;
-        private string _lastError = "";
         private List<bool> _transportabilityFlags = new List<bool>();
         private int _mazeStampsX = 0;
         private int _mazeStampsY = 0;
@@ -171,7 +169,7 @@ namespace mhedit.Containers
 
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The name of the maze.")]
-        public new string Name
+        public string Name
         {
             get { return _mazeName; }
             set { _mazeName = value; }

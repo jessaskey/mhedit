@@ -312,7 +312,7 @@ namespace mhedit
 
         private void Mainform_Load( object sender, EventArgs e )
         {
-            /// https://stackoverflow.com/a/32561014
+            // https://stackoverflow.com/a/32561014
             if ( Properties.Settings.Default.IsMaximized )
                 WindowState = FormWindowState.Maximized;
             else if ( Screen.AllScreens.Any( screen => screen.WorkingArea.IntersectsWith( Properties.Settings.Default.WindowPosition ) ) )

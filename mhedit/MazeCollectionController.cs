@@ -32,9 +32,6 @@ namespace mhedit
 
         private string exportPath = String.Empty;
 
-        private PropertyGrid propertyGrid = null;
-
-        private bool _error = false;
         private string _lastError = String.Empty;
         #endregion
 
@@ -162,7 +159,7 @@ namespace mhedit
 
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The name of this maze collection.")]
-        public new string Name
+        public string Name
         {
             get { return _mazeCollection.Name; }
             set 
@@ -399,7 +396,6 @@ namespace mhedit
             }
             else
             {
-                _error = true;
                 _lastError = "Tree not defined.";
             }
             return collectionNode;
