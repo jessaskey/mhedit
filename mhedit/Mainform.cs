@@ -461,7 +461,9 @@ namespace mhedit
         private void toolStripButtonNewCollection_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
-            MazeCollectionController collectionController = new MazeCollectionController(GetNewName("MazeCollection"));
+
+            MazeCollectionController collectionController =
+                new MazeCollectionController(GetNewName("MazeCollection"));
             //assign callbacks
             //foreach (Maze maze in collection.Mazes)
             //{
@@ -479,6 +481,7 @@ namespace mhedit
             //Removed
             //collection.PropertyGrid = propertyGrid;
             treeView.SelectedNode = node;
+            node.BeginEdit();
             Cursor.Current = Cursors.Default;
         }
 
@@ -602,17 +605,18 @@ namespace mhedit
             Cursor.Current = Cursors.Default;
         }
 
-        private void RefreshMazeName(object sender)
+        private void RefreshMazeName( object sender )
         {
-            if (treeView.SelectedNode != null)
+            if ( treeView.SelectedNode != null )
             {
-                treeView.SelectedNode.Text = ((MazeController)sender).Name;
+                treeView.SelectedNode.Text = ( (MazeController)sender ).Name;
             }
         }
 
         private void toolStripButtonNewMaze_Click(object sender, EventArgs e)
         {
             Cursor.Current = Cursors.WaitCursor;
+
             Maze maze = new Maze(GetNewName("Maze"));
             MazeController mazeController = new MazeController(maze);
             mazeController.OnMazePropertiesUpdated += new MazePropertiesUpdated(RefreshMazeName);
@@ -625,6 +629,7 @@ namespace mhedit
             treeView.SelectedNode = node;
             _currentMazeController = mazeController;
             Cursor.Current = Cursors.Default;
+            node.BeginEdit();
         }
 
         private void toolStripButtonOpenMaze_Click(object sender, EventArgs e)
@@ -982,15 +987,51 @@ namespace mhedit
 
         private void treeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
-            if ( e.Node.Tag is MazeController controller )
+            ///https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.nodelabelediteventargs?view=netframework-4.7.2
+            if ( e.Label != null )
             {
-                controller.Name = e.Label;
-                propertyGrid.Refresh();
-            }
-            else if ( e.Node.Tag is MazeCollectionController collectionController )
-            {
-                collectionController.Name = e.Label;
-                propertyGrid.Refresh();
+                if ( e.Label.Length > 0 )
+                {
+                    if ( e.Label.IndexOfAny( Path.GetInvalidFileNameChars() ) == -1 )
+                    {
+                        // Stop editing without canceling the label change.
+                        e.Node.EndEdit( false );
+
+                        if ( e.Node.Tag is MazeController controller )
+                        {
+                            //controller.Name = controller.IsDirty ?
+                            //    $"{e.Label} *" : e.Label;
+                            controller.Name = e.Label;
+                            propertyGrid.Refresh();
+                        }
+                        else if ( e.Node.Tag is MazeCollectionController collectionController )
+                        {
+                            //collectionController.Name = collectionController.IsDirty ?
+                            //    $"{e.Label} *" : e.Label;
+                            collectionController.Name = e.Label;
+                            propertyGrid.Refresh();
+                        }
+                    }
+                    else
+                    {
+                        /* Cancel the label edit action, inform the user, and 
+                           place the node in edit mode again. */
+                        e.CancelEdit = true;
+                        MessageBox.Show( "Invalid tree node label.\n" +
+                           "The invalid characters are: '@','.', ',', '!'",
+                           "Node Label Edit" );
+                        e.Node.BeginEdit();
+                    }
+                }
+                else
+                {
+                    /* Cancel the label edit action, inform the user, and 
+                       place the node in edit mode again. */
+                    e.CancelEdit = true;
+                    MessageBox.Show( "Invalid tree node label.\nThe label cannot be blank",
+                       "Node Label Edit" );
+                    e.Node.BeginEdit();
+                }
             }
         }
 
