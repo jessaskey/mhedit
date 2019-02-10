@@ -329,116 +329,129 @@ namespace mhedit
             Properties.Settings.Default.WindowPosition = DesktopBounds;
             Properties.Settings.Default.Save();
 
+            DialogResult result = DialogResult.OK;
+
             try
             {
                 foreach (TreeNode node in treeView.Nodes)
                 {
-                    if (node.Parent == null)
+                    /// allow short circuit when cancel is hit.
+                    if ( node.Parent == null && result != DialogResult.Cancel )
                     {
-                        if (node.Tag != null)
+                        if ( node.Tag is MazeCollectionController mazeCollectionController )
                         {
-                            if (node.Tag.GetType() == typeof(MazeCollectionController))
+                            if ( mazeCollectionController.IsDirty )
                             {
+                                result = MessageBox.Show(
+                                    $"Would you like to save changes to the {mazeCollectionController.Name} collection before closing?",
+                                    "Save changes and Exit",
+                                    MessageBoxButtons.YesNoCancel,
+                                    MessageBoxIcon.Question );
 
-                                MazeCollectionController mazeCollectionController = node.Tag as MazeCollectionController;
-                                if (mazeCollectionController.IsDirty)
+                                if ( result == DialogResult.Yes )
                                 {
-                                    DialogResult dr = MessageBox.Show("Would you like to save changes to the '" + mazeCollectionController.Name + "' collection before closing?", "Confirm Exit", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                                    if (dr == DialogResult.Yes)
+                                    SaveFileDialog sfd = new SaveFileDialog
                                     {
-                                        FileStream fStream = null;
-                                        MemoryStream mStream = null;
-                                        if (mazeCollectionController.FileName == null)
+                                        InitialDirectory =
+                                            string.IsNullOrWhiteSpace( mazeCollectionController.FileName ) ?
+                                            Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ) :
+                                            Path.GetDirectoryName( mazeCollectionController.FileName ),
+                                        FileName = string.IsNullOrWhiteSpace( mazeCollectionController.FileName ) ?
+                                            $"{mazeCollectionController.Name}.mhc" :
+                                            Path.GetFileName( mazeCollectionController.FileName ),
+                                        Filter = "Maze Files (*.mhc)|*.mhc|All files (*.*)|*.*",
+                                        AddExtension = true,
+                                        OverwritePrompt = true
+                                    };
+
+                                    /// capture user choice to update exit 
+                                    result = sfd.ShowDialog();
+
+                                    try
+                                    {
+                                        if ( result == DialogResult.OK )
                                         {
-                                            SaveFileDialog sd = new SaveFileDialog();
-                                            sd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                                            sd.Filter = "Maze Files (*.mhc)|*.mhc|All files (*.*)|*.*";
-                                            sd.AddExtension = true;
-                                            sd.ShowDialog();
-                                            mazeCollectionController.FileName = sd.FileName;
+                                            Cursor.Current = Cursors.WaitCursor;
+
+                                            mazeCollectionController.FileName = sfd.FileName;
+
+                                            Application.DoEvents();
+
+                                            MazeCollectionController.SerializeToFile(
+                                                mazeCollectionController.MazeCollection,
+                                                mazeCollectionController.FileName );
                                         }
-                                        Cursor.Current = Cursors.WaitCursor;
-                                        Application.DoEvents();
-                                        try
-                                        {
-                                            MazeCollectionController.SerializeToFile(mazeCollectionController.MazeCollection, mazeCollectionController.FileName);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Cursor.Current = Cursors.Default;
-                                            MessageBox.Show("Maze could not be saved: " + ex.Message, "File Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        }
-                                        finally
-                                        {
-                                            if (mStream != null) mStream.Close();
-                                            if (fStream != null) fStream.Close();
-                                        }
-                                        Cursor.Current = Cursors.Default;
                                     }
-                                    else if (dr == DialogResult.Cancel)
+                                    finally
                                     {
-                                        //dont close
-                                        e.Cancel = true;
-                                        return;
+                                        Cursor.Current = Cursors.Default;
                                     }
                                 }
                             }
-                            else if (node.GetType() == typeof(Maze))
+                        }
+                        else if ( node.Tag is MazeController mazeController )
+                        {
+                            result = MessageBox.Show(
+                                $"Would you like to save changes to the {mazeController.Name} maze before closing?",
+                                "Save changes and Exit",
+                                MessageBoxButtons.YesNoCancel,
+                                MessageBoxIcon.Question );
+
+                            if ( result == DialogResult.Yes )
                             {
-                                MazeController mazeController = new MazeController((Maze)node.Tag);
-                                if (mazeController.IsDirty)
+                                SaveFileDialog sfd = new SaveFileDialog
                                 {
-                                    DialogResult dr = MessageBox.Show("Would you like to save changes to '" + mazeController.Name + " ' before closing?", "Confirm Exit", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                                    if (dr == DialogResult.Yes)
+                                    InitialDirectory =
+                                        string.IsNullOrWhiteSpace( mazeController.FileName ) ?
+                                        Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ) :
+                                        Path.GetDirectoryName( mazeController.FileName ),
+                                    FileName = string.IsNullOrWhiteSpace( mazeController.FileName ) ?
+                                        $"{mazeController.Name}.mhz" :
+                                        Path.GetFileName( mazeController.FileName ),
+                                    Filter = "Maze Files (*.mhz)|*.mhz|All files (*.*)|*.*",
+                                    AddExtension = true,
+                                    OverwritePrompt = true
+                                };
+
+                                /// capture user choice to update exit 
+                                result = sfd.ShowDialog();
+
+                                try
+                                {
+                                    if ( result == DialogResult.OK )
                                     {
-                                        FileStream fStream = null;
-                                        MemoryStream mStream = null;
-                                        if (mazeController.FileName == null)
-                                        {
-                                            SaveFileDialog sd = new SaveFileDialog();
-                                            sd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                                            sd.Filter = "Maze Files (*.mhz)|*.mhz|All files (*.*)|*.*";
-                                            sd.AddExtension = true;
-                                            sd.ShowDialog();
-                                            mazeController.FileName = sd.FileName;
-                                        }
                                         Cursor.Current = Cursors.WaitCursor;
+
+                                        mazeController.FileName = sfd.FileName;
+
                                         Application.DoEvents();
-                                        try
-                                        {
-                                            MazeController.SerializeToFile(mazeController.Maze, mazeController.FileName);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Cursor.Current = Cursors.Default;
-                                            MessageBox.Show("Maze could not be saved: " + ex.Message, "File Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                        }
-                                        finally
-                                        {
-                                            if (mStream != null) mStream.Close();
-                                            if (fStream != null) fStream.Close();
-                                        }
-                                        Cursor.Current = Cursors.Default;
-                                    }
-                                    else if (dr == DialogResult.Cancel)
-                                    {
-                                        //dont close
-                                        e.Cancel = true;
-                                        return;
+
+                                        MazeController.SerializeToFile(
+                                            mazeController.Maze, mazeController.FileName );
                                     }
                                 }
+                                finally
+                                {
+                                    Cursor.Current = Cursors.Default;
+                                }
                             }
-     
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                /// Allow the user to try again if they feel so inclined.
+                result = MessageBox.Show(
+                    $"An error has occurred while trying to save: {ex.Message}" +
+                    $"Press OK to exit or Cancel to try again.",
+                    "An Error Occurred",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Error );
             }
-            e.Cancel = false;
+
+            /// cancel exiting based upon user choice.
+            e.Cancel = result == DialogResult.Cancel;
         }
 
         #endregion
