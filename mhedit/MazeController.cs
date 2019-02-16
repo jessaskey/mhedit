@@ -834,12 +834,6 @@ namespace mhedit
             }
         }
 
-        public ContextMenu GetTreeContextMenu()
-        {
-            ContextMenu menu = new ContextMenu();
-            return menu;
-        }
-
         public TreeNode TreeRender(TreeView treeView, TreeNode currentNode, bool gridLines)
         {
             _gridLines = gridLines;

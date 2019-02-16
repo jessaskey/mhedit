@@ -406,14 +406,6 @@ namespace mhedit
             gridlines = grid;
         }
 
-        public ContextMenu GetTreeContextMenu()
-        {
-            ContextMenu menu = new ContextMenu();
-            menu.MenuItems.Add("Test");
-            menu.MenuItems.Add("Test2");
-            return menu;
-        }
-
         #endregion
 
         #region Overrides

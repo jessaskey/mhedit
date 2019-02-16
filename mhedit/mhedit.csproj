@@ -198,6 +198,12 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="images\toolbarbuttons\delete.ico" />
+    <Content Include="images\toolbarbuttons\NewFileCollection_16x_24.bmp" />
+    <Content Include="images\toolbarbuttons\OpenFolder_16x_24.bmp" />
+    <Content Include="images\toolbarbuttons\SaveAll_16x_24.bmp" />
+    <Content Include="images\toolbarbuttons\SaveAs_16x_24.bmp" />
+    <Content Include="images\toolbarbuttons\Save_16x_24.bmp" />
     <Content Include="IonCannonPrograms\Atari Level 02 Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -362,7 +368,6 @@
     <EmbeddedResource Include="images\toolbarbuttons\Run.bmp" />
     <Content Include="images\toolbarbuttons\Pause.bmp" />
     <Content Include="images\toolbarbuttons\RolledBack.bmp" />
-    <Content Include="images\toolbarbuttons\SaveAllHS.bmp" />
     <Content Include="images\toolbarbuttons\SaveAsDocument.bmp" />
     <Content Include="images\toolbarbuttons\SaveAsWebPageHS.bmp" />
     <Content Include="images\toolbarbuttons\SaveCollection.bmp" />

@@ -11,7 +11,6 @@ namespace mhedit
     public interface ITreeObject
     {
         TreeNode TreeRender(TreeView treeView, TreeNode parentNode, bool gridLines);
-        ContextMenu GetTreeContextMenu();
         void SetGridlines(bool gridlines);
     }
 }
