@@ -164,7 +164,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
 
             // Displays an OpenFileDialog so the user can select a Cursor.  
-            SaveFileDialog saveFileDialog = new SaveFileDialog
+            SaveFileDialog sfd = new SaveFileDialog
             {
                 Filter = "Ion Cannon Program|*.can",
                 Title = "Save Ion Cannon Program",
@@ -174,15 +174,16 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                 CreatePrompt = false,
                 //https://stackoverflow.com/a/53836140
                 // GAH.. double prompt bug in latest Windows 10 Update!!!
-                OverwritePrompt = false
+                // This is apparently now fixed... lol
+                OverwritePrompt = true
             };
 
             // Show the Dialog.  
             // If the user clicked OK in the dialog and  
             // a .CUR file was selected, open it.  
-            if ( saveFileDialog.ShowDialog() == DialogResult.OK )
+            if ( sfd.ShowDialog() == DialogResult.OK )
             {
-                string name = Path.GetFileNameWithoutExtension( saveFileDialog.FileName );
+                string name = Path.GetFileNameWithoutExtension( sfd.FileName );
 
                 // Define a regular expression that is true for the default program file names.
                 Regex rx = new Regex(
@@ -200,7 +201,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                     try
 #endif
                     {
-                        using ( FileStream fStream = new FileStream( saveFileDialog.FileName, FileMode.Create ) )
+                        using ( FileStream fStream = new FileStream( sfd.FileName, FileMode.Create ) )
                         {
                             var serializer = new XmlSerializer( typeof( IonCannonProgram ) );
 
