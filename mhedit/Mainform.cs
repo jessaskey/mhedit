@@ -33,7 +33,7 @@ namespace mhedit
         public const string MESSAGEBOX_CAPTION = "The Homeworld Is Near";
         private MazeController _currentMazeController = null;
         private MazeCollectionController _currentMazeCollectionController = null;
-        private TreeNode _dragNode;
+        private TreeNode _draggedNode;
 
         #region Constructor
 
@@ -219,81 +219,67 @@ namespace mhedit
 
         }
 
+        private void treeView_ItemDrag( object sender, ItemDragEventArgs e )
+        {
+            _draggedNode = (TreeNode)e.Item;
+
+            //we can only drag maze objects..
+            if ( _draggedNode?.Tag is MazeController mazeController )
+            {
+                DoDragDrop( mazeController, DragDropEffects.Copy | DragDropEffects.Move );
+            }
+        }
+
         private void treeView_DragOver(object sender, DragEventArgs e)
         {
-            Point Position = new Point(e.X, e.Y);
-            Position = treeView.PointToClient(Position);
-            TreeNode node = this.treeView.GetNodeAt(Position);
-            if (node.Tag != null)
+            TreeNode targetNode = this.treeView.GetNodeAt(
+                treeView.PointToClient( new Point( e.X, e.Y ) ) );
+
+            e.Effect = DragDropEffects.None;
+
+            if ( targetNode != _draggedNode && targetNode?.Tag is MazeController targetMaze )
             {
-                if (node.Tag.GetType() == typeof(Maze))
+                MazeController draggedMaze = _draggedNode.Tag as MazeController;
+
+                if ( targetMaze.MazeType == draggedMaze.MazeType )
                 {
                     e.Effect = DragDropEffects.Move;
                 }
-                else
-                {
-                    e.Effect = DragDropEffects.None;
-                }
             }
-            base.OnDragOver(e);
         }
 
         private void treeView_DragDrop(object sender, DragEventArgs e)
         {
-            Point Position = new Point(e.X, e.Y);
-            Position = treeView.PointToClient(Position);
-            TreeNode node = this.treeView.GetNodeAt(Position);
-            if (node.Tag != null)
+            TreeNode targetNode = this.treeView.GetNodeAt(
+                treeView.PointToClient( new Point( e.X, e.Y ) ) );
+
+            if ( targetNode != _draggedNode && targetNode?.Tag is MazeController targetMaze )
             {
-                if (node.Tag.GetType() == typeof(Maze))
+                MazeController draggedMaze = _draggedNode.Tag as MazeController;
+
+                if ( targetMaze.MazeType == draggedMaze.MazeType )
                 {
-                    Maze maze = (Maze)node.Tag;
-                    Maze draggedmaze = (Maze)_dragNode.Tag;
-                    if (maze.MazeType == draggedmaze.MazeType)
+                    string msg = $"Replace {targetMaze.Name} with {draggedMaze.Name}?";
+
+                    DialogResult dr = MessageBox.Show(
+                        msg, MESSAGEBOX_CAPTION,
+                        MessageBoxButtons.OKCancel, MessageBoxIcon.Question );
+
+                    if ( dr == DialogResult.OK )
                     {
-                        string msg = "Are you sure you want to replace '" + maze.Name + "' with '" + draggedmaze.Name + "'?";
-                        DialogResult dr = MessageBox.Show(msg, MESSAGEBOX_CAPTION, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                        if (dr == DialogResult.Yes)
+                        //get the parent collection of the target maze
+                        if ( targetNode.Parent?.Tag is MazeCollectionController controller )
                         {
-                            //get the parent collection of the target maze
-                            if (node.Parent != null)
-                            {
-                                if (node.Parent.Tag != null)
-                                {
-                                    if (node.Parent.Tag.GetType() == typeof(MazeCollection))
-                                    {
-                                        MessageBox.Show("Maze dragging not supported.");
-                                        //MazeCollection collection = (MazeCollection)node.Parent.Tag;
-                                        //int mazeindex = collection.FindMaze(maze);
-                                        //if (mazeindex > -1)
-                                        //{
-                                        //    collection.AddMaze(mazeindex, draggedmaze);
-                                        //    collection.TreeRender(treeView, node.Parent);
-                                        //}
-                                    }
-                                }
-                            }
+                            MessageBox.Show( "Maze dragging not supported." );
+                            //MazeCollection collection = (MazeCollection)node.Parent.Tag;
+                            //int mazeindex = collection.FindMaze(maze);
+                            //if (mazeindex > -1)
+                            //{
+                            //    collection.AddMaze(mazeindex, draggedmaze);
+                            //    collection.TreeRender(treeView, node.Parent);
+                            //}
                         }
                     }
-                    else
-                    {
-                        MessageBox.Show("'" + draggedmaze.Name + "' must be Maze " + maze.MazeType.ToString());
-                    }
-                }
-            }
-            base.OnDragOver(e);
-        }
-
-        private void treeView_ItemDrag(object sender, ItemDragEventArgs e)
-        {
-            _dragNode = (TreeNode)e.Item;
-            //we can only drag maze objects..
-            if (_dragNode.Tag != null)
-            {
-                if (_dragNode.Tag.GetType() == typeof(Maze))
-                {
-                    Maze maze = (Maze)_dragNode.Tag;
-                    DoDragDrop(maze, DragDropEffects.Copy | DragDropEffects.Move);
                 }
             }
         }

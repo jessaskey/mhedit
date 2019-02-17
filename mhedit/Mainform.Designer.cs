@@ -36,6 +36,10 @@ namespace mhedit
             this.toolStripDropDownButtonNew = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripMenuItemNewMazeCollection = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemNewMaze = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButtonOpen = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonSave = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonSaveAll = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonOpenMazeMHP = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonSaveMazeMHP = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -60,8 +64,9 @@ namespace mhedit
             this.toolStripMenuItemAddNewMaze = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemRename = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,11 +84,6 @@ namespace mhedit
             this.comboBoxMazeObjects = new System.Windows.Forms.ComboBox();
             this.splitterUpDown = new System.Windows.Forms.Splitter();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
-            this.toolStripMenuItemSaveAs = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripButtonOpen = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonSave = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButtonSaveAll = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.contextMenuStripTree.SuspendLayout();
@@ -158,7 +158,7 @@ namespace mhedit
             // 
             this.toolStripMenuItemNewMazeCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemNewMazeCollection.Image")));
             this.toolStripMenuItemNewMazeCollection.Name = "toolStripMenuItemNewMazeCollection";
-            this.toolStripMenuItemNewMazeCollection.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemNewMazeCollection.Size = new System.Drawing.Size(159, 22);
             this.toolStripMenuItemNewMazeCollection.Text = "Maze Collection";
             this.toolStripMenuItemNewMazeCollection.ToolTipText = "New Maze Collection";
             this.toolStripMenuItemNewMazeCollection.Click += new System.EventHandler(this.toolStripMenuItemNewMazeCollection_Click);
@@ -168,10 +168,46 @@ namespace mhedit
             this.toolStripMenuItemNewMaze.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemNewMaze.Image")));
             this.toolStripMenuItemNewMaze.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.toolStripMenuItemNewMaze.Name = "toolStripMenuItemNewMaze";
-            this.toolStripMenuItemNewMaze.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemNewMaze.Size = new System.Drawing.Size(159, 22);
             this.toolStripMenuItemNewMaze.Text = "Maze";
             this.toolStripMenuItemNewMaze.ToolTipText = "New Maze";
             this.toolStripMenuItemNewMaze.Click += new System.EventHandler(this.toolStripMenuItemNewMaze_Click);
+            // 
+            // toolStripButtonOpen
+            // 
+            this.toolStripButtonOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonOpen.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOpen.Image")));
+            this.toolStripButtonOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonOpen.Name = "toolStripButtonOpen";
+            this.toolStripButtonOpen.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonOpen.Text = "Open";
+            this.toolStripButtonOpen.Click += new System.EventHandler(this.toolStripMenuItemOpen_Click);
+            // 
+            // toolStripButtonSave
+            // 
+            this.toolStripButtonSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonSave.Enabled = false;
+            this.toolStripButtonSave.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSave.Image")));
+            this.toolStripButtonSave.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonSave.Name = "toolStripButtonSave";
+            this.toolStripButtonSave.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonSave.Text = "Save";
+            this.toolStripButtonSave.Click += new System.EventHandler(this.toolStripMenuItemSave_Click);
+            // 
+            // toolStripButtonSaveAll
+            // 
+            this.toolStripButtonSaveAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonSaveAll.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSaveAll.Image")));
+            this.toolStripButtonSaveAll.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonSaveAll.Name = "toolStripButtonSaveAll";
+            this.toolStripButtonSaveAll.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonSaveAll.Text = "Save All";
+            this.toolStripButtonSaveAll.Click += new System.EventHandler(this.toolStripButtonSaveAll_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // toolStripButtonOpenMazeMHP
             // 
@@ -385,7 +421,7 @@ namespace mhedit
             // 
             this.toolStripMenuItemAddMazeCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemAddMazeCollection.Image")));
             this.toolStripMenuItemAddMazeCollection.Name = "toolStripMenuItemAddMazeCollection";
-            this.toolStripMenuItemAddMazeCollection.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemAddMazeCollection.Size = new System.Drawing.Size(159, 22);
             this.toolStripMenuItemAddMazeCollection.Text = "Maze Collection";
             this.toolStripMenuItemAddMazeCollection.ToolTipText = "Add New";
             this.toolStripMenuItemAddMazeCollection.Click += new System.EventHandler(this.toolStripMenuItemNewMazeCollection_Click);
@@ -395,7 +431,7 @@ namespace mhedit
             this.toolStripMenuItemAddNewMaze.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemAddNewMaze.Image")));
             this.toolStripMenuItemAddNewMaze.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.toolStripMenuItemAddNewMaze.Name = "toolStripMenuItemAddNewMaze";
-            this.toolStripMenuItemAddNewMaze.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemAddNewMaze.Size = new System.Drawing.Size(159, 22);
             this.toolStripMenuItemAddNewMaze.Text = "Maze";
             this.toolStripMenuItemAddNewMaze.ToolTipText = "Add New Maze";
             this.toolStripMenuItemAddNewMaze.Click += new System.EventHandler(this.toolStripMenuItemNewMaze_Click);
@@ -415,6 +451,14 @@ namespace mhedit
             this.toolStripMenuItemOpen.ToolTipText = "Open";
             this.toolStripMenuItemOpen.Click += new System.EventHandler(this.toolStripMenuItemOpen_Click);
             // 
+            // toolStripMenuItemClose
+            // 
+            this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
+            this.toolStripMenuItemClose.Size = new System.Drawing.Size(167, 22);
+            this.toolStripMenuItemClose.Text = "Close";
+            this.toolStripMenuItemClose.ToolTipText = "Close";
+            this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
+            // 
             // toolStripMenuItemSave
             // 
             this.toolStripMenuItemSave.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemSave.Image")));
@@ -424,13 +468,15 @@ namespace mhedit
             this.toolStripMenuItemSave.ToolTipText = "Save";
             this.toolStripMenuItemSave.Click += new System.EventHandler(this.toolStripMenuItemSave_Click);
             // 
-            // toolStripMenuItemClose
+            // toolStripMenuItemSaveAs
             // 
-            this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
-            this.toolStripMenuItemClose.Size = new System.Drawing.Size(167, 22);
-            this.toolStripMenuItemClose.Text = "Close";
-            this.toolStripMenuItemClose.ToolTipText = "Close";
-            this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
+            this.toolStripMenuItemSaveAs.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemSaveAs.Image")));
+            this.toolStripMenuItemSaveAs.ImageTransparentColor = System.Drawing.Color.Fuchsia;
+            this.toolStripMenuItemSaveAs.Name = "toolStripMenuItemSaveAs";
+            this.toolStripMenuItemSaveAs.Size = new System.Drawing.Size(167, 22);
+            this.toolStripMenuItemSaveAs.Text = "Save As...";
+            this.toolStripMenuItemSaveAs.ToolTipText = "Save As";
+            this.toolStripMenuItemSaveAs.Click += new System.EventHandler(this.toolStripMenuItemSaveAs_Click);
             // 
             // toolStripSeparator7
             // 
@@ -618,52 +664,6 @@ namespace mhedit
             // 
             this.timerMain.Interval = 1000;
             this.timerMain.Tick += new System.EventHandler(this.timerMain_Tick);
-            // 
-            // toolStripMenuItemSaveAs
-            // 
-            this.toolStripMenuItemSaveAs.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemSaveAs.Image")));
-            this.toolStripMenuItemSaveAs.ImageTransparentColor = System.Drawing.Color.Fuchsia;
-            this.toolStripMenuItemSaveAs.Name = "toolStripMenuItemSaveAs";
-            this.toolStripMenuItemSaveAs.Size = new System.Drawing.Size(167, 22);
-            this.toolStripMenuItemSaveAs.Text = "Save As...";
-            this.toolStripMenuItemSaveAs.ToolTipText = "Save As";
-            this.toolStripMenuItemSaveAs.Click += new System.EventHandler(this.toolStripMenuItemSaveAs_Click);
-            // 
-            // toolStripButtonOpen
-            // 
-            this.toolStripButtonOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonOpen.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonOpen.Image")));
-            this.toolStripButtonOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonOpen.Name = "toolStripButtonOpen";
-            this.toolStripButtonOpen.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonOpen.Text = "Open";
-            this.toolStripButtonOpen.Click += new System.EventHandler(this.toolStripMenuItemOpen_Click);
-            // 
-            // toolStripButtonSave
-            // 
-            this.toolStripButtonSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonSave.Enabled = false;
-            this.toolStripButtonSave.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSave.Image")));
-            this.toolStripButtonSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonSave.Name = "toolStripButtonSave";
-            this.toolStripButtonSave.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonSave.Text = "Save";
-            this.toolStripButtonSave.Click += new System.EventHandler(this.toolStripMenuItemSave_Click);
-            // 
-            // toolStripButtonSaveAll
-            // 
-            this.toolStripButtonSaveAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonSaveAll.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSaveAll.Image")));
-            this.toolStripButtonSaveAll.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonSaveAll.Name = "toolStripButtonSaveAll";
-            this.toolStripButtonSaveAll.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonSaveAll.Text = "Save All";
-            this.toolStripButtonSaveAll.Click += new System.EventHandler(this.toolStripButtonSaveAll_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // Mainform
             // 
