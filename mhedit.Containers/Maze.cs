@@ -44,6 +44,7 @@ namespace mhedit.Containers
     [XmlInclude(typeof(Reactoid))]
     [XmlInclude(typeof(Spikes))]
     [XmlInclude(typeof(Transporter))]
+    [XmlInclude(typeof( MazeWall ))]
     public class Maze 
     {
 
@@ -113,6 +114,7 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
+        [XmlIgnore]
         public List<MazeWall> MazeWallBase
         {
             get
@@ -126,13 +128,14 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
-        public Guid I
+        [XmlIgnore]
+        public Guid Id
         {
             get { return _id; }
-            set { _id = value; }
         }
 
         [BrowsableAttribute(false)]
+        [XmlIgnore]
         public bool IsDirty
         {
             get {return _isDirty;}
@@ -140,6 +143,7 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
+        [XmlIgnore]
         public bool IsValid
         {
             get { return _isValid; }
@@ -147,6 +151,7 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
+        [XmlIgnore]
         public int MazeStampsX
         {
             get { return _mazeStampsX; }
@@ -154,6 +159,7 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
+        [XmlIgnore]
         public int MazeStampsY
         {
             get { return _mazeStampsY; }
@@ -161,6 +167,7 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
+        [XmlIgnore]
         public List<string> ValidationMessage
         {
             get { return _validationMessage; }

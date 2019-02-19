@@ -21,10 +21,10 @@ namespace mhedit.Containers
         private Guid _id = Guid.NewGuid();
         private bool _error = false;
         private bool _isDirty = false;
-        private string _lastError = "";
+        private string _lastError = string.Empty;
         private string collectionName = "<new maze collection>";
-        private string authorName = null;
-        private string authorEmail = null;
+        private string authorName = string.Empty;
+        private string authorEmail = string.Empty;
 
         //private PropertyGrid propertyGrid = null;
         #endregion
@@ -47,10 +47,10 @@ namespace mhedit.Containers
         #region Properties
 
         [BrowsableAttribute(false)]
+        [XmlIgnore]
         public Guid Id
         {
             get { return _id; }
-            set { _id = value; }
         }
 
 
@@ -95,6 +95,7 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
+        [XmlIgnore]
         public string LastError
         {
             get { return _lastError; }
@@ -138,6 +139,7 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
+        [XmlIgnore]
         public bool IsDirty
         {
             get
@@ -155,6 +157,7 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
+        [XmlIgnore]
         public bool Error
         {
             get { return _error; }

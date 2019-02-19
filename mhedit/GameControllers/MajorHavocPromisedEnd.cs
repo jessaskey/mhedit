@@ -89,7 +89,8 @@ namespace mhedit.GameControllers
         {
 
             MazeCollection mazeCollection = new MazeCollection("Promised End Mazes");
-            mazeCollection.AuthorEmail = "Jess Askey";
+            mazeCollection.AuthorEmail = "Jess@maynard.vax";
+            mazeCollection.AuthorName = "Jess Askey";
 
             for (int i = 0; i < 28; i++)
             {
@@ -1097,7 +1098,7 @@ namespace mhedit.GameControllers
                     cannonLevelPointers.Add(i, currentAddressPage6);
                     foreach (IonCannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>())
                     {
-                        cannonDataPointers.Add(cannon.ObjectId, currentAddressPage6);
+                        cannonDataPointers.Add(cannon.Id, currentAddressPage6);
                         currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, cannon.ToBytes(), 0, 6);
                     }
                 }
@@ -1123,7 +1124,7 @@ namespace mhedit.GameControllers
                     cannonIndexValue += (mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().Count() * 2) + 2;
                     foreach (IonCannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>())
                     {
-                        currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, WordToByteArray(cannonDataPointers[cannon.ObjectId]), 0, 6);
+                        currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, WordToByteArray(cannonDataPointers[cannon.Id]), 0, 6);
                     }
                     currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, new byte[] { 0x00, 0x00 }, 0, 6);
                 }

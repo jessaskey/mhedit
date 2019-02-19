@@ -17,7 +17,7 @@ namespace mhedit.Containers
     {
         private List<string> _validationErrors = new List<string>();
         private bool _isValid = false;
-        private Guid _objectId = Guid.NewGuid();
+        private Guid _id = Guid.NewGuid();
 
 
         //protected MazeObjectType mazeObjectType = MazeObjectType.None;
@@ -41,11 +41,12 @@ namespace mhedit.Containers
 
 
         [BrowsableAttribute(false)]
-        public Guid ObjectId
+        [XmlIgnore]
+        public Guid Id
         {
             get
             {
-                return _objectId;
+                return _id;
             }
         }
 
@@ -90,6 +91,7 @@ namespace mhedit.Containers
 
         [CategoryAttribute("Validation")]
         [ReadOnly(true)]
+        [XmlIgnore]
         public List<string> ValidationErrors 
         {
             get
@@ -118,6 +120,7 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
+        [XmlIgnore]
         public bool Selected
         {
             get { return selected; }
@@ -126,6 +129,7 @@ namespace mhedit.Containers
 
         [BrowsableAttribute(false)]
         [IgnoreDataMemberAttribute]
+        [XmlIgnore]
         public Point StaticLSB
         {
             get { return staticLsb; }

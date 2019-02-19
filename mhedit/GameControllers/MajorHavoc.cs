@@ -86,7 +86,8 @@ namespace mhedit.GameControllers
         {
             
             MazeCollection mazeCollection = new MazeCollection("Production Mazes");
-            mazeCollection.AuthorEmail = "Owen Rubin";
+            mazeCollection.AuthorEmail = "Owen@maynard.vax";
+            mazeCollection.AuthorName = "Owen Rubin";
 
             for (int i = 0; i < 16; i++)
             {
