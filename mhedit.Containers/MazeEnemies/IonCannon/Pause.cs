@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
@@ -36,7 +35,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                         value, "Must be 0 < value < 255." );
                 }
 
-                _waitFrames = value & 0xFC;
+                this.SetField( ref this._waitFrames, value & 0xFC );
             }
         }
 

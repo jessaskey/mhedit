@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 
 namespace mhedit.Containers.MazeEnemies
 {
@@ -13,53 +12,19 @@ namespace mhedit.Containers.MazeEnemies
     [Serializable]
     public class TripPad : MazeObject
     {
-        private const int _SNAP_X = 64;
-        private const int _SNAP_Y = 64;
-        private const int _MAXOBJECTS = 8;
-
-        private Point _position;
         private TripPadPyroid _pyroid;
-        private Image _img;
 
         public TripPad()
-        {
-            LoadDefaultImage();
-            renderOffset.X = 0;
-            renderOffset.Y = 32;
-            staticLsb = new Point(0x00, 0x08);
-        }
+            : base( 8,
+                    ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.trippad_obj.png" ),
+                    new Point( 0x00, 0x08 ),
+                    new Point( 0, 32 ) )
+        { }
 
-        [BrowsableAttribute(false)]
-        public override Size Size
-        {
-            get { return _img.Size; }
-        }
-
-        [CategoryAttribute("Location")]
-        [DescriptionAttribute("The start location of the object in the maze.")]
-        public override Point Position
-        {
-            get { return _position; }
-            set { _position = value; }
-        }
-
-        [DescriptionAttribute("Maximum number of trip pads allowed in this maze.")]
-        public override int MaxObjects
-        {
-            get { return _MAXOBJECTS; }
-        }
-
-        [BrowsableAttribute(false)]
-        public override Point SnapSize
-        {
-            get { return new Point(_SNAP_X, _SNAP_Y); }
-        }
-
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(DataConverter.PointToByteArrayPacked(_position));
+            bytes.AddRange(DataConverter.PointToByteArrayPacked(this.Position));
             return bytes.ToArray();
         }
 
@@ -69,32 +34,30 @@ namespace mhedit.Containers.MazeEnemies
             return ToBytes();
         }
 
-        [BrowsableAttribute(false)]
-        public override Image Image
-        {
-            get
-            {
-                LoadDefaultImage();
-                if (selected)
-                {
-                    _img = base.ImageSelected(_img);
-                }
-                return _img;
-            }
-        }
-
         [DescriptionAttribute("The pyroid associated with this trip pad.")]
         [TypeConverter(typeof(TypeConverters.TripPadPyroidTypeConverter))]
         public TripPadPyroid Pyroid
         {
             get { return _pyroid; }
-            set { _pyroid = value; }
+            set
+            {
+                //if ( this._pyroid != null )
+                //{
+                //    this._pyroid.PropertyChanged -= this.OnTripPyroidChanged;
+                //}
+
+                _pyroid = value;
+
+                //if ( this._pyroid != null )
+                //{
+                //    this._pyroid.PropertyChanged += this.OnTripPyroidChanged;
+                //}
+            }
         }
 
-        private void LoadDefaultImage()
-        {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.trippad_obj.png");
-        }
-
-     }
+        //private void OnTripPyroidChanged( object sender, PropertyChangedEventArgs e )
+        //{
+        //    this.IsDirty |= ((TripPadPyroid)sender).IsDirty;
+        //}
+    }
 }

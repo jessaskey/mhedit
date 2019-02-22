@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 
 namespace mhedit.Containers.MazeObjects
 {
@@ -13,26 +12,18 @@ namespace mhedit.Containers.MazeObjects
     [Serializable]
     public class EscapePod : MazeObject
     {
-        private const int _SNAP_X = 4;
-        private const int _SNAP_Y = 4;
-        private const int _MAXOBJECTS = 1;
+        // Has fixed position in maze.
+        private static Point _position = new Point( 1184, 352 );
+        private static readonly Point _snapSize = new Point( 4, 4 );
 
-        private Point _position;
-        private Image _img;
-         private EscapePodOption _option = EscapePodOption.Optional;
+        private EscapePodOption _option = EscapePodOption.Optional;
 
         public EscapePod()
-        {
-            LoadDefaultImage();
-            _position = new Point(1184, 352);
-            staticLsb = new Point(0x00, 0x80);
-        }
-
-        [BrowsableAttribute(false)]
-        public override Size Size
-        {
-            get { return _img.Size; }
-        }
+            : base( 1,
+                    ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.pod_obj.png" ),
+                    new Point( 0x00, 0x80 ),
+                    Point.Empty )
+        { }
 
         [CategoryAttribute("Location")]
         [ReadOnly(true)]
@@ -43,26 +34,19 @@ namespace mhedit.Containers.MazeObjects
             set {  }
         }
 
-        [DescriptionAttribute("Maximum number of reactoids allowed in this maze.")]
-        public override int MaxObjects
+        [BrowsableAttribute( false )]
+        public override Point SnapSize
         {
-            get { return _MAXOBJECTS; }
+            get { return _snapSize; }
         }
 
         [DescriptionAttribute("Sets whether the player must use the escape pod to exit the maze or if they may also exit the maze through the main maze doors.")]
         public EscapePodOption Option
         {
             get { return _option; }
-            set { _option = value; }
+            set { this.SetField( ref this._option, value ); }
         }
 
-        [BrowsableAttribute(false)]
-        public override Point SnapSize
-        {
-            get { return new Point(_SNAP_X, _SNAP_Y); }
-        }
-
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
@@ -70,29 +54,9 @@ namespace mhedit.Containers.MazeObjects
             return bytes.ToArray();
         }
 
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes(object obj)
         {
             return ToBytes();
-        }
-
-        [BrowsableAttribute(false)]
-        public override Image Image
-        {
-            get
-            {
-                LoadDefaultImage();
-                if (selected)
-                {
-                    _img = base.ImageSelected(_img);
-                }
-                return _img;
-            }
-        }
-
-        private void LoadDefaultImage()
-        {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.pod_obj.png");
         }
     }
 }

@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 
 namespace mhedit.Containers.MazeObjects
 {
@@ -10,89 +8,46 @@ namespace mhedit.Containers.MazeObjects
     [Serializable]
     public class Oxoid : MazeObject
     {
-        private const int _SNAP_X = 64;
-        private const int _SNAP_Y = 64;
-        private const int _MAXOBJECTS = 20;
-
-        private Point _position;
+        private const string ImageResource = "mhedit.Containers.Images.Objects.oxoid_obj.png";
         private OxoidType _oxoidType = OxoidType.Fixed;
-        private Image _img;
 
         public Oxoid()
-        {
-            LoadDefaultImage();
-            renderOffset.X = 0;
-            renderOffset.Y = 2;
-            staticLsb = new Point(0x90, 0x40);
-        }
-
-        [BrowsableAttribute(false)]
-        public override Size Size
-        {
-            get { return _img.Size; }
-        }
-
-        [CategoryAttribute("Location")]
-        [DescriptionAttribute("The start location of the object in the maze.")]
-        public override Point Position
-        {
-            get { return _position; }
-            set { _position = value; }
-        }
+            : base( 20,
+                    ResourceFactory.GetResourceImage( ImageResource ),
+                    new Point( 0x90, 0x40 ),
+                    new Point( 0, 2 ) )
+        { }
 
         [CategoryAttribute("Custom")]
         [DescriptionAttribute("Defines whether the oxoid is of fixed point value or if the point value increases with each oxoid collected.")]
         public OxoidType OxoidType
         {
             get { return _oxoidType; }
-            set { _oxoidType = value; }
-        }
-
-        [DescriptionAttribute("Maximum number of reactoids allowed in this maze.")]
-        public override int MaxObjects
-        {
-            get { return _MAXOBJECTS; }
-        }
-
-        [BrowsableAttribute(false)]
-        public override Point SnapSize
-        {
-            get { return new Point(_SNAP_X, _SNAP_Y); }
-        }
-
-        [BrowsableAttribute(false)]
-        public override byte[] ToBytes()
-        {
-            return DataConverter.PointToByteArrayPacked(_position);
-        }
-
-        [BrowsableAttribute(false)]
-        public override byte[] ToBytes(object obj)
-        {
-            return ToBytes();
-        }
-
-        [BrowsableAttribute(false)]
-        public override Image Image
-        {
-            get
+            set
             {
-                LoadDefaultImage();
-                if (_oxoidType == OxoidType.Increasing)
+                if ( this._oxoidType != value )
                 {
-                    ResourceFactory.ReplaceColor(_img, Color.Fuchsia, Color.Yellow);
+                    /// Must change Image first then property so any UX updates get proper
+                    /// image.
+                    this.Image =
+                        ResourceFactory.ReplaceColor(
+                            ResourceFactory.GetResourceImage( ImageResource ),
+                            Color.Fuchsia,
+                            value == OxoidType.Fixed ? Color.Fuchsia : Color.Yellow );
+
+                    this.SetField( ref this._oxoidType, value );
                 }
-                if (selected)
-                {
-                    _img = base.ImageSelected(_img);
-                }
-                return _img;
             }
         }
 
-        private void LoadDefaultImage()
+        public override byte[] ToBytes()
         {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.oxoid_obj.png");
+            return DataConverter.PointToByteArrayPacked(this.Position);
+        }
+
+        public override byte[] ToBytes(object obj)
+        {
+            return ToBytes();
         }
     }
 }

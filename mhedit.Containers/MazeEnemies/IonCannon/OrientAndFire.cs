@@ -41,7 +41,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
             set
             {
-                _orientation = value;
+                this.SetField( ref this._orientation, value );
             }
         }
 
@@ -53,7 +53,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
             set
             {
-                _rotateSpeed = value;
+                this.SetField( ref this._rotateSpeed, value );
             }
         }
 
@@ -71,7 +71,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                         value, "Must be 0 < value < 255." );
                 }
 
-                _shotSpeed = value;
+                this.SetField( ref this._shotSpeed, value );
             }
         }
 

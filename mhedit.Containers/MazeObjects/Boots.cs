@@ -13,78 +13,23 @@ namespace mhedit.Containers.MazeObjects
     [Serializable]
     public class Boots : MazeObject
     {
-        private const int _SNAP_X = 64;
-        private const int _SNAP_Y = 64;
-        private const int _MAXOBJECTS = 1;
-
-        private Point _position;
-        private Image _img;
-
         public Boots()
-        {
-            LoadDefaultImage();
-            renderOffset.X = 8;
-            renderOffset.Y = 8;
-            staticLsb = new Point(0x00, 0x34);
-        }
+            : base( 1,
+                    ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.booties_obj.png" ),
+                    new Point( 0x00, 0x34 ),
+                    new Point( 8, 8 ) )
+        { }
 
-        [BrowsableAttribute(false)]
-        public override Size Size
-        {
-            get { return _img.Size; }
-        }
-
-        [CategoryAttribute("Location")]
-        [DescriptionAttribute("The start location of the object in the maze.")]
-        public override Point Position
-        {
-            get { return _position; }
-            set { _position = value; }
-        }
-
-        [DescriptionAttribute("Maximum number of reactoids allowed in this maze.")]
-        public override int MaxObjects
-        {
-            get { return _MAXOBJECTS; }
-        }
-
-        [BrowsableAttribute(false)]
-        public override Point SnapSize
-        {
-            get { return new Point(_SNAP_X, _SNAP_Y); }
-        }
-
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(DataConverter.PointToByteArrayPacked(_position));
+            bytes.AddRange(DataConverter.PointToByteArrayPacked(this.Position));
             return bytes.ToArray();
         }
 
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes(object obj)
         {
             return ToBytes();
-        }
-
-        [BrowsableAttribute(false)]
-        public override Image Image
-        {
-            get
-            {
-                LoadDefaultImage();
-                if (selected)
-                {
-                    _img = base.ImageSelected(_img);
-                }
-                return _img;
-            }
-        }
-
-        private void LoadDefaultImage()
-        {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.booties_obj.png");
         }
     }
 }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace mhedit.Containers
 {
@@ -12,9 +8,34 @@ namespace mhedit.Containers
     /// and is used exclusively for IonCannons
     /// </summary>
     [Serializable]
-    public class SignedVelocity
+    public class SignedVelocity : TrackEditsBase
     {
-        public sbyte X { get; set; }
-        public sbyte Y { get; set; }
+        private sbyte _x;
+        private sbyte _y;
+
+        public sbyte X
+        {
+            get
+            {
+                return _x;
+            }
+            set
+            {
+                this.SetField( ref this._x, value );
+            }
+        }
+
+        public sbyte Y
+        {
+            get
+            {
+                return _y;
+            }
+            set
+            {
+                this.SetField( ref this._y, value );
+            }
+        }
+
     }
 }

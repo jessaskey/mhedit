@@ -13,106 +13,77 @@ namespace mhedit.Containers.MazeObjects
     [Serializable]
     public class ArrowOut : MazeObject
     {
-        private const int _SNAP_X = 64;
-        private const int _SNAP_Y = 64;
-        private const int _MAXOBJECTS = 10;
-
-        private Point _position;
         private ArrowOutDirection _arrowDirection = ArrowOutDirection.Right;
-        private Image _img;
 
         public ArrowOut()
+            : this( ArrowOutDirection.Right )
+        { }
+
+        private ArrowOut( ArrowOutDirection direction )
+            : base( 10,
+                    ImageFactory.Create( direction ),
+                    new Point( 0xc0, 0x40 ),
+                    new Point( 0, 8 ) )
         {
-            //base.mazeObjectType = MazeObjectType.Arrow;
-            LoadDefaultImage();
-            _position = Point.Empty;
-            renderOffset.X = 0;
-            renderOffset.Y = 8;
-            staticLsb = new Point(0xc0, 0x40);
+            this._arrowDirection = direction;
         }
 
-        [BrowsableAttribute(false)]
-        public override Size Size
-        {
-            get { return _img.Size; }
-        }
-
-        [CategoryAttribute("Location")]
-        [DescriptionAttribute("The start location of the object in the maze.")]
-        public override Point Position
-        {
-            get { return _position; }
-            set { _position = value; }
-        }
-
-        [CategoryAttribute("Custom")]
-        [DescriptionAttribute("Defined the direction that the arrow is pointing.")]
+        [CategoryAttribute( "Custom" )]
+        [DescriptionAttribute( "Defined the direction that the arrow is pointing." )]
         public ArrowOutDirection ArrowDirection
         {
             get { return _arrowDirection; }
-            set { _arrowDirection = value; }
+            set
+            {
+                if ( this._arrowDirection != value )
+                {
+                    /// Must change Image first then property so any UX updates get proper
+                    /// image.
+                    this.Image = ImageFactory.Create( value );
+
+                    this.SetField( ref this._arrowDirection, value );
+                }
+            }
         }
 
-        [DescriptionAttribute("Maximum number of reactoids allowed in this maze.")]
-        public override int MaxObjects
-        {
-            get { return _MAXOBJECTS; }
-        }
-
-        [BrowsableAttribute(false)]
-        public override Point SnapSize
-        {
-            get { return new Point(_SNAP_X, _SNAP_Y); }
-        }
-
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(DataConverter.PointToByteArrayPacked(_position));
+            bytes.AddRange(DataConverter.PointToByteArrayPacked(this.Position));
             bytes.Add((byte)(_arrowDirection+9)); //Offset for OUT Arrow values
             return bytes.ToArray();
         }
 
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes(object obj)
         {
             return ToBytes();
         }
 
-        [BrowsableAttribute(false)]
-        public override Image Image
+        private class ImageFactory
         {
-            get
+            public static Image Create( ArrowOutDirection arrowDirection )
             {
-                LoadDefaultImage();
-                if (selected)
+                Image image = null;
+
+                switch ( arrowDirection )
                 {
-                    _img = base.ImageSelected(_img);
+                    case ArrowOutDirection.Left:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.arrow_out_left_obj.png" );
+                        break;
+                    case ArrowOutDirection.Down:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.arrow_out_down_obj.png" );
+                        break;
+                    case ArrowOutDirection.Up:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.arrow_out_up_obj.png" );
+                        break;
+                    case ArrowOutDirection.Right:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.arrow_out_right_obj.png" );
+                        break;
                 }
-                return _img;
+
+                return image;
             }
         }
-
-        private void LoadDefaultImage()
-        {
-            switch (_arrowDirection)
-            {
-                case ArrowOutDirection.Left:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_out_left_obj.png");
-                    break;
-                case ArrowOutDirection.Down:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_out_down_obj.png");
-                    break;
-                case ArrowOutDirection.Up:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_out_up_obj.png");
-                    break;
-                case ArrowOutDirection.Right:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_out_right_obj.png");
-                    break;
-            }
-        }
-
     }
 }
 

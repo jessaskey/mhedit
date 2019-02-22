@@ -14,36 +14,19 @@ namespace mhedit.Containers.MazeObjects
     [Serializable]
     public class Arrow : MazeObject
     {
-        private const int _SNAP_X = 64;
-        private const int _SNAP_Y = 64;
-        private const int _MAXOBJECTS = 10;
-
-        private Point _position;
-        private ArrowDirection _arrowDirection = ArrowDirection.Right;
-        private Image _img;
+        private ArrowDirection _arrowDirection;
 
         public Arrow()
-        {
-            //base.mazeObjectType = MazeObjectType.Arrow;
-            LoadDefaultImage();
-            _position = Point.Empty;
-            renderOffset.X = 0;
-            renderOffset.Y = 8;
-            staticLsb = new Point(0xc0, 0x40);
-        }
+            : this( ArrowDirection.Right )
+        {}
 
-        [BrowsableAttribute(false)]
-        public override Size Size
+        private Arrow( ArrowDirection direction)
+            : base( 10,
+                    ImageFactory.Create( direction ),
+                    new Point( 0xc0, 0x40 ),
+                    new Point( 0, 8 ) )
         {
-            get { return _img.Size; }
-        }
-
-        [CategoryAttribute("Location")]
-        [DescriptionAttribute("The start location of the object in the maze.")]
-        public override Point Position
-        {
-            get { return _position; }
-            set { _position = value; }
+            this._arrowDirection = direction;
         }
 
         [CategoryAttribute("Custom")]
@@ -51,92 +34,80 @@ namespace mhedit.Containers.MazeObjects
         public ArrowDirection ArrowDirection
         {
             get { return _arrowDirection; }
-            set { _arrowDirection = value; }
+            set
+            {
+                if( this._arrowDirection != value )
+                {
+                    /// Must change Image first then property so any UX updates get proper
+                    /// image.
+                    this.Image = ImageFactory.Create( value );
+
+                    this.SetField( ref this._arrowDirection, value );
+                }
+            }
         }
 
-        [DescriptionAttribute("Maximum number of reactoids allowed in this maze.")]
-        public override int MaxObjects
-        {
-            get { return _MAXOBJECTS; }
-        }
-
-        [BrowsableAttribute(false)]
-        public override Point SnapSize
-        {
-            get { return new Point(_SNAP_X, _SNAP_Y); }
-        }
-
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(DataConverter.PointToByteArrayPacked(_position));
+            bytes.AddRange(DataConverter.PointToByteArrayPacked(this.Position));
             bytes.Add((byte)_arrowDirection);
             return bytes.ToArray();
         }
 
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes(object obj)
         {
             return ToBytes();
         }
 
-        [BrowsableAttribute(false)]
-        public override Image Image
+        private class ImageFactory
         {
-            get
+            public static Image Create( ArrowDirection arrowDirection )
             {
-                LoadDefaultImage();
-                if (selected)
+                Image image = null;
+
+                switch ( arrowDirection )
                 {
-                    _img = base.ImageSelected(_img);
+                    case ArrowDirection.Right:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.arrow_square_obj.png" );
+                        //rotation is okay
+                        break;
+                    case ArrowDirection.Down:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.arrow_square_obj.png" );
+                        image.RotateFlip( RotateFlipType.Rotate90FlipNone );
+                        break;
+                    case ArrowDirection.Left:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.arrow_square_obj.png" );
+                        image.RotateFlip( RotateFlipType.Rotate180FlipNone );
+                        break;
+                    case ArrowDirection.Up:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.arrow_square_obj.png" );
+                        image.RotateFlip( RotateFlipType.Rotate270FlipNone );
+                        break;
+                    case ArrowDirection.UpRight:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.arrow_angle_obj.png" );
+                        //rotation okay
+                        break;
+                    case ArrowDirection.DownRight:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.arrow_angle_obj.png" );
+                        image.RotateFlip( RotateFlipType.Rotate90FlipNone );
+                        break;
+                    case ArrowDirection.DownLeft:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.arrow_angle_obj.png" );
+                        image.RotateFlip( RotateFlipType.Rotate180FlipNone );
+                        break;
+                    case ArrowDirection.UpLeft:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.arrow_angle_obj.png" );
+                        image.RotateFlip( RotateFlipType.Rotate270FlipNone );
+                        break;
+                    case ArrowDirection.Question:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.arrow_question_obj.png" );
+                        break;
                 }
-                return _img;
+
+                return image;
             }
         }
-
-        private void LoadDefaultImage()
-        {
-            switch (_arrowDirection)
-            {
-                case ArrowDirection.Right:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
-                    //rotation is okay
-                    break;
-                case ArrowDirection.Down:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
-                    _img.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                    break;
-                case ArrowDirection.Left:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
-                    _img.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                    break;
-                case ArrowDirection.Up:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_square_obj.png");
-                    _img.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                    break;
-                case ArrowDirection.UpRight:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.png");
-                    //rotation okay
-                    break;
-                case ArrowDirection.DownRight:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.png");
-                    _img.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                    break;
-                case ArrowDirection.DownLeft:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.png");
-                    _img.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                    break;
-                case ArrowDirection.UpLeft:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_angle_obj.png");
-                    _img.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                    break;
-                case ArrowDirection.Question:
-                    _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.arrow_question_obj.png");
-                    break;
-            }
-        }
-
     }
 }
 

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
     [Serializable]
-    public sealed class IonCannonProgram : List<IonCannonInstruction>
+    public sealed class IonCannonProgram : ExtendedObservableCollection<IonCannonInstruction>
     {
         public IonCannonProgram()
             : base()
@@ -58,7 +60,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         {
             /// Ensure that there is only one ReturnToStart command and it's the
             /// last one in the Program.
-            int index = this.FindIndex( b => b is ReturnToStart );
+            int index = this.IndexOf( this.First( b => b is ReturnToStart ) );
 
             if ( index != (this.Count -1) )
             {

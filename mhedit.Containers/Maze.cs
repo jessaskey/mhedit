@@ -44,8 +44,8 @@ namespace mhedit.Containers
     [XmlInclude(typeof(Reactoid))]
     [XmlInclude(typeof(Spikes))]
     [XmlInclude(typeof(Transporter))]
-    [XmlInclude(typeof( MazeWall ))]
-    public class Maze 
+    [XmlInclude(typeof(MazeWall))]
+    public class Maze : NotifyPropertyChangedBase
     {
 
         #region Declarations
@@ -321,8 +321,6 @@ namespace mhedit.Containers
             }
             return wasAdded;
         }
-
-        
 
         private Point GetAdjustedPosition(MazeObject obj, Point point)
         {

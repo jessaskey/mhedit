@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace mhedit.Containers
 {
@@ -10,9 +6,34 @@ namespace mhedit.Containers
     /// The velocity class contains both X and Y components of velocity
     /// </summary>
     [Serializable]
-    public class Velocity
+    public class Velocity : TrackEditsBase
     {
-        public byte X { get; set; }
-        public byte Y { get; set; }
+        private byte _x;
+        private byte _y;
+
+        public byte X
+        {
+            get
+            {
+                return _x;
+            }
+            set
+            {
+                this.SetField( ref this._x, value );
+            }
+        }
+
+        public byte Y
+        {
+            get
+            {
+                return _y;
+            }
+            set
+            {
+                this.SetField( ref this._y, value );
+            }
+        }
+
     }
 }

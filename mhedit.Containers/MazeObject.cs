@@ -1,47 +1,53 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Globalization;
-using System.IO;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace mhedit.Containers
 {
     [Serializable]
-    public abstract class MazeObject //: ICloneable
+    public abstract class MazeObject : TrackEditsBase
     {
+        private static readonly Point _snapSize = new Point( 64, 64 );
+
+        private readonly Guid _id = Guid.NewGuid();
+        private string name;
+        private Point _position = Point.Empty;
+        private readonly int _maxObjects;
+        private Image _image;
+        private readonly Point _staticLsb;
+        private Point _renderOffset;
+        private readonly Point _dragDropFix;
+
+        private bool _selected = false;
+
+        private bool _isValid = true;
         private List<string> _validationErrors = new List<string>();
-        private bool _isValid = false;
-        private Guid _id = Guid.NewGuid();
 
+        protected MazeObject( int maxObjects, Image image )
+            : this( maxObjects, image, new Point(), new Point() )
+        {}
 
-        //protected MazeObjectType mazeObjectType = MazeObjectType.None;
-        protected bool selected = false;
-        protected string name;
-        protected Point renderOffset = new Point(0, 0);
-        protected Point staticLsb = new Point(0,0);
-        protected Point dragDropFix = new Point(0,0);
+        protected MazeObject( int maxObjects, Image image, Point staticLsb, Point renderOffset )
+            : this( maxObjects, image, staticLsb, renderOffset, new Point() )
+        {}
 
+        protected MazeObject( int maxObjects, Image image, Point staticLsb, Point renderOffset, Point dragFix )
+        {
+            this._maxObjects = maxObjects;
 
-        public abstract Point SnapSize { get; }
-        public Point DragDropFix { get { return dragDropFix; } }
-        public abstract Size Size { get; }
-        public abstract Point Position { get; set; }
-        public abstract Image Image { get; }
-        public abstract int MaxObjects { get; }
+            this._image = image;
 
-        //Methods for Serialization
-        public abstract byte[] ToBytes();
-        public abstract byte[] ToBytes(object obj);
+            this._staticLsb = staticLsb;
 
+            this._renderOffset = renderOffset;
 
-        [BrowsableAttribute(false)]
-        [XmlIgnore]
+            this._dragDropFix = dragFix;
+        }
+
+        [BrowsableAttribute( false )]
         public Guid Id
         {
             get
@@ -50,13 +56,70 @@ namespace mhedit.Containers
             }
         }
 
-        [BrowsableAttribute(false)]
-        public Point RenderOffset 
+        public string Name
+        {
+            get { return name; }
+            set { this.SetField( ref this.name, value ); }
+        }
+
+        [CategoryAttribute( "Location" )]
+        [DescriptionAttribute( "The start location of the object in the maze." )]
+        public virtual Point Position
+        {
+            get { return _position; }
+            set { this.SetField( ref this._position, value ); }
+        }
+
+        [DescriptionAttribute( "Maximum number of reactoids allowed in this maze." )]
+        public int MaxObjects
+        {
+            get { return this._maxObjects; }
+        }
+
+        [BrowsableAttribute( false )]
+        public Size Size
+        {
+            get { return this.Image.Size; }
+        }
+
+        [BrowsableAttribute( false )]
+        [XmlIgnore]
+        public virtual Point SnapSize
+        {
+            get { return _snapSize; }
+        }
+
+        [BrowsableAttribute( false )]
+        public Point DragDropFix
+        {
+            get { return _dragDropFix; }
+        }
+
+        [BrowsableAttribute( false )]
+        [IgnoreDataMemberAttribute]
+        public Point StaticLSB
+        {
+            get { return _staticLsb; }
+        }
+
+        [BrowsableAttribute( false )]
+        [XmlIgnore]
+        public Image Image
         {
             get
             {
-                return renderOffset;
+                return this._selected ?
+                    this.AddSelectedDecoration( this._image ) : this._image;
             }
+            protected set { this._image = value; }
+        }
+
+        [BrowsableAttribute(false)]
+        [XmlIgnore]
+        public Point RenderOffset 
+        {
+            get { return _renderOffset; }
+            protected set { this._renderOffset = value; }
         }
 
         [BrowsableAttribute(false)]
@@ -64,10 +127,9 @@ namespace mhedit.Containers
         {
             get
             {
-                return new Point(Position.X - renderOffset.X, Position.Y - renderOffset.Y);
+                return new Point(Position.X - _renderOffset.X, Position.Y - _renderOffset.Y);
             }
         }
-
 
         [TypeConverter(typeof(TypeConverters.VectorPositionTypeConverter))]
         [ReadOnly(true)]
@@ -104,72 +166,21 @@ namespace mhedit.Containers
             }
         }
 
-        //[BrowsableAttribute(false)]
-        //public Point CenterPosition 
-        //{
-        //    get
-        //    {
-        //        return new Point(Position.X + (Size.Width / 2), Position.Y + (Size.Height / 2));
-        //    }
-        //}
-
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-
         [BrowsableAttribute(false)]
         [XmlIgnore]
         public bool Selected
         {
-            get { return selected; }
-            set { selected = value; }
+            get { return this._selected; }
+            set { this._selected = value; }
         }
 
-        [BrowsableAttribute(false)]
-        [IgnoreDataMemberAttribute]
-        [XmlIgnore]
-        public Point StaticLSB
-        {
-            get { return staticLsb; }
-            set { staticLsb = value; }
-        }
+        public abstract byte[] ToBytes();
 
-        //public object Clone()
-        //{
-        //    MemoryStream ms = new MemoryStream();
-        //    BinaryFormatter bf = new BinaryFormatter();
-        //    bf.Serialize(ms, this);
-        //    ms.Position = 0;
-        //    object obj = bf.Deserialize(ms);
-        //    ms.Close();
-        //    return obj;
-        //}
-
-        protected Image ImageSelected(Image img)
-        {
-            //draw little brackets in each corner
-            Graphics g = Graphics.FromImage(img);
-            Pen redPen = new Pen(Color.Orange, 1);
-            //top left
-            g.DrawLine(redPen, 0, 0, 0, 6);
-            g.DrawLine(redPen, 0, 0, 6, 0);
-            //top right
-            g.DrawLine(redPen, img.Width - 1, 0, img.Width - 1, 6);
-            g.DrawLine(redPen, img.Width - 1, 0, img.Width - 7, 0);
-            //bottom left
-            g.DrawLine(redPen, 0, img.Height - 1, 0, img.Height - 7);
-            g.DrawLine(redPen, 0, img.Height - 1, 6, img.Height - 1);
-            //bottom right
-            g.DrawLine(redPen, img.Width - 1, img.Height - 1, img.Width - 1, img.Height - 7);
-            g.DrawLine(redPen, img.Width - 1, img.Height - 1, img.Width - 7, img.Height - 1);
-            return img;
-        }
+        public abstract byte[] ToBytes( object obj );
 
         public void LoadPosition(byte bytePosition)
         {
-            Tuple<short, short> oxoidVector = DataConverter.BytePackedToVector(bytePosition, staticLsb);
+            Tuple<short, short> oxoidVector = DataConverter.BytePackedToVector(bytePosition, this.StaticLSB);
             Position = DataConverter.ConvertVectorToPixels(oxoidVector);
         }
 
@@ -178,5 +189,24 @@ namespace mhedit.Containers
             Position = DataConverter.ConvertVectorToPixels(DataConverter.ByteArrayLongToPoint(longPosition));
         }
 
+        protected virtual Image AddSelectedDecoration( Image img )
+        {
+            //draw little brackets in each corner
+            Graphics g = Graphics.FromImage( img );
+            Pen redPen = new Pen( Color.Orange, 1 );
+            //top left
+            g.DrawLine( redPen, 0, 0, 0, 6 );
+            g.DrawLine( redPen, 0, 0, 6, 0 );
+            //top right
+            g.DrawLine( redPen, img.Width - 1, 0, img.Width - 1, 6 );
+            g.DrawLine( redPen, img.Width - 1, 0, img.Width - 7, 0 );
+            //bottom left
+            g.DrawLine( redPen, 0, img.Height - 1, 0, img.Height - 7 );
+            g.DrawLine( redPen, 0, img.Height - 1, 6, img.Height - 1 );
+            //bottom right
+            g.DrawLine( redPen, img.Width - 1, img.Height - 1, img.Width - 1, img.Height - 7 );
+            g.DrawLine( redPen, img.Width - 1, img.Height - 1, img.Width - 7, img.Height - 1 );
+            return img;
+        }
     }
 }

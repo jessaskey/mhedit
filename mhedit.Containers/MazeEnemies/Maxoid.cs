@@ -2,53 +2,48 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies
 {
     /// <summary>
-    /// Pyroids are the common 'spark-like' enemies in the maze. They have a speed and velocity
-    /// component and freeze when the reactoid is touched.
+    /// 
     /// </summary>
     [Serializable]
     public class Maxoid : MazeObject
     {
-        private const int _SNAP_X = 4;
-        private const int _SNAP_Y = 4;
-        private const int _MAXOBJECTS = 8;
+        private static readonly Point _snapSize = new Point( 4, 4 );
 
-        private Point _position;
-        private Image _img;
-        private Velocity _velocity;
+        private Velocity _velocity = new Velocity();
         private int _triggerDistance;
         private MaxSpeed _speed;
 
         public Maxoid()
+            : base( 8,
+                    ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.roboid_obj.png" ),
+                    Point.Empty,
+                    new Point( 8, 8 ) )
         {
-            LoadDefaultImage();
-            _velocity = new Velocity();
-            renderOffset.X = 8;
-            renderOffset.Y = 8;
+            this._velocity.PropertyChanged += this.ForwardIsDirtyPropertyChanged;
         }
 
-        [DescriptionAttribute("Maximum number of maxoids allowed in this maze.")]
-        public override int MaxObjects
+        [XmlIgnore]
+        public override bool IsDirty
         {
-            get { return _MAXOBJECTS; }
+            get
+            {
+                return base.IsDirty | this._velocity.IsDirty;
+            }
+            set
+            {
+                base.IsDirty = this._velocity.IsDirty = value;
+            }
         }
 
-        [BrowsableAttribute(false)]
-        public override Size Size
+        [BrowsableAttribute( false )]
+        public override Point SnapSize
         {
-            get { return _img.Size; }
-        }
-
-        [CategoryAttribute("Location")]
-        [DescriptionAttribute("The start location of the object in the maze.")]
-        public override Point Position
-        {
-            get { return _position; }
-            set { _position = value; }
+            get { return _snapSize; }
         }
 
         [CategoryAttribute("Location")]
@@ -57,7 +52,6 @@ namespace mhedit.Containers.MazeEnemies
         public Velocity Velocity
         {
             get { return _velocity; }
-            set { _velocity = value; }
         }
 
         [CategoryAttribute("Location")]
@@ -65,7 +59,7 @@ namespace mhedit.Containers.MazeEnemies
         public MaxSpeed Speed
         {
             get { return _speed; }
-            set { _speed = value; }
+            set { this.SetField( ref this._speed, value ); }
         }
 
         [CategoryAttribute("Location")]
@@ -73,51 +67,21 @@ namespace mhedit.Containers.MazeEnemies
         public int TriggerDistance
         {
             get { return _triggerDistance; }
-            set { _triggerDistance = value; }
+            set { this.SetField( ref this._triggerDistance, value ); }
         }
 
-        [BrowsableAttribute(false)]
-        public override Point SnapSize
-        {
-            get
-            {
-                return new Point(_SNAP_X, _SNAP_Y);
-            }
-        }
-
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(DataConverter.PointToByteArrayLong(DataConverter.ConvertPixelsToVector(_position)));
+            bytes.AddRange(DataConverter.PointToByteArrayLong(DataConverter.ConvertPixelsToVector(this.Position)));
             int speedDistance =  ((byte)(((int)_speed)<<4)&0x30) +((byte)(_triggerDistance&0x0F));
             bytes.Add((byte)speedDistance);
             return bytes.ToArray();
         }
 
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes(object obj)
         {
             return ToBytes();
-        }
-
-        [BrowsableAttribute(false)]
-        public override Image Image
-        {
-            get
-            {
-                LoadDefaultImage();
-                if (selected)
-                {
-                    _img = base.ImageSelected(_img);
-                }
-                return _img;
-            }
-        }
-
-        private void LoadDefaultImage()
-        {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.roboid_obj.png");
         }
     }
 }

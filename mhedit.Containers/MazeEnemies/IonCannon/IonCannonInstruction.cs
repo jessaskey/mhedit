@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
@@ -13,7 +12,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     [XmlInclude( typeof( OrientAndFire ) )]
     [XmlInclude( typeof( Move ) )]
     [XmlInclude( typeof( Pause ) )]
-    public abstract class IonCannonInstruction
+    public abstract class IonCannonInstruction : TrackEditsBase
     {
         private readonly Commands _command;
 

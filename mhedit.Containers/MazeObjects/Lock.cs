@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 
 namespace mhedit.Containers.MazeObjects
 {
@@ -13,63 +12,42 @@ namespace mhedit.Containers.MazeObjects
     [Serializable]
     public class Lock : MazeObject
     {
-        private const int _SNAP_X = 64;
-        private const int _SNAP_Y = 64;
-        private const int _MAXOBJECTS = 3;
-
-        private Point _position;
+        private const string ImageResource = "mhedit.Containers.Images.Objects.lock_obj.png";
         private ObjectColor _color = ObjectColor.Yellow;
-        private Image _img;
 
         public Lock()
-        {
-            LoadDefaultImage();
-            renderOffset.X = 32;
-            renderOffset.Y = 32;
-            staticLsb = new Point(0x80, 0x80);
-        }
+            : base( 3,
+                    ResourceFactory.GetResourceImage( ImageResource ),
+                    new Point( 0x80, 0x80 ),
+                    new Point( 32, 32 ) )
+        { }
 
-
-        [BrowsableAttribute(false)]
-        public override Size Size
-        {
-            get { return _img.Size; }
-        }
-
-        [CategoryAttribute("Location")]
-        [DescriptionAttribute("The start location of the object in the maze.")]
-        public override Point Position
-        {
-            get { return _position; }
-            set { _position = value; }
-        }
-
-        [DescriptionAttribute("Maximum number of reactoids allowed in this maze.")]
-        public override int MaxObjects
-        {
-            get { return _MAXOBJECTS; }
-        }
-
-        [DescriptionAttribute("The color of the door. Doors can only be opened by keys of the same color.")]
+        [DescriptionAttribute( "The color of the Lock. The Lock will only open doors with the same color." )]
         public ObjectColor LockColor
         {
             get { return _color; }
-            set { _color = value; }
+            set
+            {
+                if ( this._color != value )
+                {
+                    /// Must change Image first then property so any UX updates get proper
+                    /// image.
+                    this.Image =
+                        ResourceFactory.ReplaceColor(
+                            ResourceFactory.GetResourceImage( ImageResource ),
+                            Color.Yellow,
+                            MazeFactory.GetObjectColor( value ) );
+
+                    this.SetField( ref this._color, value );
+                }
+            }
         }
 
-        [BrowsableAttribute(false)]
-        public override Point SnapSize
-        {
-            get { return new Point(_SNAP_X, _SNAP_Y); }
-        }
-
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes()
         {
             throw new Exception("Lock requires it's related key to be passed into the ToBytes(object) method.");
         }
 
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes(object obj)
         {
             List<byte> bytes = new List<byte>();
@@ -77,33 +55,13 @@ namespace mhedit.Containers.MazeObjects
             {
                 bytes.Add((byte)_color);
                 bytes.AddRange(DataConverter.PointToByteArrayPacked(((Key)obj).Position));
-                bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(_position.X, _position.Y + 64)));
+                bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(this.Position.X, this.Position.Y + 64)));
             }
             else
             {
                 throw new Exception("Lock.ToByte() requires it's related key to be passed into the ToBytes(object) method.");
             }
             return bytes.ToArray();
-        }
-
-        [BrowsableAttribute(false)]
-        public override Image Image
-        {
-            get
-            {
-                LoadDefaultImage();
-                _img = ResourceFactory.ReplaceColor(_img, Color.Yellow, MazeFactory.GetObjectColor(_color));
-                if (selected)
-                {
-                    _img = base.ImageSelected(_img);
-                }
-                return _img;
-            }
-        }
-
-        private void LoadDefaultImage()
-        {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.lock_obj.png");
         }
     }
 }

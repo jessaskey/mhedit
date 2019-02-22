@@ -11,39 +11,19 @@ namespace mhedit.Containers.MazeObjects
     [Serializable]
     public class Transporter : MazeObject
     {
-        private const int _SNAP_X = 64;
-        private const int _SNAP_Y = 64;
-        private const int _MAXOBJECTS = 8;
-
-        private Point _position;
+        private const string ImageResource = "mhedit.Containers.Images.Objects.transporter_obj.png";
         private TransporterDirection _direction = TransporterDirection.Right;
-        private Image _img;
         private List<bool> _transportability = new List<bool>();
         private ObjectColor _color = ObjectColor.Red;
         private bool _isBroken = false;
         private bool _isHidden = false;
 
         public Transporter()
-        {
-            LoadDefaultImage();
-            renderOffset.X = 24;
-            renderOffset.Y = 32;
-            staticLsb = new Point(0x80, 0x80);
-        }
-
-        [BrowsableAttribute(false)]
-        public override Size Size
-        {
-            get { return _img.Size; }
-        }
-
-        [CategoryAttribute("Location")]
-        [DescriptionAttribute("The start location of the object in the maze.")]
-        public override Point Position
-        {
-            get { return _position; }
-            set { _position = value; }
-        }
+            : base( 8,
+                    ResourceFactory.GetResourceImage( ImageResource ),
+                    new Point( 0x80, 0x80 ),
+                    new Point( 24, 32 ) )
+        { }
 
         [CategoryAttribute("Direction")]
         [DescriptionAttribute("The Direction of the transporter.")]
@@ -52,9 +32,17 @@ namespace mhedit.Containers.MazeObjects
             get { return _direction; }
             set
             {
-                _direction = value;
+                if ( this._direction != value )
+                {
+                    /// Must change Image first then property so any UX updates get proper
+                    /// image.
+                    this.Image = this.GetTransporterImage( this._color, value );
 
-                renderOffset.X = value == TransporterDirection.Right ? 24 : 40;
+                    this.RenderOffset = new Point(
+                        value == TransporterDirection.Right ? 24 : 40, this.RenderOffset.Y );
+
+                    this.SetField( ref this._direction, value );
+                }
             }
         }
 
@@ -64,44 +52,40 @@ namespace mhedit.Containers.MazeObjects
         public List<bool> Transportability
         {
             get { return _transportability; }
-            set { _transportability = value; }
-        }
-
-        [DescriptionAttribute("Maximum number of transports allowed in this maze.")]
-        public override int MaxObjects
-        {
-            get { return _MAXOBJECTS; }
+            set { this.SetField( ref this._transportability, value ); }
         }
 
         [DescriptionAttribute("Marks if the transporter is shown as 'Broken' (only for Promised End")]
         public bool IsBroken
         {
             get { return _isBroken; }
-            set { _isBroken = value; }
+            set { this.SetField( ref this._isBroken, value ); }
         }
 
         [DescriptionAttribute("Marks if the transporter is invisible (only for Promised End")]
         public bool IsHidden
         {
             get { return _isHidden; }
-            set { _isHidden = value; }
+            set { this.SetField( ref this._isHidden, value ); }
         }
 
         [DescriptionAttribute("The color of the door. Doors can only be opened by keys of the same color.")]
         public ObjectColor Color
         {
             get { return _color; }
-            set { _color = value; }
+            set
+            {
+                if ( this._color != value )
+                {
+                    /// Must change Image first then property so any UX updates get proper
+                    /// image.
+                    this.Image = this.GetTransporterImage( value, this._direction );
+
+                    this.SetField( ref this._color, value );
+                }
+            }
         }
 
-        [BrowsableAttribute(false)]
-        public override Point SnapSize
-        {
-            get { return new Point(_SNAP_X, _SNAP_Y); }
-        }
-
-
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
@@ -120,39 +104,29 @@ namespace mhedit.Containers.MazeObjects
                 colorByte += 0x80;
             }
             bytes.Add(colorByte);
-            bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(_position.X, _position.Y + 64)));
+            bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(this.Position.X, this.Position.Y + 64)));
 
             return bytes.ToArray();
         }
 
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes(object obj)
         {
             return ToBytes();
         }
 
-        [BrowsableAttribute(false)]
-        public override Image Image
+        private Image GetTransporterImage( ObjectColor color, TransporterDirection direction )
         {
-            get
-            {
-                LoadDefaultImage();
-                _img = ResourceFactory.ReplaceColor(_img, System.Drawing.Color.Yellow, MazeFactory.GetObjectColor(_color));
-                if (_direction == TransporterDirection.Right)
-                {
-                    _img.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                }
-                if (selected)
-                {
-                    _img = base.ImageSelected(_img);
-                }
-                return _img;
-            }
-        }
+            Image image = ResourceFactory.ReplaceColor(
+                ResourceFactory.GetResourceImage( ImageResource ),
+                System.Drawing.Color.Yellow,
+                MazeFactory.GetObjectColor( color ) );
 
-        private void LoadDefaultImage()
-        {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.transporter_obj.png");
+            if ( direction == TransporterDirection.Right )
+            {
+                image.RotateFlip( RotateFlipType.Rotate180FlipNone );
+            }
+
+            return image;
         }
     }
 }

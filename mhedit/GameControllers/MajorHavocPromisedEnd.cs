@@ -92,7 +92,7 @@ namespace mhedit.GameControllers
             mazeCollection.AuthorEmail = "Jess@maynard.vax";
             mazeCollection.AuthorName = "Jess Askey";
 
-            for (int i = 0; i < 28; i++)
+            for ( int i = 0; i < 28; i++)
             {
 
                 byte mazeType = (byte)(i & 0x03);

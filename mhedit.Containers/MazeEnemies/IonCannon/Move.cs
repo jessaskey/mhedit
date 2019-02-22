@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
@@ -17,7 +17,9 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
         public Move()
             : base( Commands.Move )
-        { }
+        {
+            this._velocity.PropertyChanged += this.ForwardIsDirtyPropertyChanged;
+        }
 
         //private Move( RomSerializationInfo si, StreamingContext context )
         //    : this()
@@ -46,7 +48,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                         value, "Must be 0 < value < 255." );
                 }
 
-                _waitFrames = value & 0xFC;
+                this.SetField( ref this._waitFrames, value & 0xFC );
             }
         }
 
@@ -57,9 +59,18 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             {
                 return _velocity;
             }
+        }
+
+        [XmlIgnore]
+        public override bool IsDirty
+        {
+            get
+            {
+                return base.IsDirty | this._velocity.IsDirty;
+            }
             set
             {
-                this._velocity = value;
+                base.IsDirty = this._velocity.IsDirty = value;
             }
         }
 

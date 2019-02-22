@@ -12,34 +12,25 @@ namespace mhedit.Containers.MazeObjects
     [Serializable]
     public class OneWay : MazeObject
     {
-        private const int _SNAP_X = 4;
-        private const int _SNAP_Y = 4;
-        private const int _MAXOBJECTS = 4;
+        private static readonly Point _snapSize = new Point( 4, 4 );
 
-        private Point _position;
         private OneWayDirection _direction = OneWayDirection.Right;
-        private Image _img;
 
         public OneWay()
-        {
-            LoadLeftImage();
-            renderOffset.X = 32;
-            renderOffset.Y = 32;
-            staticLsb = new Point(0x80, 0x80);
-        }
+            : this( OneWayDirection.Right )
+        { }
 
-        [BrowsableAttribute(false)]
-        public override Size Size
-        {
-            get { return _img.Size; }
-        }
+        private OneWay( OneWayDirection direction )
+            : base( 4,
+                    ImageFactory.Create( direction ),
+                    new Point( 0x80, 0x80 ),
+                    new Point( 32, 32 ) )
+        { }
 
-        [CategoryAttribute("Location")]
-        [DescriptionAttribute("The start location of the object in the maze.")]
-        public override Point Position
+        [BrowsableAttribute( false )]
+        public override Point SnapSize
         {
-            get { return _position; }
-            set { _position = value; }
+            get { return _snapSize; }
         }
 
         [CategoryAttribute("Custom")]
@@ -47,61 +38,50 @@ namespace mhedit.Containers.MazeObjects
         public OneWayDirection Direction
         {
             get { return _direction; }
-            set { _direction = value; }
+            set
+            {
+                if ( this._direction != value )
+                {
+                    /// Must change Image first then property so any UX updates get proper
+                    /// image.
+                    this.Image = ImageFactory.Create( value );
+
+                    this.SetField( ref this._direction, value );
+                }
+            }
         }
 
-        [DescriptionAttribute("Maximum number of one way's allowed in this maze.")]
-        public override int MaxObjects
-        {
-            get { return _MAXOBJECTS; }
-        }
-
-        [BrowsableAttribute(false)]
-        public override Point SnapSize
-        {
-            get { return new Point(_SNAP_X, _SNAP_Y); }
-        }
-
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(_position.X, _position.Y + 64)));
+            bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(this.Position.X, this.Position.Y + 64)));
             return bytes.ToArray();
         }
 
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes(object obj)
         {
             return ToBytes();
         }
 
-        [BrowsableAttribute(false)]
-        public override Image Image
+        private class ImageFactory
         {
-            get
+            public static Image Create( OneWayDirection arrowDirection )
             {
-                LoadRightImage();
-                if (_direction == OneWayDirection.Left)
+                Image image = null;
+
+                switch ( arrowDirection )
                 {
-                    LoadLeftImage();
+                    case OneWayDirection.Right:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.oneway_obj.png" );
+                        //rotation is okay
+                        break;
+                    case OneWayDirection.Left:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.oneway_l_obj.png" );
+                        break;
                 }
-                if (selected)
-                {
-                    _img = base.ImageSelected(_img);
-                }
-                return _img;
+
+                return image;
             }
-        }
-
-        private void LoadLeftImage()
-        {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.oneway_l_obj.png");
-        }
-
-        private void LoadRightImage()
-        {
-            _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.oneway_obj.png");
         }
     }
 }

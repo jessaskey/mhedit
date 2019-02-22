@@ -4,20 +4,15 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers
 {
     [Serializable]
     public class MazeWall : MazeObject
     {
-        private const int _SNAP_X = 64;
-        private const int _SNAP_Y = 64;
-        private const int _MAXOBJECTS = 64;
-
         private MazeWallType _wallType = MazeWallType.Empty;
         private bool _userWall = false;
-        private Image _img;
-        private Point _position;
         private bool _dynamicWall = false;
         private int _dynamicWallTimeout;
         private MazeWallType _wallTypeDynamic = MazeWallType.Empty;
@@ -25,82 +20,66 @@ namespace mhedit.Containers
         private int _wallIndex;
 
         public MazeWall()
-        {
-            InitWall(MazeWallType.Empty, new Point(0, 0));
-        }
-        public MazeWall(MazeWallType type, Point position, int wallIndex)
-        {
-            InitWall(type, position);
-            _wallIndex = wallIndex;
-        }
+            : this( MazeWallType.Empty )
+        {}
 
         public MazeWall(MazeWallType type)
-        {
-            InitWall(type, new Point(0,0));
-        }
+            : this( type, Point.Empty, 0 )
+        {}
 
-        private void InitWall(MazeWallType type, Point position)
+        public MazeWall( MazeWallType type, Point position, int wallIndex )
+            : base( 64, ImageFactory.Create( type, false ) )
         {
-            _wallType = type;
-            _position = position;
-            //base.mazeObjectType = MazeObjectType.Wall;
-            LoadDefaultImage();
-        }
+            this._wallIndex = wallIndex;
 
-        [DescriptionAttribute("Maximum number of walls allowed in this maze.")]
-        public override int MaxObjects
-        {
-            get { return _MAXOBJECTS; }
+            this._wallType = type;
+
+            this.Position = position;
         }
 
         [DescriptionAttribute("Description of the wall type.")]
         public MazeWallType WallType
         {
             get { return _wallType; }
-            set { _wallType = value; }
-        }
-
-        [BrowsableAttribute(false)]
-        public override Size Size
-        {
-            get 
+            set
             {
-                return _img.Size;
+                if ( this._wallType != value )
+                {
+                    /// Must change Image first then property so any UX updates get proper
+                    /// image.
+                    this.Image = ResourceFactory.ReplaceColor(
+                        ImageFactory.Create( value, this._dynamicWall ),
+                        Color.Green, this._userWall ? Color.Blue : Color.Green );
+
+                    this.SetField( ref this._wallType, value );
+                }
             }
         }
 
         [BrowsableAttribute(false)]
         public int WallIndex
         {
-            get
-            {
-                return _wallIndex;
-            }
-            set
-            {
-                _wallIndex = value;
-            }
-        }
-
-        [CategoryAttribute("Location")]
-        [DescriptionAttribute("The location of the wall in the maze.")]
-        public override Point Position
-        {
-            get { return _position; }
-            set { _position = value; }
-        }
-
-        [BrowsableAttribute(false)]
-        public override Point SnapSize
-        {
-            get { return new Point(_SNAP_X, _SNAP_Y); }
+            get { return _wallIndex; }
+            set { _wallIndex = value; }
         }
 
         [BrowsableAttribute(false)]
         public bool UserWall
         {
             get { return _userWall; }
-            set { _userWall = value; }
+            set
+            {
+                if ( this._userWall != value )
+                {
+                    /// Must change Image first then property so any UX updates get proper
+                    /// image.
+                    this.Image = ResourceFactory.ReplaceColor(
+                        ImageFactory.Create( this._wallType, this._dynamicWall ),
+                        Color.Green, value ? Color.Blue : Color.Green );
+
+                    this.SetField( ref this._userWall, value );
+                }
+            }
         }
 
         [CategoryAttribute("Dynamic Wall")]
@@ -108,7 +87,19 @@ namespace mhedit.Containers
         public bool IsDynamicWall
         {
             get { return _dynamicWall; }
-            set { _dynamicWall = value; }
+            set
+            {
+                if ( this._dynamicWall != value )
+                {
+                    /// Must change Image first then property so any UX updates get proper
+                    /// image.
+                    this.Image = ResourceFactory.ReplaceColor(
+                        ImageFactory.Create( this._wallType, value ),
+                        Color.Green, this._userWall ? Color.Blue : Color.Green );
+
+                    this.SetField( ref this._dynamicWall, value );
+                }
+            }
         }
 
         [CategoryAttribute("Dynamic Wall")]
@@ -116,7 +107,7 @@ namespace mhedit.Containers
         public MazeWallType AlternateWallType
         {
             get { return _wallTypeDynamic; }
-            set { _wallTypeDynamic = value; }
+            set { this.SetField( ref this._wallTypeDynamic, value ); }
         }
 
         [CategoryAttribute("Dynamic Wall")]
@@ -124,7 +115,7 @@ namespace mhedit.Containers
         public int DynamicWallTimout
         {
             get { return _dynamicWallTimeout; }
-            set { _dynamicWallTimeout = value; }
+            set { this.SetField( ref this._dynamicWallTimeout, value ); }
         }
 
         [CategoryAttribute("Dynamic Wall")]
@@ -132,112 +123,117 @@ namespace mhedit.Containers
         public int AlternateWallTimeout
         {
             get { return _alternateWallTimeout; }
-            set { _alternateWallTimeout = value; }
+            set { this.SetField( ref this._alternateWallTimeout, value ); }
         }
 
-        public List<Vector> GetWallLines()
+        //public List<Vector> GetWallLines()
+        //{
+        //    List<Vector> wallLines = new List<Vector>();
+        //    switch (_wallType)
+        //    {
+        //        case MazeWallType.Empty:
+
+        //            break;
+        //        case MazeWallType.Horizontal:
+        //            wallLines.Add(new Vector() { Start= new Point(0 + this.Position.X, 32 + this.Position.Y), End = new Point(64 + this.Position.X, 32 + this.Position.Y)});
+        //            break;
+        //        case MazeWallType.LeftDown:
+        //            wallLines.Add(new Vector() { Start= new Point(0 + this.Position.X, 32 + this.Position.Y), End = new Point(32 + this.Position.X, 32 + this.Position.Y)});
+        //            wallLines.Add(new Vector() { Start= new Point(32 + this.Position.X, 32 + this.Position.Y), End = new Point(32 + this.Position.X, 64 + this.Position.Y)});
+        //            break;
+        //        case MazeWallType.LeftUp:
+        //            wallLines.Add(new Vector() { Start= new Point(0 + this.Position.X, 32 + this.Position.Y), End = new Point(32 + this.Position.X, 32 + this.Position.Y)});
+        //            wallLines.Add(new Vector() { Start= new Point(32 + this.Position.X, 32 + this.Position.Y), End = new Point(32 + this.Position.X, 0 + this.Position.Y)});
+        //            break;
+        //        case MazeWallType.RightDown:
+        //            wallLines.Add(new Vector() { Start= new Point(32 + this.Position.X, 32 + this.Position.Y), End = new Point(64 + this.Position.X, 32 + this.Position.Y)});
+        //            wallLines.Add(new Vector() { Start= new Point(32 + this.Position.X, 32 + this.Position.Y), End = new Point(32 + this.Position.X, 64 + this.Position.Y)});
+        //            break;
+        //        case MazeWallType.RightUp:
+        //            wallLines.Add(new Vector() { Start= new Point(32 + this.Position.X, 32 + this.Position.Y), End = new Point(64 + this.Position.X, 32 + this.Position.Y)});
+        //            wallLines.Add(new Vector() { Start= new Point(32 + this.Position.X, 32 + this.Position.Y), End = new Point(32 + this.Position.X, 0 + this.Position.Y)});
+        //            break;
+        //        case MazeWallType.Vertical:
+        //            wallLines.Add(new Vector() { Start = new Point(32 + this.Position.X, 0 + this.Position.Y), End = new Point(32 + this.Position.X, 64 + this.Position.Y) });
+        //            break;
+        //    }
+        //    return wallLines;
+        //}
+
+        private class ImageFactory
         {
-            List<Vector> wallLines = new List<Vector>();
-            switch (_wallType)
+            public static Image Create( MazeWallType wallType, bool dynamicWall )
             {
-                case MazeWallType.Empty:
+                Image image = null;
 
-                    break;
-                case MazeWallType.Horizontal:
-                    wallLines.Add(new Vector() { Start= new Point(0 + _position.X, 32 + _position.Y), End = new Point(64 + _position.X, 32 + _position.Y)});
-                    break;
-                case MazeWallType.LeftDown:
-                    wallLines.Add(new Vector() { Start= new Point(0 + _position.X, 32 + _position.Y), End = new Point(32 + _position.X, 32 + _position.Y)});
-                    wallLines.Add(new Vector() { Start= new Point(32 + _position.X, 32 + _position.Y), End = new Point(32 + _position.X, 64 + _position.Y)});
-                    break;
-                case MazeWallType.LeftUp:
-                    wallLines.Add(new Vector() { Start= new Point(0 + _position.X, 32 + _position.Y), End = new Point(32 + _position.X, 32 + _position.Y)});
-                    wallLines.Add(new Vector() { Start= new Point(32 + _position.X, 32 + _position.Y), End = new Point(32 + _position.X, 0 + _position.Y)});
-                    break;
-                case MazeWallType.RightDown:
-                    wallLines.Add(new Vector() { Start= new Point(32 + _position.X, 32 + _position.Y), End = new Point(64 + _position.X, 32 + _position.Y)});
-                    wallLines.Add(new Vector() { Start= new Point(32 + _position.X, 32 + _position.Y), End = new Point(32 + _position.X, 64 + _position.Y)});
-                    break;
-                case MazeWallType.RightUp:
-                    wallLines.Add(new Vector() { Start= new Point(32 + _position.X, 32 + _position.Y), End = new Point(64 + _position.X, 32 + _position.Y)});
-                    wallLines.Add(new Vector() { Start= new Point(32 + _position.X, 32 + _position.Y), End = new Point(32 + _position.X, 0 + _position.Y)});
-                    break;
-                case MazeWallType.Vertical:
-                    wallLines.Add(new Vector() { Start = new Point(32 + _position.X, 0 + _position.Y), End = new Point(32 + _position.X, 64 + _position.Y) });
-                    break;
-            }
-            return wallLines;
-        }
+                if ( dynamicWall )
+                {
+                    switch ( wallType )
+                    {
+                        case MazeWallType.Empty:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wallc_empty_64.png" );
+                            break;
+                        case MazeWallType.Horizontal:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wallc_horizontal_64.png" );
+                            break;
+                        case MazeWallType.LeftDown:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wallc_leftdown_64.png" );
+                            break;
+                        case MazeWallType.LeftUp:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wallc_leftup_64.png" );
+                            break;
+                        case MazeWallType.RightDown:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wallc_rightdown_64.png" );
+                            break;
+                        case MazeWallType.RightUp:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wallc_rightup_64.png" );
+                            break;
+                        case MazeWallType.Vertical:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wallc_vertical_64.png" );
+                            break;
+                        default:
+                            //just in case
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wallc_empty_64.png" );
+                            break;
+                    }
+                }
+                else
+                {
+                    switch ( wallType )
+                    {
+                        case MazeWallType.Empty:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wall_empty_64.png" );
+                            break;
+                        case MazeWallType.Horizontal:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wall_horizontal_64.png" );
+                            break;
+                        case MazeWallType.LeftDown:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wall_leftdown_64.png" );
+                            break;
+                        case MazeWallType.LeftUp:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wall_leftup_64.png" );
+                            break;
+                        case MazeWallType.RightDown:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wall_rightdown_64.png" );
+                            break;
+                        case MazeWallType.RightUp:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wall_rightup_64.png" );
+                            break;
+                        case MazeWallType.Vertical:
+                            image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.wall_vertical_64.png" );
+                            break;
+                    }
+                }
 
-        private void LoadDefaultImage()
-        {
-            if (_dynamicWall)
-            {
-                switch (_wallType)
-                {
-                    case MazeWallType.Empty:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_empty_64.png");
-                        break;
-                    case MazeWallType.Horizontal:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_horizontal_64.png");
-                        break;
-                    case MazeWallType.LeftDown:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_leftdown_64.png");
-                        break;
-                    case MazeWallType.LeftUp:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_leftup_64.png");
-                        break;
-                    case MazeWallType.RightDown:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_rightdown_64.png");
-                        break;
-                    case MazeWallType.RightUp:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_rightup_64.png");
-                        break;
-                    case MazeWallType.Vertical:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_vertical_64.png");
-                        break;
-                    default:
-                        //just in case
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wallc_empty_64.png");
-                        break;
-                }
-            }
-            else
-            {
-                switch (_wallType)
-                {
-                    case MazeWallType.Empty:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_empty_64.png");
-                        break;
-                    case MazeWallType.Horizontal:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_horizontal_64.png");
-                        break;
-                    case MazeWallType.LeftDown:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_leftdown_64.png");
-                        break;
-                    case MazeWallType.LeftUp:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_leftup_64.png");
-                        break;
-                    case MazeWallType.RightDown:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_rightdown_64.png");
-                        break;
-                    case MazeWallType.RightUp:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_rightup_64.png");
-                        break;
-                    case MazeWallType.Vertical:
-                        _img = ResourceFactory.GetResourceImage("mhedit.Containers.Images.Objects.wall_vertical_64.png");
-                        break;
-                }
+                return image;
             }
         }
 
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes()
         {
             throw new Exception("Serialization of Wall requires the parent Maze, use the ToBytes(object) method instead.");
         }
 
-        [BrowsableAttribute(false)]
         public override byte[] ToBytes(object obj)
         {
             List<byte> bytes = new List<byte>();
@@ -246,7 +242,7 @@ namespace mhedit.Containers
                 int wallDataOffset = 18; //this is a set of blank data offsets defined in the mhavoc source for some reason
                 if (_dynamicWall)
                 {
-                    bytes.Add((byte)(wallDataOffset + ((Maze)obj).PointToStamp(_position)));
+                    bytes.Add((byte)(wallDataOffset + ((Maze)obj).PointToStamp(this.Position)));
                     bytes.Add((byte)_dynamicWallTimeout);
                     bytes.Add((byte)_alternateWallTimeout);
                     bytes.Add((byte)_wallType);
@@ -254,7 +250,7 @@ namespace mhedit.Containers
                 }
                 else
                 {
-                    bytes.Add((byte)(wallDataOffset + ((Maze)obj).PointToStamp(_position)));
+                    bytes.Add((byte)(wallDataOffset + ((Maze)obj).PointToStamp(this.Position)));
                     bytes.Add((byte)_wallType);
                 }
             }
@@ -265,40 +261,24 @@ namespace mhedit.Containers
             return bytes.ToArray();
         }
 
-        [BrowsableAttribute(false)]
-        public override Image Image 
+        protected override Image AddSelectedDecoration( Image image )
         {
-            get
-            {
-                LoadDefaultImage();
-                if (_userWall)
-                {
-                    _img = ResourceFactory.ReplaceColor(_img, Color.Green, Color.Blue);
-                }
-
-                if (selected)
-                {
-                    //draw little brackets in each corner
-                    Graphics g = Graphics.FromImage(_img);
-                    Pen redPen = new Pen(Color.Red, 3);
-                    //top left
-                    g.DrawLine(redPen, 0, 0, 0, 10);
-                    g.DrawLine(redPen, 0, 0, 10, 0);
-                    //top right
-                    g.DrawLine(redPen, _img.Width, 0, _img.Width, 10);
-                    g.DrawLine(redPen, _img.Width, 0, _img.Width - 10, 0);
-                    //bottom left
-                    g.DrawLine(redPen, 0, _img.Height, 0, _img.Height - 10);
-                    g.DrawLine(redPen, 0, _img.Height, 10, _img.Height);
-                    //bottom right
-                    g.DrawLine(redPen, _img.Width, _img.Height, _img.Width, _img.Height - 10);
-                    g.DrawLine(redPen, _img.Width, _img.Height, _img.Width - 10, _img.Height);
-                }
-                return _img;
-            }
+            //draw little brackets in each corner
+            Graphics g = Graphics.FromImage( image );
+            Pen redPen = new Pen( Color.Red, 3 );
+            //top left
+            g.DrawLine( redPen, 0, 0, 0, 10 );
+            g.DrawLine( redPen, 0, 0, 10, 0 );
+            //top right
+            g.DrawLine( redPen, image.Width, 0, image.Width, 10 );
+            g.DrawLine( redPen, image.Width, 0, image.Width - 10, 0 );
+            //bottom left
+            g.DrawLine( redPen, 0, image.Height, 0, image.Height - 10 );
+            g.DrawLine( redPen, 0, image.Height, 10, image.Height );
+            //bottom right
+            g.DrawLine( redPen, image.Width, image.Height, image.Width, image.Height - 10 );
+            g.DrawLine( redPen, image.Width, image.Height, image.Width - 10, image.Height );
+            return image;
         }
-
-        
-
     }
 }
