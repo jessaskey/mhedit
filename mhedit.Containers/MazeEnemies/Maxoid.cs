@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies
 {
@@ -23,22 +22,7 @@ namespace mhedit.Containers.MazeEnemies
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.roboid_obj.png" ),
                     Point.Empty,
                     new Point( 8, 8 ) )
-        {
-            this._velocity.PropertyChanged += this.ForwardIsDirtyPropertyChanged;
-        }
-
-        [XmlIgnore]
-        public override bool IsDirty
-        {
-            get
-            {
-                return base.IsDirty | this._velocity.IsDirty;
-            }
-            set
-            {
-                base.IsDirty = this._velocity.IsDirty = value;
-            }
-        }
+        {}
 
         [BrowsableAttribute( false )]
         public override Point SnapSize
@@ -52,6 +36,7 @@ namespace mhedit.Containers.MazeEnemies
         public Velocity Velocity
         {
             get { return _velocity; }
+            set { this.SetField( ref this._velocity, value ); }
         }
 
         [CategoryAttribute("Location")]

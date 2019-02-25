@@ -6,7 +6,7 @@ namespace mhedit.Containers
     /// The velocity class contains both X and Y components of velocity
     /// </summary>
     [Serializable]
-    public class Velocity : TrackEditsBase
+    public struct Velocity
     {
         private byte _x;
         private byte _y;
@@ -19,7 +19,7 @@ namespace mhedit.Containers
             }
             set
             {
-                this.SetField( ref this._x, value );
+                this._x = value;
             }
         }
 
@@ -31,7 +31,7 @@ namespace mhedit.Containers
             }
             set
             {
-                this.SetField( ref this._y, value );
+                this._y = value;
             }
         }
 

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
@@ -17,9 +16,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
         public Move()
             : base( Commands.Move )
-        {
-            this._velocity.PropertyChanged += this.ForwardIsDirtyPropertyChanged;
-        }
+        {}
 
         //private Move( RomSerializationInfo si, StreamingContext context )
         //    : this()
@@ -55,23 +52,8 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         [TypeConverter( typeof( SimpleVelocityTypeConverter ) )]
         public SimpleVelocity Velocity
         {
-            get
-            {
-                return _velocity;
-            }
-        }
-
-        [XmlIgnore]
-        public override bool IsDirty
-        {
-            get
-            {
-                return base.IsDirty | this._velocity.IsDirty;
-            }
-            set
-            {
-                base.IsDirty = this._velocity.IsDirty = value;
-            }
+            get { return _velocity; }
+            set { this.SetField( ref this._velocity, value ); }
         }
 
         public override void GetObjectData( List<byte> bytes )

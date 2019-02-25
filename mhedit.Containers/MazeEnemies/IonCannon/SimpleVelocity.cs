@@ -3,7 +3,7 @@
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
     [Serializable]
-    public class SimpleVelocity : TrackEditsBase
+    public struct SimpleVelocity
     {
         private int _x;
         private int _y;
@@ -22,7 +22,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                         value, "Must be -64 < value < 64." );
                 }
 
-                this.SetField( ref this._x, value );
+                this._x = value;
             }
         }
 
@@ -40,7 +40,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                         value, "Must be -64 < value < 64." );
                 }
 
-                this.SetField( ref this._y, value );
+                this._y = value;
             }
         }
 

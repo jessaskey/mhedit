@@ -8,7 +8,7 @@ namespace mhedit.Containers
     /// and is used exclusively for IonCannons
     /// </summary>
     [Serializable]
-    public class SignedVelocity : TrackEditsBase
+    public struct SignedVelocity
     {
         private sbyte _x;
         private sbyte _y;
@@ -21,7 +21,7 @@ namespace mhedit.Containers
             }
             set
             {
-                this.SetField( ref this._x, value );
+                this._x = value;
             }
         }
 
@@ -33,7 +33,7 @@ namespace mhedit.Containers
             }
             set
             {
-                this.SetField( ref this._y, value );
+                this._y = value;
             }
         }
 
