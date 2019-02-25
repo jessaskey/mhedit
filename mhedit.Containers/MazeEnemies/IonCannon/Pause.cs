@@ -44,10 +44,9 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             bytes.Add( this.SerializeCommand( (byte)( this._waitFrames >> 2 ) ) );
         }
 
-        public override string ToString()
-        {
-            return $"Pause";
-            //return $"Pause  [ WaitFrames:{this.WaitFrames} ]";
-        }
+        //public override string ToString()
+        //{
+        //    //return $"Pause  [ WaitFrames:{this.WaitFrames} ]";
+        //}
     }
 }

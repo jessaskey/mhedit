@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
@@ -91,10 +90,9 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
         }
 
-        public override string ToString()
-        {
-            return $"Orient and Fire";
-            //return $"Orient and Fire [ {this.Orientation}, {this.RotateSpeed}, ShotSpeed:{this.ShotSpeed}]";
-        }
+        //public override string ToString()
+        //{
+        //    //return $"Orient and Fire [ {this.Orientation}, {this.RotateSpeed}, ShotSpeed:{this.ShotSpeed}]";
+        //}
     }
 }

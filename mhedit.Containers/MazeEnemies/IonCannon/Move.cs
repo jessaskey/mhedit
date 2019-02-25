@@ -68,10 +68,9 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
         }
 
-        public override string ToString()
-        {
-            return $"Move";
-            //return $"Move [ {this.Velocity}, WaitFrames:{this.WaitFrames} ]";
-        }
+        //public override string ToString()
+        //{
+        //    //return $"Move [ {this.Velocity}, WaitFrames:{this.WaitFrames} ]";
+        //}
     }
 }

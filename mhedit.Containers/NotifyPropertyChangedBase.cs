@@ -38,7 +38,7 @@ namespace mhedit.Containers
     [Serializable]
     public abstract class TrackEditsBase : NotifyPropertyChangedBase, ITrackEdits
     {
-        private bool _isDirty;
+        private bool _isDirty = false;
 
         [BrowsableAttribute( false )]
         [XmlIgnore]
@@ -47,8 +47,7 @@ namespace mhedit.Containers
             get { return this._isDirty; }
             set
             {
-                /// Don't call into SetField to avoid recursion issues with
-                /// setting IsDirty.
+                /// To avoid feedback don't use SetField.
                 if ( this._isDirty != value )
                 {
                     this._isDirty = value;
@@ -62,12 +61,14 @@ namespace mhedit.Containers
         {
             if ( e.PropertyName == "IsDirty" )
             {
-                this.OnPropertyChanged( e.PropertyName );
+                /// Call base to avoid feedback.
+                base.OnPropertyChanged( e.PropertyName );
             }
         }
 
         protected override void OnPropertyChanged( [CallerMemberName] string propertyName = null )
         {
+            /// Call base to avoid feedback.
             base.OnPropertyChanged( propertyName );
 
             this.IsDirty = true;
@@ -86,7 +87,7 @@ namespace mhedit.Containers
             }
             set
             {
-                this.All( item => item.IsDirty = value );
+                this.All( item => { item.IsDirty = value; return true; } );
             }
         }
 

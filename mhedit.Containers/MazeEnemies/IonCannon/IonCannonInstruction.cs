@@ -36,5 +36,10 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         }
 
         public abstract void GetObjectData( List<byte> bytes );
+
+        public override string ToString()
+        {
+            return $"{this.GetType().Name}{( this.IsDirty ? " *" : "" )}";
+        }
     }
 }

@@ -23,9 +23,9 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             bytes.Add( this.SerializeCommand( 0 ) );
         }
 
-        public override string ToString()
-        {
-            return $"Return to Start";
-        }
+        //public override string ToString()
+        //{
+        //    return $"Return to Start";
+        //}
     }
 }

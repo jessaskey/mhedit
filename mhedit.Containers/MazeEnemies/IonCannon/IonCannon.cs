@@ -14,7 +14,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     {
         private static readonly Point _snapSize = new Point( 4, 4 );
 
-        private IonCannonProgram _program = new IonCannonProgram();
+        private IonCannonProgram _program;
 
         public IonCannon()
             : base( 4,
@@ -22,8 +22,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                     Point.Empty,
                     new Point( 32, 32 ) )
         {
-            ( (INotifyPropertyChanged)this._program ).PropertyChanged +=
-                this.ForwardIsDirtyPropertyChanged;
+            this.Program = new IonCannonProgram();
         }
 
         [BrowsableAttribute( false )]
@@ -55,6 +54,13 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         public IonCannonProgram Program
         {
             get { return _program; }
+            set
+            {
+                this._program = value;
+
+                ( (INotifyPropertyChanged)this._program ).PropertyChanged +=
+                    this.ForwardIsDirtyPropertyChanged;
+            }
         }
 
         public override byte[] ToBytes()

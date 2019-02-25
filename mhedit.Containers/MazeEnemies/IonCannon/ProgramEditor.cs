@@ -1,5 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -10,157 +13,198 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 {
     public partial class CannonProgramEditor : Form
     {
-        IonCannonProgram _program = new IonCannonProgram();
+        private IonCannonProgram _program;
+
+        public CannonProgramEditor( IonCannonProgram program )
+        {
+            InitializeComponent();
+
+            LoadPresets();
+
+            this._program = program;
+
+            this.AddNewItems( 0, program );
+
+            this._program.CollectionChanged += this.OnProgramCollectionChanged;
+        }
 
         public IonCannonProgram Program
         {
             get
             {
-                return _program; ;
+                return _program;
             }
-            set
+        }
+
+        private void OnProgramCollectionChanged( object sender, NotifyCollectionChangedEventArgs e )
+        {
+            if ( e.NewItems != null )
             {
-                _program = value;
-                BindListBox();
+                AddNewItems( e.NewStartingIndex, e.NewItems );
             }
         }
 
-        public CannonProgramEditor()
+        private void AddNewItems( int index, IList newItems )
         {
-            InitializeComponent();
-            LoadPresets();
+            foreach ( IonCannonInstruction instruction in newItems )
+            {
+                TreeNode node = treeViewProgram.Nodes.Insert( index++, instruction.ToString() );
+
+                node.Tag = instruction;
+
+                treeViewProgram.SelectedNode = node;
+
+                instruction.PropertyChanged += this.OnInstructionPropertyChanged;
+            }
         }
 
-        public void LoadPresets()
+        private void OnInstructionPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
-            string applicationPath = Path.GetDirectoryName(Application.ExecutablePath);
-            string cannonProgramPath = Path.Combine(applicationPath, "IonCannonPrograms" );
+            Debug.WriteLine( $"OnInstructionPropertyChanged {sender.ToString()} {e.PropertyName}" );
+
+            if ( e.PropertyName == "IsDirty" &&
+                treeViewProgram.SelectedNode?.Tag is IonCannonInstruction instruction )
+            {
+                treeViewProgram.SelectedNode.Text = instruction.ToString();
+            }
+        }
+
+        private void LoadPresets()
+        {
+            string applicationPath = Path.GetDirectoryName( Application.ExecutablePath );
+            string cannonProgramPath = Path.Combine( applicationPath, "IonCannonPrograms" );
 
             toolStripComboBoxLoadPreset.Items.Clear();
 
-            if (Directory.Exists(cannonProgramPath))
+            if ( Directory.Exists( cannonProgramPath ) )
             {
-                foreach(string filename in Directory.GetFiles(cannonProgramPath))
+                foreach ( string filename in Directory.GetFiles( cannonProgramPath ) )
                 {
-                    string name = Path.GetFileNameWithoutExtension(filename);
-                    toolStripComboBoxLoadPreset.Items.Add(name);
+                    string name = Path.GetFileNameWithoutExtension( filename );
+                    toolStripComboBoxLoadPreset.Items.Add( name );
                 }
             }
         }
 
-        private void listBoxProgram_SelectedIndexChanged(object sender, EventArgs e)
+        private void listBoxProgram_SelectedIndexChanged( object sender, EventArgs e )
         {
-            if (listBoxProgram.SelectedItem != null)
+            propertyGridProgram.SelectedObject = treeViewProgram.SelectedNode.Tag;
+        }
+
+        private void toolStripButtonAddMove_Click( object sender, EventArgs e )
+        {
+            this.AddInstruction( new Move() { IsDirty = true } );
+        }
+
+        private void toolStripButtonAddAngle_Click( object sender, EventArgs e )
+        {
+            this.AddInstruction( new OrientAndFire() { IsDirty = true } );
+        }
+
+        private void toolStripButtonAddPause_Click( object sender, EventArgs e )
+        {
+            this.AddInstruction( new Pause() { IsDirty = true } );
+        }
+
+        private void toolStripButtonAddRepeat_Click( object sender, EventArgs e )
+        {
+            this.AddInstruction( new ReturnToStart() { IsDirty = true } );
+        }
+
+        private void AddInstruction( IonCannonInstruction ionCannonInstruction )
+        {
+            int index = -1;
+
+            if ( treeViewProgram.SelectedNode != null )
             {
-                propertyGridProgram.SelectedObject = listBoxProgram.SelectedItem;
+                index = this._program.IndexOf(
+                    treeViewProgram.SelectedNode.Tag as IonCannonInstruction );
             }
-            else
+
+            this._program.Insert( ++index, ionCannonInstruction );
+        }
+
+        private void toolStripButtonDelete_Click( object sender, EventArgs e )
+        {
+            if ( treeViewProgram.SelectedNode != null )
             {
-                propertyGridProgram.SelectedObject = null;
-            }
-        }
+                DialogResult result = MessageBox.Show(
+                    $"{treeViewProgram.SelectedNode.Text} will be deleted permanently?",
+                    "Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation );
 
-        private void toolStripButtonAddMove_Click(object sender, EventArgs e)
-        {
-            Move ionCannonBehavior = new Move();
-            _program.Add( ionCannonBehavior );
-            BindListBox();
-            listBoxProgram.SelectedIndex = _program.Count - 1;
-        }
+                if ( result == DialogResult.OK )
+                {
+                    TreeNode saved = treeViewProgram.SelectedNode.PrevNode;
 
-        private void toolStripButtonAddAngle_Click(object sender, EventArgs e)
-        {
-            OrientAndFire ionCannonBehavior = new OrientAndFire();
-            _program.Add( ionCannonBehavior );
-            BindListBox();
-            listBoxProgram.SelectedIndex = _program.Count - 1;
-        }
+                    IonCannonInstruction instruction = 
+                        (IonCannonInstruction)treeViewProgram.SelectedNode.Tag;
 
-        private void toolStripButtonAddPause_Click(object sender, EventArgs e)
-        {
-            Pause ionCannonBehavior = new Pause();
-            _program.Add( ionCannonBehavior );
-            BindListBox();
-            listBoxProgram.SelectedIndex = _program.Count - 1;
-        }
+                    treeViewProgram.SelectedNode.Remove();
 
-        private void toolStripButtonAddRepeat_Click(object sender, EventArgs e)
-        {
-            ReturnToStart ionCannonBehavior = new ReturnToStart();
-            _program.Add( ionCannonBehavior );
-            BindListBox();
-            listBoxProgram.SelectedIndex = _program.Count - 1;
-        }
+                    treeViewProgram.SelectedNode = saved;
 
-        private void toolStripButtonDelete_Click(object sender, EventArgs e)
-        {
-            if (listBoxProgram.SelectedIndex > -1)
-            {
-                _program.RemoveAt(listBoxProgram.SelectedIndex);
-            }
-            BindListBox();
-        }
+                    instruction.PropertyChanged -= this.OnInstructionPropertyChanged;
 
-        private void toolStripButtonMoveUp_Click(object sender, EventArgs e)
-        {
-            if (listBoxProgram.SelectedIndex > 0)
-            {
-                int index = listBoxProgram.SelectedIndex;
-                IonCannonInstruction o = _program[index];
-                _program.RemoveAt(index);
-                _program.Insert(index - 1, o);
-                BindListBox();
-                listBoxProgram.SelectedIndex = index - 1;
+                    this._program.Remove( instruction );
+                }
             }
         }
 
-        private void toolStripButtonMoveDown_Click(object sender, EventArgs e)
+        private void toolStripButtonMoveUp_Click( object sender, EventArgs e )
         {
-            if (listBoxProgram.SelectedIndex < (listBoxProgram.Items.Count - 2))
+            if ( treeViewProgram.SelectedNode != null )
             {
-                int index = listBoxProgram.SelectedIndex;
-                IonCannonInstruction o = _program[index];
-                _program.RemoveAt(index);
-                _program.Insert(index + 1, o);
-                BindListBox();
-                listBoxProgram.SelectedIndex = index + 1;
+                int prevIndex = treeViewProgram.Nodes.IndexOf( treeViewProgram.SelectedNode.PrevNode );
+
+                /// index will be negative on the end of the list so don't move
+                if ( prevIndex >= 0 )
+                {
+                    TreeNode toBeMoved = treeViewProgram.SelectedNode;
+
+                    treeViewProgram.SelectedNode.Remove();
+
+                    treeViewProgram.Nodes.Insert( prevIndex, toBeMoved );
+
+                    treeViewProgram.SelectedNode = toBeMoved;
+                }
             }
         }
 
-        private void propertyGridProgram_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        private void toolStripButtonMoveDown_Click( object sender, EventArgs e )
         {
-            BindListBox();
-        }
-
-        private void BindListBox()
-        {
-            listBoxProgram.Items.Clear();
-            foreach ( IonCannonInstruction behavior in _program)
+            if ( treeViewProgram.SelectedNode != null )
             {
-                listBoxProgram.Items.Add(behavior);
+                int nextIndex = treeViewProgram.Nodes.IndexOf( treeViewProgram.SelectedNode.NextNode );
+
+                /// index will be negative on the end of the list so don't move
+                if ( nextIndex >= 0 )
+                {
+                    TreeNode toBeMoved = treeViewProgram.SelectedNode;
+
+                    treeViewProgram.SelectedNode.Remove();
+
+                    treeViewProgram.Nodes.Insert( nextIndex, toBeMoved );
+
+                    treeViewProgram.SelectedNode = toBeMoved;
+                }
             }
         }
 
-        private void buttonOK_Click(object sender, EventArgs e)
+        private void toolStripButtonPreview_Click( object sender, EventArgs e )
         {
-
-        }
-
-        private void toolStripButtonPreview_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Preview no workie. Preview in MAME please!");
+            MessageBox.Show( "Preview no workie. Preview in MAME please!" );
             //CannonProgramPreview pd = new CannonProgramPreview(_movements);
             //pd.ShowDialog();
         }
 
-        private void toolStripButtonSaveProgram_Click(object sender, EventArgs e)
+        private void toolStripButtonSaveProgram_Click( object sender, EventArgs e )
         {
-            string applicationPath = Path.GetDirectoryName(Application.ExecutablePath);
-            string cannonProgramPath = Path.Combine(applicationPath, "IonCannonPrograms" );
+            string applicationPath = Path.GetDirectoryName( Application.ExecutablePath );
+            string cannonProgramPath = Path.Combine( applicationPath, "IonCannonPrograms" );
 
-            if (!Directory.Exists(cannonProgramPath))
+            if ( !Directory.Exists( cannonProgramPath ) )
             {
-                Directory.CreateDirectory(cannonProgramPath);
+                Directory.CreateDirectory( cannonProgramPath );
             }
 
             // Displays an OpenFileDialog so the user can select a Cursor.  
@@ -196,11 +240,10 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                 }
                 else if ( !String.IsNullOrEmpty( name ) )
                 {
-#if DEBUG
-#else
                     try
-#endif
                     {
+                        Cursor.Current = Cursors.WaitCursor;
+
                         using ( FileStream fStream = new FileStream( sfd.FileName, FileMode.Create ) )
                         {
                             var serializer = new XmlSerializer( typeof( IonCannonProgram ) );
@@ -211,6 +254,8 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                             }
                         }
 
+                        this._program.IsDirty = false;
+
                         LoadPresets();
                     }
 #if DEBUG
@@ -220,24 +265,40 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                         MessageBox.Show( ex.Message, "Serialization Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
                     }
 #endif
+                    finally
+                    {
+                        Cursor.Current = Cursors.Default;
+                    }
                 }
             }
         }
 
-        private void toolStripComboBoxLoadPreset_SelectedIndexChanged(object sender, EventArgs e)
+        private void toolStripComboBoxLoadPreset_SelectedIndexChanged( object sender, EventArgs e )
         {
-            //load a preset
-            string applicationPath = Path.GetDirectoryName(Application.ExecutablePath);
-            string cannonProgramPath = Path.Combine(applicationPath, "IonCannonPrograms" );
+            DialogResult result = DialogResult.OK;
 
-            string programFile = Path.Combine(cannonProgramPath, toolStripComboBoxLoadPreset.Text + ".can");
-            if (File.Exists(programFile))
+            if ( this._program.IsDirty )
             {
-#if DEBUG
-#else
+                result = MessageBox.Show(
+                    $"There are unsaved changes. " +
+                    $"Press OK to discard changes and load, or Cancel otherwise.",
+                    "Load Program",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Question );
+            }
+
+            //load a preset
+            string applicationPath = Path.GetDirectoryName( Application.ExecutablePath );
+            string cannonProgramPath = Path.Combine( applicationPath, "IonCannonPrograms" );
+
+            string programFile = Path.Combine( cannonProgramPath, toolStripComboBoxLoadPreset.Text + ".can" );
+
+            if ( result == DialogResult.OK && File.Exists( programFile ) )
+            {
                 try
-#endif
                 {
+                    Cursor.Current = Cursors.WaitCursor;
+
                     using ( FileStream fStream = new FileStream( programFile, FileMode.Open ) )
                     {
                         var serializer = new XmlSerializer( typeof( IonCannonProgram ) );
@@ -245,8 +306,13 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                         using ( var reader = XmlReader.Create( fStream ) )
                         {
                             _program = (IonCannonProgram)serializer.Deserialize( reader );
+
+                            _program.IsDirty = false;
+
+                            this.treeViewProgram.Nodes.Clear();
+
+                            this.AddNewItems( 0, _program );
                         }
-                        BindListBox();
                     }
                 }
 #if DEBUG
@@ -256,6 +322,40 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                     MessageBox.Show( ex.Message, "Deserialization Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
                 }
 #endif
+                finally
+                {
+                    Cursor.Current = Cursors.Default;
+                }
+            }
+        }
+
+        private void treeViewProgram_AfterSelect( object sender, TreeViewEventArgs e )
+        {
+            propertyGridProgram.SelectedObject = treeViewProgram.SelectedNode?.Tag;
+        }
+
+        private void CannonProgramEditor_FormClosing( object sender, FormClosingEventArgs e )
+        {
+            if ( this._program.IsDirty && this.DialogResult == DialogResult.Cancel )
+            {
+                DialogResult result = MessageBox.Show(
+                    $"There are unsaved changes. " +
+                    $"Press OK to exit and discard changes, or Cancel to return to the editor.",
+                    "Exit Editor",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Question );
+
+                e.Cancel = result == DialogResult.Cancel;
+            }
+
+            ///TODO: Validate the Program
+
+            if ( !e.Cancel )
+            {
+                foreach( IonCannonInstruction instruction in this._program )
+                {
+                    instruction.PropertyChanged -= this.OnInstructionPropertyChanged;
+                }
             }
         }
     }
