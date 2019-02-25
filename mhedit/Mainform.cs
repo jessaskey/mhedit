@@ -216,7 +216,6 @@ namespace mhedit
 
                 panelContent.Controls.Clear();
             }
-
         }
 
         private void treeView_ItemDrag( object sender, ItemDragEventArgs e )
@@ -570,7 +569,6 @@ namespace mhedit
                 node.SelectedImageIndex = node.ImageIndex;
                 treeView.SelectedNode = node;
                 _currentMazeCollectionController = collectionController;
-                
             }
         }
 

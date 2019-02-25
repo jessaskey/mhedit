@@ -40,16 +40,18 @@ namespace mhedit
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-#if DEBUG
-#else
             try
-#endif
             {
+                Cursor.Current = Cursors.WaitCursor;
+                Application.DoEvents();
+
                 //Load ROM's here
                 IGameController controller = new MajorHavocPromisedEnd( textBoxROMPath.Text );
 
                 List<string> loadMessages = new List<string>();
                 _mazeCollection = controller.LoadMazes( textBoxROMPath.Text, loadMessages );
+
+                _mazeCollection.IsDirty = false;
 
                 if ( loadMessages.Count > 0 )
                 {
@@ -68,6 +70,10 @@ namespace mhedit
                 MessageBox.Show( ex.Message, "ROM Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
             }
 #endif
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
