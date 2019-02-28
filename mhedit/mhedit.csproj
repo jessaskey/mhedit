@@ -27,7 +27,7 @@
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>true</SignManifests>
     <TargetFrameworkProfile />
-    <PublishUrl>c:\publish\mhedit\app\</PublishUrl>
+    <PublishUrl>C:\SVN\jesscode\MHEdit.Web\MHEdit.Web\MHEdit.Web\App\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -37,14 +37,14 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://mhedit.askey.org/app/</InstallUrl>
+    <InstallUrl>https://mhedit.askey.org/app/</InstallUrl>
     <UpdateUrl>http://mhedit.askey.org/app/</UpdateUrl>
     <ProductName>Major Havoc Level Editor</ProductName>
     <PublisherName>Jess Askey</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>default.aspx</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>11</ApplicationRevision>
+    <ApplicationRevision>13</ApplicationRevision>
     <ApplicationVersion>0.2.2.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
