@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Deployment.Application;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -25,8 +26,17 @@ namespace mhedit
 
         private void DialogAbout_Load(object sender, EventArgs e)
         {
-            labelVersion.Text = Application.ProductVersion;
-            labelCopyright.Text = "Copyright © 2006-" + DateTime.Now.Year.ToString() + "  Jess M. Askey";
+            //Show the ClickOnce assembly version if possible, if this is not a ClickOnce deployment, then show the Assembly version still 
+            try
+            {
+                labelVersion.Text = ApplicationDeployment.CurrentDeployment.CurrentVersion.ToString() + " (ClickOnce)"; 
+            }
+            catch
+            {
+                labelVersion.Text = (Application.ProductVersion + " (Assembly)");
+            }
+            
+            labelCopyright.Text = "Copyright © 2006-" + DateTime.Now.Year.ToString() + "  Jess M. Askey/Bryan L. Roth";
         }
 
         private void label3_Click(object sender, EventArgs e)
