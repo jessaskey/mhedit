@@ -1134,7 +1134,7 @@ namespace mhedit
                             ComboBoxObjects.SelectedIndex = itemIndex;
                         }
                     }
-                    else
+                    else if ( _comboBoxObjects.Items.Count > 0 )
                     {
                         _comboBoxObjects.SelectedIndex = 0;
                     }
