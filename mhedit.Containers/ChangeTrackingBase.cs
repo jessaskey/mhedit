@@ -58,7 +58,7 @@ namespace mhedit.Containers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected void ForwardIsDirtyPropertyChanged( object sender, PropertyChangedEventArgs e )
+        protected void ForwardIsChangedPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
             if ( e.PropertyName.Equals( PropertyNameString ) )
             {

@@ -83,7 +83,7 @@ namespace mhedit.Containers
             _mazeName = name;
 
             ( (INotifyPropertyChanged)this._mazeObjects ).PropertyChanged +=
-                this.ForwardIsDirtyPropertyChanged;
+                this.ForwardIsChangedPropertyChanged;
 
             InitBaseMap();
         }

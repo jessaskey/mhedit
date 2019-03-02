@@ -61,14 +61,14 @@ namespace mhedit.Containers.MazeEnemies
             {
                 if ( this._pyroid != null )
                 {
-                    this._pyroid.PropertyChanged -= this.ForwardIsDirtyPropertyChanged;
+                    this._pyroid.PropertyChanged -= this.ForwardIsChangedPropertyChanged;
                 }
 
                 this.SetField( ref this._pyroid, value );
 
                 if ( this._pyroid != null )
                 {
-                    this._pyroid.PropertyChanged += this.ForwardIsDirtyPropertyChanged;
+                    this._pyroid.PropertyChanged += this.ForwardIsChangedPropertyChanged;
                 }
             }
         }
