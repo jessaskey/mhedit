@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies
 {
@@ -21,16 +22,32 @@ namespace mhedit.Containers.MazeEnemies
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.pyroidr_obj.png" ) )
         { }
 
-        [BrowsableAttribute(false)]
+        /// <summary>
+        /// This property is basically hidden but allows us to track the associated
+        /// objects.
+        /// </summary>
+        [BrowsableAttribute( false )]
+        [XmlIgnore]
         public TripPad TripPad
         {
-            get
-            {
-                return _tripPad;
-            }
+            get { return _tripPad; }
+            set { _tripPad = value; }
+        }
+
+        [BrowsableAttribute( false )]
+        [XmlIgnore]
+        public override bool Selected
+        {
             set
             {
-                _tripPad = value;
+                base.Selected = value;
+
+                /// set our associated TripPad so that folks know which ones go together
+                /// when selected.
+                if ( this._tripPad.Selected != value )
+                {
+                    this._tripPad.Selected = value;
+                }
             }
         }
 

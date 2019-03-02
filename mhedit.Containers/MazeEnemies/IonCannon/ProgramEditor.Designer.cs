@@ -44,11 +44,11 @@
             this.toolStripComboBoxLoadPreset = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripButtonSaveProgram = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.treeViewProgram = new System.Windows.Forms.TreeView();
             this.propertyGridProgram = new System.Windows.Forms.PropertyGrid();
             this.panel1 = new System.Windows.Forms.Panel();
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.treeViewProgram = new System.Windows.Forms.TreeView();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -219,6 +219,18 @@
             this.splitContainer1.SplitterDistance = 297;
             this.splitContainer1.TabIndex = 2;
             // 
+            // treeViewProgram
+            // 
+            this.treeViewProgram.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeViewProgram.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.treeViewProgram.HideSelection = false;
+            this.treeViewProgram.Location = new System.Drawing.Point(0, 0);
+            this.treeViewProgram.Name = "treeViewProgram";
+            this.treeViewProgram.Size = new System.Drawing.Size(297, 382);
+            this.treeViewProgram.TabIndex = 0;
+            this.treeViewProgram.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.treeViewProgram_DrawNode);
+            this.treeViewProgram.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewProgram_AfterSelect);
+            // 
             // propertyGridProgram
             // 
             this.propertyGridProgram.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -256,15 +268,6 @@
             this.buttonCancel.TabIndex = 0;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
-            // 
-            // treeViewProgram
-            // 
-            this.treeViewProgram.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeViewProgram.Location = new System.Drawing.Point(0, 0);
-            this.treeViewProgram.Name = "treeViewProgram";
-            this.treeViewProgram.Size = new System.Drawing.Size(297, 382);
-            this.treeViewProgram.TabIndex = 0;
-            this.treeViewProgram.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewProgram_AfterSelect);
             // 
             // CannonProgramEditor
             // 

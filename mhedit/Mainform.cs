@@ -159,19 +159,6 @@ namespace mhedit
             toolBox.SelectedTabIndex = 2;
         }
 
-        private string GetNewName(string prefix)
-        {
-            for (int i = 1; i > 0; i++)
-            {
-                TreeNode[] array = treeView.Nodes.Find(prefix + i.ToString(), false);
-                if (array.Length == 0)
-                {
-                    return prefix + i.ToString();
-                }
-            }
-            return prefix;
-        }
-
         #endregion
 
         #region Tree Methods
@@ -183,8 +170,6 @@ namespace mhedit
 
         private void RefreshTree()
         {
-            propertyGrid.SelectedObject = treeView.SelectedNode?.Tag;
-
             if ( treeView.SelectedNode?.Tag != null )
             {
                 toolStripButtonSave.Enabled = true;
@@ -202,10 +187,14 @@ namespace mhedit
                     mazeController.ComboBoxObjects = comboBoxMazeObjects;
 
                     _currentMazeController = mazeController;
+
+                    propertyGrid.SelectedObject = mazeController.Maze;
                 }
                 else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
                 {
                     toolStripButtonMAME.Enabled = false;
+
+                    propertyGrid.SelectedObject = mazeCollectionController.MazeCollection;
                 }
             }
             else
@@ -240,7 +229,7 @@ namespace mhedit
             {
                 MazeController draggedMaze = _draggedNode.Tag as MazeController;
 
-                if ( targetMaze.MazeType == draggedMaze.MazeType )
+                if ( targetMaze.Maze.MazeType == draggedMaze.Maze.MazeType )
                 {
                     e.Effect = DragDropEffects.Move;
                 }
@@ -256,7 +245,7 @@ namespace mhedit
             {
                 MazeController draggedMaze = _draggedNode.Tag as MazeController;
 
-                if ( targetMaze.MazeType == draggedMaze.MazeType )
+                if ( targetMaze.Maze.MazeType == draggedMaze.Maze.MazeType )
                 {
                     string msg = $"Replace {targetMaze.Name} with {draggedMaze.Name}?";
 
@@ -283,6 +272,95 @@ namespace mhedit
             }
         }
 
+        private void treeView_AfterLabelEdit( object sender, NodeLabelEditEventArgs e )
+        {
+            ///https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.nodelabelediteventargs?view=netframework-4.7.2
+            if ( e.Label != null )
+            {
+                if ( e.Label.Length > 0 )
+                {
+                    if ( e.Label.IndexOfAny( Path.GetInvalidFileNameChars() ) == -1 )
+                    {
+                        // Stop editing without canceling the label change.
+                        e.Node.EndEdit( false );
+
+                        if ( e.Node.Tag is MazeController controller )
+                        {
+                            controller.Maze.Name = e.Label;
+
+                            propertyGrid.Refresh();
+                        }
+                        else if ( e.Node.Tag is MazeCollectionController collectionController )
+                        {
+                            collectionController.MazeCollection.Name = e.Label;
+
+                            propertyGrid.Refresh();
+                        }
+                    }
+                    else
+                    {
+                        /* Cancel the label edit action, inform the user, and 
+                           place the node in edit mode again. */
+                        e.CancelEdit = true;
+                        MessageBox.Show( "Invalid tree node label.\n" +
+                           "The invalid characters are: '@','.', ',', '!'",
+                           "Node Label Edit" );
+                        e.Node.BeginEdit();
+                    }
+                }
+                else
+                {
+                    /* Cancel the label edit action, inform the user, and 
+                       place the node in edit mode again. */
+                    e.CancelEdit = true;
+                    MessageBox.Show( "Invalid tree node label.\nThe label cannot be blank",
+                       "Node Label Edit" );
+                    e.Node.BeginEdit();
+                }
+            }
+        }
+
+        /// <summary>
+        /// https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.treeview.drawnode?redirectedfrom=MSDN&view=netframework-4.7.2
+        /// </summary>
+        private void treeView_DrawNode( object sender, DrawTreeNodeEventArgs e )
+        {
+            // Use the default background and node text.
+            e.DrawDefault = true;
+
+            // Extract the set font/color from the tree.
+            Font nodeFont =
+                new Font( e.Node.NodeFont ?? ( (TreeView)sender ).Font, FontStyle.Bold );
+
+            SolidBrush nodeBrush = new SolidBrush( ( (TreeView)sender ).ForeColor );
+
+            // If a node tag is present, draw the IChangeTracking info if necessary.
+            if ( e.Node.Tag is MazeController controller )
+            {
+                e.Graphics.DrawString(
+                    controller.Maze.IsChanged ? ChangeTrackingBase.ModifiedBullet : "",
+                    nodeFont, nodeBrush, e.Bounds.Right + 4, e.Bounds.Top );
+            }
+            else if ( e.Node.Tag is MazeCollectionController collection )
+            {
+                e.Graphics.DrawString(
+                    collection.MazeCollection.IsChanged ? ChangeTrackingBase.ModifiedBullet : "",
+                    nodeFont, nodeBrush, e.Bounds.Right + 4, e.Bounds.Top );
+            }
+        }
+
+        private void treeView_MouseDown( object sender, MouseEventArgs args )
+        {
+            if ( args.Button == MouseButtons.Right )
+            {
+                TreeNode node = treeView.GetNodeAt( args.Location );
+
+                if ( node != null && node.Bounds.Contains( args.Location ) )
+                {
+                    treeView.SelectedNode = node;
+                }
+            }
+        }
 
         #endregion
 
@@ -318,56 +396,55 @@ namespace mhedit
                     /// allow short circuit when cancel is hit.
                     if ( node.Parent == null && result != DialogResult.Cancel )
                     {
-                        if ( node.Tag is MazeCollectionController mazeCollectionController )
+                        if ( node.Tag is MazeCollectionController mazeCollectionController &&
+                             mazeCollectionController.MazeCollection.IsChanged )
                         {
-                            if ( mazeCollectionController.IsDirty )
+                            result = MessageBox.Show(
+                                $"Would you like to save changes to the {mazeCollectionController.MazeCollection.Name} collection before closing?",
+                                "Save changes and Exit",
+                                MessageBoxButtons.YesNoCancel,
+                                MessageBoxIcon.Question );
+
+                            if ( result == DialogResult.Yes )
                             {
-                                result = MessageBox.Show(
-                                    $"Would you like to save changes to the {mazeCollectionController.Name} collection before closing?",
-                                    "Save changes and Exit",
-                                    MessageBoxButtons.YesNoCancel,
-                                    MessageBoxIcon.Question );
-
-                                if ( result == DialogResult.Yes )
+                                SaveFileDialog sfd = new SaveFileDialog
                                 {
-                                    SaveFileDialog sfd = new SaveFileDialog
-                                    {
-                                        InitialDirectory =
-                                            string.IsNullOrWhiteSpace( mazeCollectionController.FileName ) ?
-                                            Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ) :
-                                            Path.GetDirectoryName( mazeCollectionController.FileName ),
-                                        FileName = string.IsNullOrWhiteSpace( mazeCollectionController.FileName ) ?
-                                            $"{mazeCollectionController.Name}.mhc" :
-                                            Path.GetFileName( mazeCollectionController.FileName ),
-                                        Filter = "Maze Files (*.mhc)|*.mhc|All files (*.*)|*.*",
-                                        AddExtension = true,
-                                        OverwritePrompt = true
-                                    };
+                                    InitialDirectory =
+                                        string.IsNullOrWhiteSpace( mazeCollectionController.FileName ) ?
+                                        Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ) :
+                                        Path.GetDirectoryName( mazeCollectionController.FileName ),
+                                    FileName = string.IsNullOrWhiteSpace( mazeCollectionController.FileName ) ?
+                                        $"{mazeCollectionController.MazeCollection.Name}.mhc" :
+                                        Path.GetFileName( mazeCollectionController.FileName ),
+                                    Filter = "Maze Files (*.mhc)|*.mhc|All files (*.*)|*.*",
+                                    AddExtension = true,
+                                    OverwritePrompt = true
+                                };
 
-                                    /// capture user choice to update exit 
-                                    result = sfd.ShowDialog();
+                                /// capture user choice to update exit 
+                                result = sfd.ShowDialog();
 
-                                    if ( result == DialogResult.OK )
-                                    {
-                                        Cursor.Current = Cursors.WaitCursor;
+                                if ( result == DialogResult.OK )
+                                {
+                                    Cursor.Current = Cursors.WaitCursor;
 
-                                        mazeCollectionController.FileName = sfd.FileName;
+                                    mazeCollectionController.FileName = sfd.FileName;
 
-                                        Application.DoEvents();
+                                    Application.DoEvents();
 
-                                        MazeCollectionController.SerializeToFile(
-                                            mazeCollectionController.MazeCollection,
-                                            mazeCollectionController.FileName );
+                                    MazeCollectionController.SerializeToFile(
+                                        mazeCollectionController.MazeCollection,
+                                        mazeCollectionController.FileName );
 
-                                        mazeCollectionController.MazeCollection.IsDirty = false;
-                                    }
+                                    mazeCollectionController.MazeCollection.AcceptChanges();
                                 }
                             }
                         }
-                        else if ( node.Tag is MazeController mazeController )
+                        else if ( node.Tag is MazeController mazeController &&
+                                  mazeController.Maze.IsChanged )
                         {
                             result = MessageBox.Show(
-                                $"Would you like to save changes to the {mazeController.Name} maze before closing?",
+                                $"Would you like to save changes to the {mazeController.Maze.Name} maze before closing?",
                                 "Save changes and Exit",
                                 MessageBoxButtons.YesNoCancel,
                                 MessageBoxIcon.Question );
@@ -381,7 +458,7 @@ namespace mhedit
                                         Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ) :
                                         Path.GetDirectoryName( mazeController.FileName ),
                                     FileName = string.IsNullOrWhiteSpace( mazeController.FileName ) ?
-                                        $"{mazeController.Name}.mhz" :
+                                        $"{mazeController.Maze.Name}.mhz" :
                                         Path.GetFileName( mazeController.FileName ),
                                     Filter = "Maze Files (*.mhz)|*.mhz|All files (*.*)|*.*",
                                     AddExtension = true,
@@ -402,7 +479,7 @@ namespace mhedit
                                     MazeController.SerializeToFile(
                                         mazeController.Maze, mazeController.FileName );
 
-                                    mazeController.IsDirty = false;
+                                    mazeController.Maze.AcceptChanges();
                                 }
                             }
                         }
@@ -555,19 +632,17 @@ namespace mhedit
 
             if (dr == DialogResult.OK)
             {
-                MazeCollectionController collectionController = new MazeCollectionController(dlr.Mazes);
-                //foreach (Maze maze in collectionController.Mazes)
-                //{
-                //    collectionController.OnMazePropertiesUpdated += new MazePropertiesUpdated(RefreshMazeName);
-                //}
+                MazeCollectionController collectionController =
+                    new MazeCollectionController(dlr.MazeCollection);
 
-                TreeNode node = treeView.Nodes.Add(collectionController.MazeCollection.Name);
-                //collectionController.PropertyGrid = propertyGrid;
-                node.Tag = collectionController;
-                collectionController.TreeRender(treeView, node, toolStripButtonGrid.Checked);
+                TreeNode node = collectionController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
                 node.ImageIndex = 0;
                 node.SelectedImageIndex = node.ImageIndex;
+
+                collectionController.MazeCollection.PropertyChanged += this.OnInstructionPropertyChanged;
+
                 treeView.SelectedNode = node;
+
                 _currentMazeCollectionController = collectionController;
             }
         }
@@ -608,71 +683,18 @@ namespace mhedit
             foreach ( TreeNode node in treeView.Nodes )
             {
                 if ( node.Tag is MazeController mazeController &&
-                    mazeController.IsDirty )
+                    mazeController.Maze.IsChanged )
                 {
                     this.SaveMaze( mazeController,
                         treeView.SelectedNode.Parent?.Tag as MazeCollectionController );
                 }
                 else if ( node.Tag is MazeCollectionController mazeCollectionController &&
-                    mazeCollectionController.MazeCollection.IsDirty )
+                    mazeCollectionController.MazeCollection.IsChanged )
                 {
                     this.SaveCollection( mazeCollectionController );
                 }
             }
         }
-
-
-
-        private void treeView_AfterLabelEdit( object sender, NodeLabelEditEventArgs e )
-        {
-            ///https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.nodelabelediteventargs?view=netframework-4.7.2
-            if ( e.Label != null )
-            {
-                if ( e.Label.Length > 0 )
-                {
-                    if ( e.Label.IndexOfAny( Path.GetInvalidFileNameChars() ) == -1 )
-                    {
-                        // Stop editing without canceling the label change.
-                        e.Node.EndEdit( false );
-
-                        if ( e.Node.Tag is MazeController controller )
-                        {
-                            //controller.Name = controller.IsDirty ?
-                            //    $"{e.Label} *" : e.Label;
-                            controller.Name = e.Label;
-                            propertyGrid.Refresh();
-                        }
-                        else if ( e.Node.Tag is MazeCollectionController collectionController )
-                        {
-                            //collectionController.Name = collectionController.IsDirty ?
-                            //    $"{e.Label} *" : e.Label;
-                            collectionController.Name = e.Label;
-                            propertyGrid.Refresh();
-                        }
-                    }
-                    else
-                    {
-                        /* Cancel the label edit action, inform the user, and 
-                           place the node in edit mode again. */
-                        e.CancelEdit = true;
-                        MessageBox.Show( "Invalid tree node label.\n" +
-                           "The invalid characters are: '@','.', ',', '!'",
-                           "Node Label Edit" );
-                        e.Node.BeginEdit();
-                    }
-                }
-                else
-                {
-                    /* Cancel the label edit action, inform the user, and 
-                       place the node in edit mode again. */
-                    e.CancelEdit = true;
-                    MessageBox.Show( "Invalid tree node label.\nThe label cannot be blank",
-                       "Node Label Edit" );
-                    e.Node.BeginEdit();
-                }
-            }
-        }
-
 
         private void toolStripMenuItemRename_Click( object sender, EventArgs e )
         {
@@ -692,6 +714,13 @@ namespace mhedit
 
                 if ( result == DialogResult.OK )
                 {
+                    /// If maze is part of a collection must remove it too.
+                    if ( treeView.SelectedNode.Tag is MazeController controller &&
+                         treeView.SelectedNode.Parent?.Tag is MazeCollectionController collectionController)
+                    {
+                        collectionController.MazeCollection.Mazes.Remove( controller.Maze );
+                    }
+
                     treeView.SelectedNode.Remove();
 
                     this.RefreshTree();
@@ -704,13 +733,13 @@ namespace mhedit
             bool safeToRemove = true;
 
             if ( treeView.SelectedNode?.Tag is MazeController mazeController &&
-                mazeController.IsDirty )
+                mazeController.Maze.IsChanged )
             {
                 safeToRemove = this.SaveMaze( mazeController,
                     treeView.SelectedNode.Parent?.Tag as MazeCollectionController );
             }
             else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController &&
-                mazeCollectionController.MazeCollection.IsDirty )
+                mazeCollectionController.MazeCollection.IsChanged )
             {
                 safeToRemove = this.SaveCollection( mazeCollectionController );
             }
@@ -795,41 +824,82 @@ namespace mhedit
         {
             Cursor.Current = Cursors.WaitCursor;
 
-            MazeCollectionController collectionController =
-                new MazeCollectionController( GetNewName( "MazeCollection" ) );
-
-            for ( int i = 0; i < 28; i++ )
+            Application.DoEvents();
+            try
             {
-                MazeType mazeType = (MazeType)( i & 0x03 );
-                Maze maze = new Maze( (MazeType)mazeType, "Level " + ( i + 1 ).ToString() );
-                collectionController.Mazes.Add( maze );
-            }
-            TreeNode node = collectionController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
-            node.ImageIndex = 0;
-            node.SelectedImageIndex = node.ImageIndex;
 
-            treeView.SelectedNode = node;
-            node.BeginEdit();
-            Cursor.Current = Cursors.Default;
+                MazeCollectionController collectionController =
+                new MazeCollectionController( NameFactory.Create( "MazeCollection" ) );
+
+                for ( int i = 0; i < 28; i++ )
+                {
+                    MazeType mazeType = (MazeType)( i & 0x03 );
+                    Maze maze = new Maze( (MazeType)mazeType, "Level " + ( i + 1 ).ToString() );
+                    collectionController.MazeCollection.Mazes.Add( maze );
+                }
+
+                collectionController.MazeCollection.AcceptChanges();
+
+                TreeNode node = collectionController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
+                node.ImageIndex = 0;
+                node.SelectedImageIndex = node.ImageIndex;
+
+                collectionController.MazeCollection.PropertyChanged += this.OnInstructionPropertyChanged;
+
+                treeView.SelectedNode = node;
+
+                _currentMazeCollectionController = collectionController;
+
+                node.BeginEdit();
+            }
+            catch ( Exception ex )
+            {
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show( $"Maze could not be created: {ex.Message}",
+                    "Create Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
         }
 
         private void toolStripMenuItemNewMaze_Click( object sender, EventArgs e )
         {
             Cursor.Current = Cursors.WaitCursor;
 
-            Maze maze = new Maze( GetNewName( "Maze" ) );
-            MazeController mazeController = new MazeController( maze );
-            mazeController.OnMazePropertiesUpdated += new MazePropertiesUpdated( RefreshMazeName );
-            mazeController.ShowGridReferences = Properties.Settings.Default.ShowGridReferences;
-            mazeController.PropertyGrid = propertyGrid;
-            mazeController.ComboBoxObjects = comboBoxMazeObjects;
-            TreeNode node = mazeController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
-            node.ImageIndex = ( (int)maze.MazeType ) + 1;
-            node.SelectedImageIndex = node.ImageIndex;
-            treeView.SelectedNode = node;
-            _currentMazeController = mazeController;
-            Cursor.Current = Cursors.Default;
-            node.BeginEdit();
+            Application.DoEvents();
+            try
+            {
+
+                MazeController mazeController = new MazeController( new Maze( NameFactory.Create( "Maze" ) ) );
+
+                TreeNode node = mazeController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
+
+                node.ImageIndex = ( (int)mazeController.Maze.MazeType ) + 1;
+                node.SelectedImageIndex = node.ImageIndex;
+                treeView.SelectedNode = node;
+
+                mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+
+                mazeController.ShowGridReferences = Properties.Settings.Default.ShowGridReferences;
+                mazeController.PropertyGrid = propertyGrid;
+                mazeController.ComboBoxObjects = comboBoxMazeObjects;
+
+                _currentMazeController = mazeController;
+
+                node.BeginEdit();
+            }
+            catch ( Exception ex )
+            {
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show( $"Maze could not be created: {ex.Message}",
+                    "Create Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
         }
 
         private void toolStripMenuItemPreview_Click( object sender, EventArgs e )
@@ -911,36 +981,30 @@ namespace mhedit
             }
         }
 
-        private void treeView_MouseDown( object sender, MouseEventArgs args )
-        {
-            if ( args.Button == MouseButtons.Right )
-            {
-                TreeNode node = treeView.GetNodeAt( args.Location );
-
-                if ( node != null && node.Bounds.Contains( args.Location ) )
-                {
-                    treeView.SelectedNode = node;
-                }
-            }
-        }
-
         private void OpenMaze( string fileName )
         {
             Cursor.Current = Cursors.WaitCursor;
+
             Application.DoEvents();
             try
             {
                 MazeController mazeController = new MazeController( MazeController.DeserializeFromFile( fileName ) );
-                TreeNode node = treeView.Nodes.Add( mazeController.Maze.Name );
-                node.Tag = mazeController;
+
+                TreeNode node = mazeController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
+
                 node.ImageIndex = ( (int)mazeController.Maze.MazeType ) + 1;
                 node.SelectedImageIndex = node.ImageIndex;
                 treeView.SelectedNode = node;
-                mazeController.FileName = fileName;
-                mazeController.TreeRender( treeView, node, toolStripButtonGrid.Checked );
+
+                mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+
+                mazeController.ShowGridReferences = Properties.Settings.Default.ShowGridReferences;
                 mazeController.PropertyGrid = propertyGrid;
                 mazeController.ComboBoxObjects = comboBoxMazeObjects;
+
                 _currentMazeController = mazeController;
+
+                mazeController.FileName = fileName;
             }
             catch ( Exception ex )
             {
@@ -956,20 +1020,28 @@ namespace mhedit
 
         private void OpenCollection( string fileName )
         {
-            Cursor.Current = Cursors.WaitCursor;
-            Application.DoEvents();
             try
             {
-                MazeCollection mazeCollection = MazeCollectionController.DeserializeFromFile( fileName );
-                MazeCollectionController mazeCollectionControl = new MazeCollectionController( mazeCollection );
-                mazeCollectionControl.FileName = fileName;
-                TreeNode node = treeView.Nodes.Add( mazeCollection.Name );
-                node.Tag = mazeCollection;
-                mazeCollectionControl.TreeRender( treeView, node, toolStripButtonGrid.Checked );
+                Cursor.Current = Cursors.WaitCursor;
+                Application.DoEvents();
+
+                MazeCollection mazeCollection =
+                    MazeCollectionController.DeserializeFromFile( fileName );
+
+                MazeCollectionController collectionController = 
+                    new MazeCollectionController( mazeCollection );
+
+                collectionController.FileName = fileName;
+
+                TreeNode node = collectionController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
                 node.ImageIndex = 0;
                 node.SelectedImageIndex = node.ImageIndex;
+
+                collectionController.MazeCollection.PropertyChanged += this.OnInstructionPropertyChanged;
+
                 treeView.SelectedNode = node;
-                _currentMazeCollectionController = mazeCollectionControl;
+
+                _currentMazeCollectionController = collectionController;
             }
             catch ( Exception ex )
             {
@@ -995,7 +1067,7 @@ namespace mhedit
                 {
                     InitialDirectory = Environment.GetFolderPath(
                         Environment.SpecialFolder.MyDocuments ),
-                    FileName = $"{mazeCollectionController.Name}.mhc",
+                    FileName = $"{mazeCollectionController.MazeCollection.Name}.mhc",
                     Filter = "Maze Files (*.mhc)|*.mhc|All files (*.*)|*.*",
                     AddExtension = true,
                     OverwritePrompt = true
@@ -1022,7 +1094,7 @@ namespace mhedit
                         mazeCollectionController.MazeCollection,
                         mazeCollectionController.FileName );
 
-                    mazeCollectionController.MazeCollection.IsDirty = false;
+                    mazeCollectionController.MazeCollection.AcceptChanges();
                 }
             }
             catch ( Exception ex )
@@ -1057,7 +1129,7 @@ namespace mhedit
                         Environment.SpecialFolder.MyDocuments ),
                     /// Have FileName include parent collection if not already set.
                     FileName = mazeCollectionController != null ?
-                        $"{mazeCollectionController.Name}.{mazeController.Name}.mhz" :
+                        $"{mazeCollectionController.MazeCollection.Name}.{mazeController.Name}.mhz" :
                         $"{mazeController.Name}.mhz",
                     Filter = "Maze Files (*.mhz)|*.mhz|All files (*.*)|*.*",
                     AddExtension = true,
@@ -1084,7 +1156,7 @@ namespace mhedit
                     MazeController.SerializeToFile(
                         mazeController.Maze, mazeController.FileName );
 
-                    mazeController.IsDirty = false;
+                    mazeController.Maze.AcceptChanges();
                 }
             }
             catch ( Exception ex )
@@ -1105,12 +1177,9 @@ namespace mhedit
             return result == DialogResult.OK;
         }
 
-        private void RefreshMazeName( object sender )
+        private void OnInstructionPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
-            if ( treeView.SelectedNode != null )
-            {
-                treeView.SelectedNode.Text = ( (MazeController)sender ).Name;
-            }
+            this.treeView.Refresh();
         }
     }
 }

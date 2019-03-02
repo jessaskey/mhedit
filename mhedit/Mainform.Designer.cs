@@ -373,6 +373,7 @@ namespace mhedit
             this.treeView.AllowDrop = true;
             this.treeView.ContextMenuStrip = this.contextMenuStripTree;
             this.treeView.Dock = System.Windows.Forms.DockStyle.Left;
+            this.treeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
             this.treeView.FullRowSelect = true;
             this.treeView.HideSelection = false;
             this.treeView.ImageIndex = 0;
@@ -384,6 +385,7 @@ namespace mhedit
             this.treeView.Size = new System.Drawing.Size(145, 663);
             this.treeView.TabIndex = 2;
             this.treeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView_AfterLabelEdit);
+            this.treeView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.treeView_DrawNode);
             this.treeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView_ItemDrag);
             this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterSelect);
             this.treeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeView_DragDrop);

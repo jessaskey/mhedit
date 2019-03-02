@@ -18,7 +18,7 @@ namespace mhedit
     public partial class DialogMHPLogin : Form
     {
         private string _savedPasswordKey = "";
-        private MazeController _maze = null;
+        private MazeController _mazeController = null;
 
         public DialogMHPLogin()
         {
@@ -60,13 +60,13 @@ namespace mhedit
         public MazeController MazeController {
             get
             {
-                return _maze;
+                return _mazeController;
             }
             set
             {
-                _maze = value;
-                textBoxDescription.Text = _maze.Description;
-                textBoxMazeName.Text = _maze.Name;
+                _mazeController = value;
+                textBoxDescription.Text = _mazeController.Maze.Description;
+                textBoxMazeName.Text = _mazeController.Maze.Name;
             }
         }
 

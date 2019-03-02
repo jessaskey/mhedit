@@ -7,13 +7,8 @@ namespace mhedit.Containers
         string Name { get; set; }
     }
 
-    public interface ISaveInformation : IName, ITrackEdits
+    public interface IFileInformation : IName
     {
         string FileName { get; set; }
-    }
-
-    public interface ITrackEdits : INotifyPropertyChanged
-    {
-        bool IsDirty { get; set; }
     }
 }

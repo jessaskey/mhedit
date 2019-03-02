@@ -560,6 +560,7 @@ namespace mhedit.GameControllers
                         maze.AddObject(tpp);
 
                         trip.Pyroid = tpp;
+                        tpp.TripPad = trip;
                     }
                 }
 
@@ -583,7 +584,8 @@ namespace mhedit.GameControllers
                         maze.AddObject(hand);
                     }
                 }
-                mazeCollection.AddMaze(maze);
+
+                mazeCollection.Mazes.Add(maze);
             }
             return mazeCollection;
         }

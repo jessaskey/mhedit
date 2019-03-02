@@ -15,7 +15,6 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         private IonCannonProgram _program;
         private int _currentIndex = 0;
         private Point _currentPosition = new Point(32, 32);
-        private Velocity _currentVelocity = new Velocity();
 
         public CannonProgramPreview( IonCannonProgram movements )
         {

@@ -138,6 +138,7 @@
             Our default constructor for the application mainform
             </summary>
         </member>
+        <!-- Badly formed XML comment ignored for member "M:mhedit.Mainform.treeView_DrawNode(System.Object,System.Windows.Forms.DrawTreeNodeEventArgs)" -->
         <member name="F:mhedit.Mainform.components">
             <summary>
             Required designer variable.
@@ -153,6 +154,18 @@
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:mhedit.MazeController.Name">
+            <summary>
+            Because the base class control also has a Name property its easy to
+            mistakenly call the wrong property... Return the Maze name during
+            runtime but throw during debug.
+            </summary>
+        </member>
+        <member name="M:mhedit.MazeController.SetGridlines(System.Boolean)">
+            <summary>
+             TODO: Need to deal with basemap changes at this level.
             </summary>
         </member>
         <member name="M:mhedit.Program.Main">

@@ -12,7 +12,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     [XmlInclude( typeof( OrientAndFire ) )]
     [XmlInclude( typeof( Move ) )]
     [XmlInclude( typeof( Pause ) )]
-    public abstract class IonCannonInstruction : TrackEditsBase
+    public abstract class IonCannonInstruction : ChangeTrackingBase
     {
         private readonly Commands _command;
 
@@ -39,7 +39,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
         public override string ToString()
         {
-            return $"{this.GetType().Name}{( this.IsDirty ? " *" : "" )}";
+            return this.GetType().Name;
         }
     }
 }

@@ -30,7 +30,7 @@ namespace mhedit
             textBoxROMPath.Text = templatePath;
         }
 
-        public MazeCollection Mazes
+        public MazeCollection MazeCollection
         {
             get
             {
@@ -51,7 +51,7 @@ namespace mhedit
                 List<string> loadMessages = new List<string>();
                 _mazeCollection = controller.LoadMazes( textBoxROMPath.Text, loadMessages );
 
-                _mazeCollection.IsDirty = false;
+                _mazeCollection.AcceptChanges();
 
                 if ( loadMessages.Count > 0 )
                 {

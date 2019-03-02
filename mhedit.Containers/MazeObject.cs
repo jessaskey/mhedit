@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace mhedit.Containers
 {
     [Serializable]
-    public abstract class MazeObject : TrackEditsBase
+    public abstract class MazeObject : ChangeTrackingBase
     {
         private static readonly Point _snapSize = new Point( 64, 64 );
 
@@ -56,6 +56,7 @@ namespace mhedit.Containers
             }
         }
 
+        [DescriptionAttribute( "The name of this maze object." )]
         public string Name
         {
             get { return name; }
@@ -70,7 +71,7 @@ namespace mhedit.Containers
             set { this.SetField( ref this._position, value ); }
         }
 
-        [DescriptionAttribute( "Maximum number of reactoids allowed in this maze." )]
+        [DescriptionAttribute( "Maximum number of this Maze Object allowed in the maze." )]
         public int MaxObjects
         {
             get { return this._maxObjects; }
@@ -109,7 +110,7 @@ namespace mhedit.Containers
             get
             {
                 return this._selected ?
-                    this.AddSelectedDecoration( this._image ) : this._image;
+                    this.AddSelectedDecoration( (Image)this._image.Clone() ) : this._image;
             }
             protected set { this._image = value; }
         }
@@ -131,8 +132,12 @@ namespace mhedit.Containers
             }
         }
 
-        [TypeConverter(typeof(TypeConverters.VectorPositionTypeConverter))]
-        [ReadOnly(true)]
+#if DEBUG
+#else
+        [BrowsableAttribute( false )]
+#endif
+        [TypeConverter( typeof( TypeConverters.VectorPositionTypeConverter ) )]
+        [ReadOnly( true )]
         public Point VectorPosition
         {
             get
@@ -168,7 +173,7 @@ namespace mhedit.Containers
 
         [BrowsableAttribute(false)]
         [XmlIgnore]
-        public bool Selected
+        public virtual bool Selected
         {
             get { return this._selected; }
             set { this._selected = value; }

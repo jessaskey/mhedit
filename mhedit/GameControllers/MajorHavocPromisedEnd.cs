@@ -571,6 +571,7 @@ namespace mhedit.GameControllers
                     maze.AddObject(tpp);
 
                     trip.Pyroid = tpp;
+                    tpp.TripPad = trip;
                 }
 
                 //finally... de hand
@@ -589,7 +590,8 @@ namespace mhedit.GameControllers
                     hand.LoadPosition(position);
                     maze.AddObject(hand);
                 }
-                mazeCollection.AddMaze(maze);
+
+                mazeCollection.Mazes.Add(maze);
             }
             return mazeCollection;
         }
@@ -911,7 +913,7 @@ namespace mhedit.GameControllers
             bool success = false;
             int numMazes = 28;
 
-            if (mazeCollection.MazeCount > numMazes)
+            if (mazeCollection.Mazes.Count > numMazes)
             {
                 _lastError = "Maze collection contained more than " + numMazes.ToString() + " mazes.";
                 return false;

@@ -1,17 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Windows.Forms;
-using Silver.UI;
 using mhedit.Containers.MazeObjects;
 using mhedit.Containers.MazeEnemies;
 using System.Xml.Serialization;
@@ -45,7 +37,7 @@ namespace mhedit.Containers
     [XmlInclude(typeof(Spikes))]
     [XmlInclude(typeof(Transporter))]
     [XmlInclude(typeof(MazeWall))]
-    public class Maze : NotifyPropertyChangedBase
+    public class Maze : ChangeTrackingBase
     {
 
         #region Declarations
@@ -59,7 +51,6 @@ namespace mhedit.Containers
         private Guid _id = Guid.NewGuid();
         private string _mazeName = null;
         private string _mazeDescription = String.Empty;
-        private bool _isDirty = false;
         private bool _isValid = false;
         private List<string> _validationMessage = new List<string>();
         private MazeType _mazeType;
@@ -67,7 +58,8 @@ namespace mhedit.Containers
         private string _mazeHint2 = String.Empty;
         private int _oxygenReward = 16;
         private List<MazeWall> _mazeWallBase;
-        private List<MazeObject> _mazeObjects;
+        private ExtendedObservableCollection<MazeObject> _mazeObjects =
+            new ExtendedObservableCollection<MazeObject>();
         private List<bool> _transportabilityFlags = new List<bool>();
         private int _mazeStampsX = 0;
         private int _mazeStampsY = 0;
@@ -77,23 +69,46 @@ namespace mhedit.Containers
         #region Constructors
 
         public Maze()
-        {
-            _mazeType = MazeType.TypeA;
-            Init();
-        }
+            : this( MazeType.TypeA, NameFactory.Create( "Maze" ) )
+        { }
 
         public Maze(string name)
-        {
-            _mazeName = name;
-            _mazeType = MazeType.TypeA;
-            Init();
-        }
+            : this( MazeType.TypeA, name )
+        { }
 
         public Maze(MazeType type, string name)
         {
             _mazeType = type;
+
             _mazeName = name;
-            Init();
+
+            ( (INotifyPropertyChanged)this._mazeObjects ).PropertyChanged +=
+                this.ForwardIsDirtyPropertyChanged;
+
+            InitBaseMap();
+        }
+
+        #endregion
+
+        #region Implementation of IChangeTracking
+
+        [BrowsableAttribute( false )]
+        [XmlIgnore]
+        public override bool IsChanged
+        {
+            get
+            {
+                return base.IsChanged |
+                    this._mazeObjects.IsChanged;
+            }
+        }
+
+        public override void AcceptChanges()
+        {
+            /// clear composite member first.
+            this._mazeObjects.AcceptChanges();
+
+            base.AcceptChanges();
         }
 
         #endregion
@@ -101,15 +116,11 @@ namespace mhedit.Containers
         #region Public Properties
 
         [BrowsableAttribute(false)]
-        public List<MazeObject> MazeObjects
+        public ExtendedObservableCollection<MazeObject> MazeObjects
         {
             get
             {
                 return _mazeObjects;
-            }
-            set
-            {
-                _mazeObjects = value;
             }
         }
 
@@ -121,10 +132,6 @@ namespace mhedit.Containers
             {
                 return _mazeWallBase;
             }
-            set
-            {
-                _mazeWallBase = value;
-            }
         }
 
         [BrowsableAttribute(false)]
@@ -132,14 +139,6 @@ namespace mhedit.Containers
         public Guid Id
         {
             get { return _id; }
-        }
-
-        [BrowsableAttribute(false)]
-        [XmlIgnore]
-        public bool IsDirty
-        {
-            get {return _isDirty;}
-            set { _isDirty = value; }
         }
 
         [BrowsableAttribute(false)]
@@ -178,8 +177,8 @@ namespace mhedit.Containers
         [DescriptionAttribute("The name of the maze.")]
         public string Name
         {
-            get { return _mazeName; }
-            set { _mazeName = value; }
+            get { return this._mazeName; }
+            set { this.SetField( ref this._mazeName, value ); }
         }
 
         [BrowsableAttribute(true)]
@@ -187,7 +186,7 @@ namespace mhedit.Containers
         public string Hint
         {
             get { return _mazeHint; }
-            set { _mazeHint = value; }
+            set { this.SetField( ref this._mazeHint, value ); }
         }
 
         [BrowsableAttribute(true)]
@@ -195,7 +194,7 @@ namespace mhedit.Containers
         public string Hint2
         {
             get { return _mazeHint2; }
-            set { _mazeHint2 = value; }
+            set { this.SetField( ref this._mazeHint2, value ); }
         }
 
         [BrowsableAttribute(true)]
@@ -203,7 +202,7 @@ namespace mhedit.Containers
         public string Description
         {
             get { return _mazeDescription; }
-            set { _mazeDescription = value; }
+            set { this.SetField( ref this._mazeDescription, value ); }
         }
 
         [BrowsableAttribute(true)]
@@ -218,9 +217,9 @@ namespace mhedit.Containers
         public MazeType MazeType
         {
             get { return _mazeType; }
-            set 
-            { 
-                _mazeType = value;
+            set
+            {
+                this.SetField( ref this._mazeType, value );
                 InitBaseMap();
             }
         }
@@ -229,16 +228,11 @@ namespace mhedit.Containers
         public int OxygenReward
         {
             get { return _oxygenReward; }
-            set
-            {
-                _oxygenReward = value ;
-            }
+            set { this.SetField( ref this._oxygenReward, value ); }
         }
 
         #endregion
 
-       
-       
         #region Public Methods
 
         public void Validate()
@@ -270,13 +264,6 @@ namespace mhedit.Containers
 
         #endregion
 
-        private void Init()
-        {
-            _mazeWallBase = new List<MazeWall>();
-            _mazeObjects = new List<MazeObject>();
-            InitBaseMap();
-        }
-
         private void InitBaseMap()
         {
             //initialize our base maze maps
@@ -296,27 +283,25 @@ namespace mhedit.Containers
             {
                 if (((MazeObject)obj).MaxObjects > GetObjectTypeCount(obj.GetType()))
                 {
-                    string type = obj.GetType().ToString();
-                    string[] typeString = type.Split('.');
-
                     MazeWall wall = obj as MazeWall;
                     if (wall != null)
                     {
-                        wall.Name = GetNextName(typeString[typeString.Length - 1].ToLower());
+                        wall.Name = NameFactory.Create( obj.GetType().Name );
                         wall.Position = GetAdjustedPosition((MazeObject)wall, wall.Position);
                         _mazeObjects.Add((MazeObject)obj);
                         wasAdded = true;
                     }
                     else
                     {
-                        mazeObject.Name = GetNextName(typeString[typeString.Length - 1].ToLower());
+                        mazeObject.Name = NameFactory.Create( obj.GetType().Name );
                         _mazeObjects.Add((MazeObject)obj);
                         wasAdded = true;
                     }
                 }
                 else
                 {
-                    MessageBox.Show("You can't add any more objects of this type.", "The Homeworld is near", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show( $"You can't add any more {obj.GetType().Name} objects.",
+                        "The Homeworld is near", MessageBoxButtons.OK, MessageBoxIcon.Warning );
                 }
             }
             return wasAdded;
@@ -358,19 +343,5 @@ namespace mhedit.Containers
             int row = stamp / _mazeStampsX;
             return new Point(col * GRIDUNITS * GRIDUNITSTAMPS, row * GRIDUNITS * GRIDUNITSTAMPS);
         }
-        
-        private string GetNextName(string prefix)
-        {
-            for (int i = 1; i > 0; i++)
-            {
-                if (_mazeObjects.Where(o=>o.Name == prefix + i.ToString()).FirstOrDefault() == null)
-                {
-                    return prefix + i.ToString();
-                }
-            }
-            return prefix;
-        }
-
-        
     }
 }

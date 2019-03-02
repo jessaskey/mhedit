@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -24,6 +24,10 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             this._program = program;
 
             this.AddNewItems( 0, program );
+
+            treeViewProgram.SelectedNode = treeViewProgram.Nodes.Count > 0 ?
+                treeViewProgram.Nodes[0] :
+                null;
 
             this._program.CollectionChanged += this.OnProgramCollectionChanged;
         }
@@ -60,12 +64,28 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
         private void OnInstructionPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
-            Debug.WriteLine( $"OnInstructionPropertyChanged {sender.ToString()} {e.PropertyName}" );
+            this.treeViewProgram.Refresh();
+        }
 
-            if ( e.PropertyName == "IsDirty" &&
-                treeViewProgram.SelectedNode?.Tag is IonCannonInstruction instruction )
+        /// <summary>
+        /// https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.treeview.drawnode?redirectedfrom=MSDN&view=netframework-4.7.2
+        /// </summary>
+        private void treeViewProgram_DrawNode( object sender, DrawTreeNodeEventArgs e )
+        {
+            // Use the default background and node text.
+            e.DrawDefault = true;
+
+            // Extract the set font/color from the tree.
+            Font nodeFont =
+                new Font( e.Node.NodeFont ?? ( (TreeView)sender ).Font, FontStyle.Bold );
+
+            SolidBrush nodeBrush = new SolidBrush( ( (TreeView)sender ).ForeColor );
+
+            // If a node tag is present, draw the IsChanged if necessary.
+            if ( e.Node.Tag is IChangeTracking changeTracking )
             {
-                treeViewProgram.SelectedNode.Text = instruction.ToString();
+                e.Graphics.DrawString( changeTracking.IsChanged ? ChangeTrackingBase.ModifiedBullet : "",
+                    nodeFont, nodeBrush, e.Bounds.Right + 4, e.Bounds.Top );
             }
         }
 
@@ -93,22 +113,22 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
         private void toolStripButtonAddMove_Click( object sender, EventArgs e )
         {
-            this.AddInstruction( new Move() { IsDirty = true } );
+            this.AddInstruction( new Move() );
         }
 
         private void toolStripButtonAddAngle_Click( object sender, EventArgs e )
         {
-            this.AddInstruction( new OrientAndFire() { IsDirty = true } );
+            this.AddInstruction( new OrientAndFire() );
         }
 
         private void toolStripButtonAddPause_Click( object sender, EventArgs e )
         {
-            this.AddInstruction( new Pause() { IsDirty = true } );
+            this.AddInstruction( new Pause() );
         }
 
         private void toolStripButtonAddRepeat_Click( object sender, EventArgs e )
         {
-            this.AddInstruction( new ReturnToStart() { IsDirty = true } );
+            this.AddInstruction( new ReturnToStart() );
         }
 
         private void AddInstruction( IonCannonInstruction ionCannonInstruction )
@@ -254,7 +274,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                             }
                         }
 
-                        this._program.IsDirty = false;
+                        this._program.AcceptChanges();
 
                         LoadPresets();
                     }
@@ -277,7 +297,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         {
             DialogResult result = DialogResult.OK;
 
-            if ( this._program.IsDirty )
+            if ( this._program.IsChanged )
             {
                 result = MessageBox.Show(
                     $"There are unsaved changes. " +
@@ -307,7 +327,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                         {
                             _program = (IonCannonProgram)serializer.Deserialize( reader );
 
-                            _program.IsDirty = false;
+                            _program.AcceptChanges();
 
                             this.treeViewProgram.Nodes.Clear();
 
@@ -336,7 +356,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
         private void CannonProgramEditor_FormClosing( object sender, FormClosingEventArgs e )
         {
-            if ( this._program.IsDirty && this.DialogResult == DialogResult.Cancel )
+            if ( this._program.IsChanged && this.DialogResult == DialogResult.Cancel )
             {
                 DialogResult result = MessageBox.Show(
                     $"There are unsaved changes. " +

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies
 {
@@ -21,6 +22,67 @@ namespace mhedit.Containers.MazeEnemies
                     new Point( 0, 32 ) )
         { }
 
+        #region Implementation of IChangeTracking
+
+        [BrowsableAttribute( false )]
+        [XmlIgnore]
+        public override bool IsChanged
+        {
+            get
+            {
+                return base.IsChanged |
+                    this._pyroid.IsChanged;
+            }
+        }
+
+        public override void AcceptChanges()
+        {
+            /// clear composite member first.
+            this._pyroid.AcceptChanges();
+
+            base.AcceptChanges();
+        }
+
+        #endregion
+
+        [BrowsableAttribute( false )]
+        [XmlIgnore]
+        public override bool Selected
+        {
+            set
+            {
+                base.Selected = value;
+
+                /// set our associated TripPad so that folks know which ones go together
+                /// when selected.
+                if ( this._pyroid.Selected != value )
+                {
+                    this._pyroid.Selected = value;
+                }
+            }
+        }
+
+        [DescriptionAttribute( "The pyroid associated with this trip pad." )]
+        [TypeConverter( typeof( TypeConverters.TripPadPyroidTypeConverter ) )]
+        public TripPadPyroid Pyroid
+        {
+            get { return _pyroid; }
+            set
+            {
+                if ( this._pyroid != null )
+                {
+                    this._pyroid.PropertyChanged -= this.ForwardIsDirtyPropertyChanged;
+                }
+
+                this.SetField( ref this._pyroid, value );
+
+                if ( this._pyroid != null )
+                {
+                    this._pyroid.PropertyChanged += this.ForwardIsDirtyPropertyChanged;
+                }
+            }
+        }
+
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
@@ -33,31 +95,5 @@ namespace mhedit.Containers.MazeEnemies
         {
             return ToBytes();
         }
-
-        [DescriptionAttribute("The pyroid associated with this trip pad.")]
-        [TypeConverter(typeof(TypeConverters.TripPadPyroidTypeConverter))]
-        public TripPadPyroid Pyroid
-        {
-            get { return _pyroid; }
-            set
-            {
-                //if ( this._pyroid != null )
-                //{
-                //    this._pyroid.PropertyChanged -= this.OnTripPyroidChanged;
-                //}
-
-                _pyroid = value;
-
-                //if ( this._pyroid != null )
-                //{
-                //    this._pyroid.PropertyChanged += this.OnTripPyroidChanged;
-                //}
-            }
-        }
-
-        //private void OnTripPyroidChanged( object sender, PropertyChangedEventArgs e )
-        //{
-        //    this.IsDirty |= ((TripPadPyroid)sender).IsDirty;
-        //}
     }
 }

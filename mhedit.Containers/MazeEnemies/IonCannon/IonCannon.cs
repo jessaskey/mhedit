@@ -31,18 +31,29 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             get { return _snapSize; }
         }
 
+
+        #region Implementation of IChangeTracking
+
+        [BrowsableAttribute( false )]
         [XmlIgnore]
-        public override bool IsDirty
+        public override bool IsChanged
         {
             get
             {
-                return base.IsDirty | this._program.IsDirty;
-            }
-            set
-            {
-                base.IsDirty = this._program.IsDirty = value;
+                return base.IsChanged |
+                    this._program.IsChanged;
             }
         }
+
+        public override void AcceptChanges()
+        {
+            /// clear composite member first.
+            this._program.AcceptChanges();
+
+            base.AcceptChanges();
+        }
+
+        #endregion
 
         [CategoryAttribute("Custom")]
         [DescriptionAttribute("The movement script for the cannon")]
@@ -56,7 +67,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             get { return _program; }
             set
             {
-                this._program = value;
+                this.SetField( ref this._program, value );
 
                 ( (INotifyPropertyChanged)this._program ).PropertyChanged +=
                     this.ForwardIsDirtyPropertyChanged;

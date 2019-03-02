@@ -1,15 +1,9 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Windows.Forms;
-using System.Globalization;
 using mhedit.Containers;
 using System.Xml.Serialization;
 using ICSharpCode.SharpZipLib.BZip2;
@@ -24,15 +18,11 @@ namespace mhedit
         #region Declarations
 
         private const int MAX_MAZES = 32;
-        private MazeCollection _mazeCollection = new MazeCollection();
-
+        private readonly MazeCollection _mazeCollection;
         private string _fileName = null;
-
         private bool gridlines = true;
-
         private string exportPath = String.Empty;
 
-        private string _lastError = String.Empty;
         #endregion
 
         #region PropertyIncludes
@@ -48,90 +38,28 @@ namespace mhedit
         #region Constructor
 
         public MazeCollectionController()
-        {
-        }
+            : this( NameFactory.Create( "MazeCollection" ) )
+        {}
 
-        public MazeCollectionController(string name)
-        {
-            _mazeCollection.Name = name;
-        }
+        public MazeCollectionController( string name )
+            : this ( new MazeCollection( name ) )
+        {}
 
-        public MazeCollectionController(MazeCollection collection)
+        public MazeCollectionController( MazeCollection collection )
         {
             _mazeCollection = collection;
+
+            this._mazeCollection.PropertyChanged += this.OnMazeCollectionPropertyChanged;
         }
 
         #endregion
 
         #region Properties
 
-
-
-        //[BrowsableAttribute(false)]
-        //public PropertyGrid PropertyGrid
-        //{
-        //    //get { return propertyGrid; }
-        //    set
-        //    {
-        //        //propertyGrid = value;
-        //        foreach (MazeController maze in _mazeCollection.Mazes)
-        //        {
-        //            maze.PropertyGrid = value;
-        //        }
-        //    }
-        //}
-
         [BrowsableAttribute(false)]
         public MazeCollection MazeCollection
         {
             get { return _mazeCollection; }
-            set { _mazeCollection = value; }
-        }
-
-        [BrowsableAttribute(false)]
-        public List<Maze> Mazes
-        {
-            get { return _mazeCollection.Mazes; }
-            set { _mazeCollection.Mazes = value; }
-        }
-
-        [BrowsableAttribute(false)]
-        public int MazeCount
-        {
-            get { return _mazeCollection.Mazes.Count; }
-        }
-
-        [BrowsableAttribute(false)]
-        public bool IsValid
-        {
-            get
-            {
-                if (_mazeCollection.Mazes.Where(m => !m.IsValid).Count() > 0)
-                {
-                    return false;
-                }
-                return true;
-            }
-        }
-
-        [BrowsableAttribute(false)]
-        public string ValidationMessage
-        {
-            get
-            {
-                StringBuilder sb = new StringBuilder();
-                foreach(Maze maze in _mazeCollection.Mazes.Where(m => !m.IsValid))
-                {
-                    sb.AppendLine(maze.Name + ": " + maze.ValidationMessage);
-                }
-                return sb.ToString();
-            }
-        }
-
-        [BrowsableAttribute(false)]
-        public string LastError
-        {
-            get { return _mazeCollection.LastError; }
         }
 
         [ReadOnly(true)]
@@ -139,74 +67,18 @@ namespace mhedit
         public string FileName
         {
             get { return _fileName; }
-            set
-            {
-                _fileName = value;
-                _mazeCollection.IsDirty = true;
-            }
+            set { _fileName = value; }
         }
 
-        //[ReadOnly(true)]
-        //[DescriptionAttribute("The last ROM Export file location.")]
-        //public string ExportPath
-        //{
-        //    get { return exportPath; }
-        //    set { 
-        //        exportPath = value;
-        //        isDirty = true;
-        //    }
-        //}
-
-        [BrowsableAttribute(true)]
-        [DescriptionAttribute("The name of this maze collection.")]
-        public string Name
+        [ReadOnly( true )]
+        [DescriptionAttribute( "The last ROM Export file location." )]
+        public string ExportPath
         {
-            get { return _mazeCollection.Name; }
-            set 
-            {
-                _mazeCollection.Name = value;
-                _mazeCollection.IsDirty = true;
-            }
-        }
-
-        [DescriptionAttribute("The name of the person who created this maze.")]
-        public string AuthorName
-        {
-            get { return _mazeCollection.AuthorName; }
-            set 
-            { 
-                _mazeCollection.AuthorName = value;
-                _mazeCollection.IsDirty = true;
-            }
-        }
-
-        [DescriptionAttribute("The email address of the person who created this maze.")]
-        public string AuthorEmail
-        {
-            get { return _mazeCollection.AuthorEmail; }
-            set 
-            {
-                _mazeCollection.AuthorEmail = value;
-                _mazeCollection.IsDirty = true;
-            }
-        }
-
-        [BrowsableAttribute(false)]
-        public bool IsDirty
-        {
-            get
-            {
-                if (_mazeCollection.IsDirty) return true;
-                foreach(Maze maze in _mazeCollection.Mazes) { 
-                    if (maze.IsDirty) return true;
-                }
-                return false;
-
-            }
+            get { return exportPath; }
+            set { exportPath = value; }
         }
 
         #endregion
-
 
         public static MazeCollection DeserializeFromFile(string fileName)
         {
@@ -214,6 +86,8 @@ namespace mhedit
             using (FileStream fStream = new FileStream(fileName, FileMode.Open))
             {
                 mazeCollection = DeserializeFromStream(fStream);
+
+                mazeCollection.AcceptChanges();
             }
             return mazeCollection;
         }
@@ -229,6 +103,8 @@ namespace mhedit
                 using (var reader = XmlReader.Create(mStream))
                 {
                     mazeCollection = (MazeCollection)serializer.Deserialize(reader);
+
+                    mazeCollection.AcceptChanges();
                 }
             }
             return mazeCollection;
@@ -249,8 +125,11 @@ namespace mhedit
                     mStream.Position = 0;
                     BZip2.Compress(mStream, fStream, true, 4096);
                     result = true;
+
+                    mazeCollection.AcceptChanges();
                 }
             }
+
             return result;
         }
 
@@ -344,31 +223,24 @@ namespace mhedit
             {
                 try
                 {
-                    //treeView.BeginUpdate();
+                    treeView.BeginUpdate();
+
                     //see if it has a parent node...
-                    if (currentNode != null)
+                    if ( ( parentNode = currentNode?.Parent ) != null )
                     {
-                        if (currentNode.Parent != null)
-                        {
-                            parentNode = currentNode.Parent;
-                        }
+                        treeView.Nodes.Remove( currentNode );
                     }
-                    //now, remove this node
-                    if (currentNode != null)
+
+                    /// Add node after selected
+                    collectionNode = new TreeNode( _mazeCollection.Name )
                     {
-                        treeView.Nodes.Remove(currentNode);
-                    }
-                    //create the node now..
-                    if (parentNode != null)
-                    {
-                        collectionNode = parentNode.Nodes.Add(_mazeCollection.Name);
-                    }
-                    else
-                    {
-                        collectionNode = treeView.Nodes.Add(_mazeCollection.Name);
-                    }
-                    collectionNode.Name = this.Name;
-                    collectionNode.Tag = this;
+                        Tag = this
+                    };
+
+                    treeView.Nodes.Insert( 
+                        treeView.Nodes.IndexOf( treeView.SelectedNode?.Parent ?? treeView.SelectedNode ) + 1,
+                        collectionNode );
+
                     for (int i = 0; i < _mazeCollection.Mazes.Count; i++)
                     {
                         MazeController mazeController = new MazeController(_mazeCollection.Mazes[i]);
@@ -382,6 +254,7 @@ namespace mhedit
                         mazeNode.SelectedImageIndex = mazeNode.ImageIndex;
                         collectionNode.Nodes.Add(mazeNode);
                     }
+
                     collectionNode.Expand();
                 }
                 catch (Exception ex)
@@ -396,8 +269,9 @@ namespace mhedit
             }
             else
             {
-                _lastError = "Tree not defined.";
+                _mazeCollection.LastError = "Tree not defined.";
             }
+
             return collectionNode;
         }
 
@@ -408,57 +282,8 @@ namespace mhedit
 
         #endregion
 
-        #region Overrides
-
-        //protected override void OnPaint(PaintEventArgs e)
-        //{
-
-        //}
-
-        //protected override void OnDragOver(DragEventArgs drgevent)
-        //{
-        //    //this object does not accept drag/drop
-        //    drgevent.Effect = DragDropEffects.None;
-        //}
-
-        #endregion
-
-        #region Public Methods
-
-        //public int FindMaze(Maze maze)
-        //{
-        //    for (int i = 0; i < mazes.Count; i++)
-        //    {
-        //        if (mazes[i] == maze)
-        //        {
-        //            return i;
-        //        }
-        //    }
-        //    return -1;
-        //}
-
-
-
-        public bool AddMaze(Maze maze)
+        private void OnMazeCollectionPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
-            if (maze != null)
-            {
-                Mazes.Add(maze);
-                return true;
-            }
-            return false;
         }
-
-        public void Validate()
-        {
-            foreach (Maze maze in Mazes)
-            {
-                maze.Validate();
-            }
-        }
-
-        #endregion
-
-
     }
 }
