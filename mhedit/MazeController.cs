@@ -945,6 +945,9 @@ namespace mhedit
                 BindingList<IName> dataSource = new BindingList<IName>(
                     _maze.MazeObjects.OrderBy( o => o.GetType().Name ).ToList().ConvertAll( m => (IName)m ) );
 
+                /// Add the maze so user can select and edit elements.
+                dataSource.Insert( 0, this._maze );
+
                 _comboBoxObjects.DataSource = dataSource;
                 _comboBoxObjects.DisplayMember = "Name";
                 _comboBoxObjects.ValueMember = "Name";
