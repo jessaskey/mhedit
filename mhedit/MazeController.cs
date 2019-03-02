@@ -111,83 +111,89 @@ namespace mhedit
 #region Public Properties
 
         [BrowsableAttribute(false)]
-            public Maze Maze
+        public Maze Maze
+        {
+            get
             {
-                get
-                {
-                    return _maze;
-                }
+                return _maze;
             }
+        }
 
-            [BrowsableAttribute(false)]
-            public ExtendedObservableCollection<MazeObject> MazeObjects
+        [BrowsableAttribute(false)]
+        public ExtendedObservableCollection<MazeObject> MazeObjects
+        {
+            get
             {
-                get
-                {
-                    return _maze.MazeObjects;
-                }
+                return _maze.MazeObjects;
             }
+        }
 
-            [BrowsableAttribute(false)]
-            public bool ShowGridReferences { get; set; }
+        [BrowsableAttribute(false)]
+        public bool ShowGridReferences { get; set; }
 
-            [ReadOnly(true)]
-            [DescriptionAttribute("The filename of this maze on disk.")]
-            public string FileName
+        [ReadOnly(true)]
+        [DescriptionAttribute("The filename of this maze on disk.")]
+        public string FileName
+        {
+            get { return _fileName; }
+            set { _fileName = value; }
+        }
+
+        [BrowsableAttribute(false)]
+        public bool GridLines
+        {
+            get { return _gridLines; }
+            set { _gridLines = value; }
+        }
+
+        [BrowsableAttribute(false)]
+        public PropertyGrid PropertyGrid
+        {
+            get { return _propertyGrid; }
+            set { _propertyGrid = value; }
+        }
+
+        [BrowsableAttribute( false )]
+        public ComboBox ComboBoxObjects
+        {
+            get { return _comboBoxObjects; }
+            set
             {
-                get { return _fileName; }
-                set { _fileName = value; }
+                if ( _comboBoxObjects != null )
+                    _comboBoxObjects.SelectedIndexChanged -= comboBoxObjects_SelectedIndexChanged;
+
+                _comboBoxObjects = value;
+
+                BindComboBoxObjects( null );
+
+                if ( _comboBoxObjects != null )
+                    _comboBoxObjects.SelectedIndexChanged += comboBoxObjects_SelectedIndexChanged;
             }
+        }
 
-            [BrowsableAttribute(false)]
-            public bool GridLines
-            {
-                get { return _gridLines; }
-                set { _gridLines = value; }
-            }
+        [BrowsableAttribute(false)]
+        public decimal Zoom
+        {
+            get { return _zoom; }
+            set { _zoom = value; }
+        }
 
-            [BrowsableAttribute(false)]
-            public PropertyGrid PropertyGrid
-            {
-                get { return _propertyGrid; }
-                set { _propertyGrid = value; }
-            }
-
-            [BrowsableAttribute(false)]
-            public ComboBox ComboBoxObjects
-            {
-                get { return _comboBoxObjects; }
-                set 
-                { 
-                    _comboBoxObjects = value;
-                    BindComboBoxObjects(null);
-                    _comboBoxObjects.SelectedIndexChanged += new EventHandler(comboBoxObjects_SelectedIndexChanged);
-                }
-            }
-
-            [BrowsableAttribute(false)]
-            public decimal Zoom
-            {
-                get { return _zoom; }
-                set { _zoom = value; }
-            }
-
-            //[DescriptionAttribute("The structure type of the maze.")]
-            //public MazeType MazeType
-            //{
-            //    get { return _maze.MazeType; }
-            //    set 
-            //    { 
-            //        _maze.MazeType = value;
+        //[DescriptionAttribute("The structure type of the maze.")]
+        //public MazeType MazeType
+        //{
+        //    get { return _maze.MazeType; }
+        //    set 
+        //    { 
+        //        _maze.MazeType = value;
 
 
-                /// <summary>
-                ///  TODO: Need to deal with basemap changes at this level.
-                /// </summary>
-            //        InitBaseMap();
-            //        DataChanged();
-            //    }
-            //}
+            /// <summary>
+            ///  TODO: Need to deal with basemap changes at this level.
+            /// </summary>
+        //        InitBaseMap();
+        //        DataChanged();
+        //    }
+        //}
 
 #endregion
 
@@ -537,7 +543,7 @@ namespace mhedit
                     selectedIndex++;
                     selectedIndex %= _maze.MazeObjects.Count;
                     SetSelectedObject(selectedIndex);
-                    RefreshMaze();
+                    Invalidate();
                     break;
                 case Keys.Delete:
                     MazeObject obj = GetSelectedObject();
@@ -556,25 +562,25 @@ namespace mhedit
                                 _maze.MazeObjects.Remove(((TripPad)obj).Pyroid); 
                             }
                             _maze.MazeObjects.Remove(obj);
-                            RefreshMaze();
+                            Invalidate();
                         }
                     }
                     break;
                 case Keys.Up:
                     MoveSelectedObject(0, -1);
-                    RefreshMaze();
+                    Invalidate();
                     break;
                 case Keys.Down:
                     MoveSelectedObject(0, 1);
-                    RefreshMaze();
+                    Invalidate();
                     break;
                 case Keys.Left:
                     MoveSelectedObject(-1, 0);
-                    RefreshMaze();
+                    Invalidate();
                     break;
                 case Keys.Right:
                     MoveSelectedObject(1, 0);
-                    RefreshMaze();
+                    Invalidate();
                     break;
 
             }
@@ -600,9 +606,11 @@ namespace mhedit
             if ( e.Button == MouseButtons.Left )
             {
                 this.Select();
+
                 //look for objects here...
-                MazeObject mObject = SelectObject( e.Location );
-                RefreshMaze();
+                this.ComboBoxObjects.SelectedItem = SelectObject( e.Location );
+
+                Invalidate();
             }
 
             base.OnMouseDown( e );
@@ -617,7 +625,6 @@ namespace mhedit
                 {
                     if (item.Object is MazeWall)
                     {
-
                         MazeObject mObject = SelectObject(this.PointToClient(new Point(drgevent.X, drgevent.Y)));
                         
                         if (mObject != null && mObject is MazeWall)
@@ -663,7 +670,7 @@ namespace mhedit
                         MazeObject clonedObject = AddObjectClone(dragItem.Object, panelXY);
                         if (clonedObject != null)
                         {
-                            RefreshMaze();
+                            Invalidate();
                         }
                     }
                 }
@@ -671,7 +678,7 @@ namespace mhedit
             else
             {
                 MoveSelectedObject(panelXY);
-                RefreshMaze();
+                Invalidate();
             }
             this.Focus();   //this is required so that when dropping an object, the maze panel gets focus so keys work immediately with out clicking on the maze first.
             base.OnDragDrop(drgevent);
@@ -848,32 +855,24 @@ namespace mhedit
         public bool AddObject(object obj)
         {
             bool wasAdded = false;
-            MazeObject mazeObject = obj as MazeObject;
 
-            if (mazeObject != null)
+            if ( obj is MazeObject mazeObject )
             {
-                if (((MazeObject)obj).MaxObjects > _maze.GetObjectTypeCount(obj.GetType()))
+                if ( mazeObject.MaxObjects > _maze.GetObjectTypeCount( obj.GetType() ) )
                 {
                     ClearSelectedObjects();
 
-                    MazeWall wall = obj as MazeWall;
-                    if (wall != null)
+                    mazeObject.Name = NameFactory.Create( obj.GetType().Name );
+
+                    if ( obj is MazeWall wall )
                     {
-                        wall.Name = NameFactory.Create( obj.GetType().Name );
-                        wall.Position = GetAdjustedPosition((MazeObject)wall, wall.Position);
-                        _maze.MazeObjects.Add((MazeObject)obj);
-                        BindComboBoxObjects((MazeObject)obj);
-                        if (_propertyGrid != null) _propertyGrid.SelectedObject = (MazeObject)obj;
-                        wasAdded = true;
+                        wall.Position = GetAdjustedPosition(wall, wall.Position);
                     }
-                    else
-                    {
-                        mazeObject.Name = NameFactory.Create( obj.GetType().Name );
-                        _maze.MazeObjects.Add((MazeObject)obj);
-                        BindComboBoxObjects((MazeObject)obj);
-                        if (_propertyGrid != null) _propertyGrid.SelectedObject = (MazeObject)obj;
-                        wasAdded = true;
-                    }
+
+                    _maze.MazeObjects.Add( mazeObject );
+                    BindComboBoxObjects( mazeObject );
+
+                    wasAdded = true;
                 }
                 else
                 {
@@ -881,58 +880,61 @@ namespace mhedit
                         "The Homeworld is near", MessageBoxButtons.OK, MessageBoxIcon.Warning );
                 }
             }
+
             return wasAdded;
         }
 
         public MazeObject AddObjectClone(object obj, Point point)
         {
             MazeObject clonedObject = null;
-            if (((MazeObject)obj).MaxObjects > _maze.GetObjectTypeCount(obj.GetType()))
+
+            if ( obj is MazeObject mazeObject )
             {
-                ClearSelectedObjects();
-
-                MazeWall mazeWall = obj as MazeWall;
-                if (mazeWall != null)
+                if ( mazeObject.MaxObjects > _maze.GetObjectTypeCount( obj.GetType() ) )
                 {
+                    ClearSelectedObjects();
 
-                    MazeWall wall = new MazeWall(((MazeWall)obj).WallType);
-                    wall.UserWall = true;
-                    wall.Selected = true;
-                    wall.WallIndex = PointToStamp(point);
-                    wall.Position = GetAdjustedPosition((MazeObject)wall, point);
-                    wall.Name = NameFactory.Create( "wall");
-                    _maze.MazeObjects.Add(wall);
-                    BindComboBoxObjects(wall);
-                    if (_propertyGrid != null) _propertyGrid.SelectedObject = wall;
-                    clonedObject = wall;
+                    if ( obj is MazeWall mazeWall )
+                    {
+                        clonedObject = new MazeWall( mazeWall.WallType )
+                        {
+                            UserWall = true,
+                            WallIndex = PointToStamp( point ),
+                        };
+                    }
+                    else
+                    {
+                        clonedObject = (MazeObject)Activator.CreateInstance( obj.GetType(), true );
+
+                        if ( clonedObject is TripPad tripPad )
+                        {
+                            //special case for Trip Pads, must create a pyroid too
+                            TripPadPyroid tripPyroid = new TripPadPyroid
+                            {
+                                Name = NameFactory.Create( typeof( TripPadPyroid ).Name ),
+                                TripPad = tripPad
+                            };
+
+                            tripPyroid.Position = GetAdjustedPosition( tripPyroid, tripPad.Position );
+                            tripPad.Pyroid = tripPyroid;
+                            _maze.MazeObjects.Add( tripPyroid );
+                        }
+                    }
+
+                    clonedObject.Name = NameFactory.Create( clonedObject.GetType().Name );
+                    clonedObject.Position = GetAdjustedPosition( clonedObject, point );
+                    clonedObject.Selected = true;
+                    _maze.MazeObjects.Add( clonedObject );
+
+                    BindComboBoxObjects( clonedObject );
                 }
                 else
                 {
-                    MazeObject mazeObject = (MazeObject)Activator.CreateInstance(obj.GetType(), true);
-                    mazeObject.Position = GetAdjustedPosition((MazeObject)mazeObject, point);
-                    mazeObject.Selected = true;
-                    mazeObject.Name = NameFactory.Create( obj.GetType().Name );
-                    if (mazeObject is TripPad)
-                    {
-                        //special case for Trip Pads, must create a pyroid too
-                        TripPadPyroid tripPyroid = new TripPadPyroid();
-                        tripPyroid.Position = GetAdjustedPosition(tripPyroid, mazeObject.Position);
-                        tripPyroid.Name = NameFactory.Create( "trippyroid" );
-                        _maze.MazeObjects.Add(tripPyroid);
-                        ((TripPad)mazeObject).Pyroid = tripPyroid;
-                        tripPyroid.TripPad = (TripPad)mazeObject;
-                    }
-                    _maze.MazeObjects.Add( mazeObject );
-                    BindComboBoxObjects( mazeObject);
-                    if (_propertyGrid != null) _propertyGrid.SelectedObject = mazeObject;
-                    clonedObject = mazeObject;
+                    MessageBox.Show( $"You can't add any more {obj.GetType().Name} objects.",
+                        "The Homeworld is near", MessageBoxButtons.OK, MessageBoxIcon.Warning );
                 }
             }
-            else
-            {
-                MessageBox.Show( $"You can't add any more {obj.GetType().Name} objects.",
-                    "The Homeworld is near", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
+
             return clonedObject;
         }
 
@@ -940,16 +942,16 @@ namespace mhedit
         {
             if (_comboBoxObjects != null)
             {
-                _comboBoxObjects.DataSource = _maze.MazeObjects.OrderBy(o => o.Name).ToList();
+                BindingList<IName> dataSource = new BindingList<IName>(
+                    _maze.MazeObjects.OrderBy( o => o.GetType().Name ).ToList().ConvertAll( m => (IName)m ) );
+
+                _comboBoxObjects.DataSource = dataSource;
                 _comboBoxObjects.DisplayMember = "Name";
                 _comboBoxObjects.ValueMember = "Name";
+
                 if (obj != null)
                 {
-                    _comboBoxObjects.SelectedIndex = _comboBoxObjects.FindStringExact(obj.Name);
-                }
-                else if (_comboBoxObjects.Items.Count > 0)
-                {
-                    _comboBoxObjects.SelectedIndex = 0;
+                    _comboBoxObjects.SelectedItem = obj;
                 }
             }
         }
@@ -1034,61 +1036,47 @@ namespace mhedit
             return new Point(col * GRIDUNITS * GRIDUNITSTAMPS, row * GRIDUNITS * GRIDUNITSTAMPS);
         }
 
-        private void RefreshMaze()
-        {
-            if (_propertyGrid != null)
-            {
-                MazeObject obj = GetSelectedObject();
-                _propertyGrid.SelectedObject = obj;
-                //BindComboBoxObjects(null);
-                if (_comboBoxObjects != null)
-                {
-                    if (obj != null)
-                    {
-                        int itemIndex = ComboBoxObjects.FindStringExact(obj.Name);
-                        if (itemIndex >= 0)
-                        {
-                            ComboBoxObjects.SelectedIndex = itemIndex;
-                        }
-                    }
-                    else if ( _comboBoxObjects.Items.Count > 0 )
-                    {
-                        _comboBoxObjects.SelectedIndex = 0;
-                    }
-                }
-            }
-            Invalidate();
-        }
-
-        private MazeObject FindObject(string name)
-        {
-            for (int i = 0; i < _maze.MazeObjects.Count; i++)
-            {
-                if (_maze.MazeObjects[i].Name == name) return _maze.MazeObjects[i];
-            }
-            return null;
-        }
-
         private MazeObject SelectObject(Point location)
         {
             //Adjust select point based upon some of our Panel dimension 'hacks'.
             Point adjustedLocation = new Point((int)(location.X - PADDING), location.Y - PADDING);
-            //go through each object from the top down
-            //and see if we clicked on it's area...
-            for (int i = _maze.MazeObjects.Count - 1; i >= 0; i--)
+
+            /// Get all maze objects hit..
+            IEnumerable<MazeObject> hitObjects =
+                this._maze.MazeObjects.Where( mo => PointInObject( mo, adjustedLocation ) );
+
+            /// look for an already selected object
+            MazeObject selectedObject = hitObjects.FirstOrDefault( mo => mo.Selected );
+
+            if ( selectedObject != null )
             {
-                if (PointInObject((MazeObject)_maze.MazeObjects[i], adjustedLocation))
+                /// If object already selected, shift key is pressed, and multiple hit objects then
+                /// cycle through and choose the "next" object in the z order.
+                if ( Control.ModifierKeys == Keys.Shift && hitObjects.Count() > 1 )
                 {
-                    if (((MazeObject)_maze.MazeObjects[i]).Selected == false)
-                    {
-                        ClearSelectedObjects();
-                        //SetSelectedWall(-1);
-                        ((MazeObject)_maze.MazeObjects[i]).Selected = true;
-                        return (MazeObject)_maze.MazeObjects[i];
-                    }
+                    selectedObject.Selected = false;
+
+                    List<MazeObject> hitList = hitObjects.ToList();
+
+                    int index = hitList.IndexOf( selectedObject );
+
+                    selectedObject = hitList[ ( index + 1 ) % hitList.Count ];
+
+                    selectedObject.Selected = true;
                 }
             }
-            return null;
+            else
+            {
+                /// Grab first in z order if no object already selected.
+                selectedObject = hitObjects.FirstOrDefault();
+
+                if ( selectedObject != null )
+                {
+                    selectedObject.Selected = true;
+                }
+            }
+
+            return selectedObject;
         }
 
         private bool PointInObject(MazeObject obj, Point location)
@@ -1127,23 +1115,31 @@ namespace mhedit
 
         private void SetSelectedObject(int index)
         {
-            if (index < _maze.MazeObjects.Count && index >= 0)
+            MazeObject mazeObject = this._maze.MazeObjects.ElementAtOrDefault( index );
+
+            if ( mazeObject != null )
             {
                 ClearSelectedObjects();
-                _maze.MazeObjects[index].Selected = true;
+
+                mazeObject.Selected = true;
             }
         }
 
         private void comboBoxObjects_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ClearSelectedObjects();
-
             if ( _comboBoxObjects.SelectedItem is MazeObject mazeObject )
             {
+                ClearSelectedObjects();
+
                 mazeObject.Selected = true;
             }
 
-            RefreshMaze();
+            if ( _comboBoxObjects.SelectedItem != null )
+            {
+                this._propertyGrid.SelectedObject = _comboBoxObjects.SelectedItem;
+            }
+
+            Invalidate();
         }
 
 #endregion

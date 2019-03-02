@@ -7,8 +7,9 @@ using System.Xml.Serialization;
 
 namespace mhedit.Containers
 {
+    [DefaultPropertyAttribute( "Name" )]
     [Serializable]
-    public abstract class MazeObject : ChangeTrackingBase
+    public abstract class MazeObject : ChangeTrackingBase, IName
     {
         private static readonly Point _snapSize = new Point( 64, 64 );
 
@@ -56,6 +57,7 @@ namespace mhedit.Containers
             }
         }
 
+        [BrowsableAttribute( true )]
         [DescriptionAttribute( "The name of this maze object." )]
         public string Name
         {

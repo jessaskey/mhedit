@@ -163,6 +163,17 @@ namespace mhedit
 
         #region Tree Methods
 
+        private void treeView_BeforeSelect( object sender, TreeViewCancelEventArgs e )
+        {
+            propertyGrid.SelectedObject = null;
+
+            if ( treeView.SelectedNode?.Tag is MazeController mazeController )
+            {
+                mazeController.PropertyGrid = null;
+                mazeController.ComboBoxObjects = null;
+            }
+        }
+
         private void treeView_AfterSelect( object sender, TreeViewEventArgs e )
         {
             this.RefreshTree();

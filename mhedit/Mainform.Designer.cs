@@ -387,6 +387,7 @@ namespace mhedit
             this.treeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView_AfterLabelEdit);
             this.treeView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.treeView_DrawNode);
             this.treeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView_ItemDrag);
+            this.treeView.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.treeView_BeforeSelect);
             this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterSelect);
             this.treeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeView_DragDrop);
             this.treeView.DragOver += new System.Windows.Forms.DragEventHandler(this.treeView_DragOver);

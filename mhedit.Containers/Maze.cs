@@ -37,7 +37,7 @@ namespace mhedit.Containers
     [XmlInclude(typeof(Spikes))]
     [XmlInclude(typeof(Transporter))]
     [XmlInclude(typeof(MazeWall))]
-    public class Maze : ChangeTrackingBase
+    public class Maze : ChangeTrackingBase, IName
     {
 
         #region Declarations
