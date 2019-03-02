@@ -62,7 +62,7 @@ namespace mhedit.GameControllers
                 if (versionNumbers[1] >= 0x22)
                 {
                     //load our exports
-                    string exportFile = Path.Combine(templatePath, "mhavocpe_022.exp");
+                    string exportFile = Path.Combine(templatePath, "mhavocpe.exp");
                     if (File.Exists(exportFile))
                     {
                         string[] exportLines = File.ReadAllLines(exportFile);
