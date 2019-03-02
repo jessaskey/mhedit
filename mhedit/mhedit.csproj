@@ -325,9 +325,8 @@
     <Content Include="template\mhpe.9s">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="template\mhavocpe_022.exp">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="template\036408-01.b1" />
+    <None Include="template\mhavocpe.exp" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.ico">
