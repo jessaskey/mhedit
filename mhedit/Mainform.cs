@@ -19,6 +19,7 @@ using mhedit.Containers.MazeEnemies;
 using mhedit.Containers.MazeEnemies.IonCannon;
 using mhedit.Containers.MazeObjects;
 using mhedit.Controllers;
+using mhedit.GameControllers;
 
 namespace mhedit
 {
@@ -904,53 +905,64 @@ namespace mhedit
 
         private void toolStripMenuItemPreview_Click( object sender, EventArgs e )
         {
-            if ( _currentMazeCollectionController != null && _currentMazeController != null )
+            //individual maze is required
+            if (_currentMazeController != null)
             {
-                if ( MAMEHelper.SaveROM( _currentMazeCollectionController.MazeCollection, _currentMazeController.Maze ) )
+                MazeCollectionController mazeCollectionController = _currentMazeCollectionController;
+                //mazeCollectionController is not required, but we will manually build one if it is null
+                if (mazeCollectionController == null)
+                {
+                    //build it from the template
+                    List<string> loadMessages = new List<string>();
+                    string fullTemplatePath = Path.GetFullPath(Properties.Settings.Default.TemplatesLocation);
+                    IGameController mhpe = new MajorHavocPromisedEnd(fullTemplatePath);
+                    MazeCollection mazeCollection = mhpe.LoadMazes(fullTemplatePath, loadMessages);
+                    //inject our single maze based upon the maze type A=0,B=1,C=2,D=3
+                    mazeCollection.Mazes[(int)_currentMazeController.Maze.MazeType] = _currentMazeController.Maze;
+                    mazeCollectionController = new MazeCollectionController(mazeCollection);
+                }
+
+                if (MAMEHelper.SaveROM(mazeCollectionController.MazeCollection, _currentMazeController.Maze))
                 {
                     try
                     {
                         //now launch MAME for mhavoc..
-                        string mameExe = Path.GetFullPath( Properties.Settings.Default.MameExecutable );
+                        string mameExe = Path.GetFullPath(Properties.Settings.Default.MameExecutable);
 
                         string args = "";
 
-                        if ( Properties.Settings.Default.MameDebug )
+                        if (Properties.Settings.Default.MameDebug)
                         {
                             args += "-debug ";
                         }
 
-                        if ( Properties.Settings.Default.MameWindow )
+                        if (Properties.Settings.Default.MameWindow)
                         {
                             args += "-window ";
                         }
 
                         args += Properties.Settings.Default.MameDriver;
 
-                        ProcessStartInfo info = new ProcessStartInfo( mameExe, args );
+                        ProcessStartInfo info = new ProcessStartInfo(mameExe, args);
                         info.ErrorDialog = true;
                         info.RedirectStandardError = true;
                         info.RedirectStandardOutput = true;
                         info.UseShellExecute = false;
-                        info.WorkingDirectory = Path.GetDirectoryName( mameExe );
+                        info.WorkingDirectory = Path.GetDirectoryName(mameExe);
 
                         Process p = new Process();
                         p.EnableRaisingEvents = true;
                         p.StartInfo = info;
-                        p.Exited += new EventHandler( ProcessExited );
+                        p.Exited += new EventHandler(ProcessExited);
                         p.Start();
                     }
-                    catch ( Exception ex )
+                    catch (Exception ex)
                     {
-                        MessageBox.Show( $"There was an error launching MAME," +
-                            $" verify your MAME paths in the configuration. {ex.Message}" );
+                        MessageBox.Show($"There was an error launching MAME," +
+                            $" verify your MAME paths in the configuration. {ex.Message}");
                     }
                 }
-            }
-            else
-            {
-                MessageBox.Show( "The current maze is not loaded correctly." +
-                    " This is most likely an issue with the application. Please contact Jess." );
+
             }
         }
 
