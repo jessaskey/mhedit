@@ -45,18 +45,14 @@ namespace mhedit
                 Cursor.Current = Cursors.WaitCursor;
                 Application.DoEvents();
 
-                //Load ROM's here
-                IGameController controller = new MajorHavocPromisedEnd( textBoxROMPath.Text );
-
                 List<string> loadMessages = new List<string>();
-                _mazeCollection = controller.LoadMazes( textBoxROMPath.Text, loadMessages );
-
+                IGameController controller = new MajorHavocPromisedEnd(textBoxROMPath.Text);
+                _mazeCollection = controller.LoadMazes(textBoxROMPath.Text, loadMessages);
                 _mazeCollection.AcceptChanges();
-
-                if ( loadMessages.Count > 0 )
+                if (loadMessages.Count > 0)
                 {
                     DialogMessages dm = new DialogMessages();
-                    dm.SetMessages( loadMessages );
+                    dm.SetMessages(loadMessages);
                     dm.ShowDialog();
                 }
 
