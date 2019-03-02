@@ -1,8 +1,8 @@
 .module alpha
 
-chka2            .EQU  $ff3f
+chka2            .EQU  $ff3a
 dynamic_base     .EQU  $274b
-levelst          .EQU  $df50
+levelst          .EQU  $df4b
 mzdc             .EQU  $2011
 mzlg             .EQU  $2049
 mzar             .EQU  $2081
