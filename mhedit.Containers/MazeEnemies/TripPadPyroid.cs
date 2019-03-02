@@ -36,19 +36,9 @@ namespace mhedit.Containers.MazeEnemies
 
         [BrowsableAttribute( false )]
         [XmlIgnore]
-        public override bool Selected
+        protected override bool IsHighlighted
         {
-            set
-            {
-                base.Selected = value;
-
-                /// set our associated TripPad so that folks know which ones go together
-                /// when selected.
-                if ( this._tripPad.Selected != value )
-                {
-                    this._tripPad.Selected = value;
-                }
-            }
+            get { return this._tripPad.Selected; }
         }
 
         [CategoryAttribute("Location")]

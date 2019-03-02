@@ -111,7 +111,7 @@ namespace mhedit.Containers
         {
             get
             {
-                return this._selected ?
+                return this.Selected | this.IsHighlighted ?
                     this.AddSelectedDecoration( (Image)this._image.Clone() ) : this._image;
             }
             protected set { this._image = value; }
@@ -175,10 +175,23 @@ namespace mhedit.Containers
 
         [BrowsableAttribute(false)]
         [XmlIgnore]
-        public virtual bool Selected
+        public bool Selected
         {
             get { return this._selected; }
             set { this._selected = value; }
+        }
+
+        /// <summary>
+        /// In some cases there are maze objects whom are connected to other maze
+        /// objects by behavior. For Example TripPads and their associated Pyroids.
+        /// The IsHighlighted property allows the user to visualize this connection
+        /// on the screen.
+        /// </summary>
+        [BrowsableAttribute( false )]
+        [XmlIgnore]
+        protected virtual bool IsHighlighted
+        {
+            get { return false; }
         }
 
         public abstract byte[] ToBytes();
@@ -200,7 +213,11 @@ namespace mhedit.Containers
         {
             //draw little brackets in each corner
             Graphics g = Graphics.FromImage( img );
-            Pen redPen = new Pen( Color.Orange, 1 );
+
+            Pen redPen = this.IsHighlighted ?
+                new Pen( Color.Aquamarine, 1 ) :
+                new Pen( Color.Orange, 1 );
+
             //top left
             g.DrawLine( redPen, 0, 0, 0, 6 );
             g.DrawLine( redPen, 0, 0, 6, 0 );

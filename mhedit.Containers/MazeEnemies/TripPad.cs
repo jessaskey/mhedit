@@ -47,19 +47,9 @@ namespace mhedit.Containers.MazeEnemies
 
         [BrowsableAttribute( false )]
         [XmlIgnore]
-        public override bool Selected
+        protected override bool IsHighlighted
         {
-            set
-            {
-                base.Selected = value;
-
-                /// set our associated TripPad so that folks know which ones go together
-                /// when selected.
-                if ( this._pyroid.Selected != value )
-                {
-                    this._pyroid.Selected = value;
-                }
-            }
+            get { return this._pyroid.Selected; }
         }
 
         [DescriptionAttribute( "The pyroid associated with this trip pad." )]
