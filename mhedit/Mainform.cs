@@ -757,7 +757,7 @@ namespace mhedit
             {
                 Title = "Open Maze or Maze Collection",
                 InitialDirectory = Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ),
-                Filter = "Maze Files (*.mhz)|*.mhz|Maze Collection Files (*.mhc)|*.mhc",
+                Filter = "Editor Files (*.mhz;*.mhc)|*.mhz;*.mhc|Mazes (*.mhz)|*.mhz|Maze Collections (*.mhc)|*.mhc",
                 CheckFileExists = true,
             };
 

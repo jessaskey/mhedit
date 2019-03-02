@@ -595,7 +595,7 @@ namespace mhedit
             base.OnMouseMove(e);
         }
 
-        protected override void OnMouseClick(MouseEventArgs e)
+        protected override void OnMouseDown( MouseEventArgs e )
         {
             if ( e.Button == MouseButtons.Left )
             {
@@ -605,7 +605,7 @@ namespace mhedit
                 RefreshMaze();
             }
 
-            base.OnMouseClick( e );
+            base.OnMouseDown( e );
         }
 
         protected override void OnDragOver(DragEventArgs drgevent)
@@ -1051,7 +1051,7 @@ namespace mhedit
                             ComboBoxObjects.SelectedIndex = itemIndex;
                         }
                     }
-                    else
+                    else if ( _comboBoxObjects.Items.Count > 0 )
                     {
                         _comboBoxObjects.SelectedIndex = 0;
                     }
