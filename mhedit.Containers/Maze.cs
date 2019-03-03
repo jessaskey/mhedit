@@ -78,14 +78,12 @@ namespace mhedit.Containers
 
         public Maze(MazeType type, string name)
         {
-            _mazeType = type;
-
             _mazeName = name;
+
+            this.MazeType = type;
 
             ( (INotifyPropertyChanged)this._mazeObjects ).PropertyChanged +=
                 this.ForwardIsChangedPropertyChanged;
-
-            InitBaseMap();
         }
 
         #endregion
@@ -219,8 +217,8 @@ namespace mhedit.Containers
             get { return _mazeType; }
             set
             {
+                InitBaseMap( value );
                 this.SetField( ref this._mazeType, value );
-                InitBaseMap();
             }
         }
 
@@ -264,11 +262,11 @@ namespace mhedit.Containers
 
         #endregion
 
-        private void InitBaseMap()
+        private void InitBaseMap( MazeType type )
         {
             //initialize our base maze maps
             _mazeWallBase = null;
-            MazeFactory.MazeBaseData mazeBaseData = MazeFactory.GetBaseMap(_mazeType);
+            MazeFactory.MazeBaseData mazeBaseData = MazeFactory.GetBaseMap( type );
             _mazeStampsX = mazeBaseData.mazeStampsX;
             _mazeStampsY = mazeBaseData.mazeStampsY;
             _mazeWallBase = mazeBaseData.mazeWallBase;

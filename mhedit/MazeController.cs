@@ -74,6 +74,8 @@ namespace mhedit
         {
             this._maze = maze;
 
+            this._maze.PropertyChanged += this.OnMazePropertyChanged;
+
             DoubleBuffered = true;
             SetStyle( ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true );
             UpdateStyles();
@@ -116,15 +118,6 @@ namespace mhedit
             get
             {
                 return _maze;
-            }
-        }
-
-        [BrowsableAttribute(false)]
-        public ExtendedObservableCollection<MazeObject> MazeObjects
-        {
-            get
-            {
-                return _maze.MazeObjects;
             }
         }
 
@@ -177,23 +170,6 @@ namespace mhedit
             get { return _zoom; }
             set { _zoom = value; }
         }
-
-        //[DescriptionAttribute("The structure type of the maze.")]
-        //public MazeType MazeType
-        //{
-        //    get { return _maze.MazeType; }
-        //    set 
-        //    { 
-        //        _maze.MazeType = value;
-
-
-            /// <summary>
-            ///  TODO: Need to deal with basemap changes at this level.
-            /// </summary>
-        //        InitBaseMap();
-        //        DataChanged();
-        //    }
-        //}
 
 #endregion
 
@@ -1146,6 +1122,15 @@ namespace mhedit
         }
 
 #endregion
+
+        private void OnMazePropertyChanged( object sender, PropertyChangedEventArgs e )
+        {
+            /// Force redraw of maze on type change..
+            if ( e.PropertyName.Equals( "MazeType" ) )
+            {
+                this.Invalidate();
+            }
+        }
 
         private void InitializeComponent()
         {
