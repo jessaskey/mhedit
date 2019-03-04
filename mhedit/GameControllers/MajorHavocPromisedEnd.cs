@@ -978,7 +978,7 @@ namespace mhedit.GameControllers
                 if (mazeCollection.Mazes[i] != null)
                 {
                     //Reactoid, Pyroid, Perkoids and Maxoids
-                    pointerIndex += WritePagedROM((ushort)_exports["mzinit"], WordToByteArray(currentAddressPage7), pointerIndex, 6);
+                    pointerIndex += WritePagedROM((ushort)_exports["mzinit"], WordToByteArray(currentAddressPage7), pointerIndex, 7);
                     currentAddressPage7 += WritePagedROM((ushort)currentAddressPage7, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.ReactoidPyroidPerkoidMax), 0, 7);
                 }
             }

@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="MameExecutable" Type="System.String" Scope="User">
-      <Value Profile="(Default)">c:\mame\mame.exe</Value>
+      <Value Profile="(Default)">c:\hbmame\hbmame64.exe</Value>
     </Setting>
     <Setting Name="MameDriver" Type="System.String" Scope="User">
-      <Value Profile="(Default)">mhavoc</Value>
+      <Value Profile="(Default)">mhavocpex</Value>
     </Setting>
     <Setting Name="MHPUsername" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

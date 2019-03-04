@@ -25,7 +25,7 @@ namespace mhedit.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("c:\\mame\\mame.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("c:\\hbmame\\hbmame64.exe")]
         public string MameExecutable {
             get {
                 return ((string)(this["MameExecutable"]));
@@ -37,7 +37,7 @@ namespace mhedit.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("mhavoc")]
+        [global::System.Configuration.DefaultSettingValueAttribute("mhavocpex")]
         public string MameDriver {
             get {
                 return ((string)(this["MameDriver"]));
