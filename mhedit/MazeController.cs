@@ -579,7 +579,7 @@ namespace mhedit
 
         protected override void OnMouseDown( MouseEventArgs e )
         {
-            if ( e.Button == MouseButtons.Left )
+            if ( e.Button == MouseButtons.Left && this.ComboBoxObjects != null )
             {
                 this.Select();
 

@@ -1152,8 +1152,8 @@ namespace mhedit
                         Environment.SpecialFolder.MyDocuments ),
                     /// Have FileName include parent collection if not already set.
                     FileName = mazeCollectionController != null ?
-                        $"{mazeCollectionController.MazeCollection.Name}.{mazeController.Name}.mhz" :
-                        $"{mazeController.Name}.mhz",
+                        $"{mazeCollectionController.MazeCollection.Name}.{mazeController.Maze.Name}.mhz" :
+                        $"{mazeController.Maze.Name}.mhz",
                     Filter = "Maze Files (*.mhz)|*.mhz|All files (*.*)|*.*",
                     AddExtension = true,
                     OverwritePrompt = true

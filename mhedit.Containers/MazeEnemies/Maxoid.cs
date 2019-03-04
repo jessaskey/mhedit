@@ -31,15 +31,6 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [CategoryAttribute("Location")]
-        [DescriptionAttribute("Defines how the object moves within the maze and at what speed.")]
-        [TypeConverter(typeof(TypeConverters.VelocityTypeConverter))]
-        public Velocity Velocity
-        {
-            get { return _velocity; }
-            set { this.SetField( ref this._velocity, value ); }
-        }
-
-        [CategoryAttribute("Location")]
         [DescriptionAttribute("Defines how fast Max moves after Rex.")]
         public MaxSpeed Speed
         {
