@@ -192,7 +192,7 @@ namespace mhedit
 
         private void linkLabelWebLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://mhp.askey.org");
+            System.Diagnostics.Process.Start("http://mhedit.askey.org");
         }
 
         private void button1_Click(object sender, EventArgs e)
