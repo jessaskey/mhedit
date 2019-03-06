@@ -13,7 +13,7 @@ namespace mhedit.Containers.MazeEnemies
     {
         private static readonly Point _snapSize = new Point( 4, 4 );
 
-        private Velocity _velocity = new Velocity();
+        //private Velocity _velocity = new Velocity();
         private int _triggerDistance;
         private MaxSpeed _speed;
 

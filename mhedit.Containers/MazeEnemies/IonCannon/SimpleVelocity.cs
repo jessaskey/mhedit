@@ -3,7 +3,7 @@
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
     [Serializable]
-    public struct SimpleVelocity
+    public class SimpleVelocity : ChangeTrackingBase
     {
         private int _x;
         private int _y;

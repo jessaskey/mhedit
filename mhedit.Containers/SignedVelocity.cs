@@ -8,7 +8,7 @@ namespace mhedit.Containers
     /// and is used exclusively for IonCannons
     /// </summary>
     [Serializable]
-    public struct SignedVelocity
+    public class SignedVelocity : ChangeTrackingBase
     {
         private sbyte _x;
         private sbyte _y;
