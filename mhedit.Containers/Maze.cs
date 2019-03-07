@@ -77,7 +77,7 @@ namespace mhedit.Containers
             this.MazeType = type;
 
             ( (INotifyPropertyChanged)this._mazeObjects ).PropertyChanged +=
-                this.ForwardIsChangedPropertyChanged;
+                this.ForwardPropertyChanged;
         }
 
         #endregion

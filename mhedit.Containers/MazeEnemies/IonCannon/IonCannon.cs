@@ -70,7 +70,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                 this.SetField( ref this._program, value );
 
                 ( (INotifyPropertyChanged)this._program ).PropertyChanged +=
-                    this.ForwardIsChangedPropertyChanged;
+                    this.ForwardPropertyChanged;
             }
         }
 

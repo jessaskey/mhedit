@@ -1111,10 +1111,12 @@ namespace mhedit
 
 		private void OnMazePropertyChanged( object sender, PropertyChangedEventArgs e )
 		{
-            /// Force redraw of maze on type change..
-            if ( e.PropertyName.Equals( "MazeType" ) )
-            {
+			/// Force redraw of maze on change..
 			this.Invalidate();
+
+			if ( this._propertyGrid != null )
+			{
+				this._propertyGrid.Refresh();
 			}
 		}
 

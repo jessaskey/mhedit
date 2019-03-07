@@ -35,7 +35,7 @@ namespace mhedit.Containers
             _collectionName = name;
 
             ( (INotifyPropertyChanged)this._mazes ).PropertyChanged +=
-                this.ForwardIsChangedPropertyChanged;
+                this.ForwardPropertyChanged;
         }
 
         #endregion
