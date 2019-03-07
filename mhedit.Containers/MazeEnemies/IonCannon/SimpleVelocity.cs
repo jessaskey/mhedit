@@ -22,7 +22,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                         value, "Must be -64 < value < 64." );
                 }
 
-                this._x = value;
+                this.SetField( ref this._x, value );
             }
         }
 
@@ -40,7 +40,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                         value, "Must be -64 < value < 64." );
                 }
 
-                this._y = value;
+                this.SetField( ref this._y, value );
             }
         }
 

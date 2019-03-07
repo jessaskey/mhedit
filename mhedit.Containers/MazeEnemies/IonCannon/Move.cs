@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
@@ -16,7 +17,9 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
         public Move()
             : base( Commands.Move )
-        {}
+        {
+            this._velocity.PropertyChanged += this.ForwardIsChangedPropertyChanged;
+        }
 
         //private Move( RomSerializationInfo si, StreamingContext context )
         //    : this()
@@ -53,8 +56,30 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         public SimpleVelocity Velocity
         {
             get { return _velocity; }
-            set { this.SetField( ref this._velocity, value ); }
         }
+
+        #region Implementation of IChangeTracking
+
+        [BrowsableAttribute( false )]
+        [XmlIgnore]
+        public override bool IsChanged
+        {
+            get
+            {
+                return base.IsChanged |
+                    this._velocity.IsChanged;
+            }
+        }
+
+        public override void AcceptChanges()
+        {
+            /// clear composite member first.
+            this._velocity.AcceptChanges();
+
+            base.AcceptChanges();
+        }
+
+        #endregion
 
         public override void GetObjectData( List<byte> bytes )
         {

@@ -21,7 +21,7 @@ namespace mhedit.Containers
             }
             set
             {
-                this._x = value;
+                this.SetField( ref this._x, value );
             }
         }
 
@@ -33,9 +33,8 @@ namespace mhedit.Containers
             }
             set
             {
-                this._y = value;
+                this.SetField( ref this._y, value );
             }
         }
-
     }
 }

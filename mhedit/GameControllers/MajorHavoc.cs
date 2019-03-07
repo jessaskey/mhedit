@@ -474,11 +474,8 @@ namespace mhedit.GameControllers
                                     cannonMovement.WaitFrames = waitFrames;
                                     if ( waitFrames > 0 )
                                     {
-                                        cannonMovement.Velocity = new SimpleVelocity
-                                        {
-                                            X = (sbyte)ReadByte( cannonPointerAddress, ++cannonCommandOffset ),
-                                            Y = (sbyte)ReadByte( cannonPointerAddress, ++cannonCommandOffset )
-                                        };
+                                        cannonMovement.Velocity.X = (sbyte)ReadByte( cannonPointerAddress, ++cannonCommandOffset );
+                                        cannonMovement.Velocity.Y = (sbyte)ReadByte( cannonPointerAddress, ++cannonCommandOffset );
                                     }
                                     //cannonMovement.
                                     cannon.Program.Add( cannonMovement );
