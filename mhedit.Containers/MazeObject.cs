@@ -20,7 +20,6 @@ namespace mhedit.Containers
         private Image _image;
         private readonly Point _staticLsb;
         private Point _renderOffset;
-        private readonly Point _dragDropFix;
 
         private bool _selected = false;
 
@@ -32,10 +31,6 @@ namespace mhedit.Containers
         {}
 
         protected MazeObject( int maxObjects, Image image, Point staticLsb, Point renderOffset )
-            : this( maxObjects, image, staticLsb, renderOffset, new Point() )
-        {}
-
-        protected MazeObject( int maxObjects, Image image, Point staticLsb, Point renderOffset, Point dragFix )
         {
             this._maxObjects = maxObjects;
 
@@ -44,8 +39,6 @@ namespace mhedit.Containers
             this._staticLsb = staticLsb;
 
             this._renderOffset = renderOffset;
-
-            this._dragDropFix = dragFix;
         }
 
         [BrowsableAttribute( false )]
@@ -90,12 +83,6 @@ namespace mhedit.Containers
         public virtual Point SnapSize
         {
             get { return _snapSize; }
-        }
-
-        [BrowsableAttribute( false )]
-        public Point DragDropFix
-        {
-            get { return _dragDropFix; }
         }
 
         /// <summary>
