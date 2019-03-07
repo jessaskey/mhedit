@@ -12,7 +12,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     [Serializable]
     public class IonCannon : MazeObject
     {
-        private static readonly Point _snapSize = new Point( 4, 4 );
+        private static readonly Point _snapSize = new Point( 1, 1 );
 
         private IonCannonProgram _program;
 
