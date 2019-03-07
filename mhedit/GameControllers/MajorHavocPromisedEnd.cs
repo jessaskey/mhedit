@@ -41,9 +41,14 @@ namespace mhedit.GameControllers
             get { return _lastError; }
         }
 
+        public Version GetROMVersion()
+        {
+            byte[] versionBytes = ReadPagedROM(0x2002, 0, 2, 6);
+            return new Version(versionBytes[0], versionBytes[1],0,0);
+        }
+
         private void LoadTemplate(string templatePath)
         {
-
             //load up our roms for now...
             try
             {
@@ -55,11 +60,10 @@ namespace mhedit.GameControllers
                 throw new Exception("ROM Load Error - Page6/7: " + Exception.Message);
             }
 
-            byte[] versionNumbers = ReadPagedROM(0x2002, 0, 2, 6);
-
-            if (versionNumbers[0] >= 0)
+            Version romVersion = GetROMVersion(); 
+            if (romVersion.Major >= 0)
             {
-                if (versionNumbers[1] >= 0x22)
+                if (romVersion.Minor >= 0x22)
                 {
                     //load our exports
                     string exportFile = Path.Combine(templatePath, "mhavocpe.exp");
@@ -832,6 +836,7 @@ namespace mhedit.GameControllers
             otherROMs.Add("mhpe.6h");
             otherROMs.Add("mhpe.6jk");
             otherROMs.Add("mhpe.9s");
+            otherROMs.Add("036408-01.b1");
 
             foreach (string rom in otherROMs)
             {
