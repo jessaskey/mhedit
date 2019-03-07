@@ -15,7 +15,7 @@ namespace mhedit.Containers.MazeObjects
             : base( 20,
                     ResourceFactory.GetResourceImage( ImageResource ),
                     new Point( 0x90, 0x40 ),
-                    new Point( 0, 2 ) )
+                    new Point( 4, 6 ) )
         { }
 
         [CategoryAttribute("Custom")]

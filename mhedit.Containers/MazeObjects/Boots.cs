@@ -20,6 +20,22 @@ namespace mhedit.Containers.MazeObjects
                     new Point( 8, 8 ) )
         { }
 
+        public override Point GetAdjustedPosition( Point point )
+        {
+            Point adjusted = base.GetAdjustedPosition( point );
+
+            /// Make a special adjustment for drag/drop operations to make the drop 
+            /// behavior/location logical from the Users perspective. This is due 
+            /// to the Image being displayed between 2 maze stamps.
+            /// Thus, make adjustments based upon the cursor being in the lower or
+            /// upper range of a maze stamp
+            adjusted.Y +=
+                ( ( point.Y - DataConverter.PADDING ) % DataConverter.CanvasGridSize ) < 32 ?
+                0 : 64;
+
+            return adjusted;
+        }
+
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();

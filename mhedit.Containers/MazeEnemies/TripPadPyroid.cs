@@ -19,7 +19,9 @@ namespace mhedit.Containers.MazeEnemies
 
         public TripPadPyroid()
             : base( 7,
-                    ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.pyroidr_obj.png" ) )
+                    ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.pyroidr_obj.png" ),
+                    new Point( 0x40, 0x00 ),
+                    new Point( 8, 8 ) )
         { }
 
         /// <summary>

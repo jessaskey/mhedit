@@ -22,6 +22,22 @@ namespace mhedit.Containers.MazeObjects
                     new Point( 32, 32 ) )
         { }
 
+        public override Point GetAdjustedPosition( Point point )
+        {
+            Point adjusted = base.GetAdjustedPosition( point );
+
+            /// Make a special adjustment for drag/drop operations to make the drop 
+            /// behavior/location logical from the Users perspective. This is due 
+            /// to the Image being displayed between 2 maze stamps.
+            /// Thus, make adjustments based upon the cursor being in the lower or
+            /// upper range of a maze stamp
+            adjusted.Y +=
+                ( ( point.Y - DataConverter.PADDING ) % DataConverter.CanvasGridSize ) < 32 ?
+                -32 : 32;
+
+            return adjusted;
+        }
+
         [DescriptionAttribute( "The color of the Lock. The Lock will only open doors with the same color." )]
         public ObjectColor LockColor
         {
@@ -55,7 +71,7 @@ namespace mhedit.Containers.MazeObjects
             {
                 bytes.Add((byte)_color);
                 bytes.AddRange(DataConverter.PointToByteArrayPacked(((Key)obj).Position));
-                bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(this.Position.X, this.Position.Y + 64)));
+                bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(this.Position.X, this.Position.Y)));
             }
             else
             {

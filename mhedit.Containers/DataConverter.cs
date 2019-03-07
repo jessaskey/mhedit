@@ -1,22 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace mhedit.Containers
 {
     public static class DataConverter
     {
-        //Scale Factor between Atari and Canvas
         private static int _vectorGridSize = 256;
-        private static int _canvasGridSize = 64;
-
-        private static int _scaleFactor = _vectorGridSize / _canvasGridSize;
-
+        private const int GRIDUNITS = 8;
+        private const int GRIDUNITSTAMPS = 8;
         private static int _canvasGridOffsetX = 3;
         private static int _canvasGridOffsetY = -3;
+
+        /// <summary>
+        /// The number of pixels in a Maze Grid/Stamp within the Editor.
+        /// </summary>
+        public static int CanvasGridSize = GRIDUNITSTAMPS * GRIDUNITS;
+
+        /// <summary>
+        /// The number of pixels of Padding around the Maze Canvas in the editor.
+        /// For aesthetics only.
+        /// </summary>
+        public const int PADDING = 10;
+
+        /// <summary>
+        /// Scale Factor between Atari and Editor Canvas.
+        /// </summary>
+        public static int PositionScaleFactor = _vectorGridSize / CanvasGridSize;
 
         /// <summary>
         /// Converts an Atari vector tuple into an editor
@@ -46,8 +55,8 @@ namespace mhedit.Containers
             // than the object grid... the object grid is relative to each maze pattern. 
 
             Point pixels = new Point();
-            pixels.X = (vector.Item1 / _scaleFactor) + (_canvasGridOffsetX * _canvasGridSize);  //shift 3 pixel grids to the right
-            pixels.Y = Math.Abs((vector.Item2 / _scaleFactor)) + (_canvasGridOffsetY * _canvasGridSize) -32; //shift 4 pixel grids up
+            pixels.X = (vector.Item1 / PositionScaleFactor) + (_canvasGridOffsetX * CanvasGridSize);  //shift 3 pixel grids to the right
+            pixels.Y = Math.Abs((vector.Item2 / PositionScaleFactor)) + (_canvasGridOffsetY * CanvasGridSize) -32; //shift 4 pixel grids up
             return pixels;
         }
 
@@ -60,8 +69,8 @@ namespace mhedit.Containers
         public static Point ConvertPixelsToVector(Point pixels)
         {
             Point vector = new Point();
-            vector.X = (pixels.X - (_canvasGridOffsetX * _canvasGridSize)) * _scaleFactor;
-            vector.Y = -1 * ((pixels.Y + 32 - (_canvasGridOffsetY * _canvasGridSize)) * _scaleFactor);
+            vector.X = (pixels.X - (_canvasGridOffsetX * CanvasGridSize)) * PositionScaleFactor;
+            vector.Y = -1 * ((pixels.Y + 32 - (_canvasGridOffsetY * CanvasGridSize)) * PositionScaleFactor);
             return vector;
         }
 
@@ -110,7 +119,7 @@ namespace mhedit.Containers
 
         public static byte[] PointToByteArrayShort(Point point)
         {
-            Point vector = new Point((int)(point.X << 2) - 0x300, (0xfd00 - (int)(point.Y << 2)));
+            Point vector = new Point( (int)( point.X << 2 ) - 0x300, ( 0xfd00 - (int)( ( point.Y + 32 ) << 2 ) ) );
             byte xh = (byte)((vector.X & 0xff00) >> 8);
             byte yh = (byte)((vector.Y & 0xff00) >> 8);
             return new byte[] { xh, yh };
@@ -118,7 +127,7 @@ namespace mhedit.Containers
 
         public static byte[] PointToByteArrayPacked(Point point)
         {
-            Point vector = new Point((int)(point.X << 2) - 0x400, (0xfd00 - ((int)(point.Y << 2))));
+            Point vector = new Point( (int)( point.X << 2 ) - 0x400, ( 0xfd00 - ( (int)( ( point.Y + 32 ) << 2 ) ) ) );
             byte xh = (byte)((vector.X & 0x0f00) >> 8);
             byte yh = (byte)((vector.Y & 0x0f00) >> 4);
             return new byte[] { (byte)(xh | yh) };
@@ -133,8 +142,5 @@ namespace mhedit.Containers
         {
             return Convert.ToInt16(value.ToString("X2"), 10);
         }
-
-
-
     }
 }

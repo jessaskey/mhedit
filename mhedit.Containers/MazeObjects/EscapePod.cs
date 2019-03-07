@@ -14,7 +14,6 @@ namespace mhedit.Containers.MazeObjects
     {
         // Has fixed position in maze.
         private static Point _position = new Point( 1184, 352 );
-        private static readonly Point _snapSize = new Point( 4, 4 );
 
         private EscapePodOption _option = EscapePodOption.Optional;
 
@@ -32,12 +31,6 @@ namespace mhedit.Containers.MazeObjects
         {
             get { return _position; }
             set {  }
-        }
-
-        [BrowsableAttribute( false )]
-        public override Point SnapSize
-        {
-            get { return _snapSize; }
         }
 
         [DescriptionAttribute("Sets whether the player must use the escape pod to exit the maze or if they may also exit the maze through the main maze doors.")]

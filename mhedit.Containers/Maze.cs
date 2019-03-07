@@ -42,12 +42,6 @@ namespace mhedit.Containers
 
         #region Declarations
 
-        public const int MAXWALLS = 209;
-
-        private const int GRIDUNITS = 8;
-        private const int GRIDUNITSTAMPS = 8;
-        //private Point objectOffset = new Point(-16, 16);
-
         private Guid _id = Guid.NewGuid();
         private string _mazeName = null;
         private string _mazeDescription = String.Empty;
@@ -285,7 +279,7 @@ namespace mhedit.Containers
                     if (wall != null)
                     {
                         wall.Name = NameFactory.Create( obj.GetType().Name );
-                        wall.Position = GetAdjustedPosition((MazeObject)wall, wall.Position);
+                        wall.Position = wall.GetAdjustedPosition( wall.Position);
                         _mazeObjects.Add((MazeObject)obj);
                         wasAdded = true;
                     }
@@ -305,41 +299,19 @@ namespace mhedit.Containers
             return wasAdded;
         }
 
-        private Point GetAdjustedPosition(MazeObject obj, Point point)
+        public int PointToStamp( Point point )
         {
-            //Point snapPosition = new Point();
-            Point finalPosition = new Point();
-            //adjust for size of object so mouse appears to be at center point
-            finalPosition.X = point.X - (obj.Size.Width / 2);
-            finalPosition.Y = point.Y - (obj.Size.Height / 2);
-            //apply the objects snapto grid
-            finalPosition.X = finalPosition.X - (finalPosition.X % obj.SnapSize.X);
-            finalPosition.Y = finalPosition.Y - (finalPosition.Y % obj.SnapSize.Y);
-
-            //apply any offset
-            finalPosition.X = finalPosition.X + obj.RenderOffset.X;
-            finalPosition.Y = finalPosition.Y + obj.RenderOffset.Y;
-            
-            //bounds check
-            if (finalPosition.X < 0) finalPosition.X = 0;
-            if (finalPosition.Y < 0) finalPosition.Y = 0;
-            
-            
-            return finalPosition;
+            int row = point.X / ( DataConverter.CanvasGridSize );
+            int col = point.Y / ( DataConverter.CanvasGridSize );
+            return Math.Max( Math.Min( ( col * this.MazeStampsX ) + row, this.MazeWallBase.Count ), 0 );
         }
 
-        public int PointToStamp(Point point)
+        public Point PointFromStamp( int stamp )
         {
-            int row = point.X / (GRIDUNITS * GRIDUNITSTAMPS);
-            int col = point.Y / (GRIDUNITS * GRIDUNITSTAMPS);
-            return Math.Max(Math.Min((col * _mazeStampsX) + row, MAXWALLS), 0);
+            int col = stamp % this.MazeStampsX;
+            int row = stamp / this.MazeStampsX;
+            return new Point( col * DataConverter.CanvasGridSize, row * DataConverter.CanvasGridSize );
         }
 
-        public Point PointFromStamp(int stamp)
-        {
-            int col = stamp % _mazeStampsX;
-            int row = stamp / _mazeStampsX;
-            return new Point(col * GRIDUNITS * GRIDUNITSTAMPS, row * GRIDUNITS * GRIDUNITSTAMPS);
-        }
     }
 }

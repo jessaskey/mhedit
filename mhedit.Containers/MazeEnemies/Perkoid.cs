@@ -12,7 +12,7 @@ namespace mhedit.Containers.MazeEnemies
     [Serializable]
     public class Perkoid : MazeObject
     {
-        private static readonly Point _snapSize = new Point( 4, 4 );
+        private static readonly Point _snapSize = new Point( 1, 1 );
 
         private SignedVelocity _velocity = new SignedVelocity();
         private SignedVelocity _incrementingVelocity = new SignedVelocity();
@@ -21,7 +21,7 @@ namespace mhedit.Containers.MazeEnemies
             : base( 10,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.perkoid_obj.png" ),
                     Point.Empty,
-                    new Point( 16, 16 ) )
+                    new Point( 16, 20 ) )
         {}
 
         [BrowsableAttribute( false )]

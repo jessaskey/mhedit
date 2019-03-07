@@ -12,7 +12,8 @@ namespace mhedit.Containers.MazeEnemies
     [Serializable]
     public class Pyroid : MazeObject
     {
-        private static readonly Point _snapSize = new Point( 4, 4 );
+        /// Pyroids have High Resolution position and can be placed anywhere.
+        private static readonly Point _snapSize = new Point( 1, 1 );
 
         private SignedVelocity _velocity = new SignedVelocity();
         private SignedVelocity _incrementingVelocity = new SignedVelocity();
