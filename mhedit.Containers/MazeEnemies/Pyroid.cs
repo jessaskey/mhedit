@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies
 {
@@ -23,7 +24,11 @@ namespace mhedit.Containers.MazeEnemies
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.pyroid_obj.png" ),
                     Point.Empty,
                     new Point( 8, 8 ) )
-        {}
+        {
+            this._velocity.PropertyChanged += this.ForwardPropertyChanged;
+
+            this._incrementingVelocity.PropertyChanged += this.ForwardPropertyChanged;
+        }
 
         [BrowsableAttribute( false )]
         public override Point SnapSize
@@ -37,7 +42,6 @@ namespace mhedit.Containers.MazeEnemies
         public SignedVelocity Velocity
         {
             get { return _velocity; }
-            set { this.SetField( ref this._velocity, value ); }
         }
 
         [CategoryAttribute( "Location" )]
@@ -46,8 +50,33 @@ namespace mhedit.Containers.MazeEnemies
         public SignedVelocity IncrementingVelocity
         {
             get { return _incrementingVelocity; }
-            set { this.SetField( ref this._incrementingVelocity, value ); }
         }
+
+        #region Implementation of IChangeTracking
+
+        [BrowsableAttribute( false )]
+        [XmlIgnore]
+        public override bool IsChanged
+        {
+            get
+            {
+                return base.IsChanged |
+                    this._velocity.IsChanged |
+                    this._incrementingVelocity.IsChanged;
+            }
+        }
+
+        public override void AcceptChanges()
+        {
+            /// clear composite member first.
+            this._velocity.AcceptChanges();
+
+            this._incrementingVelocity.AcceptChanges();
+
+            base.AcceptChanges();
+        }
+
+        #endregion
 
         public override byte[] ToBytes()
         {

@@ -8,7 +8,7 @@ namespace mhedit.Containers
     /// and is used exclusively for IonCannons
     /// </summary>
     [Serializable]
-    public struct SignedVelocity
+    public class SignedVelocity : ChangeTrackingBase
     {
         private sbyte _x;
         private sbyte _y;
@@ -21,7 +21,7 @@ namespace mhedit.Containers
             }
             set
             {
-                this._x = value;
+                this.SetField( ref this._x, value );
             }
         }
 
@@ -33,9 +33,8 @@ namespace mhedit.Containers
             }
             set
             {
-                this._y = value;
+                this.SetField( ref this._y, value );
             }
         }
-
     }
 }
