@@ -299,7 +299,7 @@ namespace mhedit
             this.toolStripButtonMAME.Name = "toolStripButtonMAME";
             this.toolStripButtonMAME.Size = new System.Drawing.Size(23, 22);
             this.toolStripButtonMAME.Text = "Run Maze in HBMAME";
-            this.toolStripButtonMAME.ToolTipText = "Run Maze in MAME - Hint, click on the maze in the tree first!";
+            this.toolStripButtonMAME.ToolTipText = "Run Maze in HBMAME - Hint, click on the maze in the tree first!";
             this.toolStripButtonMAME.Click += new System.EventHandler(this.toolStripMenuItemPreview_Click);
             // 
             // toolStripButtonHome
