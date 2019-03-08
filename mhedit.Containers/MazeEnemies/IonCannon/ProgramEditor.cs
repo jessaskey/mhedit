@@ -13,7 +13,33 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 {
     public partial class CannonProgramEditor : Form
     {
+        private enum EditState
+        {
+            /// <summary>
+            /// Indicates that this edit session started with a program that was
+            /// previously unchanged. Thus the IChangeTracking.IsChanged property
+            /// is set to False. I.e. This edit session started with an unmodified
+            /// or previously saved program.
+            /// </summary>
+            UneditedProgram,
+
+            /// <summary>
+            /// Indicates that this edit session started with a program that was
+            /// previously edited/changed. Thus the IChangeTracking.IsChanged property
+            /// is set to True. I.e. This edit session started with a modified or
+            /// previously altered program.
+            /// </summary>
+            EditedProgramNewSession,
+
+            /// <summary>
+            /// Indicates that this edit session has resulted in changes to the
+            /// program. The IChangeTracking.IsChanged property will return True.
+            /// </summary>
+            ProgramEditsOccured
+        }
+
         private IonCannonProgram _program;
+        private EditState _state;
 
         public CannonProgramEditor( IonCannonProgram program )
         {
@@ -22,6 +48,9 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             LoadPresets();
 
             this._program = program;
+
+            this.State = program.IsChanged ?
+                EditState.EditedProgramNewSession : EditState.UneditedProgram;
 
             this.AddNewItems( 0, program );
 
@@ -37,6 +66,18 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             get
             {
                 return _program;
+            }
+        }
+
+        private EditState State
+        {
+            get { return this._state; }
+            set
+            {
+                this.Text = "Ion Cannon Program Editor " +
+                            $"{( value == EditState.ProgramEditsOccured ? ChangeTrackingBase.ModifiedBullet : "" )}";
+
+                this._state = value;
             }
         }
 
@@ -64,6 +105,8 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
         private void OnInstructionPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
+            this.State = EditState.ProgramEditsOccured;
+
             this.treeViewProgram.Refresh();
         }
 
@@ -300,11 +343,12 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             if ( this._program.IsChanged )
             {
                 result = MessageBox.Show(
-                    $"There are unsaved changes. " +
-                    $"Press OK to discard changes and load, or Cancel otherwise.",
+                    $"There are unsaved changes from the current or a previous editor session. " +
+                    Environment.NewLine +
+                    $"Press OK to discard changes and Load, or Cancel to return to the editor.",
                     "Load Program",
                     MessageBoxButtons.OKCancel,
-                    MessageBoxIcon.Question );
+                    MessageBoxIcon.Warning );
             }
 
             //load a preset
@@ -328,6 +372,12 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                             _program = (IonCannonProgram)serializer.Deserialize( reader );
 
                             _program.AcceptChanges();
+
+                            /// Even though the program has just been loaded and we have cleared
+                            /// the IChangeTracking.IsChanged flag we still want to track the
+                            /// fact that the user has replaced the existing IonCannonProgram with
+                            /// a new one.
+                            this.State = EditState.ProgramEditsOccured;
 
                             this.treeViewProgram.Nodes.Clear();
 
@@ -356,14 +406,16 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
         private void CannonProgramEditor_FormClosing( object sender, FormClosingEventArgs e )
         {
-            if ( this._program.IsChanged && this.DialogResult == DialogResult.Cancel )
+            if ( this.State == EditState.ProgramEditsOccured &&
+                 this.DialogResult == DialogResult.Cancel )
             {
                 DialogResult result = MessageBox.Show(
-                    $"There are unsaved changes. " +
+                    $"There are unsaved changes from this edit session. " +
+                    Environment.NewLine +
                     $"Press OK to exit and discard changes, or Cancel to return to the editor.",
                     "Exit Editor",
                     MessageBoxButtons.OKCancel,
-                    MessageBoxIcon.Question );
+                    MessageBoxIcon.Warning );
 
                 e.Cancel = result == DialogResult.Cancel;
             }
