@@ -86,11 +86,8 @@ namespace mhedit.Containers
 
         private void ItemPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
-            /// Fwd the change if necessary but don't set local.
-            if ( e.PropertyName == ChangeTrackingBase.PropertyNameString )
-            {
-                this.OnPropertyChanged( e );
-            }
+            /// Fwd the change if necessary but don't set local IsChanged.
+            this.OnPropertyChanged( e );
         }
     }
 }

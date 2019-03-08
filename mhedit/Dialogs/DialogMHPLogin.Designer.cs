@@ -134,10 +134,10 @@
             this.linkLabelWebLink.AutoSize = true;
             this.linkLabelWebLink.Location = new System.Drawing.Point(26, 74);
             this.linkLabelWebLink.Name = "linkLabelWebLink";
-            this.linkLabelWebLink.Size = new System.Drawing.Size(107, 13);
+            this.linkLabelWebLink.Size = new System.Drawing.Size(118, 13);
             this.linkLabelWebLink.TabIndex = 13;
             this.linkLabelWebLink.TabStop = true;
-            this.linkLabelWebLink.Text = "http://mhp.askey.org";
+            this.linkLabelWebLink.Text = "http://mhedit.askey.org";
             this.linkLabelWebLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelWebLink_LinkClicked);
             // 
             // label5

@@ -969,8 +969,8 @@ namespace mhedit
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"There was an error launching MAME," +
-                            $" verify your MAME paths in the configuration. {ex.Message}");
+                        MessageBox.Show($"There was an error launching HBMAME," +
+                            $" verify your HBMAME paths in the configuration. {ex.Message}");
                     }
                 }
 

@@ -61,11 +61,11 @@ namespace mhedit
         {
             OpenFileDialog ofd = new OpenFileDialog
             {
-                Title = "Select the path to the MAME executable",
+                Title = "Select the path to the HBMAME executable",
                 InitialDirectory = Path.GetDirectoryName( textBoxMameExecutable.Text ),
                 FileName = Path.GetFileNameWithoutExtension( textBoxMameExecutable.Text ),
                 CheckFileExists = true,
-                Filter = "Mame Executable (*.exe)|*.exe"
+                Filter = "HBMame Executable (*.exe)|*.exe"
             };
 
             if ( ofd.ShowDialog() == DialogResult.OK )

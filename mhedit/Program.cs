@@ -47,6 +47,27 @@ namespace mhedit
             {
                 try
                 {
+                    //gather some info
+                    string username = "";
+                    if (Properties.Settings.Default != null)
+                    {
+                        username = Properties.Settings.Default.MHPUsername;
+                    }
+                    string versionString = String.Empty;
+                    if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
+                    {
+                        Version version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                        versionString = version.ToString();
+                    }
+                    else
+                    {
+                        versionString = Application.ProductVersion;
+                    }
+
+                    //send home an exception, async, don't wait for response
+                    MHEditServiceReference.MHEditClient _client = MHPController.GetClient();
+                    _client.LogExceptionAsync(t.Exception.Message, t.Exception.Source, t.Exception.StackTrace, username, versionString);
+
                     MessageBox.Show("Fatal Windows Error",
                         "Fatal Windows Error", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Stop);
                 }

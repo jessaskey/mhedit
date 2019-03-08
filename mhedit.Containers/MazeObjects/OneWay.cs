@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 
 namespace mhedit.Containers.MazeObjects
 {
@@ -12,8 +11,6 @@ namespace mhedit.Containers.MazeObjects
     [Serializable]
     public class OneWay : MazeObject
     {
-        private static readonly Point _snapSize = new Point( 4, 4 );
-
         private OneWayDirection _direction = OneWayDirection.Right;
 
         public OneWay()
@@ -26,12 +23,6 @@ namespace mhedit.Containers.MazeObjects
                     new Point( 0x80, 0x80 ),
                     new Point( 32, 32 ) )
         { }
-
-        [BrowsableAttribute( false )]
-        public override Point SnapSize
-        {
-            get { return _snapSize; }
-        }
 
         [CategoryAttribute("Custom")]
         [DescriptionAttribute("The Direction of the gate.")]
@@ -51,10 +42,27 @@ namespace mhedit.Containers.MazeObjects
             }
         }
 
+        public override Point GetAdjustedPosition( Point point )
+        {
+            Point adjusted = base.GetAdjustedPosition( point );
+
+            /// Make a special adjustment for drag/drop operations to make the drop 
+            /// behavior/location logical from the Users perspective. This is due 
+            /// to the Image being the same size as a maze stamp AND the image needs
+            /// to be displayed between 2 maze stamps.
+            /// Thus, make adjustments based upon the cursor being in the lower or
+            /// upper range of a maze stamp
+            adjusted.Y += 
+                ( ( point.Y - DataConverter.PADDING ) % DataConverter.CanvasGridSize ) < 32 ?
+                -32 : 32;
+
+            return adjusted;
+        }
+
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(this.Position.X, this.Position.Y + 64)));
+            bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(this.Position.X, this.Position.Y)));
             return bytes.ToArray();
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies
 {
@@ -12,7 +13,7 @@ namespace mhedit.Containers.MazeEnemies
     [Serializable]
     public class Perkoid : MazeObject
     {
-        private static readonly Point _snapSize = new Point( 4, 4 );
+        private static readonly Point _snapSize = new Point( 1, 1 );
 
         private SignedVelocity _velocity = new SignedVelocity();
         private SignedVelocity _incrementingVelocity = new SignedVelocity();
@@ -21,8 +22,12 @@ namespace mhedit.Containers.MazeEnemies
             : base( 10,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.perkoid_obj.png" ),
                     Point.Empty,
-                    new Point( 16, 16 ) )
-        {}
+                    new Point( 16, 20 ) )
+        {
+            this._velocity.PropertyChanged += this.ForwardPropertyChanged;
+
+            this._incrementingVelocity.PropertyChanged += this.ForwardPropertyChanged;
+        }
 
         [BrowsableAttribute( false )]
         public override Point SnapSize
@@ -36,7 +41,6 @@ namespace mhedit.Containers.MazeEnemies
         public SignedVelocity Velocity
         {
             get { return _velocity; }
-            set { this.SetField( ref this._velocity, value ); }
         }
 
         [CategoryAttribute("Location")]
@@ -45,8 +49,33 @@ namespace mhedit.Containers.MazeEnemies
         public SignedVelocity IncrementingVelocity
         {
             get { return _incrementingVelocity; }
-            set { this.SetField( ref this._incrementingVelocity, value ); }
         }
+
+        #region Implementation of IChangeTracking
+
+        [BrowsableAttribute( false )]
+        [XmlIgnore]
+        public override bool IsChanged
+        {
+            get
+            {
+                return base.IsChanged |
+                    this._velocity.IsChanged |
+                    this._incrementingVelocity.IsChanged;
+            }
+        }
+
+        public override void AcceptChanges()
+        {
+            /// clear composite member first.
+            this._velocity.AcceptChanges();
+
+            this._incrementingVelocity.AcceptChanges();
+
+            base.AcceptChanges();
+        }
+
+        #endregion
 
         public override byte[] ToBytes()
         {

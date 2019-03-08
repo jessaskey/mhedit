@@ -15,8 +15,24 @@ namespace mhedit.Containers.MazeObjects
             : base( 1,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.hand_obj.png" ),
                     new Point( 0x3c, 0x01 ),
-                    new Point( 10, 10 ) )
+                    new Point( 24, 10 ) )
         {}
+
+        public override Point GetAdjustedPosition( Point point )
+        {
+            Point adjusted = base.GetAdjustedPosition( point );
+
+            /// Make a special adjustment for drag/drop operations to make the drop 
+            /// behavior/location logical from the Users perspective. This is due 
+            /// to the Image being displayed between 2 maze stamps.
+            /// Thus, make adjustments based upon the cursor being in the lower or
+            /// upper range of a maze stamp
+            adjusted.Y +=
+                ( ( point.Y - DataConverter.PADDING ) % DataConverter.CanvasGridSize ) < 32 ?
+                -32 : 32;
+
+            return adjusted;
+        }
 
         public override byte[] ToBytes()
         {

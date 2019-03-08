@@ -20,7 +20,6 @@ namespace mhedit.Containers
         private Image _image;
         private readonly Point _staticLsb;
         private Point _renderOffset;
-        private readonly Point _dragDropFix;
 
         private bool _selected = false;
 
@@ -32,10 +31,6 @@ namespace mhedit.Containers
         {}
 
         protected MazeObject( int maxObjects, Image image, Point staticLsb, Point renderOffset )
-            : this( maxObjects, image, staticLsb, renderOffset, new Point() )
-        {}
-
-        protected MazeObject( int maxObjects, Image image, Point staticLsb, Point renderOffset, Point dragFix )
         {
             this._maxObjects = maxObjects;
 
@@ -44,8 +39,6 @@ namespace mhedit.Containers
             this._staticLsb = staticLsb;
 
             this._renderOffset = renderOffset;
-
-            this._dragDropFix = dragFix;
         }
 
         [BrowsableAttribute( false )]
@@ -92,12 +85,11 @@ namespace mhedit.Containers
             get { return _snapSize; }
         }
 
-        [BrowsableAttribute( false )]
-        public Point DragDropFix
-        {
-            get { return _dragDropFix; }
-        }
-
+        /// <summary>
+        /// Some objects are stored with low resolution position information. For these
+        /// objects the LSB of the 16bit position value is a fixed (Static) value, which
+        /// means a fixed location within each maze stamp.
+        /// </summary>
         [BrowsableAttribute( false )]
         [IgnoreDataMemberAttribute]
         public Point StaticLSB
@@ -117,6 +109,13 @@ namespace mhedit.Containers
             protected set { this._image = value; }
         }
 
+        /// <summary>
+        /// Since XY games draw graphics with a beam, these objects have a random 
+        /// starting point defined by where the drawing starts. This starting point
+        /// is defined by the Object's Position property. This starting point
+        /// isn't typically the center of the image being drawn. Therefore this offset
+        /// is used to place the Objects image on the maze as if it were drawn there.
+        /// </summary>
         [BrowsableAttribute(false)]
         [XmlIgnore]
         public Point RenderOffset 
@@ -197,6 +196,34 @@ namespace mhedit.Containers
         public abstract byte[] ToBytes();
 
         public abstract byte[] ToBytes( object obj );
+
+        public virtual Point GetAdjustedPosition( Point point )
+        {
+            Point finalPosition = new Point();
+
+            /// Modify the current mouse position to make it relative to the MazeGrid (by
+            /// removing the Padding around the Maze) since that's what the ROMs expect. The
+            /// Rendering code will handle padding for the UI display.
+            /// Don't shift by half image size because this could cause the MazeObject to
+            /// be placed into an adjacent maze stamp. (The user expects it to be dropped
+            /// into the stamp where the pointer is pointing). If we start to render the 
+            /// Image while being dragged this might change.
+            finalPosition.X = point.X - DataConverter.PADDING;
+            finalPosition.Y = point.Y - DataConverter.PADDING;
+
+            /// Get origin position (Upper Left) of the current Snap Grid. This isn't a visible
+            /// grid, but defines the coarse grid that the object is allowed to be placed on. 
+            finalPosition.X -= ( finalPosition.X % this.SnapSize.X );
+            finalPosition.Y -= ( finalPosition.Y % this.SnapSize.Y );
+
+            /// Handle objects which are stored with low resolution position information. These
+            /// objects have a fixed or Static LSB, which means a fixed location within each
+            /// maze stamp. Must divide the LSB data by our scaling factor.
+            finalPosition.X += this.StaticLSB.X / DataConverter.PositionScaleFactor;
+            finalPosition.Y += this.StaticLSB.Y / DataConverter.PositionScaleFactor;
+
+            return finalPosition;
+        }
 
         public void LoadPosition(byte bytePosition)
         {

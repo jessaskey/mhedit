@@ -11,9 +11,8 @@ namespace mhedit.Containers.MazeEnemies
     [Serializable]
     public class Maxoid : MazeObject
     {
-        private static readonly Point _snapSize = new Point( 4, 4 );
+        private static readonly Point _snapSize = new Point( 1, 1 );
 
-        private Velocity _velocity = new Velocity();
         private int _triggerDistance;
         private MaxSpeed _speed;
 
@@ -21,7 +20,7 @@ namespace mhedit.Containers.MazeEnemies
             : base( 8,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.roboid_obj.png" ),
                     Point.Empty,
-                    new Point( 8, 8 ) )
+                    new Point( 16, 16 ) )
         {}
 
         [BrowsableAttribute( false )]

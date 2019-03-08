@@ -1,9 +1,11 @@
+using mhedit.GameControllers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Deployment.Application;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
@@ -35,15 +37,14 @@ namespace mhedit
             {
                 labelVersion.Text = (Application.ProductVersion + " (Assembly)");
             }
-            
+
+            string fullTemplatePath = Path.GetFullPath(Properties.Settings.Default.TemplatesLocation);
+            MajorHavocPromisedEnd mhpe = new MajorHavocPromisedEnd(fullTemplatePath);
+            Version version = mhpe.GetROMVersion();
+            labelROMVersion.Text = version.Major.ToString("X2") + "." + version.Minor.ToString("X2");
+
             labelCopyright.Text = "Copyright © 2006-" + DateTime.Now.Year.ToString() + "  Jess M. Askey/Bryan L. Roth";
         }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
 
     }
 }

@@ -13,10 +13,31 @@ namespace mhedit.Containers.MazeEnemies
         public LightningH()
             : base( 7,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.lightning_obj.png" ),
-                    new Point( 0x00, 0x00 ), //offset of 128d is in vectors
-                    new Point( 32, 64 ),
-                    new Point( 32, 32 ) )
+                    Point.Empty, //offset of 128d is in vectors
+                    new Point( 32, 64 ) )
         { }
+
+        public override Point GetAdjustedPosition( Point point )
+        {
+            Point adjusted = base.GetAdjustedPosition( point );
+
+            /// LightningH's require a special adjustment for drag/drop operations to make
+            /// the drop behavior/location logical from the Users perspective. This is
+            /// due to the Image being the same size as a maze stamp AND the image needs
+            /// to be displayed between 2 maze stamps.
+            /// Thus, we force the object to the:
+            ///     Lower stamp if the drop location is in the bottom half of a stamp.
+            ///     Current stamp if the drop location is in the top half of a stamp.
+            adjusted.X +=
+                ( ( point.X - DataConverter.PADDING ) % DataConverter.CanvasGridSize ) < 32 ?
+                0 : 64;
+
+            adjusted.Y +=
+                ( ( point.Y - DataConverter.PADDING ) % DataConverter.CanvasGridSize ) < 32 ?
+                32 : 96;
+
+            return adjusted;
+        }
 
         public override byte[] ToBytes()
         {

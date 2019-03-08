@@ -12,9 +12,9 @@ namespace mhedit.Containers.MazeObjects
     public class Transporter : MazeObject
     {
         private const string ImageResource = "mhedit.Containers.Images.Objects.transporter_obj.png";
-        private TransporterDirection _direction = TransporterDirection.Right;
+        private TransporterDirection _direction;
         private List<bool> _transportability = new List<bool>();
-        private ObjectColor _color = ObjectColor.Red;
+        private ObjectColor _color;
         private bool _isBroken = false;
         private bool _isHidden = false;
 
@@ -23,7 +23,28 @@ namespace mhedit.Containers.MazeObjects
                     ResourceFactory.GetResourceImage( ImageResource ),
                     new Point( 0x80, 0x80 ),
                     new Point( 24, 32 ) )
-        { }
+        {
+            this.Color = ObjectColor.Yellow;
+
+            this.Direction = TransporterDirection.Left;
+        }
+
+        public override Point GetAdjustedPosition( Point point )
+        {
+            Point adjusted = base.GetAdjustedPosition( point );
+
+            /// Make a special adjustment for drag/drop operations to make the drop 
+            /// behavior/location logical from the Users perspective. This is due 
+            /// to the Image being the same size as a maze stamp AND the image needs
+            /// to be displayed between 2 maze stamps.
+            /// Thus, make adjustments based upon the cursor being in the lower or
+            /// upper range of a maze stamp
+            adjusted.Y +=
+                ( ( point.Y - DataConverter.PADDING ) % DataConverter.CanvasGridSize ) < 32 ?
+                -32 : 32;
+
+            return adjusted;
+        }
 
         [CategoryAttribute("Direction")]
         [DescriptionAttribute("The Direction of the transporter.")]
@@ -69,7 +90,7 @@ namespace mhedit.Containers.MazeObjects
             set { this.SetField( ref this._isHidden, value ); }
         }
 
-        [DescriptionAttribute("The color of the door. Doors can only be opened by keys of the same color.")]
+        [DescriptionAttribute("The color of the Transporter. Transporters are paired by color.")]
         public ObjectColor Color
         {
             get { return _color; }
@@ -104,7 +125,7 @@ namespace mhedit.Containers.MazeObjects
                 colorByte += 0x80;
             }
             bytes.Add(colorByte);
-            bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(this.Position.X, this.Position.Y + 64)));
+            bytes.AddRange(DataConverter.PointToByteArrayPacked(new Point(this.Position.X, this.Position.Y)));
 
             return bytes.ToArray();
         }

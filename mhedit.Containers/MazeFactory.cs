@@ -11,7 +11,7 @@ namespace mhedit.Containers
 
     public static class MazeFactory
     {
-        public struct MazeBaseData
+        public class MazeBaseData
         {
             public List<MazeWall> mazeWallBase;
             public int mazeStampsX;

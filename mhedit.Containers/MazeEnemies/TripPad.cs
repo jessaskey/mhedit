@@ -18,8 +18,8 @@ namespace mhedit.Containers.MazeEnemies
         public TripPad()
             : base( 8,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.trippad_obj.png" ),
-                    new Point( 0x00, 0x08 ),
-                    new Point( 0, 32 ) )
+                    new Point( 0x80, 0x08 ),
+                    new Point( 32, 32 ) )
         { }
 
         #region Implementation of IChangeTracking
@@ -61,16 +61,25 @@ namespace mhedit.Containers.MazeEnemies
             {
                 if ( this._pyroid != null )
                 {
-                    this._pyroid.PropertyChanged -= this.ForwardIsChangedPropertyChanged;
+                    this._pyroid.PropertyChanged -= this.ForwardPropertyChanged;
                 }
 
                 this.SetField( ref this._pyroid, value );
 
                 if ( this._pyroid != null )
                 {
-                    this._pyroid.PropertyChanged += this.ForwardIsChangedPropertyChanged;
+                    this._pyroid.PropertyChanged += this.ForwardPropertyChanged;
                 }
             }
+        }
+
+        public override Point GetAdjustedPosition( Point point )
+        {
+            Point adjusted = base.GetAdjustedPosition( point );
+
+            adjusted.Y += 28;
+
+            return adjusted;
         }
 
         public override byte[] ToBytes()

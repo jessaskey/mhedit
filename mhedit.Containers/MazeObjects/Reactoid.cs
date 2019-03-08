@@ -8,7 +8,7 @@ namespace mhedit.Containers.MazeObjects
     [Serializable]
     public class Reactoid : MazeObject
     {
-        private static readonly Point _snapSize = new Point( 4, 4 );
+        private static readonly Point _snapSize = new Point( 1, 1 );
 
         private int _timer = 30;
 

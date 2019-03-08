@@ -107,27 +107,27 @@
             this.tabPageMAME.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageMAME.Size = new System.Drawing.Size(536, 132);
             this.tabPageMAME.TabIndex = 0;
-            this.tabPageMAME.Text = "MAME";
+            this.tabPageMAME.Text = "HBMAME";
             this.tabPageMAME.UseVisualStyleBackColor = true;
             // 
             // checkBoxMAMEWindow
             // 
             this.checkBoxMAMEWindow.AutoSize = true;
-            this.checkBoxMAMEWindow.Location = new System.Drawing.Point(109, 97);
+            this.checkBoxMAMEWindow.Location = new System.Drawing.Point(131, 97);
             this.checkBoxMAMEWindow.Name = "checkBoxMAMEWindow";
-            this.checkBoxMAMEWindow.Size = new System.Drawing.Size(199, 17);
+            this.checkBoxMAMEWindow.Size = new System.Drawing.Size(164, 17);
             this.checkBoxMAMEWindow.TabIndex = 19;
-            this.checkBoxMAMEWindow.Text = "Run MAME with \'-window\' parameter";
+            this.checkBoxMAMEWindow.Text = "Run with \'-window\' parameter";
             this.checkBoxMAMEWindow.UseVisualStyleBackColor = true;
             // 
             // checkBoxDebug
             // 
             this.checkBoxDebug.AutoSize = true;
-            this.checkBoxDebug.Location = new System.Drawing.Point(109, 74);
+            this.checkBoxDebug.Location = new System.Drawing.Point(131, 74);
             this.checkBoxDebug.Name = "checkBoxDebug";
-            this.checkBoxDebug.Size = new System.Drawing.Size(193, 17);
+            this.checkBoxDebug.Size = new System.Drawing.Size(158, 17);
             this.checkBoxDebug.TabIndex = 18;
-            this.checkBoxDebug.Text = "Run MAME with \'-debug\' parameter";
+            this.checkBoxDebug.Text = "Run with \'-debug\' parameter";
             this.checkBoxDebug.UseVisualStyleBackColor = true;
             // 
             // label5
@@ -135,13 +135,13 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(12, 51);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(73, 13);
+            this.label5.Size = new System.Drawing.Size(88, 13);
             this.label5.TabIndex = 17;
-            this.label5.Text = "MAME Driver:";
+            this.label5.Text = "HBMAME Driver:";
             // 
             // textBoxMameDriver
             // 
-            this.textBoxMameDriver.Location = new System.Drawing.Point(109, 48);
+            this.textBoxMameDriver.Location = new System.Drawing.Point(131, 48);
             this.textBoxMameDriver.Name = "textBoxMameDriver";
             this.textBoxMameDriver.Size = new System.Drawing.Size(93, 20);
             this.textBoxMameDriver.TabIndex = 16;
@@ -151,9 +151,9 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(12, 25);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(98, 13);
+            this.label6.Size = new System.Drawing.Size(113, 13);
             this.label6.TabIndex = 15;
-            this.label6.Text = "MAME Executable:";
+            this.label6.Text = "HBMAME Executable:";
             // 
             // buttonBrowseMameExecutable
             // 
@@ -168,9 +168,9 @@
             // 
             // textBoxMameExecutable
             // 
-            this.textBoxMameExecutable.Location = new System.Drawing.Point(109, 22);
+            this.textBoxMameExecutable.Location = new System.Drawing.Point(131, 22);
             this.textBoxMameExecutable.Name = "textBoxMameExecutable";
-            this.textBoxMameExecutable.Size = new System.Drawing.Size(377, 20);
+            this.textBoxMameExecutable.Size = new System.Drawing.Size(355, 20);
             this.textBoxMameExecutable.TabIndex = 13;
             this.textBoxMameExecutable.MouseLeave += new System.EventHandler(this.textBoxTT_MouseLeave);
             this.textBoxMameExecutable.MouseHover += new System.EventHandler(this.textBoxTT_MouseHover);
