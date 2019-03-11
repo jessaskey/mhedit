@@ -947,8 +947,9 @@ namespace mhedit
 		{
 			if (_comboBoxObjects != null)
 			{
-				BindingList<IName> dataSource = new BindingList<IName>(
-					_maze.MazeObjects.OrderBy( o => o.GetType().Name ).ToList().ConvertAll( m => (IName)m ) );
+                BindingList<IName> dataSource = new BindingList<IName>(
+					_maze.MazeObjects.OrderBy( o => o.GetType() == typeof(MazeWall) ).
+                          ThenBy( o => o.GetType().Name ).ToList().ConvertAll( m => (IName)m ) );
 
 				/// Add the maze so user can select and edit elements.
 				dataSource.Insert( 0, this._maze );
@@ -1004,11 +1005,12 @@ namespace mhedit
 		{
 			//Adjust select point based upon some of our Panel dimension 'hacks'.
 			Point adjustedLocation = new Point( (int)( location.X - DataConverter.PADDING ), location.Y - DataConverter.PADDING );
-			//Point adjustedLocation = new Point( location.X, location.Y );
+            //Point adjustedLocation = new Point( location.X, location.Y );
 
-			/// Get all maze objects hit..
-			IEnumerable<MazeObject> hitObjects =
-				this._maze.MazeObjects.Where( mo => PointInObject( mo, adjustedLocation ) );
+            /// Get all maze objects hit..
+            IEnumerable<MazeObject> hitObjects =
+				this._maze.MazeObjects.Where( mo => PointInObject( mo, adjustedLocation ) ).
+                     OrderBy( o => o.GetType() == typeof( MazeWall ) );
 
 			/// look for an already selected object
 			MazeObject selectedObject = hitObjects.FirstOrDefault( mo => mo.Selected );

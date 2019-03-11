@@ -67,6 +67,13 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             get { return _program; }
             set
             {
+                /// Note, this set field serves a special purpose. When an IonCannon program is edited
+                /// it will replace the previous version here. This will result in the IonCannon.IsChanged
+                /// property being set to True and allows the Maze to track edits to the Program seperately
+                /// from the IonCannonProgram object itself.
+                /// Setting IsChanged locally is important, because the user can save the IonCannon program
+                /// in the program editor (clears the IonCannonProgram.IsChanged property) and we want
+                /// the Maze to know it was edited at some point.
                 this.SetField( ref this._program, value );
 
                 ( (INotifyPropertyChanged)this._program ).PropertyChanged +=
