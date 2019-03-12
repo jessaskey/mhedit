@@ -521,11 +521,6 @@ namespace mhedit
 			//if (propertyGrid != null) propertyGrid.Refresh();
 		}
 
-		protected override bool IsInputKey(Keys keyData)
-		{
-			return true;
-		}
-
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			switch (e.KeyCode)
