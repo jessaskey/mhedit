@@ -1022,22 +1022,20 @@ namespace mhedit
             //Point adjustedLocation = new Point( location.X, location.Y );
 
             /// Get all maze objects hit..
-            IEnumerable<MazeObject> hitObjects =
+            List<MazeObject> hitList =
 				this._maze.MazeObjects.Where( mo => PointInObject( mo, adjustedLocation ) ).
-                     OrderBy( o => o.GetType() == typeof( MazeWall ) );
+                     OrderBy( o => o.GetType() == typeof( MazeWall ) ).ToList();
 
 			/// look for an already selected object
-			MazeObject selectedObject = hitObjects.FirstOrDefault( mo => mo.Selected );
+			MazeObject selectedObject = hitList.FirstOrDefault( mo => mo.Selected );
 
 			if ( selectedObject != null )
 			{
 				/// If object already selected, shift key is pressed, and multiple hit objects then
 				/// cycle through and choose the "next" object in the z order.
-				if ( Control.ModifierKeys == Keys.Shift && hitObjects.Count() > 1 )
+				if ( Control.ModifierKeys == Keys.Shift && hitList.Count() > 1 )
 				{
 					selectedObject.Selected = false;
-
-					List<MazeObject> hitList = hitObjects.ToList();
 
 					int index = hitList.IndexOf( selectedObject );
 
@@ -1049,7 +1047,7 @@ namespace mhedit
 			else
 			{
 				/// Grab first in z order if no object already selected.
-				selectedObject = hitObjects.FirstOrDefault();
+				selectedObject = hitList.FirstOrDefault();
 
 				if ( selectedObject != null )
 				{
