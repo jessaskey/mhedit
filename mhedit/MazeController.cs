@@ -32,6 +32,7 @@ namespace mhedit
 
 		private Maze _maze = null;
 		private decimal _zoom = 1;
+        private Point _mouseDownLocation;
 		private bool _repainted = false;
 		private string _fileName = String.Empty;
 		private PropertyGrid _propertyGrid = null;
@@ -580,36 +581,35 @@ namespace mhedit
 			base.OnKeyDown(e);
 		}
 
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				MazeObject obj = GetSelectedObject();
-				if ( obj != null )
-				{
-					DragDropEffects effect = DoDragDrop( obj,
-						obj is EscapePod ? DragDropEffects.None : DragDropEffects.Copy );
-				}
-			}
-			base.OnMouseMove(e);
-		}
-
 		protected override void OnMouseDown( MouseEventArgs e )
 		{
-			if ( e.Button == MouseButtons.Left && this.ComboBoxObjects != null )
-			{
-				this.Select();
+            base.OnMouseDown( e );
 
-				//look for objects here...
-				this.ComboBoxObjects.SelectedItem = SelectObject( e.Location );
+            if ( e.Button == MouseButtons.Left && this.ComboBoxObjects != null )
+            {
+                this._mouseDownLocation = e.Location;
 
-				Invalidate();
+                //look for objects here...
+                this.ComboBoxObjects.SelectedItem = SelectObject( e.Location );
 			}
-
-			base.OnMouseDown( e );
 		}
 
-		protected override void OnDragOver(DragEventArgs drgevent)
+        protected override void OnMouseMove( MouseEventArgs e )
+        {
+            base.OnMouseMove( e );
+
+            if ( e.Button == MouseButtons.Left && this._mouseDownLocation != e.Location )
+            {
+                MazeObject obj = this.ComboBoxObjects?.SelectedItem as MazeObject;
+                if ( obj != null )
+                {
+                    DoDragDrop( obj,
+                        obj is EscapePod ? DragDropEffects.None : DragDropEffects.Copy );
+                }
+            }
+        }
+
+        protected override void OnDragOver(DragEventArgs drgevent)
 		{
 			if (drgevent.Data.GetDataPresent(typeof(Silver.UI.ToolBoxItem)))
 			{
