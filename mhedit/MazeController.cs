@@ -553,6 +553,8 @@ namespace mhedit
 								_maze.MazeObjects.Remove(((TripPad)obj).Pyroid); 
 							}
 							_maze.MazeObjects.Remove(obj);
+
+                            ((IList)this._comboBoxObjects.DataSource).Remove( obj );
 							Invalidate();
 						}
 					}
