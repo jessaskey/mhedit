@@ -401,16 +401,6 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                             {
                                 this._program.Add( ionCannonInstruction );
                             }
-
-                            ///// Even though the program has just been loaded and we have cleared
-                            ///// the IChangeTracking.IsChanged flag we still want to track the
-                            ///// fact that the user has replaced the existing IonCannonProgram with
-                            ///// a new one.
-                            //this.State = EditState.ProgramEditsOccured;
-
-                            //this.treeViewProgram.Nodes.Clear();
-
-                            //this.AddNewItems( 0, _program );
                         }
                     }
                 }

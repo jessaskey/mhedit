@@ -60,7 +60,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         {
             /// Ensure that there is only one ReturnToStart command and it's the
             /// last one in the Program.
-            int index = this.IndexOf( this.First( b => b is ReturnToStart ) );
+            int index = this.IndexOf( this.FirstOrDefault( b => b is ReturnToStart ) );
 
             if ( index != (this.Count -1) )
             {
