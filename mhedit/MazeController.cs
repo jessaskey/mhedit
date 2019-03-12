@@ -187,6 +187,23 @@ namespace mhedit
 			{
 				maze = DeserializeFromStream(fStream);
 
+                //HACK: Fixes orphaned TripPadPyroids
+                foreach (TripPadPyroid tpp in maze.MazeObjects.OfType<TripPadPyroid>())
+                {
+                    //find a TripPad
+                    foreach (TripPad tripPad in maze.MazeObjects.OfType<TripPad>())
+                    {
+                        if (tripPad.Pyroid.Name == tpp.Name)
+                        {
+                            //these are the same... 
+                            tripPad.Pyroid = null;
+                            tpp.TripPad = tripPad;
+                            tripPad.Pyroid = tpp;
+                        }
+                    }
+                }
+                
+
 				maze.AcceptChanges();
 			}
 			return maze;
