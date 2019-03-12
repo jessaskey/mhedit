@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
@@ -13,7 +14,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 {
     public partial class CannonProgramEditor : Form
     {
-        private enum EditState
+        public enum EditState
         {
             /// <summary>
             /// Indicates that this edit session started with a program that was
@@ -59,6 +60,9 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                 null;
 
             this._program.CollectionChanged += this.OnProgramCollectionChanged;
+
+            ((INotifyPropertyChanged)this._program).PropertyChanged +=
+                this.OnInstructionPropertyChanged;
         }
 
         public IonCannonProgram Program
@@ -69,23 +73,36 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
         }
 
-        private EditState State
+        public EditState State
         {
             get { return this._state; }
-            set
-            {
-                this.Text = "Ion Cannon Program Editor " +
-                            $"{( value == EditState.ProgramEditsOccured ? ChangeTrackingBase.ModifiedBullet : "" )}";
-
-                this._state = value;
-            }
+            private set { this._state = value; }
         }
 
         private void OnProgramCollectionChanged( object sender, NotifyCollectionChangedEventArgs e )
         {
-            if ( e.NewItems != null )
+            this.State = EditState.ProgramEditsOccured;
+
+            if ( e.Action == NotifyCollectionChangedAction.Reset )
             {
-                AddNewItems( e.NewStartingIndex, e.NewItems );
+                /// All elements removed
+                this.treeViewProgram.Nodes.Clear();
+            }
+            else if ( e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null )
+            {
+                this.AddNewItems( e.NewStartingIndex, e.NewItems );
+            }
+            else if ( e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null )
+            {
+                this.RemoveExistingItems( e.OldStartingIndex, e.OldItems );
+            }
+            else if ( e.Action == NotifyCollectionChangedAction.Move )
+            {
+                this.MoveItems( e.NewStartingIndex, e.OldStartingIndex );
+            }
+            else
+            {
+                throw new NotSupportedException( e.Action.ToString() );
             }
         }
 
@@ -93,14 +110,37 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         {
             foreach ( IonCannonInstruction instruction in newItems )
             {
-                TreeNode node = treeViewProgram.Nodes.Insert( index++, instruction.ToString() );
+                TreeNode node = this.treeViewProgram.Nodes.Insert( index++, instruction.ToString() );
 
                 node.Tag = instruction;
 
-                treeViewProgram.SelectedNode = node;
+                this.treeViewProgram.SelectedNode = node;
 
                 instruction.PropertyChanged += this.OnInstructionPropertyChanged;
             }
+        }
+
+        private void RemoveExistingItems( int index, IList eOldItems )
+        {
+            foreach ( IonCannonInstruction instruction in eOldItems )
+            {
+                this.treeViewProgram.Nodes[ index ].Remove();
+
+                instruction.PropertyChanged -= this.OnInstructionPropertyChanged;
+            }
+
+            this.treeViewProgram.SelectedNode = this.treeViewProgram.SelectedNode?.PrevNode;
+        }
+
+        private void MoveItems( int newIndex, int oldIndex )
+        {
+            TreeNode toBeMoved = this.treeViewProgram.Nodes[ oldIndex ];
+
+            toBeMoved.Remove();
+
+            this.treeViewProgram.Nodes.Insert( newIndex, toBeMoved );
+
+            this.treeViewProgram.SelectedNode = toBeMoved;
         }
 
         private void OnInstructionPropertyChanged( object sender, PropertyChangedEventArgs e )
@@ -115,6 +155,11 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         /// </summary>
         private void treeViewProgram_DrawNode( object sender, DrawTreeNodeEventArgs e )
         {
+            /// Only mark editor with changed if an edit has occurred during this session.
+            this.Text =
+                "Ion Cannon Program Editor " +
+                $"{( this._state == EditState.ProgramEditsOccured ? ChangeTrackingBase.ModifiedBullet : "" )}";
+
             // Use the default background and node text.
             e.DrawDefault = true;
 
@@ -147,11 +192,6 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                     toolStripComboBoxLoadPreset.Items.Add( name );
                 }
             }
-        }
-
-        private void listBoxProgram_SelectedIndexChanged( object sender, EventArgs e )
-        {
-            propertyGridProgram.SelectedObject = treeViewProgram.SelectedNode.Tag;
         }
 
         private void toolStripButtonAddMove_Click( object sender, EventArgs e )
@@ -197,58 +237,40 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
                 if ( result == DialogResult.OK )
                 {
-                    TreeNode saved = treeViewProgram.SelectedNode.PrevNode;
-
-                    IonCannonInstruction instruction = 
-                        (IonCannonInstruction)treeViewProgram.SelectedNode.Tag;
-
-                    treeViewProgram.SelectedNode.Remove();
-
-                    treeViewProgram.SelectedNode = saved;
-
-                    instruction.PropertyChanged -= this.OnInstructionPropertyChanged;
-
-                    this._program.Remove( instruction );
+                    this._program.Remove(
+                        (IonCannonInstruction) this.treeViewProgram.SelectedNode.Tag );
                 }
             }
         }
 
         private void toolStripButtonMoveUp_Click( object sender, EventArgs e )
         {
-            if ( treeViewProgram.SelectedNode != null )
+            if ( this.treeViewProgram.SelectedNode != null )
             {
-                int prevIndex = treeViewProgram.Nodes.IndexOf( treeViewProgram.SelectedNode.PrevNode );
+                int prevIndex =
+                    this.treeViewProgram.Nodes.IndexOf(
+                        this.treeViewProgram.SelectedNode.PrevNode );
 
                 /// index will be negative on the end of the list so don't move
                 if ( prevIndex >= 0 )
                 {
-                    TreeNode toBeMoved = treeViewProgram.SelectedNode;
-
-                    treeViewProgram.SelectedNode.Remove();
-
-                    treeViewProgram.Nodes.Insert( prevIndex, toBeMoved );
-
-                    treeViewProgram.SelectedNode = toBeMoved;
+                    this._program.Move( prevIndex + 1, prevIndex );
                 }
             }
         }
 
         private void toolStripButtonMoveDown_Click( object sender, EventArgs e )
         {
-            if ( treeViewProgram.SelectedNode != null )
+            if ( this.treeViewProgram.SelectedNode != null )
             {
-                int nextIndex = treeViewProgram.Nodes.IndexOf( treeViewProgram.SelectedNode.NextNode );
+                int nextIndex =
+                    this.treeViewProgram.Nodes.IndexOf(
+                        this.treeViewProgram.SelectedNode.NextNode );
 
                 /// index will be negative on the end of the list so don't move
                 if ( nextIndex >= 0 )
                 {
-                    TreeNode toBeMoved = treeViewProgram.SelectedNode;
-
-                    treeViewProgram.SelectedNode.Remove();
-
-                    treeViewProgram.Nodes.Insert( nextIndex, toBeMoved );
-
-                    treeViewProgram.SelectedNode = toBeMoved;
+                    this._program.Move( nextIndex - 1, nextIndex );
                 }
             }
         }
@@ -369,19 +391,26 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
                         using ( var reader = XmlReader.Create( fStream ) )
                         {
-                            _program = (IonCannonProgram)serializer.Deserialize( reader );
+                            IonCannonProgram loadedProgram = (IonCannonProgram)serializer.Deserialize( reader );
 
-                            _program.AcceptChanges();
+                            loadedProgram.AcceptChanges();
 
-                            /// Even though the program has just been loaded and we have cleared
-                            /// the IChangeTracking.IsChanged flag we still want to track the
-                            /// fact that the user has replaced the existing IonCannonProgram with
-                            /// a new one.
-                            this.State = EditState.ProgramEditsOccured;
+                            this._program.Clear();
 
-                            this.treeViewProgram.Nodes.Clear();
+                            foreach ( IonCannonInstruction ionCannonInstruction in loadedProgram )
+                            {
+                                this._program.Add( ionCannonInstruction );
+                            }
 
-                            this.AddNewItems( 0, _program );
+                            ///// Even though the program has just been loaded and we have cleared
+                            ///// the IChangeTracking.IsChanged flag we still want to track the
+                            ///// fact that the user has replaced the existing IonCannonProgram with
+                            ///// a new one.
+                            //this.State = EditState.ProgramEditsOccured;
+
+                            //this.treeViewProgram.Nodes.Clear();
+
+                            //this.AddNewItems( 0, _program );
                         }
                     }
                 }
@@ -424,7 +453,12 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
             if ( !e.Cancel )
             {
-                foreach( IonCannonInstruction instruction in this._program )
+                this._program.CollectionChanged -= this.OnProgramCollectionChanged;
+
+                ( (INotifyPropertyChanged)this._program ).PropertyChanged -=
+                    this.OnInstructionPropertyChanged;
+
+                foreach ( IonCannonInstruction instruction in this._program )
                 {
                     instruction.PropertyChanged -= this.OnInstructionPropertyChanged;
                 }

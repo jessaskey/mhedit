@@ -26,15 +26,18 @@ namespace mhedit.Containers
             /// Make a complete copy of the passed program to edit..
             IonCannonProgram original = (IonCannonProgram)value;
 
-            CannonProgramEditor editor = new CannonProgramEditor( DeepClone( original ) );
+            using ( CannonProgramEditor editor = new CannonProgramEditor( DeepClone( original ) ) )
+            {
+                DialogResult result = editor.ShowDialog();
 
-            DialogResult result = editor.ShowDialog();
-
-            /// On user OK when there are edits, return the modified program,
-            /// otherwise just return the original.
-            return result == DialogResult.OK && editor.Program.IsChanged ?
-                editor.Program :
-                original;
+                /// On user OK when there are edits, return the modified program,
+                /// otherwise just return the original.
+                return result ==
+                       DialogResult.OK &&
+                       editor.State == CannonProgramEditor.EditState.ProgramEditsOccured ?
+                           editor.Program :
+                           original;
+            }
         }
 
         public static T DeepClone<T>( T obj )
