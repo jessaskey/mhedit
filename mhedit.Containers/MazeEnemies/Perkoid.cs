@@ -15,8 +15,8 @@ namespace mhedit.Containers.MazeEnemies
     {
         private static readonly Point _snapSize = new Point( 1, 1 );
 
-        private SignedVelocity _velocity = new SignedVelocity();
-        private SignedVelocity _incrementingVelocity = new SignedVelocity();
+        private SignedVelocity _velocity;
+        private SignedVelocity _incrementingVelocity;
 
         public Perkoid()
             : base( 10,
@@ -24,9 +24,9 @@ namespace mhedit.Containers.MazeEnemies
                     Point.Empty,
                     new Point( 16, 20 ) )
         {
-            this._velocity.PropertyChanged += this.ForwardPropertyChanged;
+            this.Velocity = new SignedVelocity();
 
-            this._incrementingVelocity.PropertyChanged += this.ForwardPropertyChanged;
+            this.IncrementingVelocity = new SignedVelocity();
         }
 
         [BrowsableAttribute( false )]
@@ -41,6 +41,12 @@ namespace mhedit.Containers.MazeEnemies
         public SignedVelocity Velocity
         {
             get { return _velocity; }
+            set
+            {
+                this.SetField( ref this._velocity, value );
+
+                this._velocity.PropertyChanged += this.ForwardPropertyChanged;
+            }
         }
 
         [CategoryAttribute("Location")]
@@ -49,6 +55,12 @@ namespace mhedit.Containers.MazeEnemies
         public SignedVelocity IncrementingVelocity
         {
             get { return _incrementingVelocity; }
+            set
+            {
+                this.SetField( ref this._incrementingVelocity, value );
+
+                this._incrementingVelocity.PropertyChanged += this.ForwardPropertyChanged;
+            }
         }
 
         #region Implementation of IChangeTracking
