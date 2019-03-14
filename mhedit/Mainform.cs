@@ -60,24 +60,7 @@ namespace mhedit
             this.SetStyle(ControlStyles.UserPaint, true);
 
             LoadToolbox();
-
-            //look at command line args..
-            string[] args = Environment.GetCommandLineArgs();
-            if (args.Length > 1)
-            {
-                string file = args[1];
-                switch (Path.GetExtension(file))
-                {
-                    case ".mhz":
-                        //open a maze 
-                        OpenMaze(file);
-                        break;
-                    case ".mhc":
-                        //open a maze collection
-                        OpenCollection(file);
-                        break;
-                }
-            }
+            ParseCommandLine();
 
             timerMain.Enabled = true;
         }
@@ -158,6 +141,58 @@ namespace mhedit
             itemIndex = toolBox[tabIndex].AddItem("Escape Pod", 25, true, new EscapePod());
 
             toolBox.SelectedTabIndex = 2;
+        }
+
+        private void ParseCommandLine()
+        {
+            //look at command line args..
+            string passedFilename = "";
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Length > 1)
+            {
+                passedFilename = args[0];
+            }
+            else
+            {
+                if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
+                {
+                    if (AppDomain.CurrentDomain != null)
+                    {
+                        if (AppDomain.CurrentDomain.SetupInformation != null)
+                        {
+                            if (AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null)
+                            {
+                                if (AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData != null)
+                                {
+                                    if (AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData.Length > 0)
+                                    {
+                                        Uri uri = new Uri(AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData[0]);
+                                        passedFilename = uri.LocalPath.ToString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!String.IsNullOrEmpty(passedFilename))
+            {
+                if (File.Exists(passedFilename))
+                {
+                    switch (Path.GetExtension(passedFilename))
+                    {
+                        case ".mhz":
+                            //open a maze 
+                            OpenMaze(passedFilename);
+                            break;
+                        case ".mhc":
+                            //open a maze collection
+                            OpenCollection(passedFilename);
+                            break;
+                    }
+                }
+            }
         }
 
         #endregion

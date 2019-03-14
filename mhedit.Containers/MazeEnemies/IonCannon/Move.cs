@@ -13,12 +13,12 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     public sealed partial class Move : IonCannonInstruction
     {
         private int _waitFrames;
-        private SimpleVelocity _velocity = new SimpleVelocity();
+        private SimpleVelocity _velocity;
 
         public Move()
             : base( Commands.Move )
         {
-            this._velocity.PropertyChanged += this.ForwardPropertyChanged;
+            this.Velocity = new SimpleVelocity();
         }
 
         //private Move( RomSerializationInfo si, StreamingContext context )
@@ -56,6 +56,12 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         public SimpleVelocity Velocity
         {
             get { return _velocity; }
+            set
+            {
+                this.SetField( ref this._velocity, value );
+
+                this._velocity.PropertyChanged += this.ForwardPropertyChanged;
+            }
         }
 
         #region Implementation of IChangeTracking

@@ -32,6 +32,7 @@ namespace mhedit
 
 		private Maze _maze = null;
 		private decimal _zoom = 1;
+        private Point _mouseDownLocation;
 		private bool _repainted = false;
 		private string _fileName = String.Empty;
 		private PropertyGrid _propertyGrid = null;
@@ -520,11 +521,6 @@ namespace mhedit
 			//if (propertyGrid != null) propertyGrid.Refresh();
 		}
 
-		protected override bool IsInputKey(Keys keyData)
-		{
-			return true;
-		}
-
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			switch (e.KeyCode)
@@ -580,36 +576,35 @@ namespace mhedit
 			base.OnKeyDown(e);
 		}
 
-		protected override void OnMouseMove(MouseEventArgs e)
-		{
-			if (e.Button == MouseButtons.Left)
-			{
-				MazeObject obj = GetSelectedObject();
-				if ( obj != null )
-				{
-					DragDropEffects effect = DoDragDrop( obj,
-						obj is EscapePod ? DragDropEffects.None : DragDropEffects.Copy );
-				}
-			}
-			base.OnMouseMove(e);
-		}
-
 		protected override void OnMouseDown( MouseEventArgs e )
 		{
-			if ( e.Button == MouseButtons.Left && this.ComboBoxObjects != null )
-			{
-				this.Select();
+            base.OnMouseDown( e );
 
-				//look for objects here...
-				this.ComboBoxObjects.SelectedItem = SelectObject( e.Location );
+            if ( e.Button == MouseButtons.Left && this.ComboBoxObjects != null )
+            {
+                this._mouseDownLocation = e.Location;
 
-				Invalidate();
+                //look for objects here...
+                this.ComboBoxObjects.SelectedItem = SelectObject( e.Location );
 			}
-
-			base.OnMouseDown( e );
 		}
 
-		protected override void OnDragOver(DragEventArgs drgevent)
+        protected override void OnMouseMove( MouseEventArgs e )
+        {
+            base.OnMouseMove( e );
+
+            if ( e.Button == MouseButtons.Left && this._mouseDownLocation != e.Location )
+            {
+                MazeObject obj = this.ComboBoxObjects?.SelectedItem as MazeObject;
+                if ( obj != null )
+                {
+                    DoDragDrop( obj,
+                        obj is EscapePod ? DragDropEffects.None : DragDropEffects.Copy );
+                }
+            }
+        }
+
+        protected override void OnDragOver(DragEventArgs drgevent)
 		{
 			if (drgevent.Data.GetDataPresent(typeof(Silver.UI.ToolBoxItem)))
 			{
@@ -1027,22 +1022,20 @@ namespace mhedit
             //Point adjustedLocation = new Point( location.X, location.Y );
 
             /// Get all maze objects hit..
-            IEnumerable<MazeObject> hitObjects =
+            List<MazeObject> hitList =
 				this._maze.MazeObjects.Where( mo => PointInObject( mo, adjustedLocation ) ).
-                     OrderBy( o => o.GetType() == typeof( MazeWall ) );
+                     OrderBy( o => o.GetType() == typeof( MazeWall ) ).ToList();
 
 			/// look for an already selected object
-			MazeObject selectedObject = hitObjects.FirstOrDefault( mo => mo.Selected );
+			MazeObject selectedObject = hitList.FirstOrDefault( mo => mo.Selected );
 
 			if ( selectedObject != null )
 			{
 				/// If object already selected, shift key is pressed, and multiple hit objects then
 				/// cycle through and choose the "next" object in the z order.
-				if ( Control.ModifierKeys == Keys.Shift && hitObjects.Count() > 1 )
+				if ( Control.ModifierKeys == Keys.Shift && hitList.Count() > 1 )
 				{
 					selectedObject.Selected = false;
-
-					List<MazeObject> hitList = hitObjects.ToList();
 
 					int index = hitList.IndexOf( selectedObject );
 
@@ -1054,7 +1047,7 @@ namespace mhedit
 			else
 			{
 				/// Grab first in z order if no object already selected.
-				selectedObject = hitObjects.FirstOrDefault();
+				selectedObject = hitList.FirstOrDefault();
 
 				if ( selectedObject != null )
 				{

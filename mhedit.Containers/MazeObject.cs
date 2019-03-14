@@ -193,6 +193,11 @@ namespace mhedit.Containers
             get { return false; }
         }
 
+        public override string ToString()
+        {
+            return $"{this.Name} {this.GetType().Name}";
+        }
+
         public abstract byte[] ToBytes();
 
         public abstract byte[] ToBytes( object obj );
