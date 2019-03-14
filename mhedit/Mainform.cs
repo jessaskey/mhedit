@@ -18,6 +18,7 @@ using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
 using mhedit.Containers.MazeEnemies.IonCannon;
 using mhedit.Containers.MazeObjects;
+using mhedit.Containers.Validation;
 using mhedit.Controllers;
 using mhedit.GameControllers;
 
@@ -294,7 +295,7 @@ namespace mhedit
 
                 if ( targetMaze.Maze.MazeType == draggedMaze.Maze.MazeType )
                 {
-                    string msg = $"Replace {targetMaze.Name} with {draggedMaze.Name}?";
+                    string msg = $"Replace {targetMaze.Maze.Name} with {draggedMaze.Maze.Name}?";
 
                     DialogResult dr = MessageBox.Show(
                         msg, MESSAGEBOX_CAPTION,
@@ -1238,6 +1239,18 @@ namespace mhedit
         private void OnInstructionPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
             this.treeView.Refresh();
+        }
+
+        private void toolStripMenuItemValidate_Click( object sender, EventArgs e )
+        {
+            if ( treeView.SelectedNode?.Tag is MazeController mazeController )
+            {
+                mazeController.Maze.Validate();
+            }
+            else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
+            {
+                mazeCollectionController.MazeCollection.Validate();
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using mhedit.Containers.Validation;
 
 namespace mhedit.Containers
 {
@@ -150,10 +151,10 @@ namespace mhedit.Containers
 
         public void Validate()
         {
-            foreach (Maze maze in _mazes)
-            {
-                maze.Validate();
-            }
+            //foreach (Maze maze in _mazes)
+            //{
+            //    maze.Validate();
+            //}
         }
 
         #endregion

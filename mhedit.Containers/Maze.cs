@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using mhedit.Containers.MazeObjects;
 using mhedit.Containers.MazeEnemies;
 using System.Xml.Serialization;
 using mhedit.Containers.MazeEnemies.IonCannon;
+using mhedit.Containers.Validation;
 
 namespace mhedit.Containers
 {
@@ -107,6 +109,9 @@ namespace mhedit.Containers
 
         #region Public Properties
 
+        [Validation( typeof( CollectionContentValidator<Reactoid,MazeObject> ),
+            Message = "Every Maze requires a single reactor. {0} were found.",
+            Options = "Count=1")]
         [BrowsableAttribute(false)]
         public ExtendedObservableCollection<MazeObject> MazeObjects
         {
@@ -165,6 +170,7 @@ namespace mhedit.Containers
             set { _validationMessage = value; }
         }
 
+        [Validation( typeof( RegexValidator ) )]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The name of the maze.")]
         public string Name
@@ -173,6 +179,8 @@ namespace mhedit.Containers
             set { this.SetField( ref this._mazeName, value ); }
         }
 
+        [Validation( typeof( RegexValidator ),
+            Options = "Pattern=^[a-zA-Z0-9 .!-,%:]*$;" )]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The text shown at the top of the screen when entering the maze. Valid characters are ' 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:'")]
         public string Hint
@@ -181,6 +189,8 @@ namespace mhedit.Containers
             set { this.SetField( ref this._mazeHint, value ); }
         }
 
+        [Validation( typeof( RegexValidator ),
+            Options = "Pattern=^[a-zA-Z0-9 .!-,%:]*$;" )]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The second line of text shown at the top of the screen when entering the maze. Valid characters are ' 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:'")]
         public string Hint2
@@ -227,22 +237,22 @@ namespace mhedit.Containers
 
         #region Public Methods
 
-        public void Validate()
-        {
-            _isValid = false;
-            _validationMessage.Clear();
+        //public void Validate()
+        //{
+        //    _isValid = false;
+        //    _validationMessage.Clear();
 
-            //validate here...
-            if (_mazeObjects != null && _mazeObjects.Count > 0)
-            {
-                if (_mazeObjects.Where(o => o is MazeObjects.Reactoid).FirstOrDefault() == null)
-                {
-                    _validationMessage.Add("ERROR/REQUIRED: Maze does not contain a reactor.");
-                }
-            }
+        //    //validate here...
+        //    if (_mazeObjects != null && _mazeObjects.Count > 0)
+        //    {
+        //        if (_mazeObjects.Where(o => o is MazeObjects.Reactoid).FirstOrDefault() == null)
+        //        {
+        //            _validationMessage.Add("ERROR/REQUIRED: Maze does not contain a reactor.");
+        //        }
+        //    }
 
-            _isValid = (_validationMessage.Count == 0);
-        }
+        //    _isValid = (_validationMessage.Count == 0);
+        //}
 
         public int GetObjectTypeCount(Type type)
         {
