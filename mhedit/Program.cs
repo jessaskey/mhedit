@@ -24,6 +24,16 @@ namespace mhedit
 
             // Add the event handler for handling non-UI thread exceptions to the event. 
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
+            // Copy user settings from previous application version if necessary
+            // https://stackoverflow.com/a/23924277
+            if ( Properties.Settings.Default.UpdateSettings )
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.UpdateSettings = false;
+                Properties.Settings.Default.Save();
+            }
+
             Mainform frm = new Mainform();
             if (!frm.Disposing)
             {
