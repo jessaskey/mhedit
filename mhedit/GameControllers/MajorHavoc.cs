@@ -88,7 +88,7 @@ namespace mhedit.GameControllers
             }
         }
 
-        public MazeCollection LoadMazes(string sourceROMFilePath, List<string> loadMessages)
+        public MazeCollection LoadMazes(List<string> loadMessages)
         {
             
             MazeCollection mazeCollection = new MazeCollection("Production Mazes");

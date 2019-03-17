@@ -41,7 +41,7 @@ namespace mhedit
 
                 List<string> loadMessages = new List<string>();
                 IGameController controller = new MajorHavocPromisedEnd(textBoxROMPath.Text);
-                _mazeCollection = controller.LoadMazes(textBoxROMPath.Text, loadMessages);
+                _mazeCollection = controller.LoadMazes(loadMessages);
 
                 /// Change the Created info to show that we loaded the maze From ROMs.
                 foreach ( Maze maze in _mazeCollection.Mazes )
