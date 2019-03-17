@@ -24,6 +24,7 @@ namespace mhedit
             checkBoxDebug.Checked = Properties.Settings.Default.MameDebug;
             checkBoxShowGridCoordinateReferences.Checked = Properties.Settings.Default.ShowGridReferences;
             checkBoxMAMEWindow.Checked = Properties.Settings.Default.MameWindow;
+            textBoxMameCommandLineOptions.Text = Properties.Settings.Default.MameCommandLineOptions;
 
             //locations
             textBoxTemplatesLocation.Text = Properties.Settings.Default.TemplatesLocation;
@@ -44,6 +45,7 @@ namespace mhedit
             Properties.Settings.Default.MameDebug = checkBoxDebug.Checked;
             Properties.Settings.Default.ShowGridReferences = checkBoxShowGridCoordinateReferences.Checked;
             Properties.Settings.Default.MameWindow = checkBoxMAMEWindow.Checked;
+            Properties.Settings.Default.MameCommandLineOptions = textBoxMameCommandLineOptions.Text;
 
             //locations
             Properties.Settings.Default.TemplatesLocation = textBoxTemplatesLocation.Text;

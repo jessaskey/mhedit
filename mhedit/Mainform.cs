@@ -982,9 +982,15 @@ namespace mhedit
                             args += "-debug ";
                         }
 
-                        if (Properties.Settings.Default.MameWindow)
+                        if ( Properties.Settings.Default.MameWindow )
                         {
                             args += "-window ";
+                        }
+
+                        if ( !string.IsNullOrWhiteSpace( Properties.Settings.Default.MameCommandLineOptions ) )
+                        {
+                            /// force at least 1 space on end.
+                            args += $"{Properties.Settings.Default.MameCommandLineOptions} ";
                         }
 
                         args += Properties.Settings.Default.MameDriver;
