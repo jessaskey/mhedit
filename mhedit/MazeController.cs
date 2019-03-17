@@ -1125,8 +1125,16 @@ namespace mhedit
 
 		private void OnMazePropertyChanged( object sender, PropertyChangedEventArgs e )
 		{
-			/// Force redraw of maze on change..
-			this.Invalidate();
+            /// Update modified time here. We do it outside the Maze Class itself because serialization
+            /// operations on the Maze cause updates which corrupt the idea of this being user
+            /// modification time stamp.
+            if ( e.PropertyName != ChangeTrackingBase.PropertyNameString )
+            {
+                this._maze.Modified = new EditInfo( DateTime.Now, Containers.VersionInformation.ApplicationVersion );
+            }
+
+            /// Force redraw of maze on change..
+            this.Invalidate();
 
 			if ( this._propertyGrid != null )
 			{

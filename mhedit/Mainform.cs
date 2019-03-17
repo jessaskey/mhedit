@@ -294,7 +294,7 @@ namespace mhedit
 
                 if (targetMaze.Maze.MazeType == draggedMaze.Maze.MazeType)
                 {
-                    string msg = $"Replace {targetMaze.Name} with {draggedMaze.Name}?";
+                    string msg = $"Replace {targetMaze.Maze.Name} with {draggedMaze.Maze.Name}?";
 
                     DialogResult dr = MessageBox.Show(
                         msg, MESSAGEBOX_CAPTION,
@@ -671,9 +671,8 @@ namespace mhedit
 
         private void toolStripButtonLoadFromROM_Click(object sender, EventArgs e)
         {
-
-            DialogLoadROM dlr = new DialogLoadROM(Path.GetFullPath(
-                Properties.Settings.Default.TemplatesLocation));
+            DialogLoadROM dlr = new DialogLoadROM( Path.GetFullPath(
+                Properties.Settings.Default.TemplatesLocation ) );
 
             DialogResult dr = dlr.ShowDialog();
 
@@ -982,9 +981,15 @@ namespace mhedit
                             args += "-debug ";
                         }
 
-                        if (Properties.Settings.Default.MameWindow)
+                        if ( Properties.Settings.Default.MameWindow )
                         {
                             args += "-window ";
+                        }
+
+                        if ( !string.IsNullOrWhiteSpace( Properties.Settings.Default.MameCommandLineOptions ) )
+                        {
+                            /// force at least 1 space on end.
+                            args += $"{Properties.Settings.Default.MameCommandLineOptions} ";
                         }
 
                         args += Properties.Settings.Default.MameDriver;
@@ -1153,6 +1158,8 @@ namespace mhedit
                         mazeCollectionController.FileName);
 
                     mazeCollectionController.MazeCollection.AcceptChanges();
+
+                    this.treeView.Invalidate();
                 }
             }
             catch (Exception ex)
@@ -1215,6 +1222,8 @@ namespace mhedit
                         mazeController.Maze, mazeController.FileName);
 
                     mazeController.Maze.AcceptChanges();
+
+                    this.treeView.Invalidate();
                 }
             }
             catch (Exception ex)

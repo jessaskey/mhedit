@@ -36,6 +36,12 @@ namespace mhedit.GameControllers
             LoadTemplate(_templatePath);
         }
 
+        public string Name
+        {
+            get { return "Major Havoc Promised End"; }
+            set { }
+        }
+
         public string LastError
         {
             get { return _lastError; }

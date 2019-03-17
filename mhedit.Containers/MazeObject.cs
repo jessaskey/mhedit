@@ -59,6 +59,7 @@ namespace mhedit.Containers
         }
 
         [CategoryAttribute( "Location" )]
+        [ReadOnly( true )]
         [DescriptionAttribute( "The start location of the object in the maze." )]
         public virtual Point Position
         {
@@ -134,11 +135,11 @@ namespace mhedit.Containers
         }
 
 #if DEBUG
+        [TypeConverter( typeof( TypeConverters.VectorPositionTypeConverter ) )]
+        [ReadOnly( true )]
 #else
         [BrowsableAttribute( false )]
 #endif
-        [TypeConverter( typeof( TypeConverters.VectorPositionTypeConverter ) )]
-        [ReadOnly( true )]
         public Point VectorPosition
         {
             get
