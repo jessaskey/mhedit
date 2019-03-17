@@ -294,7 +294,7 @@ namespace mhedit
 
                 if ( targetMaze.Maze.MazeType == draggedMaze.Maze.MazeType )
                 {
-                    string msg = $"Replace {targetMaze.Name} with {draggedMaze.Name}?";
+                    string msg = $"Replace {targetMaze.Maze.Name} with {draggedMaze.Maze.Name}?";
 
                     DialogResult dr = MessageBox.Show(
                         msg, MESSAGEBOX_CAPTION,
