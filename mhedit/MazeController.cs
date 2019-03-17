@@ -545,13 +545,21 @@ namespace mhedit
 						if (dr == DialogResult.Yes)
 						{
 							if (obj is TripPad && ((TripPad)obj).Pyroid != null)
-							{
-								_maze.MazeObjects.Remove(((TripPad)obj).Pyroid); 
+                            {
+                                _maze.MazeObjects.Remove( ( (TripPad) obj ).Pyroid );
+
+                                ( (IList)this._comboBoxObjects.DataSource ).Remove( ( (TripPad)obj ).Pyroid );
 							}
-							_maze.MazeObjects.Remove(obj);
+                            _maze.MazeObjects.Remove(obj);
 
                             ((IList)this._comboBoxObjects.DataSource).Remove( obj );
-							Invalidate();
+
+                            object sav = this.ComboBoxObjects.SelectedItem;
+
+                            this.ComboBoxObjects.SelectedItem = null;
+                            this.ComboBoxObjects.SelectedItem = sav;
+
+                            Invalidate();
 						}
 					}
 					break;
