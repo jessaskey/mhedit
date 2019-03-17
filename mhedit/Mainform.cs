@@ -1014,10 +1014,6 @@ namespace mhedit
                 MessageBox.Show( $"There was an error launching HBMAME," +
                                  $" verify your HBMAME paths in the configuration. {ex.Message}" );
             }
-            finally
-            {
-                this._runningPreview = false;
-            }
         }
 
         private void ProcessExited( object sender, EventArgs e )
