@@ -580,6 +580,10 @@ namespace mhedit
 		{
             base.OnMouseDown( e );
 
+            /// Apparently the Panel that MazeController inherits from doesn't naturally get focus
+            /// on click.
+            this.Focus();
+
             if ( e.Button == MouseButtons.Left && this.ComboBoxObjects != null )
             {
                 this._mouseDownLocation = e.Location;
