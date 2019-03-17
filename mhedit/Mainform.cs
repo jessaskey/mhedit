@@ -671,7 +671,6 @@ namespace mhedit
 
         private void toolStripButtonLoadFromROM_Click(object sender, EventArgs e)
         {
-
             DialogLoadROM dlr = new DialogLoadROM( Path.GetFullPath(
                 Properties.Settings.Default.TemplatesLocation ) );
 
@@ -1159,6 +1158,8 @@ namespace mhedit
                         mazeCollectionController.FileName );
 
                     mazeCollectionController.MazeCollection.AcceptChanges();
+
+                    this.treeView.Invalidate();
                 }
             }
             catch ( Exception ex )
@@ -1221,6 +1222,8 @@ namespace mhedit
                         mazeController.Maze, mazeController.FileName );
 
                     mazeController.Maze.AcceptChanges();
+
+                    this.treeView.Invalidate();
                 }
             }
             catch ( Exception ex )
