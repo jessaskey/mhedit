@@ -11,6 +11,7 @@ using mhedit.Containers.MazeEnemies.IonCannon;
 
 namespace mhedit.Containers
 {
+
     public delegate void MazePropertiesUpdated(object sender);
 
     [DefaultPropertyAttribute("Name")]
@@ -57,6 +58,8 @@ namespace mhedit.Containers
         private List<bool> _transportabilityFlags = new List<bool>();
         private int _mazeStampsX = 0;
         private int _mazeStampsY = 0;
+        private EditInfo _created;
+        private EditInfo _modified;
 
         #endregion
 
@@ -75,6 +78,11 @@ namespace mhedit.Containers
             _mazeName = name;
 
             this.MazeType = type;
+
+            this._created = new EditInfo( DateTime.Now, VersionInformation.ApplicationVersion );
+
+            /// Must be different objects!!!
+            this._modified = new EditInfo( this._created.TimeStamp, VersionInformation.ApplicationVersion );
 
             ( (INotifyPropertyChanged)this._mazeObjects ).PropertyChanged +=
                 this.ForwardPropertyChanged;
@@ -163,6 +171,39 @@ namespace mhedit.Containers
         {
             get { return _validationMessage; }
             set { _validationMessage = value; }
+        }
+
+        /// <summary>
+        /// Information about when this maze was created.
+        /// </summary>
+        [BrowsableAttribute( false )]
+        public EditInfo Created
+        {
+            get { return this._created; }
+            set
+            {
+                /// This property isn't available to the user. We first set with the constructor. If
+                /// it's saved/serialized to file then the deserialization will overwrite the ctor's
+                /// set and the creation data will be preserved over time/saves/loads.
+                this._created = value;
+            }
+        }
+
+        /// <summary>
+        /// Information about when this maze was last modified.
+        /// </summary>
+        [BrowsableAttribute( false )]
+        public EditInfo Modified
+        {
+            get { return this._modified; }
+            set
+            {
+                /// This property isn't available to the user. We set with any edits. If it's
+                /// changed and saved/serialized to file then the modifed time will be saved.
+                /// Deserialization will overwrite but new modification data will be written
+                /// for each edit and subsequently saved with the file.
+                this._modified = value;
+            }
         }
 
         [BrowsableAttribute(true)]

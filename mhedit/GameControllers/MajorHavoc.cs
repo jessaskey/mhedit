@@ -35,6 +35,12 @@ namespace mhedit.GameControllers
             LoadTemplate(templatePath);
         }
 
+        public string Name
+        {
+            get { return "Major Havoc Production"; }
+            set { }
+        }
+
         public string LastError
         {
             get { return _lastError; }

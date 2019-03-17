@@ -165,6 +165,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="VersionInformation.cs" />
     <EmbeddedResource Include="Dialogs\DialogAbout.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DialogAbout.cs</DependentUpon>

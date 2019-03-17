@@ -43,6 +43,7 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
@@ -56,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="DataConverter.cs" />
+    <Compile Include="EditInfo.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="ExtendedObservableCollection.cs" />
     <Compile Include="IFileInformation.cs" />
@@ -124,6 +126,7 @@
     <Compile Include="TypeConverters\SimpleVelocityTypeConverter.cs" />
     <Compile Include="TypeConverters\TripPadPyroidTypeConverter.cs" />
     <Compile Include="TypeConverters\VectorPositionTypeConverter.cs" />
+    <Compile Include="VersionInformation.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MazeEnemies\IonCannon\ProgramEditor.resx">
