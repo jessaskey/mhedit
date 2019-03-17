@@ -62,7 +62,7 @@
         </member>
         <member name="M:mhedit.DialogAbout.#ctor">
             <summary>
-            Our default constructor for the About dialog.
+                Our default constructor for the About dialog.
             </summary>
         </member>
         <member name="F:mhedit.DialogAbout.components">
