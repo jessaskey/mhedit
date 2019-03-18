@@ -545,13 +545,21 @@ namespace mhedit
 						if (dr == DialogResult.Yes)
 						{
 							if (obj is TripPad && ((TripPad)obj).Pyroid != null)
-							{
-								_maze.MazeObjects.Remove(((TripPad)obj).Pyroid); 
+                            {
+                                _maze.MazeObjects.Remove( ( (TripPad) obj ).Pyroid );
+
+                                ( (IList)this._comboBoxObjects.DataSource ).Remove( ( (TripPad)obj ).Pyroid );
 							}
-							_maze.MazeObjects.Remove(obj);
+                            _maze.MazeObjects.Remove(obj);
 
                             ((IList)this._comboBoxObjects.DataSource).Remove( obj );
-							Invalidate();
+
+                            object sav = this.ComboBoxObjects.SelectedItem;
+
+                            this.ComboBoxObjects.SelectedItem = null;
+                            this.ComboBoxObjects.SelectedItem = sav;
+
+                            Invalidate();
 						}
 					}
 					break;
@@ -579,6 +587,10 @@ namespace mhedit
 		protected override void OnMouseDown( MouseEventArgs e )
 		{
             base.OnMouseDown( e );
+
+            /// Apparently the Panel that MazeController inherits from doesn't naturally get focus
+            /// on click.
+            this.Focus();
 
             if ( e.Button == MouseButtons.Left && this.ComboBoxObjects != null )
             {
@@ -1125,8 +1137,16 @@ namespace mhedit
 
 		private void OnMazePropertyChanged( object sender, PropertyChangedEventArgs e )
 		{
-			/// Force redraw of maze on change..
-			this.Invalidate();
+            /// Update modified time here. We do it outside the Maze Class itself because serialization
+            /// operations on the Maze cause updates which corrupt the idea of this being user
+            /// modification time stamp.
+            if ( e.PropertyName != ChangeTrackingBase.PropertyNameString )
+            {
+                this._maze.Modified = new EditInfo( DateTime.Now, Containers.VersionInformation.ApplicationVersion );
+            }
+
+            /// Force redraw of maze on change..
+            this.Invalidate();
 
 			if ( this._propertyGrid != null )
 			{

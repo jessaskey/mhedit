@@ -36,6 +36,12 @@ namespace mhedit.GameControllers
             LoadTemplate(_templatePath);
         }
 
+        public string Name
+        {
+            get { return "Major Havoc Promised End"; }
+            set { }
+        }
+
         public string LastError
         {
             get { return _lastError; }
@@ -89,7 +95,7 @@ namespace mhedit.GameControllers
 
         }
 
-        public MazeCollection LoadMazes(string sourceROMFilePath, List<string> loadMessages)
+        public MazeCollection LoadMazes(List<string> loadMessages)
         {
 
             MazeCollection mazeCollection = new MazeCollection("Promised End Mazes");

@@ -1,19 +1,13 @@
 ﻿using mhedit.Containers;
-using mhedit.Controllers;
 using mhedit.GameControllers;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace mhedit
 {
+
     public partial class DialogLoadROM : Form
     {
         private ToolTip tt;
@@ -47,7 +41,19 @@ namespace mhedit
 
                 List<string> loadMessages = new List<string>();
                 IGameController controller = new MajorHavocPromisedEnd(textBoxROMPath.Text);
-                _mazeCollection = controller.LoadMazes(textBoxROMPath.Text, loadMessages);
+                _mazeCollection = controller.LoadMazes(loadMessages);
+
+                /// Change the Created info to show that we loaded the maze From ROMs.
+                foreach ( Maze maze in _mazeCollection.Mazes )
+                {
+                    maze.Created = new Containers.EditInfo( maze.Created.TimeStamp,
+                                   Containers.VersionInformation.ApplicationVersion )
+                                   {
+                                       Rom = new RomInfo( controller.Name,
+                                           VersionInformation.RomVersion )
+                                   };
+                }
+
                 _mazeCollection.AcceptChanges();
                 if (loadMessages.Count > 0)
                 {

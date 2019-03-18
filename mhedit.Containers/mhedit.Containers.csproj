@@ -43,6 +43,7 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
@@ -56,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="DataConverter.cs" />
+    <Compile Include="EditInfo.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="ExtendedObservableCollection.cs" />
     <Compile Include="IFileInformation.cs" />
@@ -124,6 +126,7 @@
     <Compile Include="TypeConverters\SimpleVelocityTypeConverter.cs" />
     <Compile Include="TypeConverters\TripPadPyroidTypeConverter.cs" />
     <Compile Include="TypeConverters\VectorPositionTypeConverter.cs" />
+    <Compile Include="VersionInformation.cs" />
     <Compile Include="Validation\CollectionContentValidator.cs" />
     <Compile Include="Validation\CollectionSizeValidator.cs" />
     <Compile Include="Validation\IValidationResult.cs" />
@@ -161,8 +164,6 @@
     <EmbeddedResource Include="Images\Objects\arrow_angle_obj.png" />
     <EmbeddedResource Include="Images\Objects\arrow_question_obj.png" />
     <EmbeddedResource Include="Images\Objects\arrow_square_obj.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Images\Objects\booties_obj.png" />
     <EmbeddedResource Include="Images\Objects\cannon_barrel_right.png" />
     <EmbeddedResource Include="Images\Objects\cannon_obj.png" />
@@ -198,16 +199,11 @@
     <EmbeddedResource Include="Images\Objects\wall_rightdown_64.png" />
     <EmbeddedResource Include="Images\Objects\wall_rightup_64.png" />
     <EmbeddedResource Include="Images\Objects\wall_vertical_64.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Images\Objects\arrow_out_up_obj.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Images\Objects\arrow_out_down_obj.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Images\Objects\arrow_out_left_obj.png" />
     <EmbeddedResource Include="Images\Objects\arrow_out_right_obj.png" />
+    <EmbeddedResource Include="Images\Objects\pyroidr_d_obj.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -33,8 +33,6 @@ namespace mhedit
         /// This is the default caption for all message boxes in the application
         /// </summary>
         public const string MESSAGEBOX_CAPTION = "The Homeworld Is Near";
-        private MazeController _currentMazeController = null;
-        private MazeCollectionController _currentMazeCollectionController = null;
         private TreeNode _draggedNode;
 
         #region Constructor
@@ -233,8 +231,6 @@ namespace mhedit
                     mazeController.Top = ( panelContent.Height - mazeController.Height ) / 2;
                     mazeController.PropertyGrid = propertyGrid;
                     mazeController.ComboBoxObjects = comboBoxMazeObjects;
-
-                    _currentMazeController = mazeController;
 
                     propertyGrid.SelectedObject = mazeController.Maze;
                 }
@@ -571,21 +567,21 @@ namespace mhedit
 
         private void toolStripButtonZoomIn_Click(object sender, EventArgs e)
         {
-            if (_currentMazeController != null)
-            {
-                _currentMazeController.Zoom += .1M;
-                panelContent.Invalidate();
-            }
+            //if (_currentMazeController != null)
+            //{
+            //    _currentMazeController.Zoom += .1M;
+            //    panelContent.Invalidate();
+            //}
         }
 
         private void toolStripButtonZoomOut_Click(object sender, EventArgs e)
         {
-            if (_currentMazeController != null)
-            {
-                _currentMazeController.Zoom -= .1M;
-                panelContent.ClientSize = new Size((int)(panelContent.Width * _currentMazeController.Zoom), (int)(panelContent.Height * _currentMazeController.Zoom));
-                panelContent.Invalidate();
-            }
+            //if (_currentMazeController != null)
+            //{
+            //    _currentMazeController.Zoom -= .1M;
+            //    panelContent.ClientSize = new Size((int)(panelContent.Width * _currentMazeController.Zoom), (int)(panelContent.Height * _currentMazeController.Zoom));
+            //    panelContent.Invalidate();
+            //}
         }
 
         private void toolStripButtonAbout_Click(object sender, EventArgs e)
@@ -672,7 +668,6 @@ namespace mhedit
 
         private void toolStripButtonLoadFromROM_Click(object sender, EventArgs e)
         {
-
             DialogLoadROM dlr = new DialogLoadROM( Path.GetFullPath(
                 Properties.Settings.Default.TemplatesLocation ) );
 
@@ -690,39 +685,38 @@ namespace mhedit
                 collectionController.MazeCollection.PropertyChanged += this.OnInstructionPropertyChanged;
 
                 treeView.SelectedNode = node;
-
-                _currentMazeCollectionController = collectionController;
             }
         }
 
         private void toolStripButtonContestUpload_Click(object sender, EventArgs e)
         {
-            if (_currentMazeController == null)
+            if ( this.treeView.SelectedNode?.Tag is MazeController mazeController )
             {
-                MessageBox.Show("You must select a maze to upload.", "Missing Maze", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                Image mazeImage = _currentMazeController.GetImage();
+                Image mazeImage = mazeController.GetImage();
 
-                if (_currentMazeController.Maze != null && mazeImage != null)
+                if ( mazeController.Maze != null && mazeImage != null )
                 {
                     DialogMHPLogin mhpDialog = new DialogMHPLogin();
-                    if (!String.IsNullOrEmpty(Properties.Settings.Default.MHPUsername))
+                    if ( !String.IsNullOrEmpty( Properties.Settings.Default.MHPUsername ) )
                     {
                         mhpDialog.Username = Properties.Settings.Default.MHPUsername;
                     }
-                    if (!String.IsNullOrEmpty(Properties.Settings.Default.MHPPassword)
-                        && !String.IsNullOrEmpty(Properties.Settings.Default.MHPKey))
+                    if ( !String.IsNullOrEmpty( Properties.Settings.Default.MHPPassword )
+                         && !String.IsNullOrEmpty( Properties.Settings.Default.MHPKey ) )
                     {
                         mhpDialog.Password = Properties.Settings.Default.MHPPassword;
                         mhpDialog.PasswordKey = Properties.Settings.Default.MHPKey;
                     }
                     mhpDialog.SavePassword = Properties.Settings.Default.MHPSavePassword;
                     mhpDialog.MazePreview = mazeImage;
-                    mhpDialog.MazeController = _currentMazeController;
+                    mhpDialog.MazeController = mazeController;
                     mhpDialog.ShowDialog();
                 }
+            }
+            else
+            {
+                MessageBox.Show( "You must select a maze to upload.", "Missing Maze",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information );
             }
         }
 
@@ -896,8 +890,6 @@ namespace mhedit
 
                 treeView.SelectedNode = node;
 
-                _currentMazeCollectionController = collectionController;
-
                 node.BeginEdit();
             }
             catch ( Exception ex )
@@ -934,8 +926,6 @@ namespace mhedit
                 mazeController.PropertyGrid = propertyGrid;
                 mazeController.ComboBoxObjects = comboBoxMazeObjects;
 
-                _currentMazeController = mazeController;
-
                 node.BeginEdit();
             }
             catch ( Exception ex )
@@ -952,64 +942,78 @@ namespace mhedit
 
         private void toolStripMenuItemPreview_Click( object sender, EventArgs e )
         {
-            //individual maze is required
-            if (_currentMazeController != null)
+            try
             {
-                MazeCollectionController mazeCollectionController = _currentMazeCollectionController;
-                //mazeCollectionController is not required, but we will manually build one if it is null
-                if (mazeCollectionController == null)
+                /// Get the selected node's MazeController/Maze so we can make it the preview target.
+                if ( this.treeView.SelectedNode?.Tag is MazeController mazeController )
                 {
-                    //build it from the template
-                    List<string> loadMessages = new List<string>();
-                    string fullTemplatePath = Path.GetFullPath(Properties.Settings.Default.TemplatesLocation);
-                    IGameController mhpe = new MajorHavocPromisedEnd(fullTemplatePath);
-                    MazeCollection mazeCollection = mhpe.LoadMazes(fullTemplatePath, loadMessages);
-                    //inject our single maze based upon the maze type A=0,B=1,C=2,D=3
-                    mazeCollection.Mazes[(int)_currentMazeController.Maze.MazeType] = _currentMazeController.Maze;
-                    mazeCollectionController = new MazeCollectionController(mazeCollection);
-                }
+                    /// Always create a MazeCollection for the preview of a Maze. Otherwise, any
+                    /// existing validation errors in the parent MazeCollection will keep us from
+                    /// being able to run the Preview of this level. So build a temporary collection
+                    /// from the template.
+                    IGameController mhpe =
+                        new MajorHavocPromisedEnd(
+                            Path.GetFullPath(
+                                Properties.Settings.Default.TemplatesLocation ) );
 
-                if (MAMEHelper.SaveROM(mazeCollectionController.MazeCollection, _currentMazeController.Maze))
-                {
-                    try
+                    MazeCollection mazeCollection = mhpe.LoadMazes( new List<string>() );
+
+                    // inject our single maze based upon the maze type A=0,B=1,C=2,D=3
+                    mazeCollection.Mazes[ (int)mazeController.Maze.MazeType ] =
+                        mazeController.Maze;
+
+                    /// Now that we have a Maze in a MazeCollection we can build a ROM set to preview from.
+                    if ( MAMEHelper.SaveROM( mazeCollection, mazeController.Maze ) )
                     {
                         //now launch MAME for mhavoc..
-                        string mameExe = Path.GetFullPath(Properties.Settings.Default.MameExecutable);
+                        string mameExe =
+                            Path.GetFullPath( Properties.Settings.Default.MameExecutable );
 
                         string args = "";
 
-                        if (Properties.Settings.Default.MameDebug)
+                        if ( Properties.Settings.Default.MameDebug )
                         {
                             args += "-debug ";
                         }
 
-                        if (Properties.Settings.Default.MameWindow)
+                        if ( Properties.Settings.Default.MameWindow )
                         {
                             args += "-window ";
                         }
 
+                        if ( !string.IsNullOrWhiteSpace( Properties.Settings.Default.MameCommandLineOptions ) )
+                        {
+                            /// force at least 1 space on end.
+                            args += $"{Properties.Settings.Default.MameCommandLineOptions} ";
+                        }
+
                         args += Properties.Settings.Default.MameDriver;
 
-                        ProcessStartInfo info = new ProcessStartInfo(mameExe, args);
-                        info.ErrorDialog = true;
-                        info.RedirectStandardError = true;
-                        info.RedirectStandardOutput = true;
-                        info.UseShellExecute = false;
-                        info.WorkingDirectory = Path.GetDirectoryName(mameExe);
+                        ProcessStartInfo info = new ProcessStartInfo( mameExe, args )
+                        {
+                            ErrorDialog = true,
+                            RedirectStandardError = true,
+                            RedirectStandardOutput = true,
+                            UseShellExecute = false,
+                            WorkingDirectory = Path.GetDirectoryName( mameExe )
+                        };
 
-                        Process p = new Process();
-                        p.EnableRaisingEvents = true;
-                        p.StartInfo = info;
-                        p.Exited += new EventHandler(ProcessExited);
+                        Process p = new Process
+                        {
+                            EnableRaisingEvents = true,
+                            StartInfo = info
+                        };
+
+                        p.Exited += this.ProcessExited;
+
                         p.Start();
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"There was an error launching HBMAME," +
-                            $" verify your HBMAME paths in the configuration. {ex.Message}");
-                    }
                 }
-
+            }
+            catch ( Exception ex )
+            {
+                MessageBox.Show( $"There was an error launching HBMAME," +
+                                 $" verify your HBMAME paths in the configuration. {ex.Message}" );
             }
         }
 
@@ -1061,8 +1065,6 @@ namespace mhedit
                 mazeController.PropertyGrid = propertyGrid;
                 mazeController.ComboBoxObjects = comboBoxMazeObjects;
 
-                _currentMazeController = mazeController;
-
                 mazeController.FileName = fileName;
             }
             catch ( Exception ex )
@@ -1099,8 +1101,6 @@ namespace mhedit
                 collectionController.MazeCollection.PropertyChanged += this.OnInstructionPropertyChanged;
 
                 treeView.SelectedNode = node;
-
-                _currentMazeCollectionController = collectionController;
             }
             catch ( Exception ex )
             {
@@ -1154,6 +1154,8 @@ namespace mhedit
                         mazeCollectionController.FileName );
 
                     mazeCollectionController.MazeCollection.AcceptChanges();
+
+                    this.treeView.Invalidate();
                 }
             }
             catch ( Exception ex )
@@ -1216,6 +1218,8 @@ namespace mhedit
                         mazeController.Maze, mazeController.FileName );
 
                     mazeController.Maze.AcceptChanges();
+
+                    this.treeView.Invalidate();
                 }
             }
             catch ( Exception ex )

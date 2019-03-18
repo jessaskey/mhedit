@@ -1,13 +1,10 @@
 ﻿using mhedit.Containers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace mhedit.GameControllers
 {
-    public interface IGameController
+    public interface IGameController : IName
     {
 
         byte[] GetBytesFromString(string text);
@@ -20,7 +17,7 @@ namespace mhedit.GameControllers
 
         byte ReadByte(ushort address, int offset);
 
-        MazeCollection LoadMazes(string sourceFilePath, List<string> loadMessages);
+        MazeCollection LoadMazes(List<string> loadMessages);
 
         string LastError { get; }
     }

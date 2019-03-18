@@ -35,6 +35,12 @@ namespace mhedit.GameControllers
             LoadTemplate(templatePath);
         }
 
+        public string Name
+        {
+            get { return "Major Havoc Production"; }
+            set { }
+        }
+
         public string LastError
         {
             get { return _lastError; }
@@ -82,7 +88,7 @@ namespace mhedit.GameControllers
             }
         }
 
-        public MazeCollection LoadMazes(string sourceROMFilePath, List<string> loadMessages)
+        public MazeCollection LoadMazes(List<string> loadMessages)
         {
             
             MazeCollection mazeCollection = new MazeCollection("Production Mazes");
