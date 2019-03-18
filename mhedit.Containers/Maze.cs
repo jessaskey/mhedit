@@ -274,7 +274,7 @@ namespace mhedit.Containers
             _validationMessage.Clear();
 
             //validate here...
-            if (_mazeObjects != null && _mazeObjects.Count > 0)
+            if (_mazeObjects != null )
             {
                 if (_mazeObjects.Where(o => o is MazeObjects.Reactoid).FirstOrDefault() == null)
                 {
