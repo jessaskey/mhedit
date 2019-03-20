@@ -18,10 +18,14 @@ namespace mhedit.Containers.MazeEnemies
         private PyroidStyle _pyroidStyle = PyroidStyle.Double;
 
         public TripPadPyroid()
+            : this( PyroidStyle.Double )
+        { }
+
+        private TripPadPyroid( PyroidStyle pyroidStyle )
             : base( 7,
-                    ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.pyroidr_obj.png" ),
+                ImageFactory.Create( pyroidStyle ),
                     new Point( 0x40, 0x00 ),
-                    new Point( 8, 8 ) )
+                    new Point( 8, 32 ) )
         { }
 
         /// <summary>
@@ -55,7 +59,17 @@ namespace mhedit.Containers.MazeEnemies
         public PyroidStyle PyroidStyle
         {
             get { return _pyroidStyle; }
-            set { this.SetField( ref this._pyroidStyle, value ); }
+            set
+            {
+                if ( this._pyroidStyle != value )
+                {
+                    /// Must change Image first then property so any UX updates get proper
+                    /// image.
+                    this.Image = ImageFactory.Create( value );
+
+                    this.SetField( ref this._pyroidStyle, value );
+                }
+            }
         }
 
         public override byte[] ToBytes()
@@ -80,6 +94,26 @@ namespace mhedit.Containers.MazeEnemies
         public override byte[] ToBytes(object obj)
         {
             return ToBytes();
+        }
+
+        private class ImageFactory
+        {
+            public static Image Create( PyroidStyle pyroidStyle )
+            {
+                Image image = null;
+
+                switch ( pyroidStyle )
+                {
+                    case PyroidStyle.Single:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.pyroidr_obj.png" );
+                        break;
+                    case PyroidStyle.Double:
+                        image = ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.pyroidr_d_obj.png" );
+                        break;
+                }
+
+                return image;
+            }
         }
     }
 }
