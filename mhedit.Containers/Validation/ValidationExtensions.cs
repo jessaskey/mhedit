@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace mhedit.Containers.Validation
 {
@@ -11,7 +12,11 @@ namespace mhedit.Containers.Validation
     {
         public static IValidationResult Validate( this object subject )
         {
-            ValidationResults results = new ValidationResults();
+            ValidationResults results = new ValidationResults()
+                                        {
+                                            Context = subject,
+                                            Level = ValidationLevel.Message
+                                        };
 
             PropertyInfo[] properties = subject.GetType().GetProperties();
 
@@ -29,12 +34,23 @@ namespace mhedit.Containers.Validation
                     IEnumerable<IValidationResult> failures =
                         rules.Select( r => r.Validate( propertyValue ) )
                              .Where( f => f != null ).ToList();
-#if DEBUG
+
                     foreach ( IValidationResult validationResult in failures )
                     {
+#if DEBUG
                         Debug.WriteLine( validationResult.ToString() );
-                    }
+#else
+                        /// No sense in looping if we've already found an error.
+                        if ( results.Level == ValidationLevel.Error )
+                        {
+                            break;
+                        }
 #endif
+                        if ( results.Level > validationResult.Level )
+                        {
+                            results.Level = validationResult.Level;
+                        }
+                    }
                     results.AddRange( failures );
                 }
             }

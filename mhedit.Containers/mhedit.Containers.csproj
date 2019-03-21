@@ -126,6 +126,13 @@
     <Compile Include="TypeConverters\SimpleVelocityTypeConverter.cs" />
     <Compile Include="TypeConverters\TripPadPyroidTypeConverter.cs" />
     <Compile Include="TypeConverters\VectorPositionTypeConverter.cs" />
+    <Compile Include="Validation\StringValidator.cs" />
+    <Compile Include="Validation\ValidationWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Validation\ValidationWindow.Designer.cs">
+      <DependentUpon>ValidationWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="VersionInformation.cs" />
     <Compile Include="Validation\CollectionContentValidator.cs" />
     <Compile Include="Validation\CollectionSizeValidator.cs" />
@@ -149,6 +156,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Validation\ValidationWindow.resx">
+      <DependentUpon>ValidationWindow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -204,6 +214,11 @@
     <EmbeddedResource Include="Images\Objects\arrow_out_left_obj.png" />
     <EmbeddedResource Include="Images\Objects\arrow_out_right_obj.png" />
     <EmbeddedResource Include="Images\Objects\pyroidr_d_obj.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Error_red_16x16.png" />
+    <EmbeddedResource Include="Images\Information_blue_6227_16x16.png" />
+    <EmbeddedResource Include="Images\Warning_yellow_7231_16x16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

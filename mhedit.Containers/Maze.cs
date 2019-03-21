@@ -220,7 +220,11 @@ namespace mhedit.Containers
         }
 
         [Validation( typeof( RegexValidator ),
+            Message = "Maze Hint \"{0}\", contains invalid characters. Valid characters are \" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:\"",
             Options = "Pattern=^[a-zA-Z0-9 .!-,%:]*$;" )]
+        [Validation( typeof( StringValidator ),
+            Level = ValidationLevel.Warning,
+            Message = "Maze Hint is null or empty." )]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The text shown at the top of the screen when entering the maze. Valid characters are ' 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:'")]
         public string Hint
@@ -230,7 +234,11 @@ namespace mhedit.Containers
         }
 
         [Validation( typeof( RegexValidator ),
+            Message = "Maze Hint2 \"{0}\", contains invalid characters. Valid characters are \" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:\"",
             Options = "Pattern=^[a-zA-Z0-9 .!-,%:]*$;" )]
+        [Validation( typeof( StringValidator ),
+            Level = ValidationLevel.Warning,
+            Message = "Maze Hint2 is null or empty." )]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The second line of text shown at the top of the screen when entering the maze. Valid characters are ' 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:'")]
         public string Hint2

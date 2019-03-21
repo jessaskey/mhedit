@@ -22,7 +22,6 @@ namespace mhedit.Containers.Validation
                     (RegexOptions) Enum.Parse( typeof( RegexOptions ),
                         this._options[ "RegexOptions" ] ) :
                     RegexOptions.IgnoreCase;
-
         }
 
         public override IValidationResult Validate( string input )

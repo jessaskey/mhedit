@@ -171,6 +171,14 @@
             The main entry point for the application.
             </summary>
         </member>
+        <member name="T:mhedit.SystemWindowsTabControl">
+             <summary>
+             Derived from:
+             https://stackoverflow.com/a/36900582
+            
+             Removed the Add tab as "windows" are added via events in the system.
+             </summary>
+        </member>
         <member name="T:mhedit.Properties.Resources">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -185,6 +193,11 @@
             <summary>
               Overrides the current thread's CurrentUICulture property for all
               resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:mhedit.Properties.Resources.Close">
+            <summary>
+              Looks up a localized resource of type System.Drawing.Bitmap.
             </summary>
         </member>
         <member name="P:mhedit.Properties.Resources.OpenSelectedItemHS">

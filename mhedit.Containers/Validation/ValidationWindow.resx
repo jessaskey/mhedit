@@ -117,11 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Close" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\toolbarbuttons\Close.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="ErrorsButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADjSURBVDhPtZOxDcIwEEU9BAMwAiOwABNAQYtEz2w0MEKm
+        oAlIRkhOKhT8zB262BYFEV/6Crr7/2NfLi5H3/fbEMK567rBkho9kZWIzXkUNo/TcWjXq+EycyNSo4cG
+        rdjeELO/7jaFMeftsCfEj0JIpYGgXS4Sc6OtS0iTzNyLo6noefeJNqRWx4PXMRy9swqBimu1pI0evBz/
+        80+1kJpZibcIgDYE1MzwPwHWzNP+zkNSwOQhTn6NIB6l0S1EYM1KWx8tEmAtY8HrNn5jdZWBhPz2MVlw
+        L4YThWnKSmr0RCZw7gVi63y5VJrOIwAAAABJRU5ErkJggg==
+</value>
   </data>
-  <data name="OpenSelectedItemHS" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\images\toolbarbuttons\OpenSelectedItemHS.BMP;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="WarningsButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACnSURBVDhPlZNLDoUgDEXZiVt763Lihpy8FThzAwSIE7EX
+        LZGvheQkpYbe04GqdZxzP2utB6iftvxorbfzP3mA+mnLDhKPffZ+VQHUQxaczgOGLPJ0RmzxTqdrALXI
+        Ik+nVhwAPi3y3amVDOha1HandjIANC3ydEDtYkDVopbeo7CopQP6VBiAxKKX3hoAokUr/YtoYYxZRvZn
+        8AZvwxoo+NeVcj9W6gJ5QfJYKotnXgAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="MessagesButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADDSURBVDhP3ZOxDQIxDEWzBw2bwQJMwDTsgXSioc0MUCEo
+        IookZcg7HHTxWSBBx5d+4/+/5fh8TiPnvI4xDimlMiU1NLHNUcVlNfrhdC+r/aUsdueO1NDw4JXYExIO
+        m8N1FtTcHm80CV0TuiJoc4OuSxM/hnkXo2kTbLA0MmQdy7He/IlkyDK+aYANlgbJ/kODd0tssLTXEn/+
+        jKCO4q0rbND17pAAZ1kLwbpGTfOUgTT57meagnexnGoct9xIDU1sAuceiS+jbXqYs5AAAAAASUVORK5C
+        YII=
+</value>
   </data>
 </root>

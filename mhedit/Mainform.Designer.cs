@@ -69,6 +69,8 @@ namespace mhedit
             this.toolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItemValidate = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemRename = new System.Windows.Forms.ToolStripMenuItem();
@@ -86,8 +88,10 @@ namespace mhedit
             this.comboBoxMazeObjects = new System.Windows.Forms.ComboBox();
             this.splitterUpDown = new System.Windows.Forms.Splitter();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
-            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItemValidate = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabControlSystemWindows = new mhedit.SystemWindowsTabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.splitterSystemWindows = new System.Windows.Forms.Splitter();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.contextMenuStripTree.SuspendLayout();
@@ -97,6 +101,8 @@ namespace mhedit
             this.splitContainerRight.Panel1.SuspendLayout();
             this.splitContainerRight.Panel2.SuspendLayout();
             this.splitContainerRight.SuspendLayout();
+            this.tabControlSystemWindows.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -416,7 +422,7 @@ namespace mhedit
             this.toolStripSeparator9,
             this.toolStripMenuItemPreview});
             this.contextMenuStripTree.Name = "contextMenuStripTree";
-            this.contextMenuStripTree.Size = new System.Drawing.Size(209, 276);
+            this.contextMenuStripTree.Size = new System.Drawing.Size(209, 254);
             this.contextMenuStripTree.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTree_Opening);
             // 
             // toolStripMenuItemNew
@@ -508,6 +514,19 @@ namespace mhedit
             this.toolStripMenuItemSaveAll.Text = "Save All";
             this.toolStripMenuItemSaveAll.Click += new System.EventHandler(this.toolStripButtonSaveAll_Click);
             // 
+            // toolStripSeparator11
+            // 
+            this.toolStripSeparator11.Name = "toolStripSeparator11";
+            this.toolStripSeparator11.Size = new System.Drawing.Size(205, 6);
+            // 
+            // toolStripMenuItemValidate
+            // 
+            this.toolStripMenuItemValidate.Name = "toolStripMenuItemValidate";
+            this.toolStripMenuItemValidate.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.toolStripMenuItemValidate.Size = new System.Drawing.Size(208, 22);
+            this.toolStripMenuItemValidate.Text = "Validate";
+            this.toolStripMenuItemValidate.Click += new System.EventHandler(this.toolStripMenuItemValidate_Click);
+            // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
@@ -574,7 +593,7 @@ namespace mhedit
             this.panelUnderneath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelUnderneath.Location = new System.Drawing.Point(148, 25);
             this.panelUnderneath.Name = "panelUnderneath";
-            this.panelUnderneath.Size = new System.Drawing.Size(885, 663);
+            this.panelUnderneath.Size = new System.Drawing.Size(885, 560);
             this.panelUnderneath.TabIndex = 5;
             // 
             // panelContent
@@ -587,7 +606,7 @@ namespace mhedit
             this.panelContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelContent.Location = new System.Drawing.Point(0, 0);
             this.panelContent.Name = "panelContent";
-            this.panelContent.Size = new System.Drawing.Size(632, 663);
+            this.panelContent.Size = new System.Drawing.Size(632, 560);
             this.panelContent.TabIndex = 3;
             this.panelContent.Paint += new System.Windows.Forms.PaintEventHandler(this.panelContent_Paint);
             // 
@@ -596,7 +615,7 @@ namespace mhedit
             this.splitterRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.splitterRight.Location = new System.Drawing.Point(632, 0);
             this.splitterRight.Name = "splitterRight";
-            this.splitterRight.Size = new System.Drawing.Size(3, 663);
+            this.splitterRight.Size = new System.Drawing.Size(3, 560);
             this.splitterRight.TabIndex = 1;
             this.splitterRight.TabStop = false;
             // 
@@ -607,7 +626,7 @@ namespace mhedit
             this.panelRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.panelRight.Location = new System.Drawing.Point(635, 0);
             this.panelRight.Name = "panelRight";
-            this.panelRight.Size = new System.Drawing.Size(250, 663);
+            this.panelRight.Size = new System.Drawing.Size(250, 560);
             this.panelRight.TabIndex = 0;
             // 
             // splitContainerRight
@@ -627,8 +646,8 @@ namespace mhedit
             this.splitContainerRight.Panel2.Controls.Add(this.propertyGrid);
             this.splitContainerRight.Panel2.Controls.Add(this.comboBoxMazeObjects);
             this.splitContainerRight.Panel2MinSize = 50;
-            this.splitContainerRight.Size = new System.Drawing.Size(250, 660);
-            this.splitContainerRight.SplitterDistance = 400;
+            this.splitContainerRight.Size = new System.Drawing.Size(250, 557);
+            this.splitContainerRight.SplitterDistance = 337;
             this.splitContainerRight.TabIndex = 4;
             // 
             // toolBox
@@ -655,7 +674,7 @@ namespace mhedit
             this.toolBox.SelectAllTextWhileRenaming = true;
             this.toolBox.SelectedTabIndex = -1;
             this.toolBox.ShowOnlyOneItemPerRow = false;
-            this.toolBox.Size = new System.Drawing.Size(250, 400);
+            this.toolBox.Size = new System.Drawing.Size(250, 337);
             this.toolBox.SmallItemSize = new System.Drawing.Size(32, 32);
             this.toolBox.TabHeight = 18;
             this.toolBox.TabHoverTextColor = System.Drawing.SystemColors.ControlText;
@@ -671,7 +690,7 @@ namespace mhedit
             this.propertyGrid.LineColor = System.Drawing.SystemColors.ControlDark;
             this.propertyGrid.Location = new System.Drawing.Point(0, 21);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(250, 235);
+            this.propertyGrid.Size = new System.Drawing.Size(250, 195);
             this.propertyGrid.TabIndex = 5;
             // 
             // comboBoxMazeObjects
@@ -686,7 +705,7 @@ namespace mhedit
             // splitterUpDown
             // 
             this.splitterUpDown.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitterUpDown.Location = new System.Drawing.Point(0, 660);
+            this.splitterUpDown.Location = new System.Drawing.Point(0, 557);
             this.splitterUpDown.Name = "splitterUpDown";
             this.splitterUpDown.Size = new System.Drawing.Size(250, 3);
             this.splitterUpDown.TabIndex = 1;
@@ -697,18 +716,46 @@ namespace mhedit
             this.timerMain.Interval = 1000;
             this.timerMain.Tick += new System.EventHandler(this.timerMain_Tick);
             // 
-            // toolStripSeparator11
+            // tabControlSystemWindows
             // 
-            this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(205, 6);
+            this.tabControlSystemWindows.Controls.Add(this.tabPage1);
+            this.tabControlSystemWindows.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tabControlSystemWindows.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+            this.tabControlSystemWindows.Location = new System.Drawing.Point(148, 585);
+            this.tabControlSystemWindows.Name = "tabControlSystemWindows";
+            this.tabControlSystemWindows.Padding = new System.Drawing.Point(12, 4);
+            this.tabControlSystemWindows.SelectedIndex = 0;
+            this.tabControlSystemWindows.Size = new System.Drawing.Size(885, 100);
+            this.tabControlSystemWindows.TabIndex = 0;
             // 
-            // toolStripMenuItemValidate
+            // tabPage1
             // 
-            this.toolStripMenuItemValidate.Name = "toolStripMenuItemValidate";
-            this.toolStripMenuItemValidate.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.toolStripMenuItemValidate.Size = new System.Drawing.Size(208, 22);
-            this.toolStripMenuItemValidate.Text = "Validate";
-            this.toolStripMenuItemValidate.Click += new System.EventHandler(this.toolStripMenuItemValidate_Click);
+            this.tabPage1.Controls.Add(this.listView1);
+            this.tabPage1.Location = new System.Drawing.Point(4, 24);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(877, 72);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // listView1
+            // 
+            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.Location = new System.Drawing.Point(3, 3);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(871, 66);
+            this.listView1.TabIndex = 0;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            // 
+            // splitterSystemWindows
+            // 
+            this.splitterSystemWindows.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitterSystemWindows.Location = new System.Drawing.Point(148, 685);
+            this.splitterSystemWindows.Name = "splitterSystemWindows";
+            this.splitterSystemWindows.Size = new System.Drawing.Size(885, 3);
+            this.splitterSystemWindows.TabIndex = 0;
+            this.splitterSystemWindows.TabStop = false;
             // 
             // Mainform
             // 
@@ -716,6 +763,8 @@ namespace mhedit
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1033, 710);
             this.Controls.Add(this.panelUnderneath);
+            this.Controls.Add( this.splitterSystemWindows );
+            this.Controls.Add(this.tabControlSystemWindows);
             this.Controls.Add(this.splitterLeft);
             this.Controls.Add(this.treeView);
             this.Controls.Add(this.toolStrip);
@@ -737,6 +786,8 @@ namespace mhedit
             this.splitContainerRight.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerRight)).EndInit();
             this.splitContainerRight.ResumeLayout(false);
+            this.tabControlSystemWindows.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -802,6 +853,10 @@ namespace mhedit
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSaveAll;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemValidate;
+        private mhedit.SystemWindowsTabControl tabControlSystemWindows;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.Splitter splitterSystemWindows;
     }
 }
 

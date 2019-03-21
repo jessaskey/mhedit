@@ -5,7 +5,8 @@
     {
         //NoResults,
         Error,
-        Warning
+        Warning,
+        Message
     }
 
 }

@@ -1249,7 +1249,7 @@ namespace mhedit
         {
             if ( treeView.SelectedNode?.Tag is MazeController mazeController )
             {
-                mazeController.Maze.Validate();
+                this.tabControlSystemWindows.Add( new ValidationWindow( "One", mazeController.Maze.Validate() ) );
             }
             else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
             {
