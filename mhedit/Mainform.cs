@@ -919,7 +919,12 @@ namespace mhedit
                 node.SelectedImageIndex = node.ImageIndex;
                 treeView.SelectedNode = node;
 
-                mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+                /// Only connect PropertyChanged event if the maze isn't part of a collection
+                /// (it doesn't have a parent) as it's fed through the collection otherwise.
+                if ( node.Parent == null )
+                {
+                    mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+                }
 
                 mazeController.ShowGridReferences = Properties.Settings.Default.ShowGridReferences;
                 mazeController.PropertyGrid = propertyGrid;
@@ -1058,7 +1063,12 @@ namespace mhedit
                 node.SelectedImageIndex = node.ImageIndex;
                 treeView.SelectedNode = node;
 
-                mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+                /// Only connect PropertyChanged event if the maze isn't part of a collection
+                /// (it doesn't have a parent) as it's fed through the collection otherwise.
+                if ( node.Parent == null )
+                {
+                    mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+                }
 
                 mazeController.ShowGridReferences = Properties.Settings.Default.ShowGridReferences;
                 mazeController.PropertyGrid = propertyGrid;
