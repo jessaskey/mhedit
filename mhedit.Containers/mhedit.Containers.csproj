@@ -147,9 +147,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Images\Objects\arrow_angle_obj.png" />
     <EmbeddedResource Include="Images\Objects\arrow_question_obj.png" />
     <EmbeddedResource Include="Images\Objects\arrow_square_obj.png" />

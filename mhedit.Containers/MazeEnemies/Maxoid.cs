@@ -38,7 +38,7 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [CategoryAttribute("Location")]
-        [DescriptionAttribute("Defines how many maze squares between Max and Rex before Max will start persuit.")]
+        [DescriptionAttribute("Defines how many maze squares between Max and Rex before Max will start pursuit.")]
         public int TriggerDistance
         {
             get { return _triggerDistance; }
