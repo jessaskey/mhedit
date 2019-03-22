@@ -203,7 +203,6 @@ namespace mhedit
                         }
                     }
                 }
-                
 
 				maze.AcceptChanges();
 			}
