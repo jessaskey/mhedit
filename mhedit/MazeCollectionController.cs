@@ -3,11 +3,13 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using mhedit.Containers;
 using System.Xml.Serialization;
 using ICSharpCode.SharpZipLib.BZip2;
 using System.Xml;
+using mhedit.Containers.MazeEnemies;
 
 namespace mhedit
 {
@@ -103,6 +105,25 @@ namespace mhedit
                 using (var reader = XmlReader.Create(mStream))
                 {
                     mazeCollection = (MazeCollection)serializer.Deserialize(reader);
+
+                    //HACK: Fixes orphaned TripPadPyroids
+                    foreach ( Maze maze in mazeCollection.Mazes )
+                    {
+                        foreach ( TripPadPyroid tpp in maze.MazeObjects.OfType<TripPadPyroid>() )
+                        {
+                            //find a TripPad
+                            foreach ( TripPad tripPad in maze.MazeObjects.OfType<TripPad>() )
+                            {
+                                if ( tripPad.Pyroid.Name == tpp.Name )
+                                {
+                                    //these are the same... 
+                                    tripPad.Pyroid = null;
+                                    tpp.TripPad = tripPad;
+                                    tripPad.Pyroid = tpp;
+                                }
+                            }
+                        }
+                    }
 
                     mazeCollection.AcceptChanges();
                 }

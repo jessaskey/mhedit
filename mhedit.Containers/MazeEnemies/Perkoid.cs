@@ -36,7 +36,7 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [CategoryAttribute("Location")]
-        [DescriptionAttribute("Defines how the object moves within the maze and at what speed.")]
+        [DescriptionAttribute( "Defines the vector that object takes in the maze. For Left Facing Zero Velocity use -1 X Velocity" )]
         [TypeConverter(typeof(TypeConverters.SignedVelocityTypeConverter))]
         public SignedVelocity Velocity
         {

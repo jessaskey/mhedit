@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Forms.VisualStyles;
 using System.Xml.Serialization;
 
 namespace mhedit.Containers.MazeEnemies
@@ -16,6 +17,7 @@ namespace mhedit.Containers.MazeEnemies
         private TripPad _tripPad;
         private int _velocity;
         private PyroidStyle _pyroidStyle = PyroidStyle.Double;
+        private TripPyroidDirection _direction = TripPyroidDirection.Right;
 
         public TripPadPyroid()
             : this( PyroidStyle.Double )
@@ -47,12 +49,40 @@ namespace mhedit.Containers.MazeEnemies
             get { return this._tripPad.Selected; }
         }
 
+        [ CategoryAttribute( "Location" ) ]
+        [ DescriptionAttribute( "Defines the X velocity of the pyroid launched." ) ]
+        public TripPyroidDirection Direction
+        {
+            get { return this._direction; }
+            set { this.SetField( ref this._direction, value ); }
+        }
+
         [CategoryAttribute("Location")]
         [DescriptionAttribute("Defines the X velocity of the pyroid launched.")]
         public int Velocity
         {
-            get { return _velocity; }
-            set { this.SetField( ref this._velocity, value ); }
+            get { return this._velocity; }
+            set
+            {
+                /// To support the "old style" velocity and direction in a single value
+                /// we allow -7 to 7, but make the error say 0 - 7 so folks use the
+                /// new design of positive Velocities with a Direction property.
+                if ( value > 7 || value < -7 )
+                {
+                    throw new ArgumentOutOfRangeException( nameof( this.Velocity ),
+                        value, "Value must be betwee 0 < value < 7." );
+                }
+
+                /// Convert to positive "speed" and direction.
+                if ( value < 0 )
+                {
+                    value = Math.Abs( value );
+
+                    this.Direction = TripPyroidDirection.Left;
+                }
+
+                this.SetField( ref this._velocity, value );
+            }
         }
 
         [DescriptionAttribute("Defines if the launched pyroid is a single or double Pyroid.")]
@@ -82,12 +112,7 @@ namespace mhedit.Containers.MazeEnemies
             }
             bytes.AddRange(position);
 
-            byte velocity = (byte)Math.Abs(_velocity);
-            if (_velocity < 0)
-            {
-                velocity |= 0x80;
-            }
-            bytes.Add(velocity);
+            bytes.Add( (byte)( this._velocity | (int)this._direction ) );
             return bytes.ToArray();
         }
 

@@ -345,9 +345,14 @@ namespace mhedit
                         /* Cancel the label edit action, inform the user, and 
                            place the node in edit mode again. */
                         e.CancelEdit = true;
-                        MessageBox.Show( "Invalid tree node label.\n" +
-                           "The invalid characters are: '@','.', ',', '!'",
-                           "Node Label Edit" );
+
+                        string invalid = new string( Path.GetInvalidFileNameChars()
+                                                     .Where( c => !char.IsControl( c ) )
+                                                     .ToArray() );
+
+                        MessageBox.Show( $"The name \"{e.Label}\" contains invalid characters: {invalid}",
+                            "Invalid Name" );
+
                         e.Node.BeginEdit();
                     }
                 }
@@ -369,7 +374,15 @@ namespace mhedit
         private void treeView_DrawNode( object sender, DrawTreeNodeEventArgs e )
         {
             // Use the default background and node text.
-            e.DrawDefault = true;
+            e.DrawDefault = !e.Node.IsEditing;
+
+            if ( e.Node.IsEditing )
+            {
+                /// While editing the Node Text don't paint the existing name behind.
+                e.Graphics.FillRectangle( new SolidBrush( SystemColors.Window ), e.Bounds );
+
+                return;
+            }
 
             // Extract the set font/color from the tree.
             Font nodeFont =
@@ -919,7 +932,12 @@ namespace mhedit
                 node.SelectedImageIndex = node.ImageIndex;
                 treeView.SelectedNode = node;
 
-                mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+                /// Only connect PropertyChanged event if the maze isn't part of a collection
+                /// (it doesn't have a parent) as it's fed through the collection otherwise.
+                if ( node.Parent == null )
+                {
+                    mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+                }
 
                 mazeController.ShowGridReferences = Properties.Settings.Default.ShowGridReferences;
                 mazeController.PropertyGrid = propertyGrid;
@@ -1058,7 +1076,12 @@ namespace mhedit
                 node.SelectedImageIndex = node.ImageIndex;
                 treeView.SelectedNode = node;
 
-                mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+                /// Only connect PropertyChanged event if the maze isn't part of a collection
+                /// (it doesn't have a parent) as it's fed through the collection otherwise.
+                if ( node.Parent == null )
+                {
+                    mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+                }
 
                 mazeController.ShowGridReferences = Properties.Settings.Default.ShowGridReferences;
                 mazeController.PropertyGrid = propertyGrid;
@@ -1241,7 +1264,36 @@ namespace mhedit
 
         private void OnInstructionPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
-            this.treeView.Refresh();
+            if ( e.PropertyName.Equals( "Name" ) )
+            {
+                if ( treeView.SelectedNode?.Tag is MazeController mazeController )
+                {
+                    treeView.SelectedNode.Text = mazeController.Maze.Name;
+                }
+                else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
+                {
+                    treeView.SelectedNode.Text = mazeCollectionController.MazeCollection.Name;
+                }
+            }
+
+            this.treeView.Invalidate();
+        }
+
+        private void treeView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F10)
+            {
+                if (treeView.SelectedNode?.Tag is MazeController mazeController)
+                {
+                    if (treeView.SelectedNode?.Parent?.Tag is MazeCollectionController mazeCollectionController)
+                    {
+                        int level = mazeCollectionController.MazeCollection.Mazes.IndexOf(mazeController.Maze);
+                        MajorHavocPromisedEnd mhpe = new MajorHavocPromisedEnd(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation));
+                        string source = mhpe.ExtractSource(mazeController.Maze, level);
+                        Clipboard.SetText(source);
+                    }
+                }
+            }
         }
     }
 }

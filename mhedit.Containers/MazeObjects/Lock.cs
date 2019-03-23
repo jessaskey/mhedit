@@ -16,7 +16,7 @@ namespace mhedit.Containers.MazeObjects
         private ObjectColor _color = ObjectColor.Yellow;
 
         public Lock()
-            : base( 3,
+            : base( 4,
                     ResourceFactory.GetResourceImage( ImageResource ),
                     new Point( 0x80, 0x80 ),
                     new Point( 32, 32 ) )

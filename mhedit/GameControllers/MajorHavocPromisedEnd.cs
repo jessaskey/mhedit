@@ -560,7 +560,6 @@ namespace mhedit.GameControllers
                     }
                     else
                     {
-                        velocity = velocity * -1;
                         longBytes[0] = 0x40;
                     }
 
@@ -571,6 +570,7 @@ namespace mhedit.GameControllers
                     TripPadPyroid tpp = new TripPadPyroid();
                     tpp.LoadPosition(longBytes);
                     tpp.Velocity = velocity;
+                    tpp.Direction = (TripPyroidDirection)( vdata & 0x80 );
                     if (styleFlag != 0)
                     {
                         tpp.PyroidStyle = PyroidStyle.Single;
@@ -915,6 +915,45 @@ namespace mhedit.GameControllers
             byte offset = (byte)((-len / 2) & 0xFF);
             return offset;
         }
+
+        public String ExtractSource(Maze maze, int level)
+        {
+            string commentLine = "; ************************************************";
+            StringBuilder mb = new StringBuilder();
+            mb.AppendLine(commentLine);
+            mb.AppendLine("; Level " + level.ToString("D2") + " - " + maze.Name);
+            mb.AppendLine(commentLine);
+            mb.AppendLine("; ");
+
+            //Reactoid.Pyroids.Perkoids.Max
+            mb.AppendLine(DumpBytes("mzsc" + GetMazeCode(level), EncodeObjects(maze, EncodingGroup.ReactoidPyroidPerkoidMax)));
+
+
+            return mb.ToString();
+        }
+
+        private string GetMazeCode(int level)
+        {
+            int difficulty = level / 4;
+            int mazeNumber = level % 4;
+            return difficulty.ToString() + mazeNumber.ToString();
+        }
+
+        private string DumpBytes(string label, byte[] bytes)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            int skip = 0;
+            while (skip <= bytes.Length)
+            {
+                string[] rowBytes = bytes.Skip(skip).Take(16).Select(b => ("$" + b.ToString("X2"))).ToArray();
+                sb.AppendLine("\t\t.db " + String.Join(",", rowBytes));
+                skip += 16;
+            }
+
+            return sb.ToString();
+        }
+
 
         public bool EncodeObjects(MazeCollection mazeCollection, Maze maze)
         {
