@@ -1278,5 +1278,22 @@ namespace mhedit
 
             this.treeView.Invalidate();
         }
+
+        private void treeView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F10)
+            {
+                if (treeView.SelectedNode?.Tag is MazeController mazeController)
+                {
+                    if (treeView.SelectedNode?.Parent?.Tag is MazeCollectionController mazeCollectionController)
+                    {
+                        int level = mazeCollectionController.MazeCollection.Mazes.IndexOf(mazeController.Maze);
+                        MajorHavocPromisedEnd mhpe = new MajorHavocPromisedEnd(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation));
+                        string source = mhpe.ExtractSource(mazeController.Maze, level);
+                        Clipboard.SetText(source);
+                    }
+                }
+            }
+        }
     }
 }
