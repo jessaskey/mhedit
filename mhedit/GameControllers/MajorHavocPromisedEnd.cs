@@ -560,7 +560,6 @@ namespace mhedit.GameControllers
                     }
                     else
                     {
-                        velocity = velocity * -1;
                         longBytes[0] = 0x40;
                     }
 
@@ -571,6 +570,7 @@ namespace mhedit.GameControllers
                     TripPadPyroid tpp = new TripPadPyroid();
                     tpp.LoadPosition(longBytes);
                     tpp.Velocity = velocity;
+                    tpp.Direction = (TripPyroidDirection)( vdata & 0x80 );
                     if (styleFlag != 0)
                     {
                         tpp.PyroidStyle = PyroidStyle.Single;
