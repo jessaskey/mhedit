@@ -204,7 +204,44 @@ namespace mhedit
                     }
                 }
 
-				maze.AcceptChanges();
+                //Another HACK: Check the Max Objects of each type and trim off the ones that 
+                //exceed the limit
+                List<MazeObject> objectsToDelete = new List<MazeObject>();
+                List<Type> mazeTypes = maze.MazeObjects.Select(o => o.GetType()).Distinct().ToList();
+                foreach (Type type in mazeTypes)
+                {
+                    //get an object, first one
+                    MazeObject firstObject = maze.MazeObjects.Where(o => o.GetType() == type).FirstOrDefault();
+                    if (firstObject != null)
+                    {
+                        int maxObjects = firstObject.MaxObjects;
+                        int j = 1;
+                        foreach(MazeObject obj in maze.MazeObjects.Where(o => o.GetType() == type))
+                        {
+                            if (j++ > maxObjects)
+                            {
+                                objectsToDelete.Add(obj);
+                            }
+                        }
+                    }
+                }
+
+                if (objectsToDelete.Count > 0)
+                {
+                    var objectCounts = from o in objectsToDelete
+                                       group o by o.GetType() into g
+                                       select new { TypeString = g.Key.ToString(), Count = g.Count() };
+
+                    string displayCounts = String.Join("\r\n", objectCounts.Select(g => g.TypeString + ": " + g.Count.ToString() + " excess objects.").ToArray());
+
+                    MessageBox.Show("There are more objects defined in the loaded maze than are allowed. These objects will be trimmed uponing loading the maze.\r\n\r\n" + displayCounts, "Maze Load Issues", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    foreach (MazeObject deleteObject in objectsToDelete)
+                    {
+                        maze.MazeObjects.Remove(deleteObject);
+                    }
+                }
+
+                maze.AcceptChanges();
 			}
 			return maze;
 		}

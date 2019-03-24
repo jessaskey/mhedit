@@ -20,7 +20,7 @@ namespace mhedit.Containers.MazeEnemies
         private SignedVelocity _incrementingVelocity;
 
         public Pyroid()
-            : base( 16,
+            : base(Constants.MAXOBJECTS_PYROID,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.pyroid_obj.png" ),
                     Point.Empty,
                     new Point( 8, 8 ) )

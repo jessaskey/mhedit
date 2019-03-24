@@ -18,7 +18,7 @@ namespace mhedit.Containers.MazeObjects
         { }
 
         private OneWay( OneWayDirection direction )
-            : base( 4,
+            : base( Constants.MAXOBJECTS_ONEWAY,
                     ImageFactory.Create( direction ),
                     new Point( 0x80, 0x80 ),
                     new Point( 32, 32 ) )

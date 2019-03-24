@@ -8,7 +8,7 @@ namespace mhedit.Containers.MazeObjects
     public class Spikes : MazeObject
     {
         public Spikes()
-            : base( 5,
+            : base( Constants.MAXOBJECTS_SPIKES,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.spikes_obj.png" ),
                     new Point( 0x80, 0xB0 ),
                     new Point( 32, 20 ) )

@@ -18,7 +18,7 @@ namespace mhedit.Containers.MazeObjects
         private EscapePodOption _option = EscapePodOption.Optional;
 
         public EscapePod()
-            : base( 1,
+            : base( Constants.MAXOBJECTS_ESCAPEPOD,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.pod_obj.png" ),
                     new Point( 0x00, 0x80 ),
                     Point.Empty )

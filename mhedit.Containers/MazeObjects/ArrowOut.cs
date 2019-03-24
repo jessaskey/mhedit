@@ -20,7 +20,7 @@ namespace mhedit.Containers.MazeObjects
         { }
 
         private ArrowOut( ArrowOutDirection direction )
-            : base( 10,
+            : base( Constants.MAXOBJECTS_ARROWOUT,
                     ImageFactory.Create( direction ),
                     new Point( 0xc0, 0x40 ),
                     new Point( 16, 16 ) ) // This is half the image size.

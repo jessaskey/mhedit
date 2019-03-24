@@ -14,7 +14,7 @@ namespace mhedit.Containers.MazeObjects
     public class Boots : MazeObject
     {
         public Boots()
-            : base( 1,
+            : base( Constants.MAXOBJECTS_BOOTS,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.booties_obj.png" ),
                     new Point( 0x00, 0x34 ),
                     new Point( 8, 8 ) )

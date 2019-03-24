@@ -11,7 +11,7 @@ namespace mhedit.Containers.MazeEnemies
     public class LightningH : MazeObject
     {
         public LightningH()
-            : base( 7,
+            : base( Constants.MAXOBJECTS_LIGHTNINGH,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.lightning_obj.png" ),
                     Point.Empty, //offset of 128d is in vectors
                     new Point( 32, 64 ) )
