@@ -19,7 +19,7 @@ namespace mhedit.Containers.MazeEnemies
         private SignedVelocity _incrementingVelocity;
 
         public Perkoid()
-            : base( 10,
+            : base( Constants.MAXOBJECTS_PERKOID,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.perkoid_obj.png" ),
                     Point.Empty,
                     new Point( 16, 20 ) )

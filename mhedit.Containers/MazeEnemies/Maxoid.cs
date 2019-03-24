@@ -17,7 +17,7 @@ namespace mhedit.Containers.MazeEnemies
         private MaxSpeed _speed;
 
         public Maxoid()
-            : base( 6,
+            : base( Constants.MAXOBJECTS_MAXOID,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.roboid_obj.png" ),
                     Point.Empty,
                     new Point( 16, 16 ) )

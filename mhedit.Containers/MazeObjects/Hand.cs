@@ -12,7 +12,7 @@ namespace mhedit.Containers.MazeObjects
     public class Hand : MazeObject
     {
         public Hand()
-            : base( 1,
+            : base( Constants.MAXOBJECTS_HAND,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.hand_obj.png" ),
                     new Point( 0x3c, 0x01 ),
                     new Point( 24, 10 ) )

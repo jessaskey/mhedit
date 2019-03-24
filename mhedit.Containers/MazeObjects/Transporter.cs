@@ -19,7 +19,7 @@ namespace mhedit.Containers.MazeObjects
         private bool _isHidden = false;
 
         public Transporter()
-            : base( 8,
+            : base(Constants.MAXOBJECTS_TRANSPORTER,
                     ResourceFactory.GetResourceImage( ImageResource ),
                     new Point( 0x80, 0x80 ),
                     new Point( 24, 32 ) )

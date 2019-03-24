@@ -24,7 +24,7 @@ namespace mhedit.Containers.MazeEnemies
         { }
 
         private TripPadPyroid( PyroidStyle pyroidStyle )
-            : base( 7,
+            : base( Constants.MAXOBJECTS_TRIPPADPYROID,
                 ImageFactory.Create( pyroidStyle ),
                     new Point( 0x40, 0x00 ),
                     new Point( 8, 32 ) )

@@ -13,7 +13,7 @@ namespace mhedit.Containers.MazeObjects
         private int _timer = 30;
 
         public Reactoid()
-            : base( 1,
+            : base( Constants.MAXOBJECTS_REACTOID,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.reactoid_obj.png" ),
                     Point.Empty,
                     new Point( 15, 24 ) )

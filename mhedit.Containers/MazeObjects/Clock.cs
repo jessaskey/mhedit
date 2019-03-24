@@ -13,7 +13,7 @@ namespace mhedit.Containers.MazeObjects
     public class Clock : MazeObject
     {
         public Clock()
-            : base( 1,
+            : base(Constants.MAXOBJECTS_CLOCK,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.clock_obj.png" ),
                     new Point( 0x00, 0x40 ),
                     new Point( 20, 20 ) )
@@ -28,7 +28,7 @@ namespace mhedit.Containers.MazeObjects
             /// to the Image being displayed between 2 maze stamps.
             /// Thus, make adjustments based upon the cursor being in the lower or
             /// upper range of a maze stamp
-            adjusted.Y +=
+            adjusted.Y += 
                 ( ( point.Y - DataConverter.PADDING ) % DataConverter.CanvasGridSize ) < 32 ?
                 0 : 64;
 
