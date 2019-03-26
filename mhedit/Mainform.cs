@@ -45,14 +45,9 @@ namespace mhedit
 
             treeView.ContextMenuStrip = contextMenuStripTree;
 
-            string versionString = String.Empty;
-            if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
-            {
-                Version version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
-                versionString = version.ToString();
-            }
+            this.Text =
+                $"{this.Text} - {Containers.VersionInformation.ApplicationVersion}  BETA VERSION";
 
-            this.Text = this.Text + " - " + versionString + " BETA VERSION";
             this.SetStyle(ControlStyles.DoubleBuffer, true);
             this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             this.SetStyle(ControlStyles.UserPaint, true);
