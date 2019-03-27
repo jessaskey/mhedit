@@ -918,18 +918,63 @@ namespace mhedit.GameControllers
 
         public String ExtractSource(Maze maze, int level)
         {
-            string commentLine = "; ************************************************";
-            StringBuilder mb = new StringBuilder();
-            mb.AppendLine(commentLine);
-            mb.AppendLine("; Level " + level.ToString("D2") + " - " + maze.Name);
-            mb.AppendLine(commentLine);
-            mb.AppendLine("; ");
+            int dataPosition = 10;
+            int commentPosition = 60;
+
+            string commentLine = ";********************************************************************";
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(commentLine);
+            sb.Append("; ");
+            sb.AppendLine(GetMazeCode(level) + " - " + maze.Name);
+            sb.AppendLine(commentLine);
+
+            //Maze Hints
+            if (!String.IsNullOrEmpty(maze.Hint))
+            {
+                StringBuilder mb = new StringBuilder();
+                mb.Append("mhz");
+                mb.Append(GetMazeCode(level));
+                Tabify(' ', dataPosition, mb);
+                mb.Append(".ctext \"");
+                mb.Append(maze.Hint.ToUpper());
+                mb.Append("\"");
+                sb.AppendLine(mb.ToString());
+            }
+            if (!String.IsNullOrEmpty(maze.Hint2))
+            {
+                StringBuilder mb = new StringBuilder();
+                mb.Append("mhz");
+                mb.Append(GetMazeCode(level));
+                mb.Append("a");
+                Tabify(' ', dataPosition, mb);
+                mb.Append(".ctext \"");
+                mb.Append(maze.Hint2.ToUpper());
+                mb.Append("\"");
+                sb.AppendLine(mb.ToString());
+            }
+            sb.AppendLine("");
 
             //Reactoid.Pyroids.Perkoids.Max
-            mb.AppendLine(DumpBytes("mzsc" + GetMazeCode(level), EncodeObjects(maze, EncodingGroup.ReactoidPyroidPerkoidMax)));
+            sb.AppendLine(DumpBytes("mzsc" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.ReactoidPyroidPerkoidMax)));
+            //Oxygen
+            sb.AppendLine(DumpBytes("mzdc" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Oxoids)));
+            //Lightning
+            sb.AppendLine(DumpBytes("mzlg" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Lightning)));
+            //Arrows
+            sb.AppendLine(DumpBytes("mzar" + GetMazeCode(level), dataPosition, commentPosition, 2, EncodeObjects(maze, EncodingGroup.Lightning)));
+            
 
 
-            return mb.ToString();
+
+            return sb.ToString();
+        }
+
+        private void Tabify(char c, int len, StringBuilder sb)
+        {
+            if (sb.Length < len)
+            {
+                sb.Append(new String(c, len - sb.Length));
+            }
         }
 
         private string GetMazeCode(int level)
@@ -939,18 +984,49 @@ namespace mhedit.GameControllers
             return difficulty.ToString() + mazeNumber.ToString();
         }
 
-        private string DumpBytes(string label, byte[] bytes)
+        private string DumpBytes(string label, int dataPosition, int commentPosition, int dataWidth, ObjectEncodingCollection encodings)
         {
             StringBuilder sb = new StringBuilder();
 
-            int skip = 0;
-            while (skip <= bytes.Length)
+            for(int i = 0; i < encodings.ObjectEncodings.Count; i++)
             {
-                string[] rowBytes = bytes.Skip(skip).Take(16).Select(b => ("$" + b.ToString("X2"))).ToArray();
-                sb.AppendLine("\t\t.db " + String.Join(",", rowBytes));
-                skip += 16;
-            }
+                ObjectEncoding encoding = encodings.ObjectEncodings[i];
+                StringBuilder eb = new StringBuilder();
 
+                if (!String.IsNullOrEmpty(label) && i == 0)
+                {
+                    eb.Append(label);
+                    eb.Append(" ");
+                }
+
+                int skip = 0;
+                byte[] bytes = encoding.Bytes.ToArray();
+                while (skip <= bytes.Length)
+                {
+                    string[] rowBytes = bytes.Skip(skip).Take(16).Select(b => ("$" + b.ToString("X2"))).ToArray();
+                    if (eb.Length < dataPosition)
+                    {
+                        eb.Append(new string(' ', dataPosition - eb.Length));
+                    }
+                    eb.Append(".db ");
+                    eb.Append(String.Join(",", rowBytes));
+                    skip += dataWidth;
+                    if (skip >= bytes.Length)
+                    {
+                        //this is the last line of bytes... add the comment
+                        if (eb.Length < commentPosition)
+                        {
+                            eb.Append(new string(' ', commentPosition - eb.Length));
+                        }
+                        if (!String.IsNullOrEmpty(encoding.Comment))
+                        {
+                            eb.Append(";");
+                            eb.Append(encoding.Comment);
+                        }
+                    }
+                }
+                sb.AppendLine(eb.ToString());
+            }
             return sb.ToString();
         }
 
@@ -1026,7 +1102,7 @@ namespace mhedit.GameControllers
                 {
                     //Reactoid, Pyroid, Perkoids and Maxoids
                     pointerIndex += WritePagedROM((ushort)_exports["mzinit"], WordToByteArray(currentAddressPage7), pointerIndex, 7);
-                    currentAddressPage7 += WritePagedROM((ushort)currentAddressPage7, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.ReactoidPyroidPerkoidMax), 0, 7);
+                    currentAddressPage7 += WritePagedROM((ushort)currentAddressPage7, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.ReactoidPyroidPerkoidMax).GetAllBytes().ToArray(), 0, 7);
                 }
             }
 
@@ -1040,7 +1116,7 @@ namespace mhedit.GameControllers
             for (int i = 0; i < numMazes; i++)
             {
                 //Oxoid data
-                byte[] oxoidBytes = EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Oxoids);
+                byte[] oxoidBytes = EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Oxoids).GetAllBytes().ToArray();
                 byte byteHash = GetByteHash(oxoidBytes);
                 if (existingOxoids.ContainsKey(byteHash))
                 {
@@ -1062,7 +1138,7 @@ namespace mhedit.GameControllers
             {
                 //Write Table Pointer
                 pointerIndex += WritePagedROM((ushort)_exports["mzlg"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
-                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Lightning), 0, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Lightning).GetAllBytes().ToArray(), 0, 6);
             }
             //Arrows
             pointerIndex = 0;
@@ -1071,7 +1147,7 @@ namespace mhedit.GameControllers
                 //Write Table Pointer
                 pointerIndex += WritePagedROM((ushort)_exports["mzar"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
                 //Arrow data
-                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Arrows), 0, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Arrows).GetAllBytes().ToArray(), 0, 6);
             }
             //Exit Arrows
             pointerIndex = 0;
@@ -1084,7 +1160,7 @@ namespace mhedit.GameControllers
                 if (mazeCollection.Mazes[i].MazeObjects.OfType<ArrowOut>().Count() > 0) {
                     //Write Table Pointer
                     pointerIndex += WritePagedROM((ushort)_exports["mzor"], WordToByteArray(currentAddressPage6), (i * 2), 6);
-                    currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.ArrowsOut), 0, 6);
+                    currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.ArrowsOut).GetAllBytes().ToArray(), 0, 6);
                 }
                 else
                 {
@@ -1098,7 +1174,7 @@ namespace mhedit.GameControllers
             {
                 //Write Table Pointer
                 pointerIndex += WritePagedROM((ushort)_exports["mztr"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
-                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.TripPoints), 0, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.TripPoints).GetAllBytes().ToArray(), 0, 6);
             }
             //Trip Actions
             pointerIndex = 0;
@@ -1106,7 +1182,7 @@ namespace mhedit.GameControllers
             {
                 //Write Table Pointer
                 pointerIndex += WritePagedROM((ushort)_exports["trtbll"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
-                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.TripActions), 0, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.TripActions).GetAllBytes().ToArray(), 0, 6);
             }
             //Static Maze Walls
             pointerIndex = 0;
@@ -1114,7 +1190,7 @@ namespace mhedit.GameControllers
             {
                 //Write Table Pointer
                 pointerIndex += WritePagedROM((ushort)_exports["mztdal"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
-                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.StaticWalls), 0, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.StaticWalls).GetAllBytes().ToArray(), 0, 6);
             }
             //Dynamic Maze Walls
             pointerIndex = 0;
@@ -1122,7 +1198,7 @@ namespace mhedit.GameControllers
             {
                 //Write Table Pointer
                 pointerIndex += WritePagedROM((ushort)_exports["mztd"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
-                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.DynamicWalls), 0, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.DynamicWalls).GetAllBytes().ToArray(), 0, 6);
             }
             //One Way Walls
             pointerIndex = 0;
@@ -1130,7 +1206,7 @@ namespace mhedit.GameControllers
             {
                 //Write Table Pointer
                 pointerIndex += WritePagedROM((ushort)_exports["mone"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
-                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OneWay), 0, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OneWay).GetAllBytes().ToArray(), 0, 6);
             }
 
             //Ion IonCannon, warning, this is very messy due to data compaction techniques
@@ -1186,7 +1262,7 @@ namespace mhedit.GameControllers
             {
                 //Write Table Pointer
                 pointerIndex += WritePagedROM((ushort)_exports["mtite"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
-                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Spikes), 0, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Spikes).GetAllBytes().ToArray(), 0, 6);
             }
 
             //locks and keys, for now, there has to be an even number of locks and keys
@@ -1195,7 +1271,7 @@ namespace mhedit.GameControllers
             {
                 //Write Table Pointer
                 pointerIndex += WritePagedROM((ushort)_exports["mlock"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
-                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.LocksKeys), 0, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.LocksKeys).GetAllBytes().ToArray(), 0, 6);
             }
 
             //Transporters
@@ -1204,7 +1280,7 @@ namespace mhedit.GameControllers
             {
                 //Write Table Pointer
                 pointerIndex += WritePagedROM((ushort)_exports["mtran"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
-                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Transporters), 0, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Transporters).GetAllBytes().ToArray(), 0, 6);
             }
             //De Hand
             pointerIndex = 0;
@@ -1212,38 +1288,38 @@ namespace mhedit.GameControllers
             {
                 //Write Table Pointer
                 pointerIndex += WritePagedROM((ushort)_exports["mhand"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
-                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Hand), 0, 6);
+                currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Hand).GetAllBytes().ToArray(), 0, 6);
             }
             //Clock
             int clockIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
-                clockIndex += WritePagedROM((ushort)_exports["mclock"], EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Clock), clockIndex, 6);
+                clockIndex += WritePagedROM((ushort)_exports["mclock"], EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Clock).GetAllBytes().ToArray(), clockIndex, 6);
             }
             //Boots
             int bootsIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
-                bootsIndex += WritePagedROM((ushort)_exports["mboots"], EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Boots), bootsIndex, 6);
+                bootsIndex += WritePagedROM((ushort)_exports["mboots"], EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Boots).GetAllBytes().ToArray(), bootsIndex, 6);
             }
 
             int mpodAddressBase = _exports["mpod"];
             //Escape Pod
             for (int i = 1; i < numMazes; i+=4)
             {
-                mpodAddressBase += WritePagedROM((ushort)mpodAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.EscapePod), 0, 6);
+                mpodAddressBase += WritePagedROM((ushort)mpodAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.EscapePod).GetAllBytes().ToArray(), 0, 6);
             }
             //Out Time
             int outAddressBase = _exports["outime"];
             for (int i = 0; i < numMazes; i++)
             {
-                outAddressBase += WritePagedROM((ushort)outAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OutTime), 0, 6);
+                outAddressBase += WritePagedROM((ushort)outAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OutTime).GetAllBytes().ToArray(), 0, 6);
             }
             //OxygenReward
             int oxyAddressBase = _exports["oxybonus"];
             for (int i = 0; i < numMazes; i++)
             {
-                oxyAddressBase += WritePagedROM((ushort)oxyAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OxygenReward), 0, 6);
+                oxyAddressBase += WritePagedROM((ushort)oxyAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OxygenReward).GetAllBytes().ToArray(), 0, 6);
             }
 
             //set up starting level
@@ -1312,10 +1388,12 @@ namespace mhedit.GameControllers
         /// <param name="maze">The target maze</param>
         /// <param name="group">The target group to encode</param>
         /// <returns></returns>
-        public byte[] EncodeObjects(Maze maze, EncodingGroup group)
+        public ObjectEncodingCollection EncodeObjects(Maze maze, EncodingGroup group)
         {
-            List<byte> bytes = new List<byte>();
+            ObjectEncodingCollection encodings = new ObjectEncodingCollection();
+
             Reactoid reactoid = maze.MazeObjects.OfType<Reactoid>().FirstOrDefault();
+            int counter = 0;
 
             switch (group)
             {
@@ -1323,131 +1401,133 @@ namespace mhedit.GameControllers
                     //Reactoid
                     if (reactoid != null)
                     {
-                        bytes.AddRange(reactoid.ToBytes(reactoid.Position));
+                        encodings.Add(reactoid.ToBytes(reactoid.Position), "Reactor");
                         foreach (Pyroid pyroid in maze.MazeObjects.OfType<Pyroid>())
                         {
-                            bytes.AddRange(pyroid.ToBytes());
+                            encodings.Add(pyroid.ToBytes(), "F" + counter++.ToString());
                         }
                         //Perkoids
+                        counter = 0;
                         if (maze.MazeObjects.OfType<Perkoid>().Count() > 0)
                         {
-                            bytes.Add(0xfe);
+                            encodings.Add(0xfe);
                             foreach (Perkoid perkoid in maze.MazeObjects.OfType<Perkoid>())
                             {
-                                bytes.AddRange(perkoid.ToBytes());
+                                encodings.Add(perkoid.ToBytes(), "R" + counter++.ToString());
                             }
                         }
                         //Maxoids
+                        counter = 0;
                         if (maze.MazeObjects.OfType<Maxoid>().Count() > 0)
                         {
                             //make sure we did perkoids already
                             if (maze.MazeObjects.OfType<Perkoid>().Count() == 0)
                             {
-                                bytes.Add(0xfe);
+                                encodings.Add(0xfe, "No Robots");
                             }
-                            bytes.Add(0xfe);
+                            encodings.Add(0xfe,"End Robots");
                             foreach (Maxoid max in maze.MazeObjects.OfType<Maxoid>())
                             {
-                                bytes.AddRange(max.ToBytes());
+                                encodings.Add(max.ToBytes(), "M" + counter++.ToString());
                             }
                         }
-                        bytes.Add(0xff); //Data End Flag
+                        encodings.Add(0xff); //Data End Flag
                     }
                     break;
                 case EncodingGroup.Oxoids:
+                    List<byte> oxygenBytes = new List<byte>();
                     foreach (Oxoid oxoid in maze.MazeObjects.OfType<Oxoid>())
                     {
-                        bytes.AddRange(oxoid.ToBytes());
+                        oxygenBytes.AddRange(oxoid.ToBytes());
                     }
-                    bytes.Add(0x00);
+                    encodings.Add(oxygenBytes.ToArray(), "Oxygen");
+                    encodings.Add(0x00);
                     break;
                 case EncodingGroup.Lightning:
                     if ((maze.MazeObjects.OfType<LightningH>().Count() > 0) || (maze.MazeObjects.OfType<LightningV>().Count() > 0))
                     {
-                        //Oxoid data
                         foreach (LightningH lightningH in maze.MazeObjects.OfType<LightningH>())
                         {
-                            bytes.AddRange(lightningH.ToBytes());
+                            encodings.Add(lightningH.ToBytes(), "Lightning-Horizontal");
                         }
                         if (maze.MazeObjects.OfType<LightningV>().Count() > 0)
                         {
-                            bytes.Add(0xff);
+                            encodings.Add(0xff);
                             foreach (LightningV lightningV in maze.MazeObjects.OfType<LightningV>())
                             {
-                                bytes.AddRange(lightningV.ToBytes());
+                                encodings.Add(lightningV.ToBytes(),"Lightning-Vertical");
                             }
                         }
                     }
-                    bytes.Add(0x00);
+                    encodings.Add(0x00);
                     break;
                 case EncodingGroup.Arrows:
                     foreach (Arrow arrow in maze.MazeObjects.OfType<Arrow>())
                     {
-                        bytes.AddRange(arrow.ToBytes());
+                        encodings.Add(arrow.ToBytes(),"Arrows");
                     }
-                    bytes.Add(0x00);
+                    encodings.Add(0x00);
                     break;
                 case EncodingGroup.ArrowsOut:
                     foreach (ArrowOut arrow in maze.MazeObjects.OfType<ArrowOut>())
                     {
-                        bytes.AddRange(arrow.ToBytes());
+                        encodings.Add(arrow.ToBytes(),"Out Arrows");
                     }
-                    bytes.Add(0x00);
+                    encodings.Add(0x00);
                     break;
                 case EncodingGroup.TripPoints:
                     //Trip Point data
                     foreach (TripPad trip in maze.MazeObjects.OfType<TripPad>())
                     {
-                        bytes.AddRange(trip.ToBytes());
+                        encodings.Add(trip.ToBytes(),"Trip Pads");
                     }
-                    bytes.Add(0x00);
+                    encodings.Add(0x00);
                     break;
                 case EncodingGroup.TripActions:
                     //Trip Action Data
                     foreach (TripPad trip in maze.MazeObjects.OfType<TripPad>())
                     {
-                        bytes.AddRange(trip.Pyroid.ToBytes());
+                        encodings.Add(trip.Pyroid.ToBytes(),"Trip Pad Actions");
                     }
-                    bytes.AddRange(new byte[] { 0x00, 0x00, 0x00 });
+                    encodings.Add(new byte[] { 0x00, 0x00, 0x00 });
                     break;
                 case EncodingGroup.StaticWalls:
                     //Wall data, all walls in maze
                     foreach (MazeWall wall in maze.MazeObjects.OfType<MazeWall>().Where(w => !w.IsDynamicWall))
                     {
-                        bytes.AddRange(wall.ToBytes(maze));
+                        encodings.Add(wall.ToBytes(maze),"Static Walls");
                     }
-                    bytes.Add(0x00);
+                    encodings.Add(0x00);
                     break;
                 case EncodingGroup.DynamicWalls:
                     //wall data, only dynamic walls
                     foreach (MazeWall wall in maze.MazeObjects.OfType<MazeWall>().Where(w => w.IsDynamicWall))
                     {
-                        bytes.AddRange(wall.ToBytes(maze));
+                        encodings.Add(wall.ToBytes(maze),"Dynamic Walls");
                     }
-                    bytes.Add(0x00);
+                    encodings.Add(0x00);
                     break;
                 case EncodingGroup.OneWay:
-                    //Trip Point data
                     foreach (OneWay wall in maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Right))
                     {
-                        bytes.AddRange(wall.ToBytes(maze));
+                        encodings.Add(wall.ToBytes(maze), "OneWay Walls-Right");
                     }
                     if (maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Left).Count() > 0)
                     {
                         foreach (OneWay wall in maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Left))
                         {
-                            bytes.Add(0xff);
-                            bytes.AddRange(wall.ToBytes(maze));
+                            encodings.Add(0xff);
+                            encodings.Add(wall.ToBytes(maze), "OneWay Walls-Left");
                         }
                     }
-                    bytes.Add(0x00);
+                    encodings.Add(0x00);
                     break;
                 case EncodingGroup.Spikes:
                     foreach (Spikes spike in maze.MazeObjects.OfType<Spikes>())
                     {
-                        bytes.AddRange(spike.ToBytes());
+                        encodings.Add(spike.ToBytes(), "Stalactites");
                     }
-                    bytes.Add(0x00);
+                    encodings.Add(0x00);
                     break;
                 case EncodingGroup.LocksKeys:
                     foreach (Lock lock_ in maze.MazeObjects.OfType<Lock>())
@@ -1455,10 +1535,10 @@ namespace mhedit.GameControllers
                         Key thisKey = maze.MazeObjects.OfType<Key>().Where(k => k.KeyColor == lock_.LockColor).FirstOrDefault();
                         if (thisKey != null)
                         {
-                            bytes.AddRange(lock_.ToBytes(thisKey));
+                            encodings.Add(lock_.ToBytes(thisKey), Enum.GetName(typeof(SystemColors), lock_.LockColor));
                         }
                     }
-                    bytes.Add(0x00);
+                    encodings.Add(0x00);
                     break;
                 case EncodingGroup.Transporters:
 
@@ -1469,11 +1549,11 @@ namespace mhedit.GameControllers
                         List<Transporter> coloredTranporterMatches = maze.MazeObjects.OfType<Transporter>().Where(t => t.Color == transporterPair.Key).ToList();
                         foreach (Transporter t in coloredTranporterMatches)
                         {
-                            bytes.AddRange(t.ToBytes());
+                            encodings.Add(t.ToBytes(), Enum.GetName(typeof(SystemColors), t.Color));
                         }
                     }
                     //write end of transports
-                    bytes.Add(0x00);
+                    encodings.Add(0x00);
                     //write transportability data
                     if (maze.TransportabilityFlags.Count > 0)
                     {
@@ -1493,13 +1573,13 @@ namespace mhedit.GameControllers
                             flagCount++;
                             if (flagCount > 7)
                             {
-                                bytes.Add((byte)flagValue);
+                                encodings.Add((byte)flagValue, "Transportability Flags");
                                 flagCount = 0;
                                 flagValue = 0;
                             }
                         }
                     }
-                    bytes.Add(0xee);
+                    encodings.Add(0xee);
                     break;
                 case EncodingGroup.Hand:
                     Hand hand = maze.MazeObjects.OfType<Hand>().FirstOrDefault();
@@ -1508,12 +1588,12 @@ namespace mhedit.GameControllers
                         Reactoid r = maze.MazeObjects.OfType<Reactoid>().FirstOrDefault();
                         if (r != null)
                         {
-                            bytes.AddRange(hand.ToBytes(r.Position));
+                            encodings.Add(hand.ToBytes(r.Position), "Hand");
                         }
                     }
                     else
                     {
-                        bytes.Add(0x00);
+                        encodings.Add(0x00);
                     }
                     break;
                 case EncodingGroup.Clock:
@@ -1521,11 +1601,11 @@ namespace mhedit.GameControllers
                     Clock clock = maze.MazeObjects.OfType<Clock>().FirstOrDefault();
                     if (clock != null)
                     {
-                        bytes.AddRange(clock.ToBytes());
+                        encodings.Add(clock.ToBytes(),"Clock");
                     }
                     else
                     {
-                        bytes.Add(0x00);
+                        encodings.Add(0x00);
                     }
                     break;
                 case EncodingGroup.Boots:
@@ -1533,11 +1613,11 @@ namespace mhedit.GameControllers
                     Boots boots = maze.MazeObjects.OfType<Boots>().FirstOrDefault();
                     if (boots != null)
                     {
-                        bytes.AddRange(boots.ToBytes());
+                        encodings.Add(boots.ToBytes(),"Boots");
                     }
                     else
                     {
-                        bytes.Add(0x00);
+                        encodings.Add(0x00);
                     }
                     break;
                 case EncodingGroup.EscapePod:
@@ -1545,11 +1625,11 @@ namespace mhedit.GameControllers
                     EscapePod pod = maze.MazeObjects.OfType<EscapePod>().FirstOrDefault();
                     if (pod != null)
                     {
-                        bytes.AddRange(pod.ToBytes());
+                        encodings.Add(pod.ToBytes());
                     }
                     else
                     {
-                        bytes.Add(0x00);
+                        encodings.Add(0x00);
                     }
                     break;
                 case EncodingGroup.OutTime:
@@ -1559,14 +1639,14 @@ namespace mhedit.GameControllers
                     {
                         reactorTimer = DataConverter.ToDecimal(reactoid.Timer);
                     }
-                    bytes.Add((byte)reactorTimer);
+                    encodings.Add((byte)reactorTimer);
                     break;
                 case EncodingGroup.OxygenReward:
-                    bytes.Add((byte)maze.OxygenReward);
+                    encodings.Add((byte)maze.OxygenReward);
                     break;
             }
 
-            return bytes.ToArray();
+            return encodings;
         }
 
     }
