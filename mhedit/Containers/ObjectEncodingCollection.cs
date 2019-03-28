@@ -37,6 +37,25 @@ namespace mhedit.Containers
             ObjectEncodings.Add(encoding);
         }
 
+        public void Add(byte [] bytes, string comment, string group)
+        {
+            ObjectEncoding encoding = new ObjectEncoding();
+            encoding.Bytes.AddRange(bytes);
+            encoding.Comment = comment;
+            encoding.Group = group;
+            ObjectEncodings.Add(encoding);
+        }
+
+        public void Add(byte[] bytes, string comment, string group, string macro)
+        {
+            ObjectEncoding encoding = new ObjectEncoding();
+            encoding.Bytes.AddRange(bytes);
+            encoding.Comment = comment;
+            encoding.Group = group;
+            encoding.SourceMacro = macro;
+            ObjectEncodings.Add(encoding);
+        }
+
         public void Add(byte[] bytes)
         {
             ObjectEncoding encoding = new ObjectEncoding();

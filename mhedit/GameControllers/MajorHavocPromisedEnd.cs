@@ -775,6 +775,11 @@ namespace mhedit.GameControllers
             return new byte[] { datalow, datahigh };
         }
 
+        private ushort BytesToWord(byte lowByte, byte highByte)
+        {
+            return (ushort)(((ushort)highByte << 8) + (ushort)lowByte);
+        }
+
 
         private void WritePagedChecksum(int lowerBounds, int length, int page, byte csum)
         {
@@ -955,14 +960,35 @@ namespace mhedit.GameControllers
             sb.AppendLine("");
 
             //Reactoid.Pyroids.Perkoids.Max
-            sb.AppendLine(DumpBytes("mzsc" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.ReactoidPyroidPerkoidMax)));
+            sb.AppendLine(DumpBytes("mzsc" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.ReactoidPyroidPerkoidMax).ObjectEncodings));
             //Oxygen
-            sb.AppendLine(DumpBytes("mzdc" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Oxoids)));
+            sb.AppendLine(DumpBytes("mzdc" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Oxoids).ObjectEncodings));
             //Lightning
-            sb.AppendLine(DumpBytes("mzlg" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Lightning)));
+            sb.AppendLine(DumpBytes("mzlg" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Lightning).ObjectEncodings));
             //Arrows
-            sb.AppendLine(DumpBytes("mzar" + GetMazeCode(level), dataPosition, commentPosition, 2, EncodeObjects(maze, EncodingGroup.Lightning)));
-            
+            sb.AppendLine(DumpBytes("mzar" + GetMazeCode(level), dataPosition, commentPosition, 2, EncodeObjects(maze, EncodingGroup.Arrows).ObjectEncodings));
+            //Exit Arrows
+            sb.AppendLine(DumpBytes("mzor" + GetMazeCode(level), dataPosition, commentPosition, 2, EncodeObjects(maze, EncodingGroup.ArrowsOut).ObjectEncodings));
+            //Trip Pads
+            sb.AppendLine(DumpBytes("mztr" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.TripPoints).ObjectEncodings));
+            //Trip Pad Actions
+            sb.AppendLine(DumpBytes("trpa" + GetMazeCode(level), dataPosition, commentPosition, 3, EncodeObjects(maze, EncodingGroup.TripActions).ObjectEncodings));
+            //Static Walls
+            sb.AppendLine(DumpBytes("mzta" + GetMazeCode(level), dataPosition, commentPosition, 2, EncodeObjects(maze, EncodingGroup.StaticWalls).ObjectEncodings));
+            //Dynamic Walls
+            sb.AppendLine(DumpBytes("mztd" + GetMazeCode(level), dataPosition, commentPosition, 5, EncodeObjects(maze, EncodingGroup.DynamicWalls).ObjectEncodings));
+            //One Way Walls
+            sb.AppendLine(DumpBytes("mone" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.OneWay).ObjectEncodings));
+            //Ion Cannons
+            var cannonGroupEncodings = from e in EncodeObjects(maze, EncodingGroup.IonCannon).ObjectEncodings
+                                       group e by e.Group into g select new { Id = g.Key, Encodings = g.ToList() };
+            int ionIndexer = 0;
+            List<char> suffix = new List<char>() { 'a', 'b', 'c', 'd' };
+            foreach (var g in cannonGroupEncodings)
+            {
+                sb.AppendLine(DumpBytes("mcp" + GetMazeCode(level) + suffix[ionIndexer++], dataPosition, commentPosition, 16, g.Encodings));
+            }
+
 
 
 
@@ -984,13 +1010,13 @@ namespace mhedit.GameControllers
             return difficulty.ToString() + mazeNumber.ToString();
         }
 
-        private string DumpBytes(string label, int dataPosition, int commentPosition, int dataWidth, ObjectEncodingCollection encodings)
+        private string DumpBytes(string label, int dataPosition, int commentPosition, int dataWidth, List<ObjectEncoding> encodings)
         {
             StringBuilder sb = new StringBuilder();
 
-            for(int i = 0; i < encodings.ObjectEncodings.Count; i++)
+            for(int i = 0; i < encodings.Count; i++)
             {
-                ObjectEncoding encoding = encodings.ObjectEncodings[i];
+                ObjectEncoding encoding = encodings[i];
                 StringBuilder eb = new StringBuilder();
 
                 if (!String.IsNullOrEmpty(label) && i == 0)
@@ -999,29 +1025,42 @@ namespace mhedit.GameControllers
                     eb.Append(" ");
                 }
 
-                int skip = 0;
-                byte[] bytes = encoding.Bytes.ToArray();
-                while (skip <= bytes.Length)
+                if (!String.IsNullOrEmpty(encoding.SourceMacro))
                 {
-                    string[] rowBytes = bytes.Skip(skip).Take(16).Select(b => ("$" + b.ToString("X2"))).ToArray();
-                    if (eb.Length < dataPosition)
+                    eb.Append(encoding.SourceMacro);
+                    if (eb.Length < commentPosition)
                     {
-                        eb.Append(new string(' ', dataPosition - eb.Length));
+                        eb.Append(new string(' ', commentPosition - eb.Length));
                     }
-                    eb.Append(".db ");
-                    eb.Append(String.Join(",", rowBytes));
-                    skip += dataWidth;
-                    if (skip >= bytes.Length)
+                    eb.Append(";");
+                    eb.Append(encoding.Comment);
+                }
+                else
+                {
+                    int skip = 0;
+                    byte[] bytes = encoding.Bytes.ToArray();
+                    while (skip <= bytes.Length)
                     {
-                        //this is the last line of bytes... add the comment
-                        if (eb.Length < commentPosition)
+                        string[] rowBytes = bytes.Skip(skip).Take(16).Select(b => ("$" + b.ToString("X2"))).ToArray();
+                        if (eb.Length < dataPosition)
                         {
-                            eb.Append(new string(' ', commentPosition - eb.Length));
+                            eb.Append(new string(' ', dataPosition - eb.Length));
                         }
-                        if (!String.IsNullOrEmpty(encoding.Comment))
+                        eb.Append(".db ");
+                        eb.Append(String.Join(",", rowBytes));
+                        skip += dataWidth;
+                        if (skip >= bytes.Length)
                         {
-                            eb.Append(";");
-                            eb.Append(encoding.Comment);
+                            //this is the last line of bytes... add the comment
+                            if (eb.Length < commentPosition)
+                            {
+                                eb.Append(new string(' ', commentPosition - eb.Length));
+                            }
+                            if (!String.IsNullOrEmpty(encoding.Comment))
+                            {
+                                eb.Append(";");
+                                eb.Append(encoding.Comment);
+                            }
                         }
                     }
                 }
@@ -1222,11 +1261,32 @@ namespace mhedit.GameControllers
                 if (mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().Count() > 0)
                 {
                     cannonLevelPointers.Add(i, currentAddressPage6);
-                    foreach (IonCannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>())
+                    //Levels with multiple cannons will all return in this single collection, but they will be grouped by A,B,C or D
+                    //to identify indivdual cannons
+                    var cannonGroupEncodings = from e in EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.IonCannon).ObjectEncodings
+                                               group e by e.Group into g
+                                               select new { Id = g.Key, Encodings = g.ToList()};
+
+                    
+                    foreach (var g in cannonGroupEncodings)
                     {
-                        cannonDataPointers.Add(cannon.Id, currentAddressPage6);
-                        currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, cannon.ToBytes(), 0, 6);
+                        List<byte> encodedBytes = new List<byte>();
+                        //cannonDataPointers.Add(cannon.Id, currentAddressPage6);
+                        foreach (var encodingGroup in g.Encodings)
+                        {
+                            encodedBytes.AddRange(encodingGroup.Bytes);
+                        }
+
+                        cannonDataPointers.Add(Guid.Parse(g.Id), currentAddressPage6);
+                        currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, encodedBytes.ToArray(), 0, 6);
                     }
+
+                    //JMA - 03272019 - Old code, left in case there are troubles serializing with new code above
+                    //foreach (IonCannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>())
+                    //{
+                    //    cannonDataPointers.Add(cannon.Id, currentAddressPage6);
+                    //    currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, cannon.ToBytes(), 0, 6);
+                    //}
                 }
             }
             //now build Indexes and Pointers
@@ -1369,6 +1429,7 @@ namespace mhedit.GameControllers
             StaticWalls,
             DynamicWalls,
             OneWay,
+            IonCannon,
             Spikes,
             LocksKeys,
             Transporters,
@@ -1522,6 +1583,22 @@ namespace mhedit.GameControllers
                     }
                     encodings.Add(0x00);
                     break;
+                case EncodingGroup.IonCannon:
+                    for(int i = 0; i < maze.MazeObjects.OfType<IonCannon>().Count(); i++)
+                    {
+                        IonCannon cannon = maze.MazeObjects.OfType<IonCannon>().ToArray()[i];
+                        //Position first
+                        byte[] positionBytes = (DataConverter.PointToByteArrayLong(DataConverter.ConvertPixelsToVector(cannon.Position)));
+                        encodings.Add(positionBytes, "Position", cannon.Id.ToString(), ".dw $" + BytesToWord(positionBytes[0], positionBytes[1]).ToString("X4") + ",$" + BytesToWord(positionBytes[2], positionBytes[3]).ToString("X4"));
+                        foreach (IonCannonInstruction instruction in cannon.Program)
+                        {
+                            Tuple<string,string> commentMacro = GetCannonCommentMacro(instruction);
+                            List<byte> instructionBytes = new List<byte>();
+                            instruction.GetObjectData(instructionBytes);
+                            encodings.Add(instructionBytes.ToArray(), commentMacro.Item1, cannon.Id.ToString(), commentMacro.Item2);
+                        }
+                    }
+                    break;
                 case EncodingGroup.Spikes:
                     foreach (Spikes spike in maze.MazeObjects.OfType<Spikes>())
                     {
@@ -1535,7 +1612,7 @@ namespace mhedit.GameControllers
                         Key thisKey = maze.MazeObjects.OfType<Key>().Where(k => k.KeyColor == lock_.LockColor).FirstOrDefault();
                         if (thisKey != null)
                         {
-                            encodings.Add(lock_.ToBytes(thisKey), Enum.GetName(typeof(SystemColors), lock_.LockColor));
+                            encodings.Add(lock_.ToBytes(thisKey), Enum.GetName(typeof(ObjectColor), lock_.LockColor));
                         }
                     }
                     encodings.Add(0x00);
@@ -1549,7 +1626,7 @@ namespace mhedit.GameControllers
                         List<Transporter> coloredTranporterMatches = maze.MazeObjects.OfType<Transporter>().Where(t => t.Color == transporterPair.Key).ToList();
                         foreach (Transporter t in coloredTranporterMatches)
                         {
-                            encodings.Add(t.ToBytes(), Enum.GetName(typeof(SystemColors), t.Color));
+                            encodings.Add(t.ToBytes(), Enum.GetName(typeof(ObjectColor), t.Color));
                         }
                     }
                     //write end of transports
@@ -1649,5 +1726,106 @@ namespace mhedit.GameControllers
             return encodings;
         }
 
+        private Tuple<string,string> GetCannonCommentMacro(IonCannonInstruction instruction)
+        {
+            StringBuilder mb = new StringBuilder();
+            StringBuilder cb = new StringBuilder();
+
+            switch (instruction.Command)
+            {
+                case Commands.ReturnToStart:
+                    mb.Append("cann_end");
+                    cb.Append("Loop It");
+                    break;
+                case Commands.OrientAndFire:
+                    string positionText = "";
+                    string positionMacro = "";
+                    switch (((OrientAndFire)instruction).Orientation)
+                    {
+                        case Orientation.UpRight:
+                            positionText = "TopRight";
+                            positionMacro = "canp_tr";
+                            break;
+                        case Orientation.Right:
+                            positionText = "MidRight";
+                            positionMacro = "canp_mr";
+                            break;
+                        case Orientation.DownRight:
+                            positionText = "BotRight";
+                            positionMacro = "canp_br";
+                            break;
+                        case Orientation.Down:
+                            positionText = "Down";
+                            positionMacro = "canp_dn";
+                            break;
+                        case Orientation.UpLeft:
+                            positionText = "TopLeft";
+                            positionMacro = "canp_tl";
+                            break;
+                        case Orientation.Left:
+                            positionText = "MidLeft";
+                            positionMacro = "canp_ml";
+                            break;
+                        case Orientation.DownLeft:
+                            positionText = "BotLeft";
+                            positionMacro = "canp_bl";
+                            break;
+                    }
+
+
+                    mb.Append("cann_pos(");
+                    mb.Append(positionMacro);
+                    mb.Append(",");
+                    mb.Append(((int)((OrientAndFire)instruction).RotateSpeed).ToString());
+                    mb.Append(",");
+                    if (((OrientAndFire)instruction).ShotSpeed > 0)
+                    {
+                        mb.Append("1,");
+                        mb.Append(((OrientAndFire)instruction).ShotSpeed.ToString());
+                    }
+                    else
+                    {
+                        mb.Append("0,0");
+                    }
+                    mb.Append(")");
+
+                    cb.Append("GunPos - ");
+                    cb.Append(positionText);
+                    cb.Append(" Speed: ");
+                    cb.Append(((int)((OrientAndFire)instruction).RotateSpeed).ToString());
+                    cb.Append(" Shot: ");
+                    cb.Append(((OrientAndFire)instruction).ShotSpeed > 0 ? "Yes" : "No");
+                    if (((OrientAndFire)instruction).ShotSpeed > 0)
+                    {
+                        cb.Append(" ShotVel: $");
+                        cb.Append(((OrientAndFire)instruction).ShotSpeed.ToString("X2"));
+                    }
+                    break;
+                case Commands.Move:
+  
+                    mb.Append("cann_loc(");
+                    mb.Append(((Move)instruction).WaitFrames.ToString());
+                    mb.Append(",");
+                    mb.Append(((Move)instruction).Velocity.X.ToString());
+                    mb.Append(",");
+                    mb.Append(((Move)instruction).Velocity.Y.ToString());
+                    mb.Append(")");
+
+                    cb.Append("GunLoc - Frames: ");
+                    cb.Append(((Move)instruction).WaitFrames.ToString());
+                    cb.Append(" XVel: ");
+                    cb.Append(((Move)instruction).Velocity.X.ToString());
+                    cb.Append(" YVel: ");
+                    cb.Append(((Move)instruction).Velocity.Y.ToString());
+                    //sb.AppendLine(prefix + "cann_loc(" + frames.ToString() + "," + xVel.ToString() + "," + yVel.ToString() + ")\t;GunLoc - Frames: " + frames.ToString() + " XVel: " + xVel.ToString() + " YVel: " + yVel.ToString());
+                    break;
+                case Commands.Pause:
+                    mb.AppendLine("cann_pau(" + ((Pause)instruction).WaitFrames.ToString() + ")");
+                    cb.Append("Pause = " + ((Pause)instruction).WaitFrames.ToString() + " frames");
+                    break;
+            }
+            return new Tuple<string, string>( cb.ToString(), mb.ToString());
+        }
+        
     }
 }
