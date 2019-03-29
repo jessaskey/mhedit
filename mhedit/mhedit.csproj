@@ -107,6 +107,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Containers\ObjectEncoding.cs" />
+    <Compile Include="Containers\ObjectEncodingCollection.cs" />
     <Compile Include="Controllers\MAMEHelper.cs" />
     <Compile Include="Controllers\MHPController.cs" />
     <Compile Include="Crc32.cs" />

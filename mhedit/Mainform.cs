@@ -1285,7 +1285,7 @@ namespace mhedit
                     {
                         int level = mazeCollectionController.MazeCollection.Mazes.IndexOf(mazeController.Maze);
                         MajorHavocPromisedEnd mhpe = new MajorHavocPromisedEnd(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation));
-                        string source = mhpe.ExtractSource(mazeController.Maze, level);
+                        string source = mhpe.ExtractSource(mazeController.Maze, level+1);
                         Clipboard.SetText(source);
                     }
                 }
