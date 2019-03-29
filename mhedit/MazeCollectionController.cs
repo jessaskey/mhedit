@@ -9,7 +9,7 @@ namespace mhedit
 {
     [DefaultPropertyAttribute("Name")]
     [Serializable]
-    public class MazeCollectionController: ITreeObject, ICustomTypeDescriptor
+    public class MazeCollectionController: ITreeObject, ICustomTypeDescriptor, IChangeTracking
     {
         #region Declarations
 
@@ -228,5 +228,19 @@ namespace mhedit
         private void OnMazeCollectionPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
         }
+
+        #region Implementation of IChangeTracking
+
+        public void AcceptChanges()
+        {
+            this._mazeCollection.AcceptChanges();
+        }
+
+        public bool IsChanged
+        {
+            get { return this._mazeCollection.IsChanged; }
+        }
+
+        #endregion
     }
 }

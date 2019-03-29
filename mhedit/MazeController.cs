@@ -15,7 +15,7 @@ namespace mhedit
 {
 	[DefaultPropertyAttribute("Name")]
 	[Serializable]
-	public class MazeController : Panel, ITreeObject, ICustomTypeDescriptor
+	public class MazeController : Panel, ITreeObject, ICustomTypeDescriptor, IChangeTracking
 	{
 		#region Declarations
 
@@ -254,11 +254,25 @@ namespace mhedit
 			return TypeDescriptor.GetClassName(this, true);
 		}
 
+        #endregion
+
+#region Implementation of IChangeTracking
+
+        public void AcceptChanges()
+        {
+            this._maze.AcceptChanges();
+        }
+
+        public bool IsChanged
+        {
+            get { return this._maze.IsChanged; }
+        }
+
 #endregion
 
-#region Overrides
+        #region Overrides
 
-		protected override void OnPaint(PaintEventArgs e)
+        protected override void OnPaint(PaintEventArgs e)
 		{
 			//Stopwatch stopwatch = new Stopwatch();
 			//long time = stopwatch.ElapsedMilliseconds;
@@ -1053,18 +1067,6 @@ namespace mhedit
 			{
 				this._propertyGrid.Refresh();
 			}
-		}
-
-		private void InitializeComponent()
-		{
-			this.SuspendLayout();
-			// 
-			// MazeController
-			// 
-			this.BackColor = System.Drawing.Color.Black;
-			this.Font = new System.Drawing.Font("Courier New", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.ResumeLayout(false);
-
 		}
 	}
 }

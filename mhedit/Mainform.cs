@@ -780,21 +780,37 @@ namespace mhedit
         {
             bool safeToRemove = true;
 
-            if ( treeView.SelectedNode?.Tag is MazeController mazeController &&
-                mazeController.Maze.IsChanged )
+            if ( this.treeView.SelectedNode?.Tag is IChangeTracking changeTracking )
             {
-                safeToRemove = this.SaveMaze( mazeController,
-                    treeView.SelectedNode.Parent?.Tag as MazeCollectionController );
-            }
-            else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController &&
-                mazeCollectionController.MazeCollection.IsChanged )
-            {
-                safeToRemove = this.SaveCollection( mazeCollectionController );
+                if ( changeTracking.IsChanged )
+                {
+                    DialogResult result = MessageBox.Show(
+                        $"Save changes to {this.treeView.SelectedNode.Text}?",
+                        "Close", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation );
+
+                    if ( result == DialogResult.Yes )
+                    {
+                        if ( this.treeView.SelectedNode?.Tag is MazeController mazeController )
+                        {
+                            safeToRemove = this.SaveMaze( mazeController,
+                                this.treeView.SelectedNode.Parent?.Tag as MazeCollectionController );
+                        }
+                        else if ( this.treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
+                        {
+                            safeToRemove = this.SaveCollection( mazeCollectionController );
+                        }
+                    }
+                    else if ( result == DialogResult.Cancel )
+                    {
+                        safeToRemove = false;
+                    }
+                }
             }
 
-            if ( safeToRemove )
+            if ( safeToRemove && this.treeView.SelectedNode != null )
             {
-                treeView.SelectedNode.Remove();
+                this.treeView.SelectedNode.Remove();
+
                 this.RefreshTree();
             }
         }
