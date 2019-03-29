@@ -2,14 +2,8 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using mhedit.Containers;
-using System.Xml.Serialization;
-using ICSharpCode.SharpZipLib.BZip2;
-using System.Xml;
-using mhedit.Containers.MazeEnemies;
 
 namespace mhedit
 {
@@ -81,78 +75,6 @@ namespace mhedit
         }
 
         #endregion
-
-        public static MazeCollection DeserializeFromFile(string fileName)
-        {
-            MazeCollection mazeCollection = null;
-            using (FileStream fStream = new FileStream(fileName, FileMode.Open))
-            {
-                mazeCollection = DeserializeFromStream(fStream);
-
-                mazeCollection.AcceptChanges();
-            }
-            return mazeCollection;
-        }
-
-        public static MazeCollection DeserializeFromStream(Stream inputStream)
-        {
-            MazeCollection mazeCollection = null;
-            using (MemoryStream mStream = new MemoryStream())
-            {
-                BZip2.Decompress(inputStream, mStream, false);
-                mStream.Position = 0;
-                var serializer = new XmlSerializer(typeof(MazeCollection));
-                using (var reader = XmlReader.Create(mStream))
-                {
-                    mazeCollection = (MazeCollection)serializer.Deserialize(reader);
-
-                    //HACK: Fixes orphaned TripPadPyroids
-                    foreach ( Maze maze in mazeCollection.Mazes )
-                    {
-                        foreach ( TripPadPyroid tpp in maze.MazeObjects.OfType<TripPadPyroid>() )
-                        {
-                            //find a TripPad
-                            foreach ( TripPad tripPad in maze.MazeObjects.OfType<TripPad>() )
-                            {
-                                if ( tripPad.Pyroid.Name == tpp.Name )
-                                {
-                                    //these are the same... 
-                                    tripPad.Pyroid = null;
-                                    tpp.TripPad = tripPad;
-                                    tripPad.Pyroid = tpp;
-                                }
-                            }
-                        }
-                    }
-
-                    mazeCollection.AcceptChanges();
-                }
-            }
-            return mazeCollection;
-        }
-
-        public static bool SerializeToFile(MazeCollection mazeCollection, string fileName)
-        {
-            bool result = false;
-            using (FileStream fStream = new FileStream(fileName, FileMode.Create))
-            {
-                using (MemoryStream mStream = new MemoryStream())
-                {
-                    var serializer = new XmlSerializer(typeof(MazeCollection));
-                    using (var writer = XmlWriter.Create(mStream, new XmlWriterSettings { Indent = true } ) )
-                    {
-                        serializer.Serialize(writer, mazeCollection, Constants.XmlNamespace);
-                    }
-                    mStream.Position = 0;
-                    BZip2.Compress(mStream, fStream, true, 4096);
-                    result = true;
-
-                    mazeCollection.AcceptChanges();
-                }
-            }
-
-            return result;
-        }
 
         #region ICustomTypeDescriptor
 

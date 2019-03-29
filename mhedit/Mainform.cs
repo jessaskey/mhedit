@@ -20,6 +20,7 @@ using mhedit.Containers.MazeEnemies.IonCannon;
 using mhedit.Containers.MazeObjects;
 using mhedit.Controllers;
 using mhedit.GameControllers;
+using mhedit.Serialization;
 
 namespace mhedit
 {
@@ -483,9 +484,8 @@ namespace mhedit
 
                                     Application.DoEvents();
 
-                                    MazeCollectionController.SerializeToFile(
-                                        mazeCollectionController.MazeCollection,
-                                        mazeCollectionController.FileName );
+                                    mazeCollectionController.MazeCollection
+                                                            .SerializeAndCompress( mazeCollectionController.FileName );
 
                                     mazeCollectionController.MazeCollection.AcceptChanges();
                                 }
@@ -527,8 +527,7 @@ namespace mhedit
 
                                     Application.DoEvents();
 
-                                    MazeController.SerializeToFile(
-                                        mazeController.Maze, mazeController.FileName );
+                                    mazeController.Maze.SerializeAndCompress( mazeController.FileName );
 
                                     mazeController.Maze.AcceptChanges();
                                 }
@@ -1063,7 +1062,13 @@ namespace mhedit
             Application.DoEvents();
             try
             {
-                MazeController mazeController = new MazeController( MazeController.DeserializeFromFile( fileName ) );
+                MazeController mazeController =
+                    new MazeController( fileName.ExpandAndDeserialize<Maze>() )
+                    {
+                        FileName = fileName
+                    };
+                
+                mazeController.Maze.AcceptChanges();
 
                 TreeNode node = mazeController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
 
@@ -1081,8 +1086,6 @@ namespace mhedit
                 mazeController.ShowGridReferences = Properties.Settings.Default.ShowGridReferences;
                 mazeController.PropertyGrid = propertyGrid;
                 mazeController.ComboBoxObjects = comboBoxMazeObjects;
-
-                mazeController.FileName = fileName;
             }
             catch ( Exception ex )
             {
@@ -1103,13 +1106,13 @@ namespace mhedit
                 Cursor.Current = Cursors.WaitCursor;
                 Application.DoEvents();
 
-                MazeCollection mazeCollection =
-                    MazeCollectionController.DeserializeFromFile( fileName );
+                MazeCollectionController collectionController =
+                    new MazeCollectionController( fileName.ExpandAndDeserialize<MazeCollection>() )
+                    {
+                        FileName = fileName
+                    };
 
-                MazeCollectionController collectionController = 
-                    new MazeCollectionController( mazeCollection );
-
-                collectionController.FileName = fileName;
+                collectionController.MazeCollection.AcceptChanges();
 
                 TreeNode node = collectionController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
                 node.ImageIndex = 0;
@@ -1166,8 +1169,7 @@ namespace mhedit
 
                     Application.DoEvents();
 
-                    MazeCollectionController.SerializeToFile(
-                        mazeCollectionController.MazeCollection,
+                    mazeCollectionController.MazeCollection.SerializeAndCompress(
                         mazeCollectionController.FileName );
 
                     mazeCollectionController.MazeCollection.AcceptChanges();
@@ -1231,8 +1233,7 @@ namespace mhedit
 
                     Application.DoEvents();
 
-                    MazeController.SerializeToFile(
-                        mazeController.Maze, mazeController.FileName );
+                    mazeController.Maze.SerializeAndCompress( mazeController.FileName );
 
                     mazeController.Maze.AcceptChanges();
 

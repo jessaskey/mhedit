@@ -4,17 +4,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Serialization;
-using System.Xml;
-
 using Silver.UI;
 using mhedit.Containers.MazeObjects;
 using mhedit.Containers.MazeEnemies;
 using mhedit.Containers;
-using ICSharpCode.SharpZipLib.BZip2;
 
 namespace mhedit
 {
@@ -180,135 +175,6 @@ namespace mhedit
 		}
 
 #endregion
-
-		public static Maze DeserializeFromFile(string fileName)
-		{
-			Maze maze = null;
-			using (FileStream fStream = new FileStream(fileName, FileMode.Open))
-			{
-				maze = DeserializeFromStream(fStream);
-
-                //HACK: Fixes orphaned TripPadPyroids
-                foreach (TripPadPyroid tpp in maze.MazeObjects.OfType<TripPadPyroid>())
-                {
-                    //find a TripPad
-                    foreach (TripPad tripPad in maze.MazeObjects.OfType<TripPad>())
-                    {
-                        if (tripPad.Pyroid.Name == tpp.Name)
-                        {
-                            //these are the same... 
-                            tripPad.Pyroid = null;
-                            tpp.TripPad = tripPad;
-                            tripPad.Pyroid = tpp;
-                        }
-                    }
-                }
-
-                //Another HACK: Check the Max Objects of each type and trim off the ones that 
-                //exceed the limit
-                List<MazeObject> objectsToDelete = new List<MazeObject>();
-                List<Type> mazeTypes = maze.MazeObjects.Select(o => o.GetType()).Distinct().ToList();
-                foreach (Type type in mazeTypes)
-                {
-                    //get an object, first one
-                    MazeObject firstObject = maze.MazeObjects.Where(o => o.GetType() == type).FirstOrDefault();
-                    if (firstObject != null)
-                    {
-                        int maxObjects = firstObject.MaxObjects;
-                        int j = 1;
-                        foreach(MazeObject obj in maze.MazeObjects.Where(o => o.GetType() == type))
-                        {
-                            if (j++ > maxObjects)
-                            {
-                                objectsToDelete.Add(obj);
-                            }
-                        }
-                    }
-                }
-
-                if (objectsToDelete.Count > 0)
-                {
-                    var objectCounts = from o in objectsToDelete
-                                       group o by o.GetType() into g
-                                       select new { TypeString = g.Key.ToString(), Count = g.Count() };
-
-                    string displayCounts = String.Join("\r\n", objectCounts.Select(g => g.TypeString + ": " + g.Count.ToString() + " excess objects.").ToArray());
-
-                    MessageBox.Show("There are more objects defined in the loaded maze than are allowed. These objects will be trimmed uponing loading the maze.\r\n\r\n" + displayCounts, "Maze Load Issues", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    foreach (MazeObject deleteObject in objectsToDelete)
-                    {
-                        maze.MazeObjects.Remove(deleteObject);
-                    }
-                }
-
-                maze.AcceptChanges();
-			}
-			return maze;
-		}
-
-		public static Maze DeserializeFromStream(Stream inputStream)
-		{
-			Maze maze = null;
-			using (MemoryStream mStream = new MemoryStream())
-			{
-				BZip2.Decompress(inputStream, mStream, false);
-				mStream.Position = 0;
-				var serializer = new XmlSerializer(typeof(Maze));
-				using (var reader = XmlReader.Create(mStream))
-				{
-					maze = (Maze)serializer.Deserialize(reader);
-
-					maze.AcceptChanges();
-				}
-			}
-			return maze;
-		}
-
-		public static bool SerializeToFile(Maze maze, string fileName)
-		{
-			bool result = false;
-			using (FileStream fStream = new FileStream(fileName, FileMode.Create))
-			{
-				using (MemoryStream mStream = new MemoryStream())
-				{
-					var serializer = new XmlSerializer(maze.GetType());
-					using (var writer = XmlWriter.Create(mStream, new XmlWriterSettings { Indent = true } ) )
-					{
-						serializer.Serialize(writer, maze, Constants.XmlNamespace);
-					}
-					//BinaryFormatter b = new BinaryFormatter();
-					//b.Serialize(mStream, mazeController.Maze);
-					mStream.Position = 0;
-					BZip2.Compress(mStream, fStream, true, 4096);
-					result = true;
-
-					maze.AcceptChanges();
-				}
-			}
-			return result;
-		}
-
-		public static byte[] SerializeToByteArray(Maze maze)
-		{
-			byte[] bytes = null;
-			using (MemoryStream oStream = new MemoryStream())
-			{
-				using (MemoryStream mStream = new MemoryStream())
-				{
-					var serializer = new XmlSerializer(maze.GetType());
-					using (var writer = XmlWriter.Create(mStream, new XmlWriterSettings { Indent = true } ) )
-					{
-						serializer.Serialize(writer, maze, Constants.XmlNamespace);
-					}
-					mStream.Position = 0;
-					BZip2.Compress(mStream, oStream, false, 4096);
-				}
-				bytes = new byte[oStream.Length];
-				oStream.Position = 0;
-				oStream.Read(bytes, 0, (int)oStream.Length);
-			}
-			return bytes;
-		}
 
 #region ICustomTypeDescriptor
 
