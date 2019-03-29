@@ -845,7 +845,6 @@ namespace mhedit
 							TripPadPyroid tripPyroid = new TripPadPyroid
 							{
 								Name = NameFactory.Create( typeof( TripPadPyroid ).Name ),
-								TripPad = tripPad
 							};
 
 							tripPyroid.Position = tripPyroid.GetAdjustedPosition( tripPad.Position );

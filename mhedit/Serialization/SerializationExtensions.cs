@@ -105,6 +105,8 @@ namespace mhedit.Serialization
                     {
                         XmlSerializer serializer = new XmlSerializer( typeof( T ) );
 
+                        serializer.UnknownElement += OnUnknownElement;
+
                         return PerformPostDeserializeHacks<T>( serializer.Deserialize( xmlReader ) );
                     }
                 }
@@ -194,6 +196,52 @@ namespace mhedit.Serialization
             foreach ( TripPad tripPad in maze.MazeObjects.OfType<TripPad>().ToList() )
             {
                 maze.MazeObjects.Add( tripPad.Pyroid );
+            }
+        }
+
+        /// <summary>
+        /// Convert properties that no longer exist on objects to their new format/property.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void OnUnknownElement( object sender, XmlElementEventArgs e )
+        {
+            TripPadPyroidUnknownElement( e );
+
+            /// Add future conversion methods here! Make new method for each type.
+        }
+
+        /// <summary>
+        /// Handle XML Property conversions for TripPadPyroids here.
+        /// </summary>
+        /// <param name="args"></param>
+        private static void TripPadPyroidUnknownElement( XmlElementEventArgs args )
+        {
+            if ( args.ObjectBeingDeserialized is TripPadPyroid tripPadPyroid )
+            {
+                /// The Velocity Property has been converted to a SpeedIndex and a
+                /// Direction Property. 
+                if ( args.Element.Name == "Velocity" )
+                {
+                    if ( int.TryParse( args.Element.InnerText, out int val ) )
+                    {
+                        tripPadPyroid.Direction = val < 0 ?
+                                                      TripPyroidDirection.Left :
+                                                      TripPyroidDirection.Right;
+
+                        val = Math.Abs( val );
+
+                        tripPadPyroid.SpeedIndex = val > 7 ?
+                                                       TripPyroidSpeedIndex.SupaFast :
+                                                       (TripPyroidSpeedIndex)val;
+                    }
+                    else
+                    {
+                        throw new SerializationException(
+                            $"{typeof( TripPadPyroid ).Namespace} Velocity to Speed property conversion " +
+                            $"failed for value: {args.Element.InnerText}" );
+                    }
+                }
             }
         }
     }
