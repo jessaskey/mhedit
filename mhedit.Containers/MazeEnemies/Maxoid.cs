@@ -38,11 +38,21 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [CategoryAttribute("Location")]
-        [DescriptionAttribute("Defines how many maze squares between Max and Rex before Max will start pursuit.")]
+        [DescriptionAttribute("Defines how many maze squares between Max and Rex before Max" +
+                              " will start pursuit. Zero indicates active on maze start.")]
         public int TriggerDistance
         {
             get { return _triggerDistance; }
-            set { this.SetField( ref this._triggerDistance, value ); }
+            set
+            {
+                if ( value < 0 || value > 20 )
+                {
+                    throw new ArgumentOutOfRangeException( nameof( TriggerDistance ), value,
+                        $"Must be 0 <= value <= Maze Size." );
+                }
+
+                this.SetField( ref this._triggerDistance, value );
+            }
         }
 
         public override byte[] ToBytes()

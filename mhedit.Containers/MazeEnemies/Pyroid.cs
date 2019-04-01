@@ -25,9 +25,13 @@ namespace mhedit.Containers.MazeEnemies
                     Point.Empty,
                     new Point( 8, 8 ) )
         {
-            this.Velocity = new SignedVelocity();
+            this.Velocity = new SignedVelocity(
+                new Range<int>() { Maximum = 32, Minimum = -32 },
+                new Range<int>() { Maximum = 32, Minimum = -32 } );
 
-            this.IncrementingVelocity = new SignedVelocity();
+            this.IncrementingVelocity = new SignedVelocity(
+                new Range<int>() { Maximum = 16, Minimum = -16 },
+                new Range<int>() { Maximum = 16, Minimum = -16 } );
         }
 
         [BrowsableAttribute( false )]
@@ -37,6 +41,7 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [CategoryAttribute( "Location" )]
+        [ReadOnly( true )]
         [DescriptionAttribute( "Defines how the object moves within the maze and at what speed." )]
         [TypeConverter( typeof( TypeConverters.SignedVelocityTypeConverter ) )]
         public SignedVelocity Velocity
@@ -51,7 +56,9 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [CategoryAttribute( "Location" )]
-        [DescriptionAttribute( "Defines the additional velocity added at each difficulty level. Generally leave this at zero." )]
+        [ReadOnly( true )]
+        [DescriptionAttribute( "Defines the additional velocity added at each difficulty level. " +
+                               "Note that the sign is forced to match the Velocity. Generally leave this at zero." )]
         [TypeConverter( typeof( TypeConverters.SignedVelocityTypeConverter ) )]
         public SignedVelocity IncrementingVelocity
         {

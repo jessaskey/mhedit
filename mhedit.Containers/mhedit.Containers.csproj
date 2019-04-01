@@ -119,6 +119,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Range.cs" />
     <Compile Include="ResourceFactory.cs" />
     <Compile Include="SignedVelocity.cs" />
     <Compile Include="ChangeTrackingBase.cs" />
