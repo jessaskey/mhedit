@@ -929,7 +929,7 @@ namespace mhedit.GameControllers
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(commentLine);
             sb.Append("; ");
-            sb.AppendLine(GetMazeCode(level) + " - " + maze.Name);
+            sb.AppendLine(" Maze " + GetMazeCode(level) + " - " + maze.Name);
             sb.AppendLine(commentLine);
 
             //Maze Hints
@@ -988,6 +988,15 @@ namespace mhedit.GameControllers
                 sb.AppendLine(DumpBytes("mcp" + GetMazeCode(level) + suffix[ionIndexer++], dataPosition, commentPosition, 16, g.Encodings));
             }
 
+            //Stalactites
+            sb.AppendLine(DumpBytes("tite" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Spikes).ObjectEncodings));
+            //Locks and Keys
+            sb.AppendLine(DumpBytes("lock" + GetMazeCode(level), dataPosition, commentPosition, 3, EncodeObjects(maze, EncodingGroup.LocksKeys).ObjectEncodings));
+            //Transporters
+            sb.AppendLine(DumpBytes("tran" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Transporters).ObjectEncodings));
+            //DeHand
+            sb.AppendLine(DumpBytes("hand" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Hand).ObjectEncodings));
+
 
 
 
@@ -1024,6 +1033,11 @@ namespace mhedit.GameControllers
                     eb.Append(" ");
                 }
 
+                if (eb.Length < dataPosition)
+                {
+                    eb.Append(new string(' ', dataPosition - eb.Length));
+                }
+
                 if (!String.IsNullOrEmpty(encoding.SourceMacro))
                 {
                     eb.Append(encoding.SourceMacro);
@@ -1038,7 +1052,7 @@ namespace mhedit.GameControllers
                 {
                     int skip = 0;
                     byte[] bytes = encoding.Bytes.ToArray();
-                    while (skip <= bytes.Length)
+                    while (skip < bytes.Length)
                     {
                         string[] rowBytes = bytes.Skip(skip).Take(16).Select(b => ("$" + b.ToString("X2"))).ToArray();
                         if (eb.Length < dataPosition)
@@ -1265,7 +1279,6 @@ namespace mhedit.GameControllers
                     var cannonGroupEncodings = from e in EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.IonCannon).ObjectEncodings
                                                group e by e.Group into g
                                                select new { Id = g.Key, Encodings = g.ToList()};
-
                     
                     foreach (var g in cannonGroupEncodings)
                     {
@@ -1275,11 +1288,9 @@ namespace mhedit.GameControllers
                         {
                             encodedBytes.AddRange(encodingGroup.Bytes);
                         }
-
                         cannonDataPointers.Add(Guid.Parse(g.Id), currentAddressPage6);
                         currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, encodedBytes.ToArray(), 0, 6);
                     }
-
                     //JMA - 03272019 - Old code, left in case there are troubles serializing with new code above
                     //foreach (IonCannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>())
                     //{
@@ -1819,7 +1830,7 @@ namespace mhedit.GameControllers
                     //sb.AppendLine(prefix + "cann_loc(" + frames.ToString() + "," + xVel.ToString() + "," + yVel.ToString() + ")\t;GunLoc - Frames: " + frames.ToString() + " XVel: " + xVel.ToString() + " YVel: " + yVel.ToString());
                     break;
                 case Commands.Pause:
-                    mb.AppendLine("cann_pau(" + ((Pause)instruction).WaitFrames.ToString() + ")");
+                    mb.Append("cann_pau(" + ((Pause)instruction).WaitFrames.ToString() + ")");
                     cb.Append("Pause = " + ((Pause)instruction).WaitFrames.ToString() + " frames");
                     break;
             }
