@@ -6,16 +6,25 @@ namespace mhedit.Containers
 {
     public static class VersionInformation
     {
-        public static readonly Version ApplicationVersion;
+        private static Version _applicationVersion;
 
-        static VersionInformation()
+        public static Version ApplicationVersion
         {
-            ApplicationVersion = Assembly.GetEntryAssembly().GetName().Version;
-
-            if ( ApplicationDeployment.IsNetworkDeployed )
+            get
             {
-                ApplicationVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                if (_applicationVersion == null )
+                {
+                    _applicationVersion = Assembly.GetEntryAssembly().GetName().Version;
+
+                    if (ApplicationDeployment.IsNetworkDeployed )
+                    {
+                        _applicationVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                    }
+                }
+
+                return _applicationVersion;
             }
         }
     }
+
 }

@@ -10,9 +10,6 @@ namespace mhedit.Containers
 {
     public static class Constants
     {
-        private static XmlQualifiedName xmlName = new XmlQualifiedName("MHEdit", "http://mhedit.askey.org");
-        public static XmlSerializerNamespaces XmlNamespace = new XmlSerializerNamespaces(new XmlQualifiedName[] { xmlName });
-    
         public static int MAXOBJECTS_LIGHTNINGH = 7;
         public static int MAXOBJECTS_LIGHTNINGV = 7;
         public static int MAXOBJECTS_MAXOID = 6;

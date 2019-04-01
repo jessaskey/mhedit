@@ -538,7 +538,7 @@ namespace mhedit.GameControllers
 
                         byte[] longBytes = new byte[4];
 
-                        int velocity = (byte)(vdata & 0x7f);
+                        int speedIndex = (byte)(vdata & 0x7f);
                         if ((vdata & 0x80) == 0)
                         {
                             longBytes[0] = 0x80;
@@ -554,7 +554,7 @@ namespace mhedit.GameControllers
 
                         TripPadPyroid tpp = new TripPadPyroid();
                         tpp.LoadPosition(longBytes);
-                        tpp.Velocity = velocity;
+                        tpp.SpeedIndex = (TripPyroidSpeedIndex)speedIndex;
                         tpp.Direction = (TripPyroidDirection)( vdata & 0x80 );
                         if (styleFlag != 0)
                         {
@@ -563,7 +563,6 @@ namespace mhedit.GameControllers
                         maze.AddObject(tpp);
 
                         trip.Pyroid = tpp;
-                        tpp.TripPad = trip;
                     }
                 }
 

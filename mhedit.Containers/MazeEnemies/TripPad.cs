@@ -68,6 +68,8 @@ namespace mhedit.Containers.MazeEnemies
 
                 if ( this._pyroid != null )
                 {
+                    this._pyroid.TripPad = this;
+
                     this._pyroid.PropertyChanged += this.ForwardPropertyChanged;
                 }
             }

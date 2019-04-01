@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using mhedit.Serialization;
 
 namespace mhedit
 {
@@ -113,7 +114,14 @@ namespace mhedit
 
                             try
                             {
-                                byte[] mazeBytes = MazeController.SerializeToByteArray(MazeController.Maze);
+                                byte[] mazeBytes;
+                                using ( MemoryStream byteStream = new MemoryStream() )
+                                {
+                                    MazeController.Maze.SerializeAndCompress( byteStream );
+
+                                    mazeBytes = byteStream.ToArray();
+                                }
+
                                 byte[] imageBytes = null;
                                 using (MemoryStream memoryStream = new MemoryStream())
                                 {

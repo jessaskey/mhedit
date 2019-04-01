@@ -335,7 +335,14 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
                             using ( var writer = XmlWriter.Create( fStream, new XmlWriterSettings { Indent = true } ) )
                             {
-                                serializer.Serialize( writer, _program, Constants.XmlNamespace );
+                                /// This needs to be pulled into common serialization code but I need to create a
+                                /// base/core project first.
+                                serializer.Serialize( writer, _program,
+                                    new XmlSerializerNamespaces( new[]
+                                                                 {
+                                                                     new XmlQualifiedName( "MHEdit",
+                                                                         "http://mhedit.askey.org" )
+                                                                 } ) );
                             }
                         }
 

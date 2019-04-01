@@ -195,6 +195,19 @@ namespace mhedit.Containers
         Left = 0x80
     }
 
+    [Serializable]
+    public enum TripPyroidSpeedIndex : byte
+    {
+        Slowest = 0,
+        Slow,
+        MediumSlow,
+        Medium,
+        MediumFast,
+        Fast,
+        Faster,
+        SupaFast
+    }
+
     /// <summary>
     /// The EscapePodOption defines whether a player *must* use the escape pod to leave the maze
     /// or whether they may use the normal maze exits as well.

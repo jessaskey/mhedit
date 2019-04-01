@@ -16,7 +16,7 @@ namespace mhedit.Containers.MazeObjects
             : base( Constants.MAXOBJECTS_REACTOID,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.reactoid_obj.png" ),
                     Point.Empty,
-                    new Point( 15, 24 ) )
+                    new Point( 15, 20 ) )
         { }
 
         [BrowsableAttribute( false )]

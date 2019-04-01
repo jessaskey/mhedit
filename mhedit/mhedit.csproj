@@ -107,6 +107,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Containers\ObjectEncoding.cs" />
+    <Compile Include="Containers\ObjectEncodingCollection.cs" />
     <Compile Include="Controllers\MAMEHelper.cs" />
     <Compile Include="Controllers\MHPController.cs" />
     <Compile Include="Crc32.cs" />
@@ -160,6 +162,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serialization\SerializationExtensions.cs" />
     <Compile Include="Service References\MHEditServiceReference\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

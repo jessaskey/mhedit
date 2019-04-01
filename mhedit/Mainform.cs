@@ -20,6 +20,7 @@ using mhedit.Containers.MazeEnemies.IonCannon;
 using mhedit.Containers.MazeObjects;
 using mhedit.Controllers;
 using mhedit.GameControllers;
+using mhedit.Serialization;
 
 namespace mhedit
 {
@@ -45,14 +46,9 @@ namespace mhedit
 
             treeView.ContextMenuStrip = contextMenuStripTree;
 
-            string versionString = String.Empty;
-            if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
-            {
-                Version version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
-                versionString = version.ToString();
-            }
+            this.Text =
+                $"{this.Text} - {Containers.VersionInformation.ApplicationVersion}  BETA VERSION";
 
-            this.Text = this.Text + " - " + versionString + " BETA VERSION";
             this.SetStyle(ControlStyles.DoubleBuffer, true);
             this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             this.SetStyle(ControlStyles.UserPaint, true);
@@ -488,9 +484,8 @@ namespace mhedit
 
                                     Application.DoEvents();
 
-                                    MazeCollectionController.SerializeToFile(
-                                        mazeCollectionController.MazeCollection,
-                                        mazeCollectionController.FileName );
+                                    mazeCollectionController.MazeCollection
+                                                            .SerializeAndCompress( mazeCollectionController.FileName );
 
                                     mazeCollectionController.MazeCollection.AcceptChanges();
                                 }
@@ -532,8 +527,7 @@ namespace mhedit
 
                                     Application.DoEvents();
 
-                                    MazeController.SerializeToFile(
-                                        mazeController.Maze, mazeController.FileName );
+                                    mazeController.Maze.SerializeAndCompress( mazeController.FileName );
 
                                     mazeController.Maze.AcceptChanges();
                                 }
@@ -786,21 +780,37 @@ namespace mhedit
         {
             bool safeToRemove = true;
 
-            if ( treeView.SelectedNode?.Tag is MazeController mazeController &&
-                mazeController.Maze.IsChanged )
+            if ( this.treeView.SelectedNode?.Tag is IChangeTracking changeTracking )
             {
-                safeToRemove = this.SaveMaze( mazeController,
-                    treeView.SelectedNode.Parent?.Tag as MazeCollectionController );
-            }
-            else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController &&
-                mazeCollectionController.MazeCollection.IsChanged )
-            {
-                safeToRemove = this.SaveCollection( mazeCollectionController );
+                if ( changeTracking.IsChanged )
+                {
+                    DialogResult result = MessageBox.Show(
+                        $"Save changes to {this.treeView.SelectedNode.Text}?",
+                        "Close", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation );
+
+                    if ( result == DialogResult.Yes )
+                    {
+                        if ( this.treeView.SelectedNode?.Tag is MazeController mazeController )
+                        {
+                            safeToRemove = this.SaveMaze( mazeController,
+                                this.treeView.SelectedNode.Parent?.Tag as MazeCollectionController );
+                        }
+                        else if ( this.treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
+                        {
+                            safeToRemove = this.SaveCollection( mazeCollectionController );
+                        }
+                    }
+                    else if ( result == DialogResult.Cancel )
+                    {
+                        safeToRemove = false;
+                    }
+                }
             }
 
-            if ( safeToRemove )
+            if ( safeToRemove && this.treeView.SelectedNode != null )
             {
-                treeView.SelectedNode.Remove();
+                this.treeView.SelectedNode.Remove();
+
                 this.RefreshTree();
             }
         }
@@ -1068,7 +1078,13 @@ namespace mhedit
             Application.DoEvents();
             try
             {
-                MazeController mazeController = new MazeController( MazeController.DeserializeFromFile( fileName ) );
+                MazeController mazeController =
+                    new MazeController( fileName.ExpandAndDeserialize<Maze>() )
+                    {
+                        FileName = fileName
+                    };
+                
+                mazeController.Maze.AcceptChanges();
 
                 TreeNode node = mazeController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
 
@@ -1086,8 +1102,6 @@ namespace mhedit
                 mazeController.ShowGridReferences = Properties.Settings.Default.ShowGridReferences;
                 mazeController.PropertyGrid = propertyGrid;
                 mazeController.ComboBoxObjects = comboBoxMazeObjects;
-
-                mazeController.FileName = fileName;
             }
             catch ( Exception ex )
             {
@@ -1108,13 +1122,13 @@ namespace mhedit
                 Cursor.Current = Cursors.WaitCursor;
                 Application.DoEvents();
 
-                MazeCollection mazeCollection =
-                    MazeCollectionController.DeserializeFromFile( fileName );
+                MazeCollectionController collectionController =
+                    new MazeCollectionController( fileName.ExpandAndDeserialize<MazeCollection>() )
+                    {
+                        FileName = fileName
+                    };
 
-                MazeCollectionController collectionController = 
-                    new MazeCollectionController( mazeCollection );
-
-                collectionController.FileName = fileName;
+                collectionController.MazeCollection.AcceptChanges();
 
                 TreeNode node = collectionController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
                 node.ImageIndex = 0;
@@ -1171,8 +1185,7 @@ namespace mhedit
 
                     Application.DoEvents();
 
-                    MazeCollectionController.SerializeToFile(
-                        mazeCollectionController.MazeCollection,
+                    mazeCollectionController.MazeCollection.SerializeAndCompress(
                         mazeCollectionController.FileName );
 
                     mazeCollectionController.MazeCollection.AcceptChanges();
@@ -1236,8 +1249,7 @@ namespace mhedit
 
                     Application.DoEvents();
 
-                    MazeController.SerializeToFile(
-                        mazeController.Maze, mazeController.FileName );
+                    mazeController.Maze.SerializeAndCompress( mazeController.FileName );
 
                     mazeController.Maze.AcceptChanges();
 
@@ -1289,7 +1301,7 @@ namespace mhedit
                     {
                         int level = mazeCollectionController.MazeCollection.Mazes.IndexOf(mazeController.Maze);
                         MajorHavocPromisedEnd mhpe = new MajorHavocPromisedEnd(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation));
-                        string source = mhpe.ExtractSource(mazeController.Maze, level);
+                        string source = mhpe.ExtractSource(mazeController.Maze, level+1);
                         Clipboard.SetText(source);
                     }
                 }

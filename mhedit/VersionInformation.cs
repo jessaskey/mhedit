@@ -1,18 +1,46 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using mhedit.GameControllers;
 
 namespace mhedit
 {
+
     public static class VersionInformation
     {
-        public static readonly Version RomVersion;
+        private static Version _romVersion;
 
         static VersionInformation()
         {
-            string fullTemplatePath = Path.GetFullPath( Properties.Settings.Default.TemplatesLocation );
+            /// if someone changes the templates dir update the version.
+            Properties.Settings.Default.PropertyChanged += OnSettingsChanged;
+        }
 
-            RomVersion = new MajorHavocPromisedEnd( fullTemplatePath ).GetROMVersion();
+        private static void OnSettingsChanged( object sender, PropertyChangedEventArgs e )
+        {
+            _romVersion = null;
+        }
+
+        public static Version RomVersion
+        {
+            get
+            {
+                Version version = _romVersion;
+
+                if ( version == null )
+                {
+                    string fullTemplatePath =
+                        Path.GetFullPath( Properties.Settings.Default.TemplatesLocation );
+
+                    _romVersion = new MajorHavocPromisedEnd( fullTemplatePath ).GetROMVersion();
+
+                    return _romVersion;
+                }
+
+                return version;
+            }
         }
     }
+
 }
