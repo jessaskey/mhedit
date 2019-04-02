@@ -53,6 +53,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         }
 
         [TypeConverter( typeof( SimpleVelocityTypeConverter ) )]
+        [ReadOnly( true )]
         public SimpleVelocity Velocity
         {
             get { return _velocity; }

@@ -67,8 +67,7 @@ namespace mhedit.Containers.TypeConverters
         {
             if (value is string)
             {
-                string[] v = ((string)value).Split(new char[] { ',' });
-                return new SignedVelocity() { X = sbyte.Parse(v[0]), Y = sbyte.Parse(v[1]) };
+                throw new NotSupportedException( typeof( SignedVelocity ).Name );
             }
             return base.ConvertFrom(context, culture, value);
         }
