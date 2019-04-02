@@ -125,7 +125,7 @@ namespace mhedit
             return result;
         }
 
-        private static void SendException(string title, Exception ex)
+        public static void SendException(string title, Exception ex)
         {
             try
             {
@@ -136,10 +136,10 @@ namespace mhedit
                     versionString = version.ToString();
                 }
 
-                MHEditServiceReference.MHEditClient client = new MHEditServiceReference.MHEditClient();
+                MHEditServiceReference.MHEditClient client = MHPController.GetClient();
                 client.LogException(ex.Message, ex.Source, ex.StackTrace, String.Empty, versionString);
             }
-            catch { }
+            catch {}
         }
 
         #endregion
