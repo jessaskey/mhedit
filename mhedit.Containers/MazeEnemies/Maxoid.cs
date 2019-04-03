@@ -43,16 +43,7 @@ namespace mhedit.Containers.MazeEnemies
         public int TriggerDistance
         {
             get { return _triggerDistance; }
-            set
-            {
-                if ( value < 0 || value > 20 )
-                {
-                    throw new ArgumentOutOfRangeException( nameof( TriggerDistance ), value,
-                        $"Must be 0 <= value <= Maze Size." );
-                }
-
-                this.SetField( ref this._triggerDistance, value );
-            }
+            set { this.SetField( ref this._triggerDistance, value ); }
         }
 
         public override byte[] ToBytes()

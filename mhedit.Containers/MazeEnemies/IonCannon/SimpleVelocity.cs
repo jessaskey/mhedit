@@ -16,12 +16,6 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
             set
             {
-                if ( value > 64 || value < -64 )
-                {
-                    throw new ArgumentOutOfRangeException( nameof( X ),
-                        value, "Must be -64 < value < 64." );
-                }
-
                 this.SetField( ref this._x, value );
             }
         }
@@ -34,12 +28,6 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
             set
             {
-                if ( value > 64 || value < -64 )
-                {
-                    throw new ArgumentOutOfRangeException( nameof( Y ),
-                        value, "Must be -64 < value < 64." );
-                }
-
                 this.SetField( ref this._y, value );
             }
         }
