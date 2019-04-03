@@ -20,7 +20,7 @@ namespace mhedit.Containers.MazeEnemies
         private SignedVelocity _incrementingVelocity;
 
         public Pyroid()
-            : base( 16,
+            : base(Constants.MAXOBJECTS_PYROID,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.pyroid_obj.png" ),
                     Point.Empty,
                     new Point( 8, 8 ) )
@@ -37,6 +37,7 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [CategoryAttribute( "Location" )]
+        [ReadOnly( true )]
         [DescriptionAttribute( "Defines how the object moves within the maze and at what speed." )]
         [TypeConverter( typeof( TypeConverters.SignedVelocityTypeConverter ) )]
         public SignedVelocity Velocity
@@ -51,7 +52,9 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [CategoryAttribute( "Location" )]
-        [DescriptionAttribute( "Defines the additional velocity added at each difficulty level. Generally leave this at zero." )]
+        [ReadOnly( true )]
+        [DescriptionAttribute( "Defines the additional velocity added at each difficulty level. " +
+                               "Note that the sign is forced to match the Velocity. Generally leave this at zero." )]
         [TypeConverter( typeof( TypeConverters.SignedVelocityTypeConverter ) )]
         public SignedVelocity IncrementingVelocity
         {

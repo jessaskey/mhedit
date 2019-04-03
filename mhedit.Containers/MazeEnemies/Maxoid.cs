@@ -17,7 +17,7 @@ namespace mhedit.Containers.MazeEnemies
         private MaxSpeed _speed;
 
         public Maxoid()
-            : base( 8,
+            : base( Constants.MAXOBJECTS_MAXOID,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.roboid_obj.png" ),
                     Point.Empty,
                     new Point( 16, 16 ) )
@@ -38,7 +38,8 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [CategoryAttribute("Location")]
-        [DescriptionAttribute("Defines how many maze squares between Max and Rex before Max will start persuit.")]
+        [DescriptionAttribute("Defines how many maze squares between Max and Rex before Max" +
+                              " will start pursuit. Zero indicates active on maze start.")]
         public int TriggerDistance
         {
             get { return _triggerDistance; }

@@ -21,7 +21,7 @@ namespace mhedit.Containers.MazeObjects
         {}
 
         private Arrow( ArrowDirection direction)
-            : base( 10,
+            : base(Constants.MAXOBJECTS_ARROW,
                     ImageFactory.Create( direction ),
                     new Point( 0xc0, 0x40 ),
                     new Point( 8, 8 ) ) // This is half the image size.

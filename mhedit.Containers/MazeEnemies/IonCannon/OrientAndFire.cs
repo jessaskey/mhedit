@@ -11,7 +11,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     {
         private Orientation _orientation = Orientation.Down;
         private RotateSpeed _rotateSpeed = RotateSpeed.Slow;
-        private int _shotSpeed = 0;
+        private int _shotSpeed = 1;
 
         public OrientAndFire()
             : base( Commands.OrientAndFire )
@@ -64,12 +64,6 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
             set
             {
-                if ( value > 255 || value < 0 )
-                {
-                    throw new ArgumentOutOfRangeException( nameof( ShotSpeed ),
-                        value, "Must be 0 < value < 255." );
-                }
-
                 this.SetField( ref this._shotSpeed, value );
             }
         }

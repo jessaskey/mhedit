@@ -16,7 +16,7 @@ namespace mhedit.Containers.MazeEnemies
         private TripPadPyroid _pyroid;
 
         public TripPad()
-            : base( 8,
+            : base(Constants.MAXOBJECTS_TRIPPAD,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.trippad_obj.png" ),
                     new Point( 0x80, 0x08 ),
                     new Point( 32, 32 ) )
@@ -68,6 +68,8 @@ namespace mhedit.Containers.MazeEnemies
 
                 if ( this._pyroid != null )
                 {
+                    this._pyroid.TripPad = this;
+
                     this._pyroid.PropertyChanged += this.ForwardPropertyChanged;
                 }
             }

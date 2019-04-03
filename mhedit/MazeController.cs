@@ -4,23 +4,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Serialization;
-using System.Xml;
-
 using Silver.UI;
 using mhedit.Containers.MazeObjects;
 using mhedit.Containers.MazeEnemies;
 using mhedit.Containers;
-using ICSharpCode.SharpZipLib.BZip2;
 
 namespace mhedit
 {
 	[DefaultPropertyAttribute("Name")]
 	[Serializable]
-	public class MazeController : Panel, ITreeObject, ICustomTypeDescriptor
+	public class MazeController : Panel, ITreeObject, ICustomTypeDescriptor, IChangeTracking
 	{
 		#region Declarations
 
@@ -181,99 +176,6 @@ namespace mhedit
 
 #endregion
 
-		public static Maze DeserializeFromFile(string fileName)
-		{
-			Maze maze = null;
-			using (FileStream fStream = new FileStream(fileName, FileMode.Open))
-			{
-				maze = DeserializeFromStream(fStream);
-
-                //HACK: Fixes orphaned TripPadPyroids
-                foreach (TripPadPyroid tpp in maze.MazeObjects.OfType<TripPadPyroid>())
-                {
-                    //find a TripPad
-                    foreach (TripPad tripPad in maze.MazeObjects.OfType<TripPad>())
-                    {
-                        if (tripPad.Pyroid.Name == tpp.Name)
-                        {
-                            //these are the same... 
-                            tripPad.Pyroid = null;
-                            tpp.TripPad = tripPad;
-                            tripPad.Pyroid = tpp;
-                        }
-                    }
-                }
-                
-
-				maze.AcceptChanges();
-			}
-			return maze;
-		}
-
-		public static Maze DeserializeFromStream(Stream inputStream)
-		{
-			Maze maze = null;
-			using (MemoryStream mStream = new MemoryStream())
-			{
-				BZip2.Decompress(inputStream, mStream, false);
-				mStream.Position = 0;
-				var serializer = new XmlSerializer(typeof(Maze));
-				using (var reader = XmlReader.Create(mStream))
-				{
-					maze = (Maze)serializer.Deserialize(reader);
-
-					maze.AcceptChanges();
-				}
-			}
-			return maze;
-		}
-
-		public static bool SerializeToFile(Maze maze, string fileName)
-		{
-			bool result = false;
-			using (FileStream fStream = new FileStream(fileName, FileMode.Create))
-			{
-				using (MemoryStream mStream = new MemoryStream())
-				{
-					var serializer = new XmlSerializer(maze.GetType());
-					using (var writer = XmlWriter.Create(mStream, new XmlWriterSettings { Indent = true } ) )
-					{
-						serializer.Serialize(writer, maze, Constants.XmlNamespace);
-					}
-					//BinaryFormatter b = new BinaryFormatter();
-					//b.Serialize(mStream, mazeController.Maze);
-					mStream.Position = 0;
-					BZip2.Compress(mStream, fStream, true, 4096);
-					result = true;
-
-					maze.AcceptChanges();
-				}
-			}
-			return result;
-		}
-
-		public static byte[] SerializeToByteArray(Maze maze)
-		{
-			byte[] bytes = null;
-			using (MemoryStream oStream = new MemoryStream())
-			{
-				using (MemoryStream mStream = new MemoryStream())
-				{
-					var serializer = new XmlSerializer(maze.GetType());
-					using (var writer = XmlWriter.Create(mStream, new XmlWriterSettings { Indent = true } ) )
-					{
-						serializer.Serialize(writer, maze, Constants.XmlNamespace);
-					}
-					mStream.Position = 0;
-					BZip2.Compress(mStream, oStream, false, 4096);
-				}
-				bytes = new byte[oStream.Length];
-				oStream.Position = 0;
-				oStream.Read(bytes, 0, (int)oStream.Length);
-			}
-			return bytes;
-		}
-
 #region ICustomTypeDescriptor
 
 		private PropertyDescriptorCollection FilterProperties(PropertyDescriptorCollection pdc)
@@ -352,11 +254,25 @@ namespace mhedit
 			return TypeDescriptor.GetClassName(this, true);
 		}
 
+        #endregion
+
+#region Implementation of IChangeTracking
+
+        public void AcceptChanges()
+        {
+            this._maze.AcceptChanges();
+        }
+
+        public bool IsChanged
+        {
+            get { return this._maze.IsChanged; }
+        }
+
 #endregion
 
-#region Overrides
+        #region Overrides
 
-		protected override void OnPaint(PaintEventArgs e)
+        protected override void OnPaint(PaintEventArgs e)
 		{
 			//Stopwatch stopwatch = new Stopwatch();
 			//long time = stopwatch.ElapsedMilliseconds;
@@ -943,7 +859,6 @@ namespace mhedit
 							TripPadPyroid tripPyroid = new TripPadPyroid
 							{
 								Name = NameFactory.Create( typeof( TripPadPyroid ).Name ),
-								TripPad = tripPad
 							};
 
 							tripPyroid.Position = tripPyroid.GetAdjustedPosition( tripPad.Position );
@@ -1152,18 +1067,6 @@ namespace mhedit
 			{
 				this._propertyGrid.Refresh();
 			}
-		}
-
-		private void InitializeComponent()
-		{
-			this.SuspendLayout();
-			// 
-			// MazeController
-			// 
-			this.BackColor = System.Drawing.Color.Black;
-			this.Font = new System.Drawing.Font("Courier New", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.ResumeLayout(false);
-
 		}
 	}
 }

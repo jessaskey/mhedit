@@ -19,7 +19,7 @@ namespace mhedit.Containers.MazeEnemies
         private SignedVelocity _incrementingVelocity;
 
         public Perkoid()
-            : base( 10,
+            : base( Constants.MAXOBJECTS_PERKOID,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.perkoid_obj.png" ),
                     Point.Empty,
                     new Point( 16, 20 ) )
@@ -36,7 +36,8 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [CategoryAttribute("Location")]
-        [DescriptionAttribute("Defines how the object moves within the maze and at what speed.")]
+        [ReadOnly( true )]
+        [DescriptionAttribute( "Defines the vector that object takes in the maze. For Left Facing Zero Velocity use -1 X Velocity" )]
         [TypeConverter(typeof(TypeConverters.SignedVelocityTypeConverter))]
         public SignedVelocity Velocity
         {
@@ -50,7 +51,9 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [CategoryAttribute("Location")]
-        [DescriptionAttribute("Defines the additional velocity added at each difficulty level. Generally leave this at zero.")]
+        [ReadOnly( true )]
+        [DescriptionAttribute( "Defines the additional velocity added at each difficulty level. " +
+                               "Note that the sign is forced to match the Velocity. Generally leave this at zero." )]
         [TypeConverter(typeof(TypeConverters.SignedVelocityTypeConverter))]
         public SignedVelocity IncrementingVelocity
         {

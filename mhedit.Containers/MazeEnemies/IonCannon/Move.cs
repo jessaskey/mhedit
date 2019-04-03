@@ -42,17 +42,12 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
             set
             {
-                if ( value > 255 || value < 0 )
-                {
-                    throw new ArgumentOutOfRangeException( nameof( WaitFrames ),
-                        value, "Must be 0 < value < 255." );
-                }
-
                 this.SetField( ref this._waitFrames, value & 0xFC );
             }
         }
 
         [TypeConverter( typeof( SimpleVelocityTypeConverter ) )]
+        [ReadOnly( true )]
         public SimpleVelocity Velocity
         {
             get { return _velocity; }

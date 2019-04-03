@@ -22,12 +22,21 @@ namespace mhedit
 
         private void DialogAbout_Load( object sender, EventArgs e )
         {
-            //Show the ClickOnce assembly version if possible, if this is not a ClickOnce deployment, then show the Assembly version still 
-            this.labelVersion.Text = $"{Containers.VersionInformation.ApplicationVersion} " +
-                                     $"{( ApplicationDeployment.IsNetworkDeployed ? "(ClickOnce)" : "(Assembly)" )}";
+            this.labelVersion.Text = this.labelROMVersion.Text = "Unavailable";
 
-            this.labelROMVersion.Text = $"{VersionInformation.RomVersion.Major.ToString( "X2" )}." +
-                                        $"{VersionInformation.RomVersion.Minor.ToString( "X2" )}";
+            try
+            {
+                //Show the ClickOnce assembly version if possible, if this is not a ClickOnce deployment, then show the Assembly version still 
+                this.labelVersion.Text = $"{Containers.VersionInformation.ApplicationVersion} " +
+                                         $"{( ApplicationDeployment.IsNetworkDeployed ? "(ClickOnce)" : "(Assembly)" )}";
+
+                this.labelROMVersion.Text =
+                    $"{VersionInformation.RomVersion.Major.ToString( "X2" )}." +
+                    $"{VersionInformation.RomVersion.Minor.ToString( "X2" )}";
+            }
+            catch
+            {
+            }
 
             this.labelCopyright.Text =
                 $"Copyright © 2006-{DateTime.Now.Year}  Jess M. Askey/Bryan L. Roth";

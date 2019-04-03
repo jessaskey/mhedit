@@ -181,6 +181,33 @@ namespace mhedit.Containers
         Single = 1
     }
 
+    [ Serializable ]
+    public enum TripPyroidDirection : byte
+    {
+        /// <summary>
+        /// TripPadPyroid travels from Left to Right across the screen
+        /// </summary>
+        Right = 0,
+
+        /// <summary>
+        /// TripPadPyroid travels from Right to Left across the screen
+        /// </summary>
+        Left = 0x80
+    }
+
+    [Serializable]
+    public enum TripPyroidSpeedIndex : byte
+    {
+        Slowest = 0,
+        Slow,
+        MediumSlow,
+        Medium,
+        MediumFast,
+        Fast,
+        Faster,
+        SupaFast
+    }
+
     /// <summary>
     /// The EscapePodOption defines whether a player *must* use the escape pod to leave the maze
     /// or whether they may use the normal maze exits as well.

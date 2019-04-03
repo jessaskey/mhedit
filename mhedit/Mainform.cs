@@ -21,6 +21,7 @@ using mhedit.Containers.MazeObjects;
 using mhedit.Containers.Validation;
 using mhedit.Controllers;
 using mhedit.GameControllers;
+using mhedit.Serialization;
 
 namespace mhedit
 {
@@ -46,14 +47,9 @@ namespace mhedit
 
             treeView.ContextMenuStrip = contextMenuStripTree;
 
-            string versionString = String.Empty;
-            if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
-            {
-                Version version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
-                versionString = version.ToString();
-            }
+            this.Text =
+                $"{this.Text} - {Containers.VersionInformation.ApplicationVersion}  BETA VERSION";
 
-            this.Text = this.Text + " - " + versionString + " BETA VERSION";
             this.SetStyle(ControlStyles.DoubleBuffer, true);
             this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             this.SetStyle(ControlStyles.UserPaint, true);
@@ -346,9 +342,14 @@ namespace mhedit
                         /* Cancel the label edit action, inform the user, and 
                            place the node in edit mode again. */
                         e.CancelEdit = true;
-                        MessageBox.Show( "Invalid tree node label.\n" +
-                           "The invalid characters are: '@','.', ',', '!'",
-                           "Node Label Edit" );
+
+                        string invalid = new string( Path.GetInvalidFileNameChars()
+                                                     .Where( c => !char.IsControl( c ) )
+                                                     .ToArray() );
+
+                        MessageBox.Show( $"The name \"{e.Label}\" contains invalid characters: {invalid}",
+                            "Invalid Name" );
+
                         e.Node.BeginEdit();
                     }
                 }
@@ -370,7 +371,15 @@ namespace mhedit
         private void treeView_DrawNode( object sender, DrawTreeNodeEventArgs e )
         {
             // Use the default background and node text.
-            e.DrawDefault = true;
+            e.DrawDefault = !e.Node.IsEditing;
+
+            if ( e.Node.IsEditing )
+            {
+                /// While editing the Node Text don't paint the existing name behind.
+                e.Graphics.FillRectangle( new SolidBrush( SystemColors.Window ), e.Bounds );
+
+                return;
+            }
 
             // Extract the set font/color from the tree.
             Font nodeFont =
@@ -476,9 +485,8 @@ namespace mhedit
 
                                     Application.DoEvents();
 
-                                    MazeCollectionController.SerializeToFile(
-                                        mazeCollectionController.MazeCollection,
-                                        mazeCollectionController.FileName );
+                                    mazeCollectionController.MazeCollection
+                                                            .SerializeAndCompress( mazeCollectionController.FileName );
 
                                     mazeCollectionController.MazeCollection.AcceptChanges();
                                 }
@@ -520,8 +528,7 @@ namespace mhedit
 
                                     Application.DoEvents();
 
-                                    MazeController.SerializeToFile(
-                                        mazeController.Maze, mazeController.FileName );
+                                    mazeController.Maze.SerializeAndCompress( mazeController.FileName );
 
                                     mazeController.Maze.AcceptChanges();
                                 }
@@ -774,21 +781,37 @@ namespace mhedit
         {
             bool safeToRemove = true;
 
-            if ( treeView.SelectedNode?.Tag is MazeController mazeController &&
-                mazeController.Maze.IsChanged )
+            if ( this.treeView.SelectedNode?.Tag is IChangeTracking changeTracking )
             {
-                safeToRemove = this.SaveMaze( mazeController,
-                    treeView.SelectedNode.Parent?.Tag as MazeCollectionController );
-            }
-            else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController &&
-                mazeCollectionController.MazeCollection.IsChanged )
-            {
-                safeToRemove = this.SaveCollection( mazeCollectionController );
+                if ( changeTracking.IsChanged )
+                {
+                    DialogResult result = MessageBox.Show(
+                        $"Save changes to {this.treeView.SelectedNode.Text}?",
+                        "Close", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation );
+
+                    if ( result == DialogResult.Yes )
+                    {
+                        if ( this.treeView.SelectedNode?.Tag is MazeController mazeController )
+                        {
+                            safeToRemove = this.SaveMaze( mazeController,
+                                this.treeView.SelectedNode.Parent?.Tag as MazeCollectionController );
+                        }
+                        else if ( this.treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
+                        {
+                            safeToRemove = this.SaveCollection( mazeCollectionController );
+                        }
+                    }
+                    else if ( result == DialogResult.Cancel )
+                    {
+                        safeToRemove = false;
+                    }
+                }
             }
 
-            if ( safeToRemove )
+            if ( safeToRemove && this.treeView.SelectedNode != null )
             {
-                treeView.SelectedNode.Remove();
+                this.treeView.SelectedNode.Remove();
+
                 this.RefreshTree();
             }
         }
@@ -920,7 +943,12 @@ namespace mhedit
                 node.SelectedImageIndex = node.ImageIndex;
                 treeView.SelectedNode = node;
 
-                mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+                /// Only connect PropertyChanged event if the maze isn't part of a collection
+                /// (it doesn't have a parent) as it's fed through the collection otherwise.
+                if ( node.Parent == null )
+                {
+                    mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+                }
 
                 mazeController.ShowGridReferences = Properties.Settings.Default.ShowGridReferences;
                 mazeController.PropertyGrid = propertyGrid;
@@ -1051,7 +1079,13 @@ namespace mhedit
             Application.DoEvents();
             try
             {
-                MazeController mazeController = new MazeController( MazeController.DeserializeFromFile( fileName ) );
+                MazeController mazeController =
+                    new MazeController( fileName.ExpandAndDeserialize<Maze>() )
+                    {
+                        FileName = fileName
+                    };
+                
+                mazeController.Maze.AcceptChanges();
 
                 TreeNode node = mazeController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
 
@@ -1059,19 +1093,26 @@ namespace mhedit
                 node.SelectedImageIndex = node.ImageIndex;
                 treeView.SelectedNode = node;
 
-                mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+                /// Only connect PropertyChanged event if the maze isn't part of a collection
+                /// (it doesn't have a parent) as it's fed through the collection otherwise.
+                if ( node.Parent == null )
+                {
+                    mazeController.Maze.PropertyChanged += this.OnInstructionPropertyChanged;
+                }
 
                 mazeController.ShowGridReferences = Properties.Settings.Default.ShowGridReferences;
                 mazeController.PropertyGrid = propertyGrid;
                 mazeController.ComboBoxObjects = comboBoxMazeObjects;
-
-                mazeController.FileName = fileName;
             }
             catch ( Exception ex )
             {
                 Cursor.Current = Cursors.Default;
                 MessageBox.Show( $"Maze could not be opened: {ex.Message}",
                     "File Open Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+
+                //Bryan, I put this here as an example of how to report Exceptions that are caught, but you still
+                //may want to log them. All un-handled exceptions will still log.
+                Program.SendException("MazeOpen", ex);
             }
             finally
             {
@@ -1086,13 +1127,13 @@ namespace mhedit
                 Cursor.Current = Cursors.WaitCursor;
                 Application.DoEvents();
 
-                MazeCollection mazeCollection =
-                    MazeCollectionController.DeserializeFromFile( fileName );
+                MazeCollectionController collectionController =
+                    new MazeCollectionController( fileName.ExpandAndDeserialize<MazeCollection>() )
+                    {
+                        FileName = fileName
+                    };
 
-                MazeCollectionController collectionController = 
-                    new MazeCollectionController( mazeCollection );
-
-                collectionController.FileName = fileName;
+                collectionController.MazeCollection.AcceptChanges();
 
                 TreeNode node = collectionController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
                 node.ImageIndex = 0;
@@ -1149,8 +1190,7 @@ namespace mhedit
 
                     Application.DoEvents();
 
-                    MazeCollectionController.SerializeToFile(
-                        mazeCollectionController.MazeCollection,
+                    mazeCollectionController.MazeCollection.SerializeAndCompress(
                         mazeCollectionController.FileName );
 
                     mazeCollectionController.MazeCollection.AcceptChanges();
@@ -1214,8 +1254,7 @@ namespace mhedit
 
                     Application.DoEvents();
 
-                    MazeController.SerializeToFile(
-                        mazeController.Maze, mazeController.FileName );
+                    mazeController.Maze.SerializeAndCompress( mazeController.FileName );
 
                     mazeController.Maze.AcceptChanges();
 
@@ -1242,7 +1281,36 @@ namespace mhedit
 
         private void OnInstructionPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
-            this.treeView.Refresh();
+            if ( e.PropertyName.Equals( "Name" ) )
+            {
+                if ( treeView.SelectedNode?.Tag is MazeController mazeController )
+                {
+                    treeView.SelectedNode.Text = mazeController.Maze.Name;
+                }
+                else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
+                {
+                    treeView.SelectedNode.Text = mazeCollectionController.MazeCollection.Name;
+                }
+            }
+
+            this.treeView.Invalidate();
+        }
+
+        private void treeView_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F10)
+            {
+                if (treeView.SelectedNode?.Tag is MazeController mazeController)
+                {
+                    if (treeView.SelectedNode?.Parent?.Tag is MazeCollectionController mazeCollectionController)
+                    {
+                        int level = mazeCollectionController.MazeCollection.Mazes.IndexOf(mazeController.Maze);
+                        MajorHavocPromisedEnd mhpe = new MajorHavocPromisedEnd(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation));
+                        string source = mhpe.ExtractSource(mazeController.Maze, level+1);
+                        Clipboard.SetText(source);
+                    }
+                }
+            }
         }
 
         private void toolStripMenuItemValidate_Click( object sender, EventArgs e )

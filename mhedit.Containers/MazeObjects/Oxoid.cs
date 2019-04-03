@@ -12,7 +12,7 @@ namespace mhedit.Containers.MazeObjects
         private OxoidType _oxoidType = OxoidType.Fixed;
 
         public Oxoid()
-            : base( 20,
+            : base( Constants.MAXOBJECTS_OXOID,
                     ResourceFactory.GetResourceImage( ImageResource ),
                     new Point( 0x90, 0x40 ),
                     new Point( 4, 6 ) )

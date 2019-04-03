@@ -2,18 +2,14 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 using mhedit.Containers;
-using System.Xml.Serialization;
-using ICSharpCode.SharpZipLib.BZip2;
-using System.Xml;
 
 namespace mhedit
 {
     [DefaultPropertyAttribute("Name")]
     [Serializable]
-    public class MazeCollectionController: ITreeObject, ICustomTypeDescriptor
+    public class MazeCollectionController: ITreeObject, ICustomTypeDescriptor, IChangeTracking
     {
         #region Declarations
 
@@ -79,59 +75,6 @@ namespace mhedit
         }
 
         #endregion
-
-        public static MazeCollection DeserializeFromFile(string fileName)
-        {
-            MazeCollection mazeCollection = null;
-            using (FileStream fStream = new FileStream(fileName, FileMode.Open))
-            {
-                mazeCollection = DeserializeFromStream(fStream);
-
-                mazeCollection.AcceptChanges();
-            }
-            return mazeCollection;
-        }
-
-        public static MazeCollection DeserializeFromStream(Stream inputStream)
-        {
-            MazeCollection mazeCollection = null;
-            using (MemoryStream mStream = new MemoryStream())
-            {
-                BZip2.Decompress(inputStream, mStream, false);
-                mStream.Position = 0;
-                var serializer = new XmlSerializer(typeof(MazeCollection));
-                using (var reader = XmlReader.Create(mStream))
-                {
-                    mazeCollection = (MazeCollection)serializer.Deserialize(reader);
-
-                    mazeCollection.AcceptChanges();
-                }
-            }
-            return mazeCollection;
-        }
-
-        public static bool SerializeToFile(MazeCollection mazeCollection, string fileName)
-        {
-            bool result = false;
-            using (FileStream fStream = new FileStream(fileName, FileMode.Create))
-            {
-                using (MemoryStream mStream = new MemoryStream())
-                {
-                    var serializer = new XmlSerializer(typeof(MazeCollection));
-                    using (var writer = XmlWriter.Create(mStream, new XmlWriterSettings { Indent = true } ) )
-                    {
-                        serializer.Serialize(writer, mazeCollection, Constants.XmlNamespace);
-                    }
-                    mStream.Position = 0;
-                    BZip2.Compress(mStream, fStream, true, 4096);
-                    result = true;
-
-                    mazeCollection.AcceptChanges();
-                }
-            }
-
-            return result;
-        }
 
         #region ICustomTypeDescriptor
 
@@ -285,5 +228,19 @@ namespace mhedit
         private void OnMazeCollectionPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
         }
+
+        #region Implementation of IChangeTracking
+
+        public void AcceptChanges()
+        {
+            this._mazeCollection.AcceptChanges();
+        }
+
+        public bool IsChanged
+        {
+            get { return this._mazeCollection.IsChanged; }
+        }
+
+        #endregion
     }
 }

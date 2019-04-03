@@ -422,7 +422,7 @@ namespace mhedit
             this.toolStripSeparator9,
             this.toolStripMenuItemPreview});
             this.contextMenuStripTree.Name = "contextMenuStripTree";
-            this.contextMenuStripTree.Size = new System.Drawing.Size(209, 254);
+            this.contextMenuStripTree.Size = new System.Drawing.Size(209, 226);
             this.contextMenuStripTree.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTree_Opening);
             // 
             // toolStripMenuItemNew
@@ -438,7 +438,7 @@ namespace mhedit
             // 
             this.toolStripMenuItemAddMazeCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemAddMazeCollection.Image")));
             this.toolStripMenuItemAddMazeCollection.Name = "toolStripMenuItemAddMazeCollection";
-            this.toolStripMenuItemAddMazeCollection.Size = new System.Drawing.Size(159, 22);
+            this.toolStripMenuItemAddMazeCollection.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemAddMazeCollection.Text = "Maze Collection";
             this.toolStripMenuItemAddMazeCollection.ToolTipText = "Add New";
             this.toolStripMenuItemAddMazeCollection.Click += new System.EventHandler(this.toolStripMenuItemNewMazeCollection_Click);
@@ -448,7 +448,7 @@ namespace mhedit
             this.toolStripMenuItemAddNewMaze.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemAddNewMaze.Image")));
             this.toolStripMenuItemAddNewMaze.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.toolStripMenuItemAddNewMaze.Name = "toolStripMenuItemAddNewMaze";
-            this.toolStripMenuItemAddNewMaze.Size = new System.Drawing.Size(159, 22);
+            this.toolStripMenuItemAddNewMaze.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemAddNewMaze.Text = "Maze";
             this.toolStripMenuItemAddNewMaze.ToolTipText = "Add New Maze";
             this.toolStripMenuItemAddNewMaze.Click += new System.EventHandler(this.toolStripMenuItemNewMaze_Click);
@@ -593,7 +593,7 @@ namespace mhedit
             this.panelUnderneath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelUnderneath.Location = new System.Drawing.Point(148, 25);
             this.panelUnderneath.Name = "panelUnderneath";
-            this.panelUnderneath.Size = new System.Drawing.Size(885, 560);
+            this.panelUnderneath.Size = new System.Drawing.Size(885, 663);
             this.panelUnderneath.TabIndex = 5;
             // 
             // panelContent
@@ -606,7 +606,7 @@ namespace mhedit
             this.panelContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelContent.Location = new System.Drawing.Point(0, 0);
             this.panelContent.Name = "panelContent";
-            this.panelContent.Size = new System.Drawing.Size(632, 560);
+            this.panelContent.Size = new System.Drawing.Size(632, 663);
             this.panelContent.TabIndex = 3;
             this.panelContent.Paint += new System.Windows.Forms.PaintEventHandler(this.panelContent_Paint);
             // 
@@ -615,7 +615,7 @@ namespace mhedit
             this.splitterRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.splitterRight.Location = new System.Drawing.Point(632, 0);
             this.splitterRight.Name = "splitterRight";
-            this.splitterRight.Size = new System.Drawing.Size(3, 560);
+            this.splitterRight.Size = new System.Drawing.Size(3, 663);
             this.splitterRight.TabIndex = 1;
             this.splitterRight.TabStop = false;
             // 
@@ -626,7 +626,7 @@ namespace mhedit
             this.panelRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.panelRight.Location = new System.Drawing.Point(635, 0);
             this.panelRight.Name = "panelRight";
-            this.panelRight.Size = new System.Drawing.Size(250, 560);
+            this.panelRight.Size = new System.Drawing.Size(250, 663);
             this.panelRight.TabIndex = 0;
             // 
             // splitContainerRight
@@ -646,8 +646,8 @@ namespace mhedit
             this.splitContainerRight.Panel2.Controls.Add(this.propertyGrid);
             this.splitContainerRight.Panel2.Controls.Add(this.comboBoxMazeObjects);
             this.splitContainerRight.Panel2MinSize = 50;
-            this.splitContainerRight.Size = new System.Drawing.Size(250, 557);
-            this.splitContainerRight.SplitterDistance = 337;
+            this.splitContainerRight.Size = new System.Drawing.Size(250, 660);
+            this.splitContainerRight.SplitterDistance = 400;
             this.splitContainerRight.TabIndex = 4;
             // 
             // toolBox
@@ -674,7 +674,7 @@ namespace mhedit
             this.toolBox.SelectAllTextWhileRenaming = true;
             this.toolBox.SelectedTabIndex = -1;
             this.toolBox.ShowOnlyOneItemPerRow = false;
-            this.toolBox.Size = new System.Drawing.Size(250, 337);
+            this.toolBox.Size = new System.Drawing.Size(250, 400);
             this.toolBox.SmallItemSize = new System.Drawing.Size(32, 32);
             this.toolBox.TabHeight = 18;
             this.toolBox.TabHoverTextColor = System.Drawing.SystemColors.ControlText;
@@ -690,7 +690,7 @@ namespace mhedit
             this.propertyGrid.LineColor = System.Drawing.SystemColors.ControlDark;
             this.propertyGrid.Location = new System.Drawing.Point(0, 21);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(250, 195);
+            this.propertyGrid.Size = new System.Drawing.Size(250, 235);
             this.propertyGrid.TabIndex = 5;
             // 
             // comboBoxMazeObjects
@@ -705,7 +705,7 @@ namespace mhedit
             // splitterUpDown
             // 
             this.splitterUpDown.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitterUpDown.Location = new System.Drawing.Point(0, 557);
+            this.splitterUpDown.Location = new System.Drawing.Point(0, 660);
             this.splitterUpDown.Name = "splitterUpDown";
             this.splitterUpDown.Size = new System.Drawing.Size(250, 3);
             this.splitterUpDown.TabIndex = 1;

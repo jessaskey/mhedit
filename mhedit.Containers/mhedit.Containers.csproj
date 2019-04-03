@@ -119,6 +119,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Range.cs" />
     <Compile Include="ResourceFactory.cs" />
     <Compile Include="SignedVelocity.cs" />
     <Compile Include="ChangeTrackingBase.cs" />
@@ -166,9 +167,6 @@
       <Project>{d937e1f4-1b9f-4567-b28e-eed24aa31c9c}</Project>
       <Name>Silver.UI.ToolBox</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\Objects\arrow_angle_obj.png" />
