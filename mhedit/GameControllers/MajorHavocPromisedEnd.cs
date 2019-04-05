@@ -1078,7 +1078,6 @@ namespace mhedit.GameControllers
 
         public bool EncodeObjects(MazeCollection mazeCollection, Maze maze)
         {
-            bool success = false;
             int numMazes = 28;
 
             if (mazeCollection.Mazes.Count > numMazes)
@@ -1160,7 +1159,9 @@ namespace mhedit.GameControllers
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
+                //****************
                 //Oxoid data
+                //****************
                 byte[] oxoidBytes = EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Oxoids).GetAllBytes().ToArray();
                 byte byteHash = GetByteHash(oxoidBytes);
                 if (existingOxoids.ContainsKey(byteHash))
@@ -1177,7 +1178,9 @@ namespace mhedit.GameControllers
                     currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, oxoidBytes, 0, 6);
                 }
             }
+            //****************
             //Lightning
+            //****************
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
@@ -1185,7 +1188,9 @@ namespace mhedit.GameControllers
                 pointerIndex += WritePagedROM((ushort)_exports["mzlg"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
                 currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Lightning).GetAllBytes().ToArray(), 0, 6);
             }
+            //****************
             //Arrows
+            //****************
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
@@ -1194,7 +1199,9 @@ namespace mhedit.GameControllers
                 //Arrow data
                 currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Arrows).GetAllBytes().ToArray(), 0, 6);
             }
+            //****************
             //Exit Arrows
+            //****************
             pointerIndex = 0;
             //create a placeholder pointer which is for blank levels
             int blankOutArrowsPointer = currentAddressPage6;
@@ -1213,7 +1220,9 @@ namespace mhedit.GameControllers
                     pointerIndex += WritePagedROM((ushort)_exports["mzor"], WordToByteArray(blankOutArrowsPointer), (i * 2), 6);
                 }
             }
+            //****************
             //Trip Points
+            //****************
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
@@ -1221,7 +1230,9 @@ namespace mhedit.GameControllers
                 pointerIndex += WritePagedROM((ushort)_exports["mztr"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
                 currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.TripPoints).GetAllBytes().ToArray(), 0, 6);
             }
+            //****************
             //Trip Actions
+            //****************
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
@@ -1229,7 +1240,9 @@ namespace mhedit.GameControllers
                 pointerIndex += WritePagedROM((ushort)_exports["trtbll"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
                 currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.TripActions).GetAllBytes().ToArray(), 0, 6);
             }
+            //****************
             //Static Maze Walls
+            //****************
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
@@ -1237,7 +1250,9 @@ namespace mhedit.GameControllers
                 pointerIndex += WritePagedROM((ushort)_exports["mztdal"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
                 currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.StaticWalls).GetAllBytes().ToArray(), 0, 6);
             }
+            //****************
             //Dynamic Maze Walls
+            //****************
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
@@ -1245,7 +1260,9 @@ namespace mhedit.GameControllers
                 pointerIndex += WritePagedROM((ushort)_exports["mztd"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
                 currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.DynamicWalls).GetAllBytes().ToArray(), 0, 6);
             }
+            //****************
             //One Way Walls
+            //****************
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
@@ -1254,7 +1271,9 @@ namespace mhedit.GameControllers
                 currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OneWay).GetAllBytes().ToArray(), 0, 6);
             }
 
-            //Ion IonCannon
+            //****************
+            //Cannon
+            //****************
             Dictionary<int, int> cannonLevelPointers = new Dictionary<int, int>();
             Dictionary<Guid, int> cannonDataPointers = new Dictionary<Guid, int>();
 
@@ -1284,12 +1303,6 @@ namespace mhedit.GameControllers
                 }
             }
             //now build Indexes and Pointers
-            //pointerIndex = 0;
-            //int cannonIndexValue = 0x02;
-            //empty data word for levels with no Cannons, pointerIndex = 0
-            //int cannonPointerEmpty = currentAddressPage6;
-            //currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, new byte[] { 0x00, 0x00 }, 0, 6);
-
             for (int i = 0; i < numMazes; i++)
             {
                 for (int c = 0; c < 4; c++)
@@ -1306,25 +1319,10 @@ namespace mhedit.GameControllers
                         WritePagedROM((ushort)_exports["mcan"], new byte[] { 0x00, 0x00}, (i * 8) + (c * 2), 6);
                     }
                 }
-                //if (mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().Count() == 0)
-                //{
-                //    //set empty pointers and index
-                //    pointerIndex += WritePagedROM((ushort)_exports["mcan"], new byte[] { 0x00 }, pointerIndex, 6);
-                //}
-                //else
-                //{
-                //    //set this ponter index value and increment
-                //    pointerIndex += WritePagedROM((ushort)_exports["mcan"], new byte[] { (byte)cannonIndexValue }, pointerIndex, 6);
-                //    cannonIndexValue += (mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().Count() * 2) + 2;
-                //    foreach (IonCannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>())
-                //    {
-                //        currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, WordToByteArray(cannonDataPointers[cannon.Id]), 0, 6);
-                //    }
-                //    currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, new byte[] { 0x00, 0x00 }, 0, 6);
-                //}
             }
-
+            //****************
             //Spikes
+            //****************
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
@@ -1332,8 +1330,9 @@ namespace mhedit.GameControllers
                 pointerIndex += WritePagedROM((ushort)_exports["mtite"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
                 currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Spikes).GetAllBytes().ToArray(), 0, 6);
             }
-
+            //****************
             //locks and keys, for now, there has to be an even number of locks and keys
+            //****************
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
@@ -1341,8 +1340,9 @@ namespace mhedit.GameControllers
                 pointerIndex += WritePagedROM((ushort)_exports["mlock"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
                 currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.LocksKeys).GetAllBytes().ToArray(), 0, 6);
             }
-
+            //****************
             //Transporters
+            //****************
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
@@ -1350,7 +1350,9 @@ namespace mhedit.GameControllers
                 pointerIndex += WritePagedROM((ushort)_exports["mtran"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
                 currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Transporters).GetAllBytes().ToArray(), 0, 6);
             }
+            //****************
             //De Hand
+            //****************
             pointerIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
@@ -1358,40 +1360,50 @@ namespace mhedit.GameControllers
                 pointerIndex += WritePagedROM((ushort)_exports["mhand"], WordToByteArray(currentAddressPage6), pointerIndex, 6);
                 currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Hand).GetAllBytes().ToArray(), 0, 6);
             }
+            //****************
             //Clock
+            //****************
             int clockIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
                 clockIndex += WritePagedROM((ushort)_exports["mclock"], EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Clock).GetAllBytes().ToArray(), clockIndex, 6);
             }
+            //****************
             //Boots
+            //****************
             int bootsIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
                 bootsIndex += WritePagedROM((ushort)_exports["mboots"], EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Boots).GetAllBytes().ToArray(), bootsIndex, 6);
             }
-
-            int mpodAddressBase = _exports["mpod"];
+            //****************
             //Escape Pod
+            //****************
+            int mpodAddressBase = _exports["mpod"];
             for (int i = 1; i < numMazes; i+=4)
             {
                 mpodAddressBase += WritePagedROM((ushort)mpodAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.EscapePod).GetAllBytes().ToArray(), 0, 6);
             }
+            //****************
             //Out Time
+            //****************
             int outAddressBase = _exports["outime"];
             for (int i = 0; i < numMazes; i++)
             {
                 outAddressBase += WritePagedROM((ushort)outAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OutTime).GetAllBytes().ToArray(), 0, 6);
             }
+            //****************
             //OxygenReward
+            //****************
             int oxyAddressBase = _exports["oxybonus"];
             for (int i = 0; i < numMazes; i++)
             {
                 oxyAddressBase += WritePagedROM((ushort)oxyAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OxygenReward).GetAllBytes().ToArray(), 0, 6);
             }
-
+            //****************
             //set up starting level
-            for(int i = 0; i < numMazes; i++)
+            //****************
+            for (int i = 0; i < numMazes; i++)
             {
                 if (mazeCollection.Mazes[i] == maze)
                 {
@@ -1400,19 +1412,20 @@ namespace mhedit.GameControllers
                     WriteAlphaHigh((ushort)(_exports["levelst"]+1), startLevel);
                 }
             }
-
+            //*******************
+            // Quality Checking
+            //*******************
             if (currentAddressPage6 >= 0x2000)
             {
                 //this is bad
-
+                return false;
             }
             if (currentAddressPage7 >= 0x2000 )
             {
                 //this is bad, it means we have overflowed our Paged ROM end boundary
+                return false;
             }
-
-            success = true;
-            return success;
+            return true;
         }
 
         private byte GetByteHash(byte[] bytes)
