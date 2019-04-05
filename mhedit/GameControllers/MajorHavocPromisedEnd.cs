@@ -454,19 +454,16 @@ namespace mhedit.GameControllers
                     maze.TransportabilityFlags = transportabilityData;
                 }
 
-                //Laser IonCannon
-                // Ok, So looking at why the cannons are shifted down on level 16.
-                // The issue is that the cannon goes up and down. The key is where
-                // the cannon starts with respect to the ceiling. Cannons 2 and 3
-                // start low (closer to the floor) than all others.
-                // I need to figure out how that's encoded.
-                byte cannonAddressOffset = ReadByte(_exports["mcan"], i, 6);
-                if (cannonAddressOffset != 0)
+                //Laser Cannon
+                for (int c = 0; c < 4; c++)
                 {
-                    ushort cannonBaseAddress = (ushort)(_exports["mcanst"] + cannonAddressOffset);
-                    ushort cannonPointerAddress = ReadWord(cannonBaseAddress, 0, 6);
+                    ushort cannonPointerAddress = ReadWord(_exports["mcan"], (i * 8) + (c * 2), 6);
 
-                    while (cannonPointerAddress != 0)
+                    if (cannonPointerAddress == 0)
+                    {
+                        break;
+                    }
+                    else
                     {
                         IonCannon cannon = new IonCannon();
                         cannon.LoadPosition(ReadBytes(cannonPointerAddress, 4, 6));
@@ -503,8 +500,8 @@ namespace mhedit.GameControllers
                                     cannonMovement.WaitFrames = waitFrames;
                                     if (waitFrames > 0)
                                     {
-                                        cannonMovement.Velocity.X = (sbyte)ReadByte( cannonPointerAddress, ++cannonCommandOffset, 6 );
-                                        cannonMovement.Velocity.Y = (sbyte)ReadByte( cannonPointerAddress, ++cannonCommandOffset, 6 );
+                                        cannonMovement.Velocity.X = (sbyte)ReadByte(cannonPointerAddress, ++cannonCommandOffset, 6);
+                                        cannonMovement.Velocity.Y = (sbyte)ReadByte(cannonPointerAddress, ++cannonCommandOffset, 6);
                                     }
                                     //cannonMovement.
                                     cannon.Program.Add(cannonMovement);
@@ -519,14 +516,10 @@ namespace mhedit.GameControllers
                             commandStartByte = commandStartByte = ReadByte(cannonPointerAddress, cannonCommandOffset, 6);
                         }
                         maze.AddObject(cannon);
-
-                        cannonBaseAddress += 2;
-                        cannonPointerAddress = ReadWord(cannonBaseAddress, 0, 6);
                     }
                 }
 
                 //build trips now
-
                 // The max number of trips in a maze is 7. Trips are stored in a list
                 // that is null terminated. 
                 ushort tripBaseAddress = ReadWord((ushort)_exports["mztr"], (i * 2), 6);
@@ -1261,14 +1254,11 @@ namespace mhedit.GameControllers
                 currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OneWay).GetAllBytes().ToArray(), 0, 6);
             }
 
-            //Ion IonCannon, warning, this is very messy due to data compaction techniques
-            //Three levels of data pointers
-            // 1. Byte: Index into Pointers - mcan - Static Data Area - 28 Bytes - Written Last
-            // 2. Word: Pointers to Data - mcanst - Dynamic Data Area - Written Second
-            // 3. Byte: Data Stream - Dynamic Data Area - Written First
+            //Ion IonCannon
             Dictionary<int, int> cannonLevelPointers = new Dictionary<int, int>();
             Dictionary<Guid, int> cannonDataPointers = new Dictionary<Guid, int>();
 
+            //first build up each cannon and mark the address for it
             for (int i = 0; i < numMazes; i++)
             {
                 if (mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().Count() > 0)
@@ -1291,39 +1281,47 @@ namespace mhedit.GameControllers
                         cannonDataPointers.Add(Guid.Parse(g.Id), currentAddressPage6);
                         currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, encodedBytes.ToArray(), 0, 6);
                     }
-                    //JMA - 03272019 - Old code, left in case there are troubles serializing with new code above
-                    //foreach (IonCannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>())
-                    //{
-                    //    cannonDataPointers.Add(cannon.Id, currentAddressPage6);
-                    //    currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, cannon.ToBytes(), 0, 6);
-                    //}
                 }
             }
             //now build Indexes and Pointers
-            pointerIndex = 0;
-            int cannonIndexValue = 0x02;
+            //pointerIndex = 0;
+            //int cannonIndexValue = 0x02;
             //empty data word for levels with no Cannons, pointerIndex = 0
-            int cannonPointerEmpty = currentAddressPage6;
-            currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, new byte[] { 0x00, 0x00 }, 0, 6);
+            //int cannonPointerEmpty = currentAddressPage6;
+            //currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, new byte[] { 0x00, 0x00 }, 0, 6);
 
             for (int i = 0; i < numMazes; i++)
             {
-                if (mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().Count() == 0)
+                for (int c = 0; c < 4; c++)
                 {
-                    //set empty pointers and index
-                    pointerIndex += WritePagedROM((ushort)_exports["mcan"], new byte[] { 0x00 }, pointerIndex, 6);
-                }
-                else
-                {
-                    //set this ponter index value and increment
-                    pointerIndex += WritePagedROM((ushort)_exports["mcan"], new byte[] { (byte)cannonIndexValue }, pointerIndex, 6);
-                    cannonIndexValue += (mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().Count() * 2) + 2;
-                    foreach (IonCannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>())
+                    if (c < mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().Count())
                     {
-                        currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, WordToByteArray(cannonDataPointers[cannon.Id]), 0, 6);
+                        IonCannon cannon = mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().ToList()[c];
+                        //valid cannon found here, write it
+                        currentAddressPage6 += WritePagedROM((ushort)_exports["mcan"], WordToByteArray(cannonDataPointers[cannon.Id]), (i * 8) + (c * 2), 6);
                     }
-                    currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, new byte[] { 0x00, 0x00 }, 0, 6);
+                    else
+                    {
+                        //no cannon defined in this slot, write 
+                        WritePagedROM((ushort)_exports["mcan"], new byte[] { 0x00, 0x00}, (i * 8) + (c * 2), 6);
+                    }
                 }
+                //if (mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().Count() == 0)
+                //{
+                //    //set empty pointers and index
+                //    pointerIndex += WritePagedROM((ushort)_exports["mcan"], new byte[] { 0x00 }, pointerIndex, 6);
+                //}
+                //else
+                //{
+                //    //set this ponter index value and increment
+                //    pointerIndex += WritePagedROM((ushort)_exports["mcan"], new byte[] { (byte)cannonIndexValue }, pointerIndex, 6);
+                //    cannonIndexValue += (mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>().Count() * 2) + 2;
+                //    foreach (IonCannon cannon in mazeCollection.Mazes[i].MazeObjects.OfType<IonCannon>())
+                //    {
+                //        currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, WordToByteArray(cannonDataPointers[cannon.Id]), 0, 6);
+                //    }
+                //    currentAddressPage6 += WritePagedROM((ushort)currentAddressPage6, new byte[] { 0x00, 0x00 }, 0, 6);
+                //}
             }
 
             //Spikes

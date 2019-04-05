@@ -57,29 +57,10 @@ namespace mhedit
             {
                 try
                 {
-                    //gather some info
-                    string username = "";
-                    if (Properties.Settings.Default != null)
-                    {
-                        username = Properties.Settings.Default.MHPUsername;
-                    }
-                    string versionString = String.Empty;
-                    if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
-                    {
-                        Version version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
-                        versionString = version.ToString();
-                    }
-                    else
-                    {
-                        versionString = Application.ProductVersion;
-                    }
-
-                    //send home an exception, async, don't wait for response
-                    MHEditServiceReference.MHEditClient _client = MHPController.GetClient();
-                    _client.LogExceptionAsync(t.Exception.Message, t.Exception.Source, t.Exception.StackTrace, username, versionString);
-
                     MessageBox.Show("Fatal Windows Error",
                         "Fatal Windows Error", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Stop);
+
+                    Program.SendException("UIThreadException", t.Exception);
                 }
                 finally
                 {
@@ -127,19 +108,20 @@ namespace mhedit
 
         public static void SendException(string title, Exception ex)
         {
+            Cursor.Current = Cursors.WaitCursor;
             try
             {
-                string versionString = "NoVersion";
-                if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
+                string username = "";
+                if (Properties.Settings.Default != null)
                 {
-                    Version version = System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion;
-                    versionString = version.ToString();
+                    username = Properties.Settings.Default.MHPUsername;
                 }
 
                 MHEditServiceReference.MHEditClient client = MHPController.GetClient();
-                client.LogException(ex.Message, ex.Source, ex.StackTrace, String.Empty, versionString);
+                client.LogException(ex.Message, ex.Source, ex.StackTrace, username, Containers.VersionInformation.ApplicationVersion.ToString());
             }
             catch {}
+            Cursor.Current = Cursors.Default;
         }
 
         #endregion
