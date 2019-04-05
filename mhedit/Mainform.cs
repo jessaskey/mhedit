@@ -1108,6 +1108,10 @@ namespace mhedit
                 Cursor.Current = Cursors.Default;
                 MessageBox.Show( $"Maze could not be opened: {ex.Message}",
                     "File Open Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+
+                //Bryan, I put this here as an example of how to report Exceptions that are caught, but you still
+                //may want to log them. All un-handled exceptions will still log.
+                Program.SendException("MazeOpen", ex);
             }
             finally
             {

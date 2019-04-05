@@ -64,12 +64,6 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
             set
             {
-                if ( value > 255 || value < 1 )
-                {
-                    throw new ArgumentOutOfRangeException( nameof( ShotSpeed ),
-                        value, "Must be 1 < value < 255." );
-                }
-
                 this.SetField( ref this._shotSpeed, value );
             }
         }

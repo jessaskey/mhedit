@@ -25,13 +25,9 @@ namespace mhedit.Containers.MazeEnemies
                     Point.Empty,
                     new Point( 8, 8 ) )
         {
-            this.Velocity = new SignedVelocity(
-                new Range<int>() { Maximum = 32, Minimum = -32 },
-                new Range<int>() { Maximum = 32, Minimum = -32 } );
+            this.Velocity = new SignedVelocity();
 
-            this.IncrementingVelocity = new SignedVelocity(
-                new Range<int>() { Maximum = 16, Minimum = -16 },
-                new Range<int>() { Maximum = 16, Minimum = -16 } );
+            this.IncrementingVelocity = new SignedVelocity();
         }
 
         [BrowsableAttribute( false )]
