@@ -6,7 +6,7 @@ namespace mhedit.Containers.Validation
 
     public class ValidationResults : List<IValidationResult>, IValidationResult
     {
-        private ValidationLevel _level;
+        private ValidationLevel _level = ValidationLevel.Message;
         private object _context;
 
         public ValidationLevel Level

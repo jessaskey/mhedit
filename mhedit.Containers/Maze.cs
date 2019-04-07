@@ -10,6 +10,7 @@ using mhedit.Containers.MazeEnemies;
 using System.Xml.Serialization;
 using mhedit.Containers.MazeEnemies.IonCannon;
 using mhedit.Containers.Validation;
+using mhedit.Containers.Validation.MajorHavoc;
 
 namespace mhedit.Containers
 {
@@ -116,9 +117,10 @@ namespace mhedit.Containers
 
         #region Public Properties
 
-        [Validation( typeof( CollectionContentValidator<Reactoid,MazeObject> ),
-            Message = "Every Maze requires a single reactor. {0} were found.",
-            Options = "Count=1")]
+        [Validation( typeof( CollectionContentRule<Reactoid> ),
+            Message = "Every Maze requires a single Reactoid. {1} were found.",
+            Options = "Expected=1")]
+        [Validation( typeof( ElementsRule ) )]
         [BrowsableAttribute(false)]
         public ExtendedObservableCollection<MazeObject> MazeObjects
         {
@@ -210,7 +212,7 @@ namespace mhedit.Containers
             }
         }
 
-        [Validation( typeof( RegexValidator ) )]
+        [Validation( typeof( StringRegexRule ) )]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The name of the maze.")]
         public string Name
@@ -219,10 +221,8 @@ namespace mhedit.Containers
             set { this.SetField( ref this._mazeName, value ); }
         }
 
-        [Validation( typeof( RegexValidator ),
-            Message = "Maze Hint \"{0}\", contains invalid characters. Valid characters are \" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:\"",
-            Options = "Pattern=^[a-zA-Z0-9 .!-,%:]*$;" )]
-        [Validation( typeof( StringValidator ),
+        [Validation( typeof( MazeHintRule ) )]
+        [Validation( typeof( StringExistsRule ),
             Level = ValidationLevel.Warning,
             Message = "Maze Hint is null or empty." )]
         [BrowsableAttribute(true)]
@@ -233,12 +233,10 @@ namespace mhedit.Containers
             set { this.SetField( ref this._mazeHint, value ); }
         }
 
-        [Validation( typeof( RegexValidator ),
-            Message = "Maze Hint2 \"{0}\", contains invalid characters. Valid characters are \" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:\"",
-            Options = "Pattern=^[a-zA-Z0-9 .!-,%:]*$;" )]
-        [Validation( typeof( StringValidator ),
+        [Validation( typeof( MazeHintRule ) )]
+        [Validation( typeof( StringExistsRule ),
             Level = ValidationLevel.Warning,
-            Message = "Maze Hint2 is null or empty." )]
+            Message = "Maze Hint 2 is null or empty." )]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The second line of text shown at the top of the screen when entering the maze. Valid characters are ' 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:'")]
         public string Hint2

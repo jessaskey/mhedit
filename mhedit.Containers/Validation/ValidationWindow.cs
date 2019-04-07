@@ -79,7 +79,7 @@ namespace mhedit.Containers.Validation
 
         private void AddResult( IValidationResult result )
         {
-            if ( result is ICollection<IValidationResult> collection )
+            if ( result is IEnumerable<IValidationResult> collection )
             {
                 foreach ( IValidationResult current in collection )
                 {

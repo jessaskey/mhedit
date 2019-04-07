@@ -127,7 +127,10 @@
     <Compile Include="TypeConverters\SimpleVelocityTypeConverter.cs" />
     <Compile Include="TypeConverters\TripPadPyroidTypeConverter.cs" />
     <Compile Include="TypeConverters\VectorPositionTypeConverter.cs" />
-    <Compile Include="Validation\StringValidator.cs" />
+    <Compile Include="Validation\ElementsRule.cs" />
+    <Compile Include="Validation\MajorHavoc\MazeHintRule.cs" />
+    <Compile Include="Validation\StringExistsRule.cs" />
+    <Compile Include="Validation\ValidationData.cs" />
     <Compile Include="Validation\ValidationWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -135,11 +138,11 @@
       <DependentUpon>ValidationWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="VersionInformation.cs" />
-    <Compile Include="Validation\CollectionContentValidator.cs" />
-    <Compile Include="Validation\CollectionSizeValidator.cs" />
+    <Compile Include="Validation\CollectionContentRule.cs" />
+    <Compile Include="Validation\CollectionSizeRule.cs" />
     <Compile Include="Validation\IValidationResult.cs" />
     <Compile Include="Validation\IValidationRule.cs" />
-    <Compile Include="Validation\RegexValidator.cs" />
+    <Compile Include="Validation\StringRegexRule.cs" />
     <Compile Include="Validation\ValidationAttribute.cs" />
     <Compile Include="Validation\ValidationExtensions.cs" />
     <Compile Include="Validation\ValidationLevel.cs" />
