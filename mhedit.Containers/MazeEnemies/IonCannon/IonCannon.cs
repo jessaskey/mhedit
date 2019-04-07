@@ -13,7 +13,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     public class IonCannon : MazeObject
     {
         private static readonly Point _snapSize = new Point( 1, 1 );
-
+        private bool _isShotTransportable;
         private IonCannonProgram _program;
 
         public IonCannon()
@@ -78,6 +78,16 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
                 ( (INotifyPropertyChanged)this._program ).PropertyChanged +=
                     this.ForwardPropertyChanged;
+            }
+        }
+
+        [DescriptionAttribute("Defines if the object needs to be checked for Transporter collisions. If this object must transport, then set to True, otherwise leave at False.")]
+        public bool IsShotTransportable
+        {
+            get { return _isShotTransportable; }
+            set
+            {
+                this.SetField(ref this._isShotTransportable, value);
             }
         }
 

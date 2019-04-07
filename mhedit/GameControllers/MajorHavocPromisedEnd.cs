@@ -415,44 +415,6 @@ namespace mhedit.GameControllers
                     maze.AddObject(boots);
                 }
 
-                //transporters
-                ushort transporterBaseAddress = ReadWord(_exports["mtran"], i * 2, 6);
-                byte colorValue = ReadByte(transporterBaseAddress, 0, 6);
-                while (colorValue != 0x00)
-                {
-                    transporterBaseAddress++;
-                    Transporter transporter = new Transporter();
-                    transporter.LoadPosition(ReadByte(transporterBaseAddress, 0, 6));
-                    transporter.Direction = TransporterDirection.Left;
-                    if ((colorValue & 0x10) > 0)
-                    {
-                        transporter.Direction = TransporterDirection.Right;
-                    }
-                    transporter.Color = (ObjectColor)(colorValue & 0x0F);
-                    transporter.IsBroken = ((colorValue & 0x40) > 0);
-                    transporter.IsHidden = ((colorValue & 0x80) > 0);
-                    maze.AddObject(transporter);
-                    transporterBaseAddress++;
-                    colorValue = ReadByte(transporterBaseAddress, 0, 6);
-                }
-                transporterBaseAddress++;
-                //transportability rules follow for the entire level...
-                int transportabilityValue = ReadByte(transporterBaseAddress, 0, 6);
-                List<bool> transportabilityData = new List<bool>();
-                while (transportabilityValue != 0xEE)
-                {
-                    for(int b = 0; b < 8; b++)
-                    {
-                        transportabilityValue = transportabilityValue << 1;
-                        transportabilityData.Add((transportabilityValue & 0x100) != 0);
-                    }
-                    transporterBaseAddress++;
-                    transportabilityValue = ReadByte(transporterBaseAddress, 0, 6);
-                }
-                if (transportabilityData.Count > 0)
-                {
-                    maze.TransportabilityFlags = transportabilityData;
-                }
 
                 //Laser Cannon
                 for (int c = 0; c < 4; c++)
@@ -516,6 +478,105 @@ namespace mhedit.GameControllers
                             commandStartByte = commandStartByte = ReadByte(cannonPointerAddress, cannonCommandOffset, 6);
                         }
                         maze.AddObject(cannon);
+                    }
+                }
+
+                //transporters - this has to be de-serialized after Pyroids, Perkoids and Ion Cannons 
+                //               due to the transportability bits
+                ushort transporterBaseAddress = ReadWord(_exports["mtran"], i * 2, 6);
+                byte colorValue = ReadByte(transporterBaseAddress, 0, 6);
+                while (colorValue != 0x00)
+                {
+                    transporterBaseAddress++;
+                    Transporter transporter = new Transporter();
+                    transporter.LoadPosition(ReadByte(transporterBaseAddress, 0, 6));
+                    transporter.Direction = TransporterDirection.Left;
+                    if ((colorValue & 0x10) > 0)
+                    {
+                        transporter.Direction = TransporterDirection.Right;
+                    }
+                    transporter.Color = (ObjectColor)(colorValue & 0x0F);
+                    transporter.IsBroken = ((colorValue & 0x40) > 0);
+                    transporter.IsHidden = ((colorValue & 0x80) > 0);
+                    maze.AddObject(transporter);
+                    transporterBaseAddress++;
+                    colorValue = ReadByte(transporterBaseAddress, 0, 6);
+                }
+                transporterBaseAddress++;
+
+                //transportability rules follow for the entire level...
+                int transportabilityValue = ReadByte(transporterBaseAddress, 0, 6);
+                List<bool> transportabilityData = new List<bool>();
+                while (transportabilityValue != 0xEE)
+                {
+                    for(int b = 0; b < 8; b++)
+                    {
+                        //transportabilityValue = transportabilityValue << 1;
+                        transportabilityData.Add(((transportabilityValue >> b) & 0x1) != 0);
+                    }
+                    transporterBaseAddress++;
+                    transportabilityValue = ReadByte(transporterBaseAddress, 0, 6);
+                }
+                if (transportabilityData.Where(f => f).Count() > 0)
+                {
+                    //now set transportability flags on objects based upon the bit indexes
+                    //0x02-0x11 -> Pyroid/Fireball
+                    for (int t = 2; t <= 0x11; t++)
+                    {
+                        if (t < transportabilityData.Count && transportabilityData[t])
+                        {
+                            //set this pyroid (if it exists)
+                            int pyroidIndex = t - 2;
+                            var pyroids = maze.MazeObjects.OfType<Pyroid>().ToList();
+                            if (pyroidIndex < pyroids.Count())
+                            {
+                                pyroids[pyroidIndex].IsTransportable = true;
+                            }
+                        }
+                    }
+                    //0x12-0x19 -> Laser Cannon Shots - All or none on these
+                    bool ionCannonShotsTransportable = false;
+                    for (int t = 0x12; t <= 0x19; t++)
+                    {
+                        if (t < transportabilityData.Count && transportabilityData[t])
+                        {
+                            ionCannonShotsTransportable = true;
+                        }
+                    }
+                    if (ionCannonShotsTransportable)
+                    {
+                        foreach (IonCannon cannon in maze.MazeObjects.OfType<IonCannon>())
+                        {
+                            cannon.IsShotTransportable = true;
+                        }
+                    }
+                    //0x1e - 0x27 -> Perkoids
+                    for (int t = 0x1e; t <= 0x27; t++)
+                    {
+                        if (t < transportabilityData.Count && transportabilityData[t])
+                        {
+                            //set this perkoid (if it exists)
+                            int perkoidIndex = t - 0x1e;
+                            var perkoids = maze.MazeObjects.OfType<Perkoid>().ToList();
+                            if (perkoidIndex < perkoids.Count())
+                            {
+                                perkoids[perkoidIndex].IsTransportable = true;
+                            }
+                        }
+                    }
+                    //0x28-0x31 -> Perkoid Shots
+                    for (int t = 0x28; t <= 0x31; t++)
+                    {
+                        if (t < transportabilityData.Count && transportabilityData[t])
+                        {
+                            //set this perkoid (if it exists)
+                            int perkoidIndex = t - 0x28;
+                            var perkoids = maze.MazeObjects.OfType<Perkoid>().ToList();
+                            if (perkoidIndex < perkoids.Count())
+                            {
+                                perkoids[perkoidIndex].IsShotTransportable = true;
+                            }
+                        }
                     }
                 }
 
@@ -1507,7 +1568,7 @@ namespace mhedit.GameControllers
                             {
                                 encodings.Add(0xfe, "No Robots");
                             }
-                            encodings.Add(0xfe,"End Robots");
+                            encodings.Add(0xfe, "End Robots");
                             foreach (Maxoid max in maze.MazeObjects.OfType<Maxoid>())
                             {
                                 encodings.Add(max.ToBytes(), "M" + counter++.ToString());
@@ -1537,7 +1598,7 @@ namespace mhedit.GameControllers
                             encodings.Add(0xff);
                             foreach (LightningV lightningV in maze.MazeObjects.OfType<LightningV>())
                             {
-                                encodings.Add(lightningV.ToBytes(),"Lightning-Vertical");
+                                encodings.Add(lightningV.ToBytes(), "Lightning-Vertical");
                             }
                         }
                     }
@@ -1546,14 +1607,14 @@ namespace mhedit.GameControllers
                 case EncodingGroup.Arrows:
                     foreach (Arrow arrow in maze.MazeObjects.OfType<Arrow>())
                     {
-                        encodings.Add(arrow.ToBytes(),"Arrows");
+                        encodings.Add(arrow.ToBytes(), "Arrows");
                     }
                     encodings.Add(0x00);
                     break;
                 case EncodingGroup.ArrowsOut:
                     foreach (ArrowOut arrow in maze.MazeObjects.OfType<ArrowOut>())
                     {
-                        encodings.Add(arrow.ToBytes(),"Out Arrows");
+                        encodings.Add(arrow.ToBytes(), "Out Arrows");
                     }
                     encodings.Add(0x00);
                     break;
@@ -1561,7 +1622,7 @@ namespace mhedit.GameControllers
                     //Trip Point data
                     foreach (TripPad trip in maze.MazeObjects.OfType<TripPad>())
                     {
-                        encodings.Add(trip.ToBytes(),"Trip Pads");
+                        encodings.Add(trip.ToBytes(), "Trip Pads");
                     }
                     encodings.Add(0x00);
                     break;
@@ -1569,7 +1630,7 @@ namespace mhedit.GameControllers
                     //Trip Action Data
                     foreach (TripPad trip in maze.MazeObjects.OfType<TripPad>())
                     {
-                        encodings.Add(trip.Pyroid.ToBytes(),"Trip Pad Actions");
+                        encodings.Add(trip.Pyroid.ToBytes(), "Trip Pad Actions");
                     }
                     encodings.Add(new byte[] { 0x00, 0x00, 0x00 });
                     break;
@@ -1577,7 +1638,7 @@ namespace mhedit.GameControllers
                     //Wall data, all walls in maze
                     foreach (MazeWall wall in maze.MazeObjects.OfType<MazeWall>().Where(w => !w.IsDynamicWall))
                     {
-                        encodings.Add(wall.ToBytes(maze),"Static Walls");
+                        encodings.Add(wall.ToBytes(maze), "Static Walls");
                     }
                     encodings.Add(0x00);
                     break;
@@ -1585,7 +1646,7 @@ namespace mhedit.GameControllers
                     //wall data, only dynamic walls
                     foreach (MazeWall wall in maze.MazeObjects.OfType<MazeWall>().Where(w => w.IsDynamicWall))
                     {
-                        encodings.Add(wall.ToBytes(maze),"Dynamic Walls");
+                        encodings.Add(wall.ToBytes(maze), "Dynamic Walls");
                     }
                     encodings.Add(0x00);
                     break;
@@ -1605,7 +1666,7 @@ namespace mhedit.GameControllers
                     encodings.Add(0x00);
                     break;
                 case EncodingGroup.IonCannon:
-                    for(int i = 0; i < maze.MazeObjects.OfType<IonCannon>().Count(); i++)
+                    for (int i = 0; i < maze.MazeObjects.OfType<IonCannon>().Count(); i++)
                     {
                         IonCannon cannon = maze.MazeObjects.OfType<IonCannon>().ToArray()[i];
                         //Position first
@@ -1613,7 +1674,7 @@ namespace mhedit.GameControllers
                         encodings.Add(positionBytes, "Position", cannon.Id.ToString(), ".dw $" + BytesToWord(positionBytes[0], positionBytes[1]).ToString("X4") + ",$" + BytesToWord(positionBytes[2], positionBytes[3]).ToString("X4"));
                         foreach (IonCannonInstruction instruction in cannon.Program)
                         {
-                            Tuple<string,string> commentMacro = GetCannonCommentMacro(instruction);
+                            Tuple<string, string> commentMacro = GetCannonCommentMacro(instruction);
                             List<byte> instructionBytes = new List<byte>();
                             instruction.GetObjectData(instructionBytes);
                             encodings.Add(instructionBytes.ToArray(), commentMacro.Item1, cannon.Id.ToString(), commentMacro.Item2);
@@ -1653,31 +1714,69 @@ namespace mhedit.GameControllers
                     //write end of transports
                     encodings.Add(0x00);
                     //write transportability data
-                    if (maze.TransportabilityFlags.Count > 0)
+                    if (maze.MazeObjects.OfType<Pyroid>().Where(p => p.IsTransportable).Count() > 0
+                        || maze.MazeObjects.OfType<IonCannon>().Where(c => c.IsShotTransportable).Count() > 0
+                        || maze.MazeObjects.OfType<Perkoid>().Where(p => p.IsTransportable || p.IsShotTransportable).Count() > 0)
                     {
-                        int flagCount = 0;
-                        int flagValue = 0;
-                        for (int f = 0; f < maze.TransportabilityFlags.Count; f++)
+                        ulong bitValues = 0;
+                        //something needs to be serialized, do Pyroids first
+                        List<Pyroid> pyroids = maze.MazeObjects.OfType<Pyroid>().ToList();
+                        for( int p = 0; p < pyroids.Count; p++)
                         {
-                            flagValue = flagValue << 1;
-                            if (f < maze.TransportabilityFlags.Count)
-                            {
-                                if (maze.TransportabilityFlags[f])
-                                {
-                                    flagValue += 1;
-                                }
-                            }
-
-                            flagCount++;
-                            if (flagCount > 7)
-                            {
-                                encodings.Add((byte)flagValue, "Transportability Flags");
-                                flagCount = 0;
-                                flagValue = 0;
-                            }
+                            bitValues |= ((pyroids[p].IsTransportable ? (ulong)1 : 0) << (p + 0x02));
                         }
+                        //Ion Cannon Shots
+                        List<IonCannon> cannons = maze.MazeObjects.OfType<IonCannon>().ToList();
+                        for (int p = 0; p < cannons.Count; p++)
+                        {
+                            bitValues |= ((cannons[p].IsShotTransportable ? (ulong)1 : 0) << (p + 0x12));
+                        }
+                        //Perkoids
+                        List<Perkoid> perkoids = maze.MazeObjects.OfType<Perkoid>().ToList();
+                        for (int p = 0; p < perkoids.Count; p++)
+                        {
+                            bitValues |= ((perkoids[p].IsTransportable ? (ulong)1 : 0) << (p + 0x1e));
+                            bitValues |= ((perkoids[p].IsShotTransportable ? (ulong)1 : 0) << (p + 0x28));
+                        }
+                        //Bits are defined, now convert into bytes...
+                        List<byte> transportabilityBytes = new List<byte>();
+                        for(int i = 0; i < 7; i++)
+                        {
+                            if (bitValues == 0)
+                            {
+                                break;
+                            }
+                            byte tb = (byte)((bitValues & ((ulong)0x0000000FF)));
+                            transportabilityBytes.Add(tb);
+                            bitValues = bitValues >> 8;
+                        }
+                        encodings.Add(transportabilityBytes.ToArray(), "Transportability Flags");
                     }
-                    encodings.Add(0xee);
+                    encodings.Add(0xee, "Transportability Flags");
+                    //{
+                    //    int flagCount = 0;
+                    //    int flagValue = 0;
+                    //    for (int f = 0; f < maze.TransportabilityFlags.Count; f++)
+                    //    {
+                    //        flagValue = flagValue << 1;
+                    //        if (f < maze.TransportabilityFlags.Count)
+                    //        {
+                    //            if (maze.TransportabilityFlags[f])
+                    //            {
+                    //                flagValue += 1;
+                    //            }
+                    //        }
+
+                    //        flagCount++;
+                    //        if (flagCount > 7)
+                    //        {
+                    //            encodings.Add((byte)flagValue, "Transportability Flags");
+                    //            flagCount = 0;
+                    //            flagValue = 0;
+                    //        }
+                    //    }
+                    //}
+                    //encodings.Add(0xee);
                     break;
                 case EncodingGroup.Hand:
                     Hand hand = maze.MazeObjects.OfType<Hand>().FirstOrDefault();

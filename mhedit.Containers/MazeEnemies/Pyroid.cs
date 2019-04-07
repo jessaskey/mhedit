@@ -18,6 +18,7 @@ namespace mhedit.Containers.MazeEnemies
 
         private SignedVelocity _velocity;
         private SignedVelocity _incrementingVelocity;
+        private bool _isTransportable;
 
         public Pyroid()
             : base(Constants.MAXOBJECTS_PYROID,
@@ -26,7 +27,6 @@ namespace mhedit.Containers.MazeEnemies
                     new Point( 8, 8 ) )
         {
             this.Velocity = new SignedVelocity();
-
             this.IncrementingVelocity = new SignedVelocity();
         }
 
@@ -64,6 +64,16 @@ namespace mhedit.Containers.MazeEnemies
                 this.SetField( ref this._incrementingVelocity, value );
 
                 this._incrementingVelocity.PropertyChanged += this.ForwardPropertyChanged;
+            }
+        }
+
+        [DescriptionAttribute("Defines if the object needs to be checked for Transporter collisions. If this object must transport, then set to True, otherwise leave at False.")]
+        public bool IsTransportable
+        {
+            get { return _isTransportable; }
+            set
+            {
+                this.SetField(ref this._isTransportable, value);
             }
         }
 

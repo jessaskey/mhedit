@@ -238,14 +238,6 @@ namespace mhedit.Containers
             set { this.SetField( ref this._mazeDescription, value ); }
         }
 
-        [BrowsableAttribute(true)]
-        [DescriptionAttribute("The bitflags defining which objects are able to be transported.")]
-        public List<bool> TransportabilityFlags
-        {
-            get { return _transportabilityFlags; }
-            set { _transportabilityFlags = value; }
-        }
-
         [DescriptionAttribute("The structure type of the maze.")]
         public MazeType MazeType
         {
