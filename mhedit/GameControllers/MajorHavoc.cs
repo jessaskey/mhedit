@@ -414,22 +414,22 @@ namespace mhedit.GameControllers
                 }
                 transporterBaseAddress++;
                 //transportability rules follow for the entire level...
-                int transportabilityValue = ReadByte(transporterBaseAddress, 0);
-                List<bool> transportabilityData = new List<bool>();
-                while (transportabilityValue != 0xEE)
-                {
-                    for (int b = 0; b < 8; b++)
-                    {
-                        transportabilityValue = transportabilityValue << 1;
-                        transportabilityData.Add((transportabilityValue & 0x100) != 0);
-                    }
-                    transporterBaseAddress++;
-                    transportabilityValue = ReadByte(transporterBaseAddress, 0);
-                }
-                if (transportabilityData.Count > 0)
-                {
-                    maze.TransportabilityFlags = transportabilityData;
-                }
+                //int transportabilityValue = ReadByte(transporterBaseAddress, 0);
+                //List<bool> transportabilityData = new List<bool>();
+                //while (transportabilityValue != 0xEE)
+                //{
+                //    for (int b = 0; b < 8; b++)
+                //    {
+                //        transportabilityValue = transportabilityValue << 1;
+                //        transportabilityData.Add((transportabilityValue & 0x100) != 0);
+                //    }
+                //    transporterBaseAddress++;
+                //    transportabilityValue = ReadByte(transporterBaseAddress, 0);
+                //}
+                //if (transportabilityData.Count > 0)
+                //{
+                //    maze.TransportabilityFlags = transportabilityData;
+                //}
              
                 //Laser IonCannon
                 // Ok, So looking at why the cannons are shifted down on level 16.

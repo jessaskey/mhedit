@@ -59,6 +59,7 @@
     <Compile Include="DataConverter.cs" />
     <Compile Include="EditInfo.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="ExceptionSummary.cs" />
     <Compile Include="ExtendedObservableCollection.cs" />
     <Compile Include="IFileInformation.cs" />
     <Compile Include="Maze.cs" />
@@ -140,12 +141,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Silver.UI.ToolBox\Silver.UI.ToolBox.csproj">
-      <Project>{d937e1f4-1b9f-4567-b28e-eed24aa31c9c}</Project>
-      <Name>Silver.UI.ToolBox</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\Objects\arrow_angle_obj.png" />
