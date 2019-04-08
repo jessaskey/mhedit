@@ -1726,10 +1726,14 @@ namespace mhedit.GameControllers
                             bitValues |= ((pyroids[p].IsTransportable ? (ulong)1 : 0) << (p + 0x02));
                         }
                         //Ion Cannon Shots
-                        List<IonCannon> cannons = maze.MazeObjects.OfType<IonCannon>().ToList();
-                        for (int p = 0; p < cannons.Count; p++)
+                        List<IonCannon> cannons = maze.MazeObjects.OfType<IonCannon>().Where(c => c.IsShotTransportable).ToList();
+                        //Ion Cannon shots are all or none
+                        if (cannons.Count > 0)
                         {
-                            bitValues |= ((cannons[p].IsShotTransportable ? (ulong)1 : 0) << (p + 0x12));
+                            for (int i = 0; i < 8; i++)
+                            {
+                                bitValues |= ((cannons[p].IsShotTransportable ? (ulong)1 : 0) << (p + 0x12));
+                            }
                         }
                         //Perkoids
                         List<Perkoid> perkoids = maze.MazeObjects.OfType<Perkoid>().ToList();
