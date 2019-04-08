@@ -1730,9 +1730,9 @@ namespace mhedit.GameControllers
                         //Ion Cannon shots are all or none
                         if (cannons.Count > 0)
                         {
-                            for (int i = 0; i < 8; i++)
+                            for (int i = 0x12; i <= 0x19; i++)
                             {
-                                bitValues |= ((cannons[p].IsShotTransportable ? (ulong)1 : 0) << (p + 0x12));
+                                bitValues |=(((ulong)1) << (i));
                             }
                         }
                         //Perkoids
