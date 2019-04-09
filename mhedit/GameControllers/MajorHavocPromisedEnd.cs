@@ -1473,12 +1473,12 @@ namespace mhedit.GameControllers
             //*******************
             // Quality Checking
             //*******************
-            if (currentAddressPage6 >= 0x2000)
+            if (currentAddressPage6 >= 0x4000)
             {
                 //this is bad
                 return false;
             }
-            if (currentAddressPage7 >= 0x2000 )
+            if (currentAddressPage7 >= 0x4000 )
             {
                 //this is bad, it means we have overflowed our Paged ROM end boundary
                 return false;
