@@ -17,24 +17,22 @@ namespace mhedit.GameControllers
         #region Private Variables
 
         private Dictionary<string, ushort> _exports = new Dictionary<string, ushort>();
-        private string _templatePath = String.Empty;
+        private string _sourceRomPath = String.Empty;
         private byte[] _alphaHigh = new byte[0x4000];
         private byte[] _alphaLow = new byte[0x4000];
         private byte[] _page01 = new byte[0x4000];
         private string _alphaHighROM = "136025.217";
         private string _alphaLowROM = "136025.216";
         private string _page01ROM = "136025.215";
-        private string _lastError = null;
+        private string _lastError = String.Empty;
         private bool _isReturnToVaxx = false;
 
         #endregion
 
-        public MajorHavoc(string templatePath, bool isReturnToVaxx)
+        public MajorHavoc(bool isReturnToVaxx)
         {
-            _templatePath = templatePath;
             _isReturnToVaxx = isReturnToVaxx;
             InitializeExports();
-            LoadTemplate(templatePath);
         }
 
         public string Name
@@ -101,48 +99,58 @@ namespace mhedit.GameControllers
             }
         }
 
-        private void LoadTemplate(string templatePath)
+        public bool LoadTemplate(string sourceRomPath)
         {
-            if (_isReturnToVaxx)
-            {
-                _alphaHighROM = "136025.917";
-                _alphaLowROM = "136025.916";
-                _page01ROM = "136025.915";
-            }
-
-
-
-            //load up our roms for now...
-            string alphaHighFileName = Path.Combine(templatePath, _alphaHighROM);
-            string alphaLowFileName = Path.Combine(templatePath, _alphaLowROM);
-            string page01FileName = Path.Combine(templatePath, _page01ROM);
-
+            bool success = false;
             try
             {
-                _alphaHigh = File.ReadAllBytes(alphaHighFileName);
-            }
-            catch (Exception Exception)
-            {
-                throw new Exception("ROM Load Error - Alpha High: " + Exception.Message);
-            }
+                _sourceRomPath = sourceRomPath;
 
-            try
-            {
-                _alphaLow = File.ReadAllBytes(alphaLowFileName);
-            }
-            catch (Exception Exception)
-            {
-                throw new Exception("ROM Load Error - Alpha Low: " + Exception.Message);
-            }
+                if (_isReturnToVaxx)
+                {
+                    _alphaHighROM = "136025.917";
+                    _alphaLowROM = "136025.916";
+                    _page01ROM = "136025.915";
+                }
 
-            try
-            {
-                _page01 = File.ReadAllBytes(page01FileName);
+                //load up our roms for now...
+                string alphaHighFileName = Path.Combine(sourceRomPath, _alphaHighROM);
+                string alphaLowFileName = Path.Combine(sourceRomPath, _alphaLowROM);
+                string page01FileName = Path.Combine(sourceRomPath, _page01ROM);
+
+                try
+                {
+                    _alphaHigh = File.ReadAllBytes(alphaHighFileName);
+                }
+                catch (Exception Exception)
+                {
+                    throw new Exception("ROM Load Error - Alpha High: " + Exception.Message);
+                }
+
+                try
+                {
+                    _alphaLow = File.ReadAllBytes(alphaLowFileName);
+                }
+                catch (Exception Exception)
+                {
+                    throw new Exception("ROM Load Error - Alpha Low: " + Exception.Message);
+                }
+
+                try
+                {
+                    _page01 = File.ReadAllBytes(page01FileName);
+                }
+                catch (Exception Exception)
+                {
+                    throw new Exception("ROM Load Error - Page0/1: " + Exception.Message);
+                }
+                success = true;
             }
-            catch (Exception Exception)
+            catch (Exception ex)
             {
-                throw new Exception("ROM Load Error - Page0/1: " + Exception.Message);
+                _lastError = ex.Message;
             }
+            return success;
         }
 
         private int FixTopLimit(int level)
@@ -976,7 +984,7 @@ namespace mhedit.GameControllers
 
             foreach (string rom in otherROMs)
             {
-                File.Copy(_templatePath + rom, mamePath + rom, true);
+                File.Copy(_sourceRomPath + rom, mamePath + rom, true);
             }
 
             return true;

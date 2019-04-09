@@ -38,19 +38,21 @@ namespace mhedit
         {
             try
             {
-
                 IGameController controller = null;
 
                 switch (comboBoxGameDriver.SelectedIndex)
                 {
                     case 0:
-                        controller = new MajorHavocPromisedEnd(textBoxROMPath.Text);
+                        //Major Havoc - The Promised End
+                        controller = new MajorHavocPromisedEnd();
                         break;
                     case 1:
-                        controller = new MajorHavoc(textBoxROMPath.Text, false);
+                        //Major Havoc v3
+                        controller = new MajorHavoc(false);
                         break;
                     case 2:
-                        controller = new MajorHavoc(textBoxROMPath.Text, true);
+                        //Return to Vaxx
+                        controller = new MajorHavoc(true);
                         break;
                 }
 
@@ -60,33 +62,40 @@ namespace mhedit
                     return;
                 }
 
-                Cursor.Current = Cursors.WaitCursor;
-                Application.DoEvents();
-
-                List<string> loadMessages = new List<string>();
-                _mazeCollection = controller.LoadMazes(loadMessages);
-
-                /// Change the Created info to show that we loaded the maze From ROMs.
-                foreach ( Maze maze in _mazeCollection.Mazes )
+                if (controller.LoadTemplate(textBoxROMPath.Text))
                 {
-                    maze.Created = new Containers.EditInfo( maze.Created.TimeStamp,
-                                   Containers.VersionInformation.ApplicationVersion )
-                                   {
-                                       Rom = new RomInfo( controller.Name,
-                                           VersionInformation.RomVersion )
-                                   };
-                }
+                    Cursor.Current = Cursors.WaitCursor;
+                    Application.DoEvents();
 
-                _mazeCollection.AcceptChanges();
-                if (loadMessages.Count > 0)
+                    List<string> loadMessages = new List<string>();
+                    _mazeCollection = controller.LoadMazes(loadMessages);
+
+                    // Change the Created info to show that we loaded the maze From ROMs.
+                    foreach (Maze maze in _mazeCollection.Mazes)
+                    {
+                        maze.Created = new Containers.EditInfo(maze.Created.TimeStamp,
+                                       Containers.VersionInformation.ApplicationVersion)
+                        {
+                            Rom = new RomInfo(controller.Name,
+                                               VersionInformation.RomVersion)
+                        };
+                    }
+
+                    _mazeCollection.AcceptChanges();
+                    if (loadMessages.Count > 0)
+                    {
+                        DialogMessages dm = new DialogMessages();
+                        dm.SetMessages(loadMessages);
+                        dm.ShowDialog();
+                    }
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                else
                 {
-                    DialogMessages dm = new DialogMessages();
-                    dm.SetMessages(loadMessages);
-                    dm.ShowDialog();
+                    MessageBox.Show("There was an issue loading the maze objects: " + controller.LastError, "ROM Load Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    DialogResult = DialogResult.Abort;
                 }
-
-                DialogResult = DialogResult.OK;
-                Close();
             }
 #if DEBUG
 #else

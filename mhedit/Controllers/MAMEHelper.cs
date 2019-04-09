@@ -58,15 +58,23 @@ namespace mhedit.Controllers
                 if (collection.IsValid)
                 {
                     //we will always serialize to target 'The Promised End' here in this editor.
-                    IGameController controller = new MajorHavocPromisedEnd(templatePath);
-                    bool serializeSuccess = controller.EncodeObjects(collection, maze);
-                    if (serializeSuccess)
+                    IGameController controller = new MajorHavocPromisedEnd();
+                    bool loadSuccess = controller.LoadTemplate(templatePath);
+                    if (loadSuccess)
                     {
-                        success = controller.WriteFiles(mamePath);
+                        bool serializeSuccess = controller.EncodeObjects(collection, maze);
+                        if (serializeSuccess)
+                        {
+                            success = controller.WriteFiles(mamePath);
+                        }
+                        else
+                        {
+                            MessageBox.Show("There was an issue serializing the maze objects to binary: " + controller.LastError, "Serialization Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("There was an issue serializing the maze objects to binary: " + controller.LastError, "Serialization Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show("There was an issue loading the maze objects: " + controller.LastError, "ROM Load Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     }
                 }
                 else
