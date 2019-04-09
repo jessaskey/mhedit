@@ -9,7 +9,7 @@ namespace mhedit.GameControllers
 
         byte[] GetBytesFromString(string text);
 
-        Tuple<ushort, int> GetAddress(string location);
+        ushort GetAddress(string location);
 
         bool WriteFiles(string mamePath);
 

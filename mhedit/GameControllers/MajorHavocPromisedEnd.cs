@@ -750,20 +750,17 @@ namespace mhedit.GameControllers
         }
 
 
-        public Tuple<ushort, int> GetAddress(string label)
+        public ushort GetAddress(string label)
         {
-            Tuple<ushort, int> address = null;
             //search the export list for this address...
-
             if (_exports.ContainsKey(label.ToLower()))
             {
-                address = new Tuple<ushort, int>((ushort)_exports[label], 6);
+                return _exports[label];
             }
             else
             {
                 throw new Exception("Address not found: " + label.ToString());
             }
-            return address;
         }
 
         private byte[] ReadPagedROM(ushort address, int offset, int length, int page)
