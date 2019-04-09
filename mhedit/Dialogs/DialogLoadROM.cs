@@ -15,12 +15,14 @@ namespace mhedit
 
         public DialogLoadROM()
             : this( string.Empty )
-        {}
+        {
+            comboBoxGameDriver.SelectedIndex = 0;
+        }
 
         public DialogLoadROM( string templatePath )
         {
             InitializeComponent();
-
+            comboBoxGameDriver.SelectedIndex = 0;
             textBoxROMPath.Text = templatePath;
         }
 
@@ -36,11 +38,32 @@ namespace mhedit
         {
             try
             {
+
+                IGameController controller = null;
+
+                switch (comboBoxGameDriver.SelectedIndex)
+                {
+                    case 0:
+                        controller = new MajorHavocPromisedEnd(textBoxROMPath.Text);
+                        break;
+                    case 1:
+                        controller = new MajorHavoc(textBoxROMPath.Text, false);
+                        break;
+                    case 2:
+                        controller = new MajorHavoc(textBoxROMPath.Text, true);
+                        break;
+                }
+
+                if (controller == null)
+                {
+                    MessageBox.Show("The selected Game Driver is unknown.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+
                 Cursor.Current = Cursors.WaitCursor;
                 Application.DoEvents();
 
                 List<string> loadMessages = new List<string>();
-                IGameController controller = new MajorHavocPromisedEnd(textBoxROMPath.Text);
                 _mazeCollection = controller.LoadMazes(loadMessages);
 
                 /// Change the Created info to show that we loaded the maze From ROMs.
