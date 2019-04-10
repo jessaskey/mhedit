@@ -17,23 +17,20 @@ namespace mhedit.GameControllers
 
         #region Private Variables
 
-        private string _templatePath = String.Empty;
+        private string _sourceRomPath = String.Empty;
         //private string _mamePath = String.Empty;
         private byte[] _page2367 = new byte[0x8000];
         private byte[] _alphaHigh = new byte[0x4000];
         private Dictionary<string, ushort> _exports = new Dictionary<string, ushort>();
         private string _page2367ROM = "mhpe.1np";
         private string _alphaHighROM = "mhpe.1l";
-
-        private string _lastError = "";
+        private string _lastError = String.Empty;
 
         #endregion
 
 
-        public MajorHavocPromisedEnd(string templatePath)
+        public MajorHavocPromisedEnd()
         {
-            _templatePath = templatePath;
-            LoadTemplate(_templatePath);
         }
 
         public string Name
@@ -53,51 +50,60 @@ namespace mhedit.GameControllers
             return new Version(versionBytes[0], versionBytes[1],0,0);
         }
 
-        private void LoadTemplate(string templatePath)
+        public bool LoadTemplate(string sourceRomPath)
         {
-            //load up our roms for now...
+            bool success = false;
             try
             {
-                _page2367 = File.ReadAllBytes(Path.Combine(templatePath,_page2367ROM));
-                _alphaHigh = File.ReadAllBytes(Path.Combine(templatePath,_alphaHighROM));
-            }
-            catch (Exception Exception)
-            {
-                throw new Exception("ROM Load Error - Page6/7: " + Exception.Message);
-            }
-
-            Version romVersion = GetROMVersion(); 
-            if (romVersion.Major >= 0)
-            {
-                if (romVersion.Minor >= 0x22)
+                _sourceRomPath = sourceRomPath;
+                //load up our roms for now...
+                try
                 {
-                    //load our exports
-                    string exportFile = Path.Combine(templatePath, "mhavocpe.exp");
-                    if (File.Exists(exportFile))
+                    _page2367 = File.ReadAllBytes(Path.Combine(sourceRomPath, _page2367ROM));
+                    _alphaHigh = File.ReadAllBytes(Path.Combine(sourceRomPath, _alphaHighROM));
+                }
+                catch (Exception Exception)
+                {
+                    throw new Exception("ROM Load Error - Page6/7: " + Exception.Message);
+                }
+
+                Version romVersion = GetROMVersion();
+                if (romVersion.Major >= 0)
+                {
+                    if (romVersion.Minor >= 0x22)
                     {
-                        string[] exportLines = File.ReadAllLines(exportFile);
-                        foreach (string exportLine in exportLines)
+                        //load our exports
+                        string exportFile = Path.Combine(sourceRomPath, "mhavocpe.exp");
+                        if (File.Exists(exportFile))
                         {
-                            string[] def = exportLine.Replace(" ", "").Replace("\t", "").Replace(".EQU", "|").Split('|');
-                            if (def.Length == 2)
+                            string[] exportLines = File.ReadAllLines(exportFile);
+                            foreach (string exportLine in exportLines)
                             {
-                                int value = int.Parse(def[1].Replace("$", ""), System.Globalization.NumberStyles.HexNumber);
-                                _exports.Add(def[0], (ushort)value);
+                                string[] def = exportLine.Replace(" ", "").Replace("\t", "").Replace(".EQU", "|").Split('|');
+                                if (def.Length == 2)
+                                {
+                                    int value = int.Parse(def[1].Replace("$", ""), System.Globalization.NumberStyles.HexNumber);
+                                    _exports.Add(def[0], (ushort)value);
+                                }
                             }
                         }
                     }
+                    else
+                    {
+                        throw new Exception("ROM Version has to be 0.22 or higher.");
+                    }
                 }
-                else
-                {
-                    throw new Exception("ROM Version has to be 0.22 or higher.");
-                }
+                success = true;
             }
-
+            catch (Exception ex)
+            {
+                _lastError = ex.Message;
+            }
+            return success;
         }
 
         public MazeCollection LoadMazes(List<string> loadMessages)
         {
-
             MazeCollection mazeCollection = new MazeCollection("Promised End Mazes");
             mazeCollection.AuthorEmail = "Jess@maynard.vax";
             mazeCollection.AuthorName = "Jess Askey";
@@ -898,7 +904,7 @@ namespace mhedit.GameControllers
 
             foreach (string rom in otherROMs)
             {
-                File.Copy(_templatePath + rom, mamePath + rom, true);
+                File.Copy(_sourceRomPath + rom, mamePath + rom, true);
             }
             return true;
         }

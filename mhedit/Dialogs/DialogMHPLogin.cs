@@ -149,6 +149,7 @@ namespace mhedit
                             {
                                 Cursor.Current = Cursors.Default;
                                 MessageBox.Show("There was a problem uploading the maze info, check your internet connection or try again later.", "Upload Issue", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                Program.SendException("Maze Upload Error", ex);
                             }
                             Cursor.Current = Cursors.Default;
                         }
@@ -162,6 +163,7 @@ namespace mhedit
                     {
                         Cursor.Current = Cursors.Default;
                         MessageBox.Show("There was an error communicating to the website, please check your internet connection.", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.SendException("Login Error", ex);
                     }
 
                     Cursor.Current = Cursors.Default;

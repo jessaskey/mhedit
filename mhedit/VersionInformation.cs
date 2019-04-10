@@ -30,10 +30,13 @@ namespace mhedit
 
                 if ( version == null )
                 {
-                    string fullTemplatePath =
-                        Path.GetFullPath( Properties.Settings.Default.TemplatesLocation );
+                    string fullTemplatePath = Path.GetFullPath( Properties.Settings.Default.TemplatesLocation );
 
-                    _romVersion = new MajorHavocPromisedEnd( fullTemplatePath ).GetROMVersion();
+                    MajorHavocPromisedEnd controller = new MajorHavocPromisedEnd();
+                    if (controller.LoadTemplate(fullTemplatePath))
+                    {
+                        _romVersion = controller.GetROMVersion();
+                    }
 
                     return _romVersion;
                 }

@@ -7,6 +7,8 @@ namespace mhedit.GameControllers
     public interface IGameController : IName
     {
 
+        bool LoadTemplate(string sourceRomPath);
+
         byte[] GetBytesFromString(string text);
 
         ushort GetAddress(string location);
