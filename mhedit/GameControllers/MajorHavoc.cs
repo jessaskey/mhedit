@@ -26,12 +26,17 @@ namespace mhedit.GameControllers
         private string _page01ROM = "136025.215";
         private string _lastError = String.Empty;
         private bool _isReturnToVaxx = false;
+        private int _numberOfLevels = 20;
 
         #endregion
 
         public MajorHavoc(bool isReturnToVaxx)
         {
             _isReturnToVaxx = isReturnToVaxx;
+            if (_isReturnToVaxx)
+            {
+                _numberOfLevels = 24;
+            }
             InitializeExports();
         }
 
@@ -172,7 +177,7 @@ namespace mhedit.GameControllers
             mazeCollection.AuthorEmail = "owen@maynard.vax";
             mazeCollection.AuthorName = "Owen Rubin";
 
-            for ( int i = 0; i < 20; i++)
+            for ( int i = 0; i < _numberOfLevels; i++)
             {
 
                 byte mazeType = (byte)(i & 0x03);
