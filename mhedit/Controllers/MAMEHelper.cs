@@ -3,6 +3,8 @@ using mhedit.GameControllers;
 using System.IO;
 using System.Windows.Forms;
 
+using mhedit.GameControllers;
+
 namespace mhedit.Controllers
 {
     static class MAMEHelper

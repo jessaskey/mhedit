@@ -10,9 +10,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-//using System.Runtime.Serialization.Formatters.Binary;
-using ICSharpCode.SharpZipLib.BZip2;
-using ICSharpCode.SharpZipLib.Zip;
 
 using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
@@ -20,7 +17,7 @@ using mhedit.Containers.MazeEnemies.IonCannon;
 using mhedit.Containers.MazeObjects;
 using mhedit.Controllers;
 using mhedit.GameControllers;
-using mhedit.Serialization;
+using mhedit.Extensions;
 
 namespace mhedit
 {
@@ -1084,6 +1081,12 @@ namespace mhedit
                         FileName = fileName
                     };
                 
+                if (!String.IsNullOrEmpty(SerializationExtensions.LastError))
+                {
+                    MessageBox.Show( SerializationExtensions.LastError, "Maze Load Issues", MessageBoxButtons.OK,
+                        MessageBoxIcon.Information );
+                }
+
                 mazeController.Maze.AcceptChanges();
 
                 TreeNode node = mazeController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
@@ -1131,6 +1134,12 @@ namespace mhedit
                     {
                         FileName = fileName
                     };
+
+                if (!String.IsNullOrEmpty(SerializationExtensions.LastError))
+                {
+                    MessageBox.Show(SerializationExtensions.LastError, "Maze Load Issues", MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
 
                 collectionController.MazeCollection.AcceptChanges();
 

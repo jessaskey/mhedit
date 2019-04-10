@@ -4,18 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using ICSharpCode.SharpZipLib.BZip2;
 using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
 
-namespace mhedit.Serialization
+namespace mhedit.Extensions
 {
 
     public static class SerializationExtensions
     {
+        private static string _lastError = String.Empty;
+
         private static readonly XmlSerializerNamespaces XmlNamespace =
             new XmlSerializerNamespaces( new[]
                                          {
@@ -24,6 +25,16 @@ namespace mhedit.Serialization
                                          } );
 
         /// <summary>
+        /// Contains the last error thrown in the extension.
+        /// </summary>
+        public static string LastError
+        {
+            get
+            {
+                return _lastError;
+            }
+        }
+        /// <summary>
         /// Serialize the object into the file using XML serialization.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -31,6 +42,7 @@ namespace mhedit.Serialization
         /// <param name="fileName"></param>
         public static void Serialize<T>( this T obj, string fileName )
         {
+            _lastError = String.Empty;
             using ( FileStream fileStream = new FileStream( fileName, FileMode.Create ) )
             {
                 XmlSerializer serializer = new XmlSerializer( typeof( T ) );
@@ -53,6 +65,7 @@ namespace mhedit.Serialization
         /// <param name="fileName"></param>
         public static void SerializeAndCompress<T>( this T obj, string fileName )
         {
+            _lastError = String.Empty;
             using ( FileStream fileStream = new FileStream( fileName, FileMode.Create ) )
             {
                 obj.SerializeAndCompress( fileStream );
@@ -68,6 +81,7 @@ namespace mhedit.Serialization
         /// <param name="stream"></param>
         public static void SerializeAndCompress<T>( this T obj, Stream stream )
         {
+            _lastError = String.Empty;
             using ( MemoryStream memoryStream = new MemoryStream() )
             {
                 XmlSerializer serializer = new XmlSerializer( typeof( T ) );
@@ -79,7 +93,6 @@ namespace mhedit.Serialization
                 }
 
                 memoryStream.Position = 0;
-
                 BZip2.Compress( memoryStream, stream, false, 4096 );
             }
         }
@@ -93,20 +106,18 @@ namespace mhedit.Serialization
         /// <returns></returns>
         public static T ExpandAndDeserialize<T>( this string fileName )
         {
+            _lastError = String.Empty;
             using ( FileStream fStream = new FileStream( fileName, FileMode.Open ) )
             {
                 using ( MemoryStream mStream = new MemoryStream() )
                 {
                     BZip2.Decompress( fStream, mStream, false );
-
                     mStream.Position = 0;
 
                     using ( XmlReader xmlReader = XmlReader.Create( mStream ) )
                     {
                         XmlSerializer serializer = new XmlSerializer( typeof( T ) );
-
                         serializer.UnknownElement += OnUnknownElement;
-
                         return PerformPostDeserializeHacks<T>( serializer.Deserialize( xmlReader ) );
                     }
                 }
@@ -120,14 +131,12 @@ namespace mhedit.Serialization
                 foreach ( Maze maze in collection.Mazes )
                 {
                     FixParentChildOnTripPads( maze );
-
                     FixMaxMazeObjectViolations( maze );
                 }
             }
             else if ( deserialized is Maze maze )
             {
                 FixParentChildOnTripPads( maze );
-
                 FixMaxMazeObjectViolations( maze );
             }
 
@@ -139,7 +148,7 @@ namespace mhedit.Serialization
         /// exceed the limit
         /// </summary>
         /// <param name="maze"></param>
-        private static void FixMaxMazeObjectViolations( Maze maze )
+        private static bool FixMaxMazeObjectViolations( Maze maze )
         {
             StringBuilder message = new StringBuilder();
 
@@ -175,9 +184,11 @@ namespace mhedit.Serialization
                        .Insert( 0,
                            $"There are more objects defined in the \"{maze.Name}\" Maze than are allowed. Note the following adjustments:" );
 
-                MessageBox.Show( message.ToString(), "Maze Load Issues", MessageBoxButtons.OK,
-                    MessageBoxIcon.Information );
+                _lastError = message.ToString();
+                //MessageBox.Show( message.ToString(), "Maze Load Issues", MessageBoxButtons.OK,
+                //    MessageBoxIcon.Information );
             }
+            return message.Length == 0;
         }
 
         /// <summary>

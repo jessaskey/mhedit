@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mhedit.Containers
+namespace mhedit.GameControllers
 {
     public class ObjectEncoding
     {
