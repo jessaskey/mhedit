@@ -4,15 +4,17 @@ namespace mhedit.Containers.Validation
 {
     /// <summary>
     /// Validation Rule that performs validation on each element of a collection using the
-    /// rules associated with the Type of the collection's elements. 
+    /// rules associated with the Type of the collection's elements.
+    /// 
+    /// ValidationAttribute Properties are not supported (Ignored).
+    /// 
     /// </summary>
-    public class ElementsRule : ValidationRule<IEnumerable>
+    public class ElementsRule : IValidationRule<IEnumerable>
     {
         public ElementsRule( ValidationData data )
-            : base( data )
         {}
 
-        public override IValidationResult Validate( IEnumerable enumerable )
+        public IValidationResult Validate( IEnumerable enumerable )
         {
             ValidationResults results = new ValidationResults()
                                         {

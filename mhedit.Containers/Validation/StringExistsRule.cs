@@ -3,7 +3,11 @@
     /// <summary>
     /// Simply tests a string value for IsNullOrWhiteSpace.
     ///
-    /// Doesn't support Composite format string
+    /// ValidationAttribute.Options is not supported (Ignored).
+    /// 
+    /// Composite format string:
+    ///     Subject string is Index 0
+    ///     Default Message is Index 1
     /// </summary>
     public class StringExistsRule : ValidationRule<string>
     {
@@ -11,19 +15,11 @@
             : base( data )
         {}
 
-        public override IValidationResult Validate( string input )
+        public override IValidationResult Validate( string str )
         {
-            return
-                string.IsNullOrWhiteSpace( input ) ?
-                    new ValidationResult
-                    {
-                        Level = this._data.Level,
-                        Context = input,
-                        Message = string.IsNullOrWhiteSpace( this._data.Message ) ?
-                                      "String is null, empty, or whitespace." :
-                                      this._data.Message
-                    } :
-                    null;
+            return string.IsNullOrWhiteSpace( str ) ?
+                       this.CreateResult( str, "String is null, empty, or whitespace." ) :
+                       null;
         }
 
     }

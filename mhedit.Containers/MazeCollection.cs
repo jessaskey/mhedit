@@ -13,8 +13,7 @@ namespace mhedit.Containers
     {
         #region Declarations
 
-        private const int MAX_MAZES = 32;
-        private ExtendedObservableCollection<Maze> _mazes =
+        private readonly ExtendedObservableCollection<Maze> _mazes =
             new ExtendedObservableCollection<Maze>();
         private Guid _id = Guid.NewGuid();
         private string _collectionName;
@@ -49,6 +48,9 @@ namespace mhedit.Containers
         }
 
         [BrowsableAttribute(false)]
+        [Validation( typeof( CollectionSizeRule ),
+            Options = "Minimum=1;Maximum=32" )]
+        [Validation( typeof( ElementsRule ) )]
         public ExtendedObservableCollection<Maze> Mazes
         {
             get { return _mazes; }
