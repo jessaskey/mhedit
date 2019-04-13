@@ -988,21 +988,24 @@ namespace mhedit.GameControllers
 
         public String ExtractSource(Maze maze, int level)
         {
-            int dataPosition = 10;
+            int dataPosition = 8;
             int commentPosition = 60;
 
             string commentLine = ";********************************************************************";
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(commentLine);
+
+            //;  Dif 3 -- Maze A - Level 13 - The IonCannon Trainer
+            List<String> mazeLetters = new List<string>() { "A", "B", "C", "D" };
             sb.Append("; ");
-            sb.AppendLine(" Maze " + GetMazeCode(level) + " - " + maze.Name);
+            sb.AppendLine(" Dif " + (level / 4).ToString() + " - Maze " + mazeLetters[((level-1) % 4)] + " - Level " + level.ToString() + " - " + maze.Name);
             sb.AppendLine(commentLine);
 
             //Maze Hints
             if (!String.IsNullOrEmpty(maze.Hint))
             {
                 StringBuilder mb = new StringBuilder();
-                mb.Append("mhz");
+                mb.Append("mzh");
                 mb.Append(GetMazeCode(level));
                 Tabify(' ', dataPosition, mb);
                 mb.Append(".ctext \"");
@@ -1063,9 +1066,27 @@ namespace mhedit.GameControllers
             //DeHand
             sb.AppendLine(DumpBytes("hand" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Hand).ObjectEncodings));
 
+            //misc stuff, defined as vars not tables
+            sb.AppendLine(DumpScalar("clock" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Clock).ObjectEncodings));
+            sb.AppendLine(DumpScalar("boot" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Boots).ObjectEncodings));
+            if ((level - 1) % 4 == 2)
+            {
+                sb.AppendLine(DumpScalar("mpod" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.EscapePod).ObjectEncodings));
+            }
+            sb.AppendLine(DumpScalar("outi" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.OutTime).ObjectEncodings));
+            sb.AppendLine(DumpScalar("oxyb" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.OxygenReward).ObjectEncodings));
+            return sb.ToString();
+        }
 
-
-
+        private string DumpScalar(string label, int commentPosition, List<ObjectEncoding> encodings)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(label);
+            sb.Append(" = $");
+            if (encodings.Count > 0)
+            {
+                sb.Append(encodings[0].Bytes[0].ToString("X2"));
+            }
             return sb.ToString();
         }
 
@@ -1079,8 +1100,8 @@ namespace mhedit.GameControllers
 
         private string GetMazeCode(int level)
         {
-            int difficulty = level / 4;
-            int mazeNumber = level % 4;
+            int difficulty = (level - 1) / 4;
+            int mazeNumber = (level - 1) % 4;
             return difficulty.ToString() + mazeNumber.ToString();
         }
 
