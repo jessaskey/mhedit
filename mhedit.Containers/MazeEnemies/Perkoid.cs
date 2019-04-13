@@ -17,6 +17,8 @@ namespace mhedit.Containers.MazeEnemies
 
         private SignedVelocity _velocity;
         private SignedVelocity _incrementingVelocity;
+        private bool _isTransportable;
+        private bool _isShotTransportable;
 
         public Perkoid()
             : base( Constants.MAXOBJECTS_PERKOID,
@@ -63,6 +65,26 @@ namespace mhedit.Containers.MazeEnemies
                 this.SetField( ref this._incrementingVelocity, value );
 
                 this._incrementingVelocity.PropertyChanged += this.ForwardPropertyChanged;
+            }
+        }
+
+        [DescriptionAttribute("Defines if the object needs to be checked for Transporter collisions. If this object must transport, then set to True, otherwise leave at False.")]
+        public bool IsTransportable
+        {
+            get { return _isTransportable; }
+            set
+            {
+                this.SetField(ref this._isTransportable, value);
+            }
+        }
+
+        [DescriptionAttribute("Defines if the Perkoid shot needs to be checked for Transporter collisions. If the shot must transport, then set to True, otherwise leave at False.")]
+        public bool IsShotTransportable
+        {
+            get { return _isShotTransportable; }
+            set
+            {
+                this.SetField(ref this._isShotTransportable, value);
             }
         }
 
