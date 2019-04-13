@@ -20,11 +20,7 @@ namespace mhedit.Containers
         private Image _image;
         private readonly Point _staticLsb;
         private Point _renderOffset;
-
         private bool _selected = false;
-
-        private bool _isValid = true;
-        private List<string> _validationErrors = new List<string>();
 
         protected MazeObject( int maxObjects, Image image )
             : this( maxObjects, image, new Point(), new Point() )
@@ -145,31 +141,6 @@ namespace mhedit.Containers
             get
             {
                 return DataConverter.ConvertPixelsToVector(Position);
-            }
-        }
-
-        [CategoryAttribute("Validation")]
-        [ReadOnly(true)]
-        public bool IsValid
-        {
-            get
-            {
-                return _isValid;
-            }
-        }
-
-        [CategoryAttribute("Validation")]
-        [ReadOnly(true)]
-        [XmlIgnore]
-        public List<string> ValidationErrors 
-        {
-            get
-            {
-                return _validationErrors;
-            }
-            set
-            {
-                _validationErrors = value;
             }
         }
 

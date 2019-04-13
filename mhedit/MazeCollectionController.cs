@@ -200,19 +200,10 @@ namespace mhedit
 
                     collectionNode.Expand();
                 }
-                catch (Exception ex)
-                {
-                    _mazeCollection.Error = true;
-                    _mazeCollection.LastError = ex.Message;
-                }
                 finally
                 {
                     treeView.EndUpdate();
                 }
-            }
-            else
-            {
-                _mazeCollection.LastError = "Tree not defined.";
             }
 
             return collectionNode;

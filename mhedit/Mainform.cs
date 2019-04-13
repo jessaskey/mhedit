@@ -1321,7 +1321,7 @@ namespace mhedit
             }
             else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
             {
-                mazeCollectionController.MazeCollection.Validate();
+                this.tabControlSystemWindows.Add( new ValidationWindow( "Two", mazeCollectionController.MazeCollection.Validate() ) );
             }
         }
     }

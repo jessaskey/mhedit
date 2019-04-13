@@ -2,6 +2,7 @@
 using mhedit.GameControllers;
 using System.IO;
 using System.Windows.Forms;
+using mhedit.Containers.Validation;
 
 namespace mhedit.Controllers
 {
@@ -53,9 +54,9 @@ namespace mhedit.Controllers
                     File.Copy(file, backupPath + Path.GetFileName(file), true);
                 }
 
-                collection.Validate();
+                IValidationResult validationResult = collection.Validate();
 
-                if (collection.IsValid)
+                if ( validationResult.Level < ValidationLevel.Error )
                 {
                     //we will always serialize to target 'The Promised End' here in this editor.
                     IGameController controller = new MajorHavocPromisedEnd(templatePath);
@@ -71,7 +72,7 @@ namespace mhedit.Controllers
                 }
                 else
                 {
-                    MessageBox.Show(collection.ValidationMessage, "Validation Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show( validationResult.ToString(), "Validation Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     success = false;
                 }
             }

@@ -48,8 +48,6 @@ namespace mhedit.Containers
         private Guid _id = Guid.NewGuid();
         private string _mazeName = null;
         private string _mazeDescription = String.Empty;
-        private bool _isValid = false;
-        private List<string> _validationMessage = new List<string>();
         private MazeType _mazeType;
         private string _mazeHint = String.Empty;
         private string _mazeHint2 = String.Empty;
@@ -149,14 +147,6 @@ namespace mhedit.Containers
 
         [BrowsableAttribute(false)]
         [XmlIgnore]
-        public bool IsValid
-        {
-            get { return _isValid; }
-            set { _isValid = value; }
-        }
-
-        [BrowsableAttribute(false)]
-        [XmlIgnore]
         public int MazeStampsX
         {
             get { return _mazeStampsX; }
@@ -169,14 +159,6 @@ namespace mhedit.Containers
         {
             get { return _mazeStampsY; }
             set { _mazeStampsY = value; }
-        }
-
-        [BrowsableAttribute(false)]
-        [XmlIgnore]
-        public List<string> ValidationMessage
-        {
-            get { return _validationMessage; }
-            set { _validationMessage = value; }
         }
 
         /// <summary>
