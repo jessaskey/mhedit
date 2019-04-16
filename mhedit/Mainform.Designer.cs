@@ -89,7 +89,6 @@ namespace mhedit
             this.splitterUpDown = new System.Windows.Forms.Splitter();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
             this.tabControlSystemWindows = new mhedit.SystemWindowsTabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.listView1 = new System.Windows.Forms.ListView();
             this.splitterSystemWindows = new System.Windows.Forms.Splitter();
             this.statusStrip.SuspendLayout();
@@ -102,7 +101,6 @@ namespace mhedit
             this.splitContainerRight.Panel2.SuspendLayout();
             this.splitContainerRight.SuspendLayout();
             this.tabControlSystemWindows.SuspendLayout();
-            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -718,26 +716,15 @@ namespace mhedit
             // 
             // tabControlSystemWindows
             // 
-            this.tabControlSystemWindows.Controls.Add(this.tabPage1);
             this.tabControlSystemWindows.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.tabControlSystemWindows.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControlSystemWindows.Location = new System.Drawing.Point(148, 585);
             this.tabControlSystemWindows.Name = "tabControlSystemWindows";
-            this.tabControlSystemWindows.Padding = new System.Drawing.Point(12, 4);
+            this.tabControlSystemWindows.Visible = false;
+            this.tabControlSystemWindows.Padding = new System.Drawing.Point( 12, 4 );
             this.tabControlSystemWindows.SelectedIndex = 0;
             this.tabControlSystemWindows.Size = new System.Drawing.Size(885, 100);
             this.tabControlSystemWindows.TabIndex = 0;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.listView1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 24);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(877, 72);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // listView1
             // 
@@ -787,7 +774,6 @@ namespace mhedit
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerRight)).EndInit();
             this.splitContainerRight.ResumeLayout(false);
             this.tabControlSystemWindows.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -854,7 +840,6 @@ namespace mhedit
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemValidate;
         private mhedit.SystemWindowsTabControl tabControlSystemWindows;
-        private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.Splitter splitterSystemWindows;
     }

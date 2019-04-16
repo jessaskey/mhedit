@@ -1333,11 +1333,14 @@ namespace mhedit
         {
             if ( treeView.SelectedNode?.Tag is MazeController mazeController )
             {
-                this.tabControlSystemWindows.Add( new ValidationWindow( "One", mazeController.Maze.Validate() ) );
+                this.tabControlSystemWindows.Add( new ValidationWindow(
+                    this.treeView.SelectedNode.Text, mazeController.Maze.Validate() ) );
             }
             else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
             {
-                this.tabControlSystemWindows.Add( new ValidationWindow( "Two", mazeCollectionController.MazeCollection.Validate() ) );
+                this.tabControlSystemWindows.Add( new ValidationWindow(
+                    this.treeView.SelectedNode.Text,
+                    mazeCollectionController.MazeCollection.Validate() ) );
             }
         }
     }
