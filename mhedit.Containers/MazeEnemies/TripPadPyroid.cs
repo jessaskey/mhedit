@@ -50,7 +50,7 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [ CategoryAttribute( "Location" ) ]
-        [ DescriptionAttribute( "Defines the X velocity of the pyroid launched." ) ]
+        [ DescriptionAttribute( "Determines the direction of motion of the launched Pyroid(s)." ) ]
         public TripPyroidDirection Direction
         {
             get { return this._direction; }
@@ -58,14 +58,14 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [CategoryAttribute("Location")]
-        [DescriptionAttribute("Defines the X velocity of the pyroid launched.")]
+        [DescriptionAttribute( "Chooses one of several fixed speeds for the launched Pyroid(s)." )]
         public TripPyroidSpeedIndex SpeedIndex
         {
             get { return this._speedIndex; }
             set { this.SetField( ref this._speedIndex, value ); }
         }
 
-        [DescriptionAttribute("Defines if the launched pyroid is a single or double Pyroid.")]
+        [DescriptionAttribute( "Determines if a single Pyroid or a pair of Pyroids (Double) are launched." )]
         public PyroidStyle PyroidStyle
         {
             get { return _pyroidStyle; }
