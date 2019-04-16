@@ -17,7 +17,7 @@ namespace mhedit.Containers.Validation.MajorHavoc
     {
         private const int MaxLength = 128;
         private static readonly Regex HavocRegex =
-            new Regex( $"^[a-zA-Z0-9 .!-,%:]{{0,{MaxLength}}}$" );
+            new Regex( $"^[a-zA-Z0-9 .!\\-,%:]{{0,{MaxLength}}}$" );
 
         public MazeHintRule( ValidationData data )
             : base( data )
