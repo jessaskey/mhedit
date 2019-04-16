@@ -7,6 +7,8 @@
         private string _message;
         private object _context;
 
+#region Implementation of IValidationResult
+
         public ValidationLevel Level
         {
             get { return this._level; }
@@ -27,8 +29,10 @@
 
         public override string ToString()
         {
-            return $"[{this._level}] {this._message} Context:{this._context}";
+            return $"[{this._level}] {this._message}";
         }
+
+#endregion
     }
 
 }

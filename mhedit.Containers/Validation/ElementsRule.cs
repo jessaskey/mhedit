@@ -14,6 +14,8 @@ namespace mhedit.Containers.Validation
         public ElementsRule( ValidationData data )
         {}
 
+#region Implementation of IValidationRule<in IEnumerable>
+
         public IValidationResult Validate( IEnumerable enumerable )
         {
             ValidationResults results = new ValidationResults()
@@ -28,6 +30,9 @@ namespace mhedit.Containers.Validation
 
             return results;
         }
+
+#endregion
+
     }
 
 }
