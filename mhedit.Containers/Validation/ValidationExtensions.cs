@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace mhedit.Containers.Validation
 {
@@ -17,38 +13,28 @@ namespace mhedit.Containers.Validation
                                             Context = subject,
                                        };
 
+            /// Look for ValidationAttributes on the subject type itself.
             ValidationAttribute[] rules =
                 Array.ConvertAll(
                     subject.GetType().GetCustomAttributes( typeof( ValidationAttribute ), true ),
-                    item => (ValidationAttribute)item );
-
-            if ( rules.Length > 0 )
-            {
-                IEnumerable<IValidationResult> failures =
-                    rules.Select(
-                             r => r.HasRule ?
-                                      r.Validate( subject ) :
-                                      throw new InvalidOperationException(
-                                          $"Validation Rule is required for Class. Review {subject.GetType().FullName}" ) )
-                         .Where( f => f != null ).ToList();
-
-                foreach ( IValidationResult validationResult in failures )
-                {
-#if DEBUG
-                    Debug.WriteLine( validationResult.ToString() );
-#else
-                        /// No sense in looping if we've already found an error.
-                        if ( results.Level == ValidationLevel.Error )
-                        {
-                            break;
-                        }
-#endif
-                    if ( results.Level > validationResult.Level )
+                    item =>
                     {
-                        results.Level = validationResult.Level;
-                    }
-                }
-                results.AddRange( failures );
+                        ValidationAttribute attr = (ValidationAttribute) item;
+
+                        /// Do not allow the default attribute (no ValidationRule) to decorate
+                        /// a class as it's recursive.
+                        if ( attr.IsDefaultAttribute() )
+                        {
+                            throw new InvalidOperationException(
+                                $"Validation Rule required when decorating Class. Review {subject.GetType().FullName}" );
+                        }
+
+                        return attr;
+                    } );
+
+            foreach ( ValidationAttribute attribute in rules )
+            {
+                results.Add( attribute.Validate( subject ) );
             }
 
             PropertyInfo[] properties =
@@ -61,71 +47,16 @@ namespace mhedit.Containers.Validation
                 rules =
                     Array.ConvertAll(
                         property.GetCustomAttributes( typeof( ValidationAttribute ), true ),
-                        item => (ValidationAttribute)item );
+                        item => (ValidationAttribute) item );
 
-                if ( rules.Length > 0 )
+                foreach ( ValidationAttribute attribute in rules )
                 {
-                    IEnumerable<IValidationResult> failures =
-                        rules.Select( r => r.Validate( propertyValue ) )
-                             .Where( f => f != null ).ToList();
-
-                    foreach ( IValidationResult validationResult in failures )
-                    {
-#if DEBUG
-                        Debug.WriteLine( validationResult.ToString() );
-#else
-                        /// No sense in looping if we've already found an error.
-                        if ( results.Level == ValidationLevel.Error )
-                        {
-                            break;
-                        }
-#endif
-                        if ( results.Level > validationResult.Level )
-                        {
-                            results.Level = validationResult.Level;
-                        }
-                    }
-
-                    results.AddRange( failures );
+                    results.Add( attribute.Validate( propertyValue ) );
                 }
             }
 
             return results;
         }
-
-//        private static IEnumerable<IValidationResult> GetResults( this MemberInfo memberInfo,
-//            object subject )
-//        {
-//            var rules =
-//                Array.ConvertAll(
-//                    memberInfo.GetCustomAttributes( typeof( ValidationAttribute ), true ),
-//                    item => (ValidationAttribute)item );
-
-//            if ( rules.Length > 0 )
-//            {
-//                IEnumerable<IValidationResult> failures =
-//                    rules.Select( r => r.Validate( subject ) )
-//                         .Where( f => f != null ).ToList();
-
-//                foreach ( IValidationResult validationResult in failures )
-//                {
-//#if DEBUG
-//                    Debug.WriteLine( validationResult.ToString() );
-//#else
-//                        /// No sense in looping if we've already found an error.
-//                        if ( results.Level == ValidationLevel.Error )
-//                        {
-//                            break;
-//                        }
-//#endif
-//                    if ( results.Level > validationResult.Level )
-//                    {
-//                        results.Level = validationResult.Level;
-//                    }
-//                }
-//                results.AddRange( failures );
-//            }
-//        }
     }
 
 }

@@ -3,10 +3,10 @@
 
     public enum ValidationLevel
     {
-        //NoResults,
-        Error,
+        NoResults,
+        Message,
         Warning,
-        Message
+        Error
     }
 
 }

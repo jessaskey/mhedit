@@ -70,13 +70,18 @@ namespace mhedit.Containers.Validation
             set { this._data.Options = value; }
         }
 
+#region Overrides of Attribute
+
         /// <summary>
-        /// True if a ValidationRule is applied, false otherwise.
+        /// Indicates whether the value of this instance is the default value for the
+        /// derived class.
         /// </summary>
-        internal bool HasRule
+        public override bool IsDefaultAttribute()
         {
-            get { return this._ruleType != null; }
+            return this._ruleType == null;
         }
+
+#endregion
 
         /// <summary>
         /// Apply the ValidationRule to the subject returning any validation results.
