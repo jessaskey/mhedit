@@ -4,8 +4,6 @@ using System.IO;
 using System.Windows.Forms;
 using mhedit.Containers.Validation;
 
-using mhedit.GameControllers;
-
 namespace mhedit.Controllers
 {
     static class MAMEHelper
@@ -56,7 +54,7 @@ namespace mhedit.Controllers
                     File.Copy(file, backupPath + Path.GetFileName(file), true);
                 }
 
-                IValidationResult validationResult = collection.Validate();
+                IValidationResult validationResult = maze.Validate();
 
                 if ( validationResult.Level < ValidationLevel.Error )
                 {
