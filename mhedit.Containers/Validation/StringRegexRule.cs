@@ -28,14 +28,7 @@ namespace mhedit.Containers.Validation
         public StringRegexRule( ValidationData data )
             : base( data )
         {
-            try
-            {
-                this._pattern = this._options[ "Pattern" ];
-            }
-            catch ( Exception e )
-            {
-                throw new InvalidOperationException( "Required option is missing.", e );
-            }
+            this._pattern = this._options[ "Pattern" ];
 
             this._regexOptions =
                 this._options.ContainsKey( "RegexOptions" ) ?

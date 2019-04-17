@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace mhedit.Containers.Validation
@@ -94,11 +95,25 @@ namespace mhedit.Containers.Validation
             {
                 try
                 {
-                    object x = Activator.CreateInstance( this._ruleType, this._data );
+                    object rule;
+
+                    try
+                    {
+                        rule = Activator.CreateInstance( this._ruleType, this._data );
+                    }
+                    catch ( KeyNotFoundException ke )
+                    {
+                        throw new InvalidOperationException( "Required option missing?", ke );
+                    }
 
                     MethodInfo method = this._ruleType.GetMethod( "Validate" );
 
-                    return (IValidationResult)method.Invoke( x, new[] { subject } );
+                    if ( method == null )
+                    {
+                        throw new InvalidOperationException( "Validate method missing." );
+                    }
+
+                    return (IValidationResult) method.Invoke( rule, new[] { subject } );
                 }
                 catch ( Exception e ) 
                 {

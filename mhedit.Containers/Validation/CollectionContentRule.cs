@@ -29,16 +29,9 @@ namespace mhedit.Containers.Validation
         public CollectionContentRule( ValidationData data )
             : base( data )
         {
-            try
-            {
-                this._range.Maximum = int.Parse( this._options[ "Maximum" ] );
+            this._range.Maximum = int.Parse( this._options[ "Maximum" ] );
 
-                this._range.Minimum = int.Parse( this._options[ "Minimum" ] );
-            }
-            catch ( Exception e )
-            {
-                throw new InvalidOperationException( "Required option is missing.", e );
-            }
+            this._range.Minimum = int.Parse( this._options[ "Minimum" ] );
         }
 
         public override IValidationResult Validate( IEnumerable collection )
