@@ -874,39 +874,48 @@ namespace mhedit.GameControllers
             WriteAlphaHigh(alphaHighCsumAddress, (byte)(currentMajorVersion[0] | 0xE0));
         }
 
-        public bool WriteFiles(string mamePath)
+        public bool WriteFiles(string destinationPath)
         {
-            //fix csums...
-            WritePagedChecksum(0x4000, 0x2000, 6, 0x08);
-            WritePagedChecksum(0x6000, 0x2000, 7, 0x09);
-            WriteAlphaHighChecksum(0x0000, 0x4000, 0x01);
-
-            MarkPagedROM(6);
-            MarkPagedROM(7);
-            MarkAlphaHighROM();
-
-            string page67FileNameMame = mamePath + _page2367ROM;
-            string alphaHighFileNameMane = mamePath + _alphaHighROM;
-
-            //save each
-            File.WriteAllBytes(page67FileNameMame, _page2367);
-            File.WriteAllBytes(alphaHighFileNameMane, _alphaHigh);
-
-            //copy others 
-            List<string> otherROMs = new List<string>();
-            otherROMs.Add("mhpe.1mn");
-            otherROMs.Add("mhpe.1q");
-            otherROMs.Add("mhpe.6kl");
-            otherROMs.Add("mhpe.6h");
-            otherROMs.Add("mhpe.6jk");
-            otherROMs.Add("mhpe.9s");
-            otherROMs.Add("036408-01.b1");
-
-            foreach (string rom in otherROMs)
+            bool success = false;
+            try
             {
-                File.Copy(_sourceRomPath + rom, mamePath + rom, true);
+                //fix csums...
+                WritePagedChecksum(0x4000, 0x2000, 6, 0x08);
+                WritePagedChecksum(0x6000, 0x2000, 7, 0x09);
+                WriteAlphaHighChecksum(0x0000, 0x4000, 0x01);
+
+                MarkPagedROM(6);
+                MarkPagedROM(7);
+                MarkAlphaHighROM();
+
+                string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM);
+                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM);
+
+                //save each
+                File.WriteAllBytes(page67FileNameMame, _page2367);
+                File.WriteAllBytes(alphaHighFileNameMane, _alphaHigh);
+
+                //copy others 
+                List<string> otherROMs = new List<string>();
+                otherROMs.Add("mhpe.1mn");
+                otherROMs.Add("mhpe.1q");
+                otherROMs.Add("mhpe.6kl");
+                otherROMs.Add("mhpe.6h");
+                otherROMs.Add("mhpe.6jk");
+                otherROMs.Add("mhpe.9s");
+                otherROMs.Add("036408-01.b1");
+
+                foreach (string rom in otherROMs)
+                {
+                    File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, rom), true);
+                }
+                success = true;
             }
-            return true;
+            catch (Exception ex)
+            {
+                _lastError = ex.Message;
+            }
+            return success;
         }
 
         public byte ReadByte(ushort address, int offset, int page)
@@ -979,21 +988,24 @@ namespace mhedit.GameControllers
 
         public String ExtractSource(Maze maze, int level)
         {
-            int dataPosition = 10;
+            int dataPosition = 8;
             int commentPosition = 60;
 
             string commentLine = ";********************************************************************";
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(commentLine);
+
+            //;  Dif 3 -- Maze A - Level 13 - The IonCannon Trainer
+            List<String> mazeLetters = new List<string>() { "A", "B", "C", "D" };
             sb.Append("; ");
-            sb.AppendLine(" Maze " + GetMazeCode(level) + " - " + maze.Name);
+            sb.AppendLine(" Dif " + (level / 4).ToString() + " - Maze " + mazeLetters[((level-1) % 4)] + " - Level " + level.ToString() + " - " + maze.Name);
             sb.AppendLine(commentLine);
 
             //Maze Hints
             if (!String.IsNullOrEmpty(maze.Hint))
             {
                 StringBuilder mb = new StringBuilder();
-                mb.Append("mhz");
+                mb.Append("mzh");
                 mb.Append(GetMazeCode(level));
                 Tabify(' ', dataPosition, mb);
                 mb.Append(".ctext \"");
@@ -1054,9 +1066,27 @@ namespace mhedit.GameControllers
             //DeHand
             sb.AppendLine(DumpBytes("hand" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Hand).ObjectEncodings));
 
+            //misc stuff, defined as vars not tables
+            sb.AppendLine(DumpScalar("clock" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Clock).ObjectEncodings));
+            sb.AppendLine(DumpScalar("boot" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Boots).ObjectEncodings));
+            if ((level - 1) % 4 == 2)
+            {
+                sb.AppendLine(DumpScalar("mpod" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.EscapePod).ObjectEncodings));
+            }
+            sb.AppendLine(DumpScalar("outi" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.OutTime).ObjectEncodings));
+            sb.AppendLine(DumpScalar("oxyb" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.OxygenReward).ObjectEncodings));
+            return sb.ToString();
+        }
 
-
-
+        private string DumpScalar(string label, int commentPosition, List<ObjectEncoding> encodings)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(label);
+            sb.Append(" = $");
+            if (encodings.Count > 0)
+            {
+                sb.Append(encodings[0].Bytes[0].ToString("X2"));
+            }
             return sb.ToString();
         }
 
@@ -1070,8 +1100,8 @@ namespace mhedit.GameControllers
 
         private string GetMazeCode(int level)
         {
-            int difficulty = level / 4;
-            int mazeNumber = level % 4;
+            int difficulty = (level - 1) / 4;
+            int mazeNumber = (level - 1) % 4;
             return difficulty.ToString() + mazeNumber.ToString();
         }
 
@@ -1139,7 +1169,21 @@ namespace mhedit.GameControllers
             return sb.ToString();
         }
 
-
+        /// <summary>
+        /// Encodes all mazes in passed collection into EncodingObjects. 
+        /// </summary>
+        /// <param name="mazeCollection">The collection to encode</param>
+        /// <returns></returns>
+        public bool EncodeObjects(MazeCollection mazeCollection)
+        {
+            return EncodeObjects(mazeCollection, null);
+        }
+        /// <summary>
+        /// Encodes all mazes in passed collection into EncodingObjects and sets the starting level to the passed maze object. 
+        /// </summary>
+        /// <param name="mazeCollection">The collection to encode</param>
+        /// <param name="maze">If specified, will make this the starting level when ROMs are generated</param>
+        /// <returns></returns>
         public bool EncodeObjects(MazeCollection mazeCollection, Maze maze)
         {
             int numMazes = 28;
@@ -1467,13 +1511,16 @@ namespace mhedit.GameControllers
             //****************
             //set up starting level
             //****************
-            for (int i = 0; i < numMazes; i++)
+            if (maze != null)
             {
-                if (mazeCollection.Mazes[i] == maze)
+                for (int i = 0; i < numMazes; i++)
                 {
-                    byte startLevel = (byte)i;
-                    if (startLevel > 24) startLevel = 24;
-                    WriteAlphaHigh((ushort)(_exports["levelst"]+1), startLevel);
+                    if (mazeCollection.Mazes[i] == maze)
+                    {
+                        byte startLevel = (byte)i;
+                        if (startLevel > 24) startLevel = 24;
+                        WriteAlphaHigh((ushort)(_exports["levelst"] + 1), startLevel);
+                    }
                 }
             }
             //*******************

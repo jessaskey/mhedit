@@ -1,4 +1,4 @@
-﻿using ICSharpCode.SharpZipLib.BZip2;
+﻿
 using mhedit.Containers;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using mhedit.Serialization;
+using mhedit.Extensions;
 
 namespace mhedit
 {

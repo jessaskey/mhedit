@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using mhedit.Containers.MazeObjects;
 using mhedit.Containers.MazeEnemies;
 using System.Xml.Serialization;
 using mhedit.Containers.MazeEnemies.IonCannon;
+using mhedit.Containers.Validation;
+using mhedit.Containers.Validation.MajorHavoc;
 
 namespace mhedit.Containers
 {
-
     public delegate void MazePropertiesUpdated(object sender);
 
     [DefaultPropertyAttribute("Name")]
@@ -44,16 +47,14 @@ namespace mhedit.Containers
         #region Declarations
 
         private Guid _id = Guid.NewGuid();
-        private string _mazeName = null;
+        private string _mazeName;
         private string _mazeDescription = String.Empty;
-        private bool _isValid = false;
-        private List<string> _validationMessage = new List<string>();
         private MazeType _mazeType;
         private string _mazeHint = String.Empty;
         private string _mazeHint2 = String.Empty;
         private int _oxygenReward = 16;
         private List<MazeWall> _mazeWallBase;
-        private ExtendedObservableCollection<MazeObject> _mazeObjects =
+        private readonly ExtendedObservableCollection<MazeObject> _mazeObjects =
             new ExtendedObservableCollection<MazeObject>();
         private List<bool> _transportabilityFlags = new List<bool>();
         private int _mazeStampsX = 0;
@@ -75,7 +76,7 @@ namespace mhedit.Containers
 
         public Maze(MazeType type, string name)
         {
-            _mazeName = name;
+            this._mazeName = name;
 
             this.MazeType = type;
 
@@ -115,6 +116,10 @@ namespace mhedit.Containers
 
         #region Public Properties
 
+        [Validation( typeof( CollectionContentRule<Reactoid> ),
+            Message = "Every Maze requires a single Reactoid. {4} were found.",
+            Options = "Maximum=1;Minimum=1" )]
+        [Validation( typeof( ElementsRule ) )]
         [BrowsableAttribute(false)]
         public ExtendedObservableCollection<MazeObject> MazeObjects
         {
@@ -143,14 +148,6 @@ namespace mhedit.Containers
 
         [BrowsableAttribute(false)]
         [XmlIgnore]
-        public bool IsValid
-        {
-            get { return _isValid; }
-            set { _isValid = value; }
-        }
-
-        [BrowsableAttribute(false)]
-        [XmlIgnore]
         public int MazeStampsX
         {
             get { return _mazeStampsX; }
@@ -163,14 +160,6 @@ namespace mhedit.Containers
         {
             get { return _mazeStampsY; }
             set { _mazeStampsY = value; }
-        }
-
-        [BrowsableAttribute(false)]
-        [XmlIgnore]
-        public List<string> ValidationMessage
-        {
-            get { return _validationMessage; }
-            set { _validationMessage = value; }
         }
 
         /// <summary>
@@ -206,6 +195,7 @@ namespace mhedit.Containers
             }
         }
 
+        [Validation( typeof( FileNameRule ) )]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The name of the maze.")]
         public string Name
@@ -214,6 +204,11 @@ namespace mhedit.Containers
             set { this.SetField( ref this._mazeName, value ); }
         }
 
+        [Validation( typeof( MazeHintRule ),
+            Message = "Maze Hint: {1}" )]
+        [Validation( typeof( StringExistsRule ),
+            Level = ValidationLevel.Warning,
+            Message = "Maze Hint: {1}" )]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The text shown at the top of the screen when entering the maze. Valid characters are ' 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:'")]
         public string Hint
@@ -222,6 +217,11 @@ namespace mhedit.Containers
             set { this.SetField( ref this._mazeHint, value ); }
         }
 
+        [Validation( typeof( MazeHintRule ),
+            Message = "Maze Hint2: {1}" )]
+        [Validation( typeof( StringExistsRule ),
+            Level = ValidationLevel.Warning,
+            Message = "Maze Hint2: {1}" )]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The second line of text shown at the top of the screen when entering the maze. Valid characters are ' 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:'")]
         public string Hint2
@@ -250,6 +250,8 @@ namespace mhedit.Containers
         }
 
         [DescriptionAttribute("The Oxygen reward value on this maze.")]
+        [Validation( typeof( RangeRule<int> ),
+            Options = "Minimum=1;Maximum=32" )]
         public int OxygenReward
         {
             get { return _oxygenReward; }
@@ -260,22 +262,22 @@ namespace mhedit.Containers
 
         #region Public Methods
 
-        public void Validate()
-        {
-            _isValid = false;
-            _validationMessage.Clear();
+        //public void Validate()
+        //{
+        //    _isValid = false;
+        //    _validationMessage.Clear();
 
-            //validate here...
-            if (_mazeObjects != null )
-            {
-                if (_mazeObjects.Where(o => o is MazeObjects.Reactoid).FirstOrDefault() == null)
-                {
-                    _validationMessage.Add("ERROR/REQUIRED: Maze does not contain a reactor.");
-                }
-            }
+        //    //validate here...
+        //    if (_mazeObjects != null)
+        //    {
+        //        if (_mazeObjects.Where(o => o is MazeObjects.Reactoid).FirstOrDefault() == null)
+        //        {
+        //            _validationMessage.Add("ERROR/REQUIRED: Maze does not contain a reactor.");
+        //        }
+        //    }
 
-            _isValid = (_validationMessage.Count == 0);
-        }
+        //    _isValid = (_validationMessage.Count == 0);
+        //}
 
         public int GetObjectTypeCount(Type type)
         {

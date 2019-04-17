@@ -69,6 +69,8 @@ namespace mhedit
             this.toolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItemValidate = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemRename = new System.Windows.Forms.ToolStripMenuItem();
@@ -86,6 +88,9 @@ namespace mhedit
             this.comboBoxMazeObjects = new System.Windows.Forms.ComboBox();
             this.splitterUpDown = new System.Windows.Forms.Splitter();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
+            this.tabControlSystemWindows = new mhedit.SystemWindowsTabControl();
+            this.listView1 = new System.Windows.Forms.ListView();
+            this.splitterSystemWindows = new System.Windows.Forms.Splitter();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.contextMenuStripTree.SuspendLayout();
@@ -95,6 +100,7 @@ namespace mhedit
             this.splitContainerRight.Panel1.SuspendLayout();
             this.splitContainerRight.Panel2.SuspendLayout();
             this.splitContainerRight.SuspendLayout();
+            this.tabControlSystemWindows.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -393,7 +399,6 @@ namespace mhedit
             this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterSelect);
             this.treeView.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeView_DragDrop);
             this.treeView.DragOver += new System.Windows.Forms.DragEventHandler(this.treeView_DragOver);
-            this.treeView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView_KeyDown);
             this.treeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.treeView_MouseDown);
             // 
             // contextMenuStripTree
@@ -407,6 +412,8 @@ namespace mhedit
             this.toolStripMenuItemSave,
             this.toolStripMenuItemSaveAs,
             this.toolStripMenuItemSaveAll,
+            this.toolStripSeparator11,
+            this.toolStripMenuItemValidate,
             this.toolStripSeparator7,
             this.toolStripMenuItemDelete,
             this.toolStripMenuItemRename,
@@ -429,7 +436,7 @@ namespace mhedit
             // 
             this.toolStripMenuItemAddMazeCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemAddMazeCollection.Image")));
             this.toolStripMenuItemAddMazeCollection.Name = "toolStripMenuItemAddMazeCollection";
-            this.toolStripMenuItemAddMazeCollection.Size = new System.Drawing.Size(159, 22);
+            this.toolStripMenuItemAddMazeCollection.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemAddMazeCollection.Text = "Maze Collection";
             this.toolStripMenuItemAddMazeCollection.ToolTipText = "Add New";
             this.toolStripMenuItemAddMazeCollection.Click += new System.EventHandler(this.toolStripMenuItemNewMazeCollection_Click);
@@ -439,7 +446,7 @@ namespace mhedit
             this.toolStripMenuItemAddNewMaze.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemAddNewMaze.Image")));
             this.toolStripMenuItemAddNewMaze.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.toolStripMenuItemAddNewMaze.Name = "toolStripMenuItemAddNewMaze";
-            this.toolStripMenuItemAddNewMaze.Size = new System.Drawing.Size(159, 22);
+            this.toolStripMenuItemAddNewMaze.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemAddNewMaze.Text = "Maze";
             this.toolStripMenuItemAddNewMaze.ToolTipText = "Add New Maze";
             this.toolStripMenuItemAddNewMaze.Click += new System.EventHandler(this.toolStripMenuItemNewMaze_Click);
@@ -504,6 +511,19 @@ namespace mhedit
             this.toolStripMenuItemSaveAll.Size = new System.Drawing.Size(208, 22);
             this.toolStripMenuItemSaveAll.Text = "Save All";
             this.toolStripMenuItemSaveAll.Click += new System.EventHandler(this.toolStripButtonSaveAll_Click);
+            // 
+            // toolStripSeparator11
+            // 
+            this.toolStripSeparator11.Name = "toolStripSeparator11";
+            this.toolStripSeparator11.Size = new System.Drawing.Size(205, 6);
+            // 
+            // toolStripMenuItemValidate
+            // 
+            this.toolStripMenuItemValidate.Name = "toolStripMenuItemValidate";
+            this.toolStripMenuItemValidate.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.toolStripMenuItemValidate.Size = new System.Drawing.Size(208, 22);
+            this.toolStripMenuItemValidate.Text = "Validate";
+            this.toolStripMenuItemValidate.Click += new System.EventHandler(this.toolStripMenuItemValidate_Click);
             // 
             // toolStripSeparator7
             // 
@@ -694,12 +714,44 @@ namespace mhedit
             this.timerMain.Interval = 1000;
             this.timerMain.Tick += new System.EventHandler(this.timerMain_Tick);
             // 
+            // tabControlSystemWindows
+            // 
+            this.tabControlSystemWindows.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tabControlSystemWindows.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
+            this.tabControlSystemWindows.Location = new System.Drawing.Point(148, 585);
+            this.tabControlSystemWindows.Name = "tabControlSystemWindows";
+            this.tabControlSystemWindows.Visible = false;
+            this.tabControlSystemWindows.Padding = new System.Drawing.Point( 12, 4 );
+            this.tabControlSystemWindows.SelectedIndex = 0;
+            this.tabControlSystemWindows.Size = new System.Drawing.Size(885, 100);
+            this.tabControlSystemWindows.TabIndex = 0;
+            // 
+            // listView1
+            // 
+            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.Location = new System.Drawing.Point(3, 3);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(871, 66);
+            this.listView1.TabIndex = 0;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            // 
+            // splitterSystemWindows
+            // 
+            this.splitterSystemWindows.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitterSystemWindows.Location = new System.Drawing.Point(148, 685);
+            this.splitterSystemWindows.Name = "splitterSystemWindows";
+            this.splitterSystemWindows.Size = new System.Drawing.Size(885, 3);
+            this.splitterSystemWindows.TabIndex = 0;
+            this.splitterSystemWindows.TabStop = false;
+            // 
             // Mainform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1033, 710);
             this.Controls.Add(this.panelUnderneath);
+            this.Controls.Add( this.splitterSystemWindows );
+            this.Controls.Add(this.tabControlSystemWindows);
             this.Controls.Add(this.splitterLeft);
             this.Controls.Add(this.treeView);
             this.Controls.Add(this.toolStrip);
@@ -721,6 +773,7 @@ namespace mhedit
             this.splitContainerRight.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerRight)).EndInit();
             this.splitContainerRight.ResumeLayout(false);
+            this.tabControlSystemWindows.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -784,6 +837,11 @@ namespace mhedit
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSaveAll;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemValidate;
+        private mhedit.SystemWindowsTabControl tabControlSystemWindows;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.Splitter splitterSystemWindows;
     }
 }
 

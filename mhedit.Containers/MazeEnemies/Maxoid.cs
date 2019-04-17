@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using mhedit.Containers.Validation;
 
 namespace mhedit.Containers.MazeEnemies
 {
@@ -40,6 +41,8 @@ namespace mhedit.Containers.MazeEnemies
         [CategoryAttribute("Location")]
         [DescriptionAttribute("Defines how many maze squares between Max and Rex before Max" +
                               " will start pursuit. Zero indicates active on maze start.")]
+        [Validation( typeof( RangeRule<int> ),
+            Options = "Minimum=0;Maximum=21" )]
         public int TriggerDistance
         {
             get { return _triggerDistance; }
