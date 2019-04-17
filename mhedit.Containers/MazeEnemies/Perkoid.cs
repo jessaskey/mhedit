@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Xml.Serialization;
+using mhedit.Containers.Validation;
 
 namespace mhedit.Containers.MazeEnemies
 {
@@ -41,6 +42,10 @@ namespace mhedit.Containers.MazeEnemies
         [ReadOnly( true )]
         [DescriptionAttribute( "Defines the vector that object takes in the maze. For Left Facing Zero Velocity use -1 X Velocity" )]
         [TypeConverter(typeof(TypeConverters.SignedVelocityTypeConverter))]
+        [Validation( typeof( NamedPropertyRule<sbyte> ),
+            Options = "PropertyName=X;Minimum=-1;Maximum=32" )]
+        [Validation( typeof( NamedPropertyRule<sbyte> ),
+            Options = "PropertyName=Y;Minimum=-32;Maximum=32" )]
         public SignedVelocity Velocity
         {
             get { return _velocity; }
@@ -57,6 +62,10 @@ namespace mhedit.Containers.MazeEnemies
         [DescriptionAttribute( "Defines the additional velocity added at each difficulty level. " +
                                "Note that the sign is forced to match the Velocity. Generally leave this at zero." )]
         [TypeConverter(typeof(TypeConverters.SignedVelocityTypeConverter))]
+        [Validation( typeof( NamedPropertyRule<sbyte> ),
+            Options = "PropertyName=X;Minimum=0;Maximum=16" )]
+        [Validation( typeof( NamedPropertyRule<sbyte> ),
+            Options = "PropertyName=Y;Minimum=-16;Maximum=16" )]
         public SignedVelocity IncrementingVelocity
         {
             get { return _incrementingVelocity; }

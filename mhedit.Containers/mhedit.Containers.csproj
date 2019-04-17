@@ -131,6 +131,7 @@
     <Compile Include="Validation\ElementsRule.cs" />
     <Compile Include="Validation\FileNameRule.cs" />
     <Compile Include="Validation\MajorHavoc\MazeHintRule.cs" />
+    <Compile Include="Validation\NamedPropertyRule.cs" />
     <Compile Include="Validation\RangeRule.cs" />
     <Compile Include="Validation\StringExistsRule.cs" />
     <Compile Include="Validation\ValidationData.cs" />
