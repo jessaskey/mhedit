@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Xml.Serialization;
 using mhedit.Containers.Validation;
+using mhedit.Containers.Validation.MajorHavoc;
 
 namespace mhedit.Containers.MazeEnemies
 {
@@ -12,6 +13,7 @@ namespace mhedit.Containers.MazeEnemies
     /// velocity properties.
     /// </summary>
     [Serializable]
+    [Validation( typeof( PerkoidVelocityRule ) ) ]
     public class Perkoid : MazeObject
     {
         private static readonly Point _snapSize = new Point( 1, 1 );

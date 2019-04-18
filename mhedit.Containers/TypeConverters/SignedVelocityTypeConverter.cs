@@ -85,7 +85,7 @@ namespace mhedit.Containers.TypeConverters
         {
             if (destinationType == typeof(string))
             {
-                return ((SignedVelocity)value).X + "," + ((SignedVelocity)value).Y;
+                return value.ToString();
             }
             return base.ConvertTo(context, culture, value, destinationType);
         }

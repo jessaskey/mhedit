@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Xml.Serialization;
 using mhedit.Containers.Validation;
+using mhedit.Containers.Validation.MajorHavoc;
 
 namespace mhedit.Containers.MazeEnemies
 {
@@ -12,6 +13,7 @@ namespace mhedit.Containers.MazeEnemies
     /// component and freeze when the reactoid is touched.
     /// </summary>
     [Serializable]
+    [Validation( typeof( PyroidVelocityRule ) )]
     public class Pyroid : MazeObject
     {
         /// Pyroids have High Resolution position and can be placed anywhere.
