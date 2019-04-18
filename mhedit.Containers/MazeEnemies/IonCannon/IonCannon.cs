@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Xml.Serialization;
+using mhedit.Containers.MazeObjects;
+using mhedit.Containers.Validation;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
@@ -62,6 +64,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         [XmlElement( "OrientAndFire", typeof( OrientAndFire ) )]
         [XmlElement( "Move", typeof( Move ) )]
         [XmlElement( "Pause", typeof( Pause ) )]
+        [Validation]
         public IonCannonProgram Program
         {
             get { return _program; }

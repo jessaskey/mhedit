@@ -42,16 +42,25 @@ namespace mhedit.Containers.Validation
 
             foreach ( PropertyInfo property in properties )
             {
-                object propertyValue = property.GetValue( subject );
-
                 rules =
                     Array.ConvertAll(
                         property.GetCustomAttributes( typeof( ValidationAttribute ), true ),
                         item => (ValidationAttribute) item );
 
-                foreach ( ValidationAttribute attribute in rules )
+                if ( rules.Length > 0 )
                 {
-                    results.Add( attribute.Validate( propertyValue ) );
+                    /// Get the value of the property only when a validation attribute
+                    /// is found. This eliminates issues with GetProperties() returning
+                    /// indexer "properties" on collection classes which require a method
+                    /// parameter (the index) and result in a throw. I don't know how to
+                    /// test for that situation. Besides, probably better to get the
+                    /// property value only when it's going to be used.
+                    object propertyValue = property.GetValue( subject );
+
+                    foreach ( ValidationAttribute attribute in rules )
+                    {
+                        results.Add( attribute.Validate( propertyValue ) );
+                    }
                 }
             }
 

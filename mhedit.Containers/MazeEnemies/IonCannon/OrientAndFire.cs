@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using mhedit.Containers.Validation;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
@@ -56,6 +57,8 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
         }
 
+        [Validation( typeof( RangeRule<int> ),
+            Options = "Minimum=1;Maximum=255" )]
         public int ShotSpeed
         {
             get

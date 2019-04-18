@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Xml.Serialization;
+using mhedit.Containers.Validation;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
@@ -34,6 +35,8 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         //    }
         //}
 
+        [Validation( typeof( RangeRule<int> ),
+            Options = "Minimum=0;Maximum=255" )]
         public int WaitFrames
         {
             get
@@ -48,6 +51,10 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
         [TypeConverter( typeof( SimpleVelocityTypeConverter ) )]
         [ReadOnly( true )]
+        [Validation( typeof( NamedPropertyRule<int> ),
+            Options = "PropertyName=X;Minimum=-64;Maximum=64" )]
+        [Validation( typeof( NamedPropertyRule<int> ),
+            Options = "PropertyName=Y;Minimum=-64;Maximum=64" )]
         public SimpleVelocity Velocity
         {
             get { return _velocity; }
