@@ -91,6 +91,13 @@ namespace mhedit.Containers.Validation
         /// <returns>A IValidationResult that details the results of the operation.</returns>
         public IValidationResult Validate( object subject )
         {
+            /// Don't perform validation on a subject that's null. If null isn't a valid
+            /// value for the subject then apply the NotNullRule.
+            if ( subject == null )
+            {
+                return ValidationResult.Empty;
+            }
+
             if ( this._ruleType != null )
             {
                 try

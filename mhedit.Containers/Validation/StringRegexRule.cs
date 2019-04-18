@@ -37,12 +37,17 @@ namespace mhedit.Containers.Validation
                     RegexOptions.IgnoreCase;
         }
 
+#region Overrides of ValidationRule<string>
+
         public override IValidationResult Validate( string str )
         {
             return str != null && !Regex.IsMatch( str, this._pattern, this._regexOptions ) ?
                        this.CreateResult( str, $"\"{str}\" contains invalid characters." ) :
                        null;
         }
+
+#endregion
+
     }
 
 }

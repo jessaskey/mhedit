@@ -9,23 +9,22 @@
     ///     Subject string is Index 0
     ///     Default Message is Index 1
     /// </summary>
-    public class StringExistsRule : ValidationRule<string>
+    public class NotNullRule : ValidationRule<object>
     {
-        public StringExistsRule( ValidationData data )
+        public NotNullRule( ValidationData data )
             : base( data )
         {}
 
-#region Overrides of ValidationRule<string>
+#region Overrides of ValidationRule<object>
 
-        public override IValidationResult Validate( string str )
+        public override IValidationResult Validate( object subject )
         {
-            return string.IsNullOrWhiteSpace( str ) ?
-                       this.CreateResult( str, "String is null, empty, or whitespace." ) :
+            return subject == null ?
+                       /// subject will always be null! What to pass to this function?
+                       this.CreateResult( new object(), "Object is null." ) :
                        null;
         }
 
 #endregion
-
     }
-
 }
