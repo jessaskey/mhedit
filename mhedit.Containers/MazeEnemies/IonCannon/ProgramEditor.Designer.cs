@@ -49,6 +49,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
+            this.toolStripButtonValidate = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -69,6 +70,7 @@
             this.toolStripButtonMoveUp,
             this.toolStripButtonMoveDown,
             this.toolStripSeparator2,
+            this.toolStripButtonValidate,
             this.toolStripButtonPreview,
             this.toolStripSeparator3,
             this.toolStripComboBoxLoadPreset,
@@ -269,6 +271,17 @@
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
+            // toolStripButtonValidate
+            // 
+            this.toolStripButtonValidate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonValidate.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonValidate.Image")));
+            this.toolStripButtonValidate.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonValidate.Name = "toolStripButtonValidate";
+            this.toolStripButtonValidate.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonValidate.Text = "Validate";
+            this.toolStripButtonValidate.ToolTipText = "Validate";
+            this.toolStripButtonValidate.Click += new System.EventHandler(this.toolStripButtonValidate_Click);
+            // 
             // CannonProgramEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -318,5 +331,6 @@
         private System.Windows.Forms.ToolStripComboBox toolStripComboBoxLoadPreset;
         private System.Windows.Forms.ToolStripButton toolStripButtonSaveProgram;
         private System.Windows.Forms.TreeView treeViewProgram;
+        private System.Windows.Forms.ToolStripButton toolStripButtonValidate;
     }
 }

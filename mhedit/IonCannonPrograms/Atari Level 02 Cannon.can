@@ -61,12 +61,12 @@
   <IonCannonInstruction p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <Orientation>UpRight</Orientation>
     <RotateSpeed>Slow</RotateSpeed>
-    <ShotSpeed>0</ShotSpeed>
+    <ShotSpeed>1</ShotSpeed>
   </IonCannonInstruction>
   <IonCannonInstruction p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <Orientation>UpLeft</Orientation>
     <RotateSpeed>Slow</RotateSpeed>
-    <ShotSpeed>0</ShotSpeed>
+    <ShotSpeed>1</ShotSpeed>
   </IonCannonInstruction>
   <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>16</WaitFrames>
@@ -109,7 +109,7 @@
   <IonCannonInstruction p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <Orientation>UpRight</Orientation>
     <RotateSpeed>Slow</RotateSpeed>
-    <ShotSpeed>0</ShotSpeed>
+    <ShotSpeed>1</ShotSpeed>
   </IonCannonInstruction>
   <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>32</WaitFrames>
@@ -128,7 +128,7 @@
   <IonCannonInstruction p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <Orientation>Right</Orientation>
     <RotateSpeed>Slow</RotateSpeed>
-    <ShotSpeed>0</ShotSpeed>
+    <ShotSpeed>1</ShotSpeed>
   </IonCannonInstruction>
   <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>16</WaitFrames>

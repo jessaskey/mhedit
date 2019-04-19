@@ -4,10 +4,18 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
+using mhedit.Containers.Validation;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
     [Serializable]
+    [Validation( typeof( CollectionContentRule<ReturnToStart> ),
+        Message = "Every Ion Cannon Program requires a single ReturnToStart. {4} were found.",
+        Options = "Maximum=1;Minimum=1" )]
+    [Validation( typeof( CollectionIndexRule<ReturnToStart> ),
+        Message = "Ion Cannon Program requires ReturnToStart at end of program.",
+        Options = "Index=-1" )]
+    [Validation( typeof( ElementsRule ) )]
     public sealed class IonCannonProgram : ExtendedObservableCollection<IonCannonInstruction>
     {
         public IonCannonProgram()

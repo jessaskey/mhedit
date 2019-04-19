@@ -1,5 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
+using mhedit.Containers.Validation;
 
 namespace mhedit
 {
@@ -9,7 +11,7 @@ namespace mhedit
     ///
     /// Removed the Add tab as "windows" are added via events in the system.
     /// </summary>
-    public class SystemWindowsTabControl : TabControl
+    public class SystemWindowsTabControl : TabControl, ISystemWindows
     {
         public SystemWindowsTabControl()
         {
@@ -21,20 +23,26 @@ namespace mhedit
             this.ControlAdded += this.OnControlAdded;
         }
 
+#region Implementation of ISystemWindows
+
         public void Add( UserControl view )
         {
             TabPage viewTab = new TabPage( view.Text )
                               {
                                   Dock = DockStyle.Fill,
                                   UseVisualStyleBackColor = true
-            };
+                              };
 
             view.Dock = DockStyle.Fill;
 
             viewTab.Controls.Add( view );
 
             this.TabPages.Add( viewTab );
+
+            this.SelectedTab = viewTab;
         }
+
+        #endregion
 
         private void OnControlAdded( object sender, ControlEventArgs e )
         {
@@ -65,7 +73,7 @@ namespace mhedit
                 }
             }
         }
-
+         
         private void OnDrawItem( object sender, DrawItemEventArgs e )
         {
             var tabPage = this.TabPages[ e.Index ];

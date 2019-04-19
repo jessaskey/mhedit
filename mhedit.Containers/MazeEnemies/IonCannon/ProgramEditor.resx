@@ -207,6 +207,16 @@
         GkbIEIpcQpRmGEA3hCTNMAAzhCzNMECRZjoABgYAY/VsRqp4Q7oAAAAASUVORK5CYII=
 </value>
   </data>
+  <data name="toolStripButtonValidate.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADOSURBVDhPY8AGvn792vDt27f/SPg9EAhApfEDkEKQBvn0
+        5f8Zguf8r1568j/IQKg0YQCycdbOK2DN/LGL/j9/8wHFJV++fDGAKoUAJEmwAhCNbHtkZOR/JycnME5J
+        Sfn//PlzVENAmpA1INu+eMVauGachoD8h6wJ2bCPHz79//D+Ixzn5eZhGoIeaMi2I2tGNgBmCEgfhitg
+        toP8jm4ADMMMAYUX2ACYK0ACILx582awAmyaQRjDAGQAEoQpwKYZhEeSAYQw7QwgHn/7DwBBo0OsuORg
+        pgAAAABJRU5ErkJggg==
+</value>
+  </data>
   <data name="toolStripButtonPreview.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAPCAYAAADtc08vAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8

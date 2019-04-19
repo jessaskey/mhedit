@@ -128,10 +128,15 @@
     <Compile Include="TypeConverters\SimpleVelocityTypeConverter.cs" />
     <Compile Include="TypeConverters\TripPadPyroidTypeConverter.cs" />
     <Compile Include="TypeConverters\VectorPositionTypeConverter.cs" />
+    <Compile Include="Validation\CollectionIndexRule.cs" />
     <Compile Include="Validation\ElementsRule.cs" />
     <Compile Include="Validation\FileNameRule.cs" />
+    <Compile Include="Validation\ISystemWindows.cs" />
     <Compile Include="Validation\MajorHavoc\MazeHintRule.cs" />
+    <Compile Include="Validation\MajorHavoc\PerkoidVelocityRule.cs" />
+    <Compile Include="Validation\MajorHavoc\PyroidVelocityRule.cs" />
     <Compile Include="Validation\NamedPropertyRule.cs" />
+    <Compile Include="Validation\NotNullRule.cs" />
     <Compile Include="Validation\RangeRule.cs" />
     <Compile Include="Validation\StringExistsRule.cs" />
     <Compile Include="Validation\ValidationData.cs" />

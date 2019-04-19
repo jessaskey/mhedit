@@ -3,8 +3,14 @@
 
     public class ValidationResult : IValidationResult
     {
-        private ValidationLevel _level;
-        private string _message;
+        /// <summary>
+        /// Represents empty Results. This field is read-only.
+        /// </summary>
+        public static readonly IValidationResult Empty =
+            new ValidationResult();
+
+        private ValidationLevel _level = ValidationLevel.NoResults;
+        private string _message = string.Empty;
         private object _context;
 
 #region Implementation of IValidationResult

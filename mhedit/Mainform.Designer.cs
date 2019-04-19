@@ -100,7 +100,6 @@ namespace mhedit
             this.splitContainerRight.Panel1.SuspendLayout();
             this.splitContainerRight.Panel2.SuspendLayout();
             this.splitContainerRight.SuspendLayout();
-            this.tabControlSystemWindows.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -519,6 +518,7 @@ namespace mhedit
             // 
             // toolStripMenuItemValidate
             // 
+            this.toolStripMenuItemValidate.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemValidate.Image")));
             this.toolStripMenuItemValidate.Name = "toolStripMenuItemValidate";
             this.toolStripMenuItemValidate.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
             this.toolStripMenuItemValidate.Size = new System.Drawing.Size(208, 22);
@@ -773,7 +773,6 @@ namespace mhedit
             this.splitContainerRight.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerRight)).EndInit();
             this.splitContainerRight.ResumeLayout(false);
-            this.tabControlSystemWindows.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

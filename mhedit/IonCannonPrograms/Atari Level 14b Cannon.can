@@ -3,7 +3,7 @@
   <IonCannonInstruction p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <Orientation>UpRight</Orientation>
     <RotateSpeed>Medium</RotateSpeed>
-    <ShotSpeed>0</ShotSpeed>
+    <ShotSpeed>1</ShotSpeed>
   </IonCannonInstruction>
   <IonCannonInstruction p3:type="Pause" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
     <WaitFrames>16</WaitFrames>

@@ -36,5 +36,14 @@ namespace mhedit.Containers
                 this.SetField( ref this._y, value );
             }
         }
+
+#region Overrides of Object
+
+        public override string ToString()
+        {
+            return $"{this._x},{this._y}";
+        }
+
+#endregion
     }
 }

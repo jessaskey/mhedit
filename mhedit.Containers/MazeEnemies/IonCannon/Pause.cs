@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using mhedit.Containers.Validation;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
@@ -21,6 +22,8 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         //    this._waitFrames = ( si.GetByte( "PackedInfo" ) & 0x3F ) << 2;
         //}
 
+        [Validation( typeof( RangeRule<int> ),
+            Options = "Minimum=0;Maximum=255" )]
         public int WaitFrames
         {
             get
