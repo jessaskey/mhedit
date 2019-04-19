@@ -4,11 +4,11 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using mhedit.Containers.Validation;
 
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
@@ -460,6 +460,11 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                     instruction.PropertyChanged -= this.OnInstructionPropertyChanged;
                 }
             }
+        }
+
+        private void toolStripButtonValidate_Click( object sender, EventArgs e )
+        {
+            this._program.ValidateToMessageBox();
         }
     }
 }

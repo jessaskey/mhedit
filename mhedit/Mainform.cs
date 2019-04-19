@@ -44,6 +44,9 @@ namespace mhedit
 
             treeView.ContextMenuStrip = contextMenuStripTree;
 
+            /// Hack to make "system wide UX" component.
+            ValidationExtensions.SystemWindows = this.tabControlSystemWindows;
+
             this.Text =
                 $"{this.Text} - {Containers.VersionInformation.ApplicationVersion}  BETA VERSION";
 
@@ -617,6 +620,7 @@ namespace mhedit
                 toolStripMenuItemClose.Enabled = true;
                 toolStripMenuItemSave.Enabled = true;
                 toolStripMenuItemSaveAs.Enabled = true;
+                toolStripMenuItemValidate.Enabled = true;
                 toolStripMenuItemDelete.Enabled = true;
                 toolStripMenuItemRename.Enabled = true;
                 toolStripMenuItemPreview.Enabled = true;
@@ -626,6 +630,7 @@ namespace mhedit
                 toolStripMenuItemClose.Enabled = true;
                 toolStripMenuItemSave.Enabled = true;
                 toolStripMenuItemSaveAs.Enabled = true;
+                toolStripMenuItemValidate.Enabled = true;
                 toolStripMenuItemDelete.Enabled = true;
                 toolStripMenuItemRename.Enabled = true;
                 toolStripMenuItemPreview.Enabled = false;
@@ -635,6 +640,7 @@ namespace mhedit
                 toolStripMenuItemClose.Enabled = false;
                 toolStripMenuItemSave.Enabled = false;
                 toolStripMenuItemSaveAs.Enabled = false;
+                toolStripMenuItemValidate.Enabled = false;
                 toolStripMenuItemDelete.Enabled = false;
                 toolStripMenuItemRename.Enabled = false;
                 toolStripMenuItemPreview.Enabled = false;
@@ -1333,14 +1339,12 @@ namespace mhedit
         {
             if ( treeView.SelectedNode?.Tag is MazeController mazeController )
             {
-                this.tabControlSystemWindows.Add( new ValidationWindow(
-                    this.treeView.SelectedNode.Text, mazeController.Maze.Validate() ) );
+                mazeController.Maze.ValidateAndDisplayResults( this.treeView.SelectedNode.Text );
             }
             else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
             {
-                this.tabControlSystemWindows.Add( new ValidationWindow(
-                    this.treeView.SelectedNode.Text,
-                    mazeCollectionController.MazeCollection.Validate() ) );
+                mazeCollectionController.MazeCollection.ValidateAndDisplayResults(
+                    this.treeView.SelectedNode.Text );
             }
         }
     }

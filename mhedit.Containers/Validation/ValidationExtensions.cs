@@ -1,11 +1,29 @@
 ﻿using System;
 using System.Reflection;
+using System.Windows.Forms;
 
 namespace mhedit.Containers.Validation
 {
 
     public static class ValidationExtensions
     {
+        public static ISystemWindows SystemWindows;
+
+        public static void ValidateAndDisplayResults( this object subject, string windowName )
+        {
+            SystemWindows.Add( new ValidationWindow( windowName, subject.Validate() ) );
+        }
+
+        public static void ValidateToMessageBox( this object subject )
+        {
+            IValidationResult validationResult = subject.Validate();
+
+            if ( validationResult.Level > ValidationLevel.Message )
+            {
+                MessageBox.Show( validationResult.ToString(), "Validation Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+            }
+        }
+
         public static IValidationResult Validate( this object subject )
         {
             ValidationResults results = new ValidationResults()

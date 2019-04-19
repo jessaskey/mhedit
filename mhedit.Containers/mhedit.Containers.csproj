@@ -131,6 +131,7 @@
     <Compile Include="Validation\CollectionIndexRule.cs" />
     <Compile Include="Validation\ElementsRule.cs" />
     <Compile Include="Validation\FileNameRule.cs" />
+    <Compile Include="Validation\ISystemWindows.cs" />
     <Compile Include="Validation\MajorHavoc\MazeHintRule.cs" />
     <Compile Include="Validation\MajorHavoc\PerkoidVelocityRule.cs" />
     <Compile Include="Validation\MajorHavoc\PyroidVelocityRule.cs" />
