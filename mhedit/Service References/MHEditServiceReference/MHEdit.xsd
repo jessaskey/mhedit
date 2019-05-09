@@ -2,6 +2,7 @@
 <xs:schema xmlns:tns="http://tempuri.org/" elementFormDefault="qualified" targetNamespace="http://tempuri.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import schemaLocation="http://localhost:52484/MHEdit.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models" />
   <xs:import schemaLocation="http://localhost:52484/MHEdit.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Containers" />
+  <xs:import schemaLocation="http://localhost:52484/MHEdit.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/mhedit.Containers" />
   <xs:element name="Ping">
     <xs:complexType>
       <xs:sequence />
@@ -48,18 +49,14 @@
   <xs:element name="LogException">
     <xs:complexType>
       <xs:sequence>
-        <xs:element minOccurs="0" name="message" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="source" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="stackTrace" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="username" nillable="true" type="xs:string" />
-        <xs:element minOccurs="0" name="version" nillable="true" type="xs:string" />
+        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/mhedit.Containers" minOccurs="0" name="exception" nillable="true" type="q4:ExceptionSummary" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="LogExceptionResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models" minOccurs="0" name="LogExceptionResult" nillable="true" type="q4:ClientResponseOfstring" />
+        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models" minOccurs="0" name="LogExceptionResult" nillable="true" type="q5:ClientResponseOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -75,7 +72,21 @@
   <xs:element name="GetMazesResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models" minOccurs="0" name="GetMazesResult" nillable="true" type="q5:ClientResponseOfArrayOfMazeItem6aJH8QNC" />
+        <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models" minOccurs="0" name="GetMazesResult" nillable="true" type="q6:ClientResponseOfArrayOfMazeItem6aJH8QNC" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMazeThumbnail">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="id" nillable="true" type="xs:string" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetMazeThumbnailResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models" minOccurs="0" name="GetMazeThumbnailResult" nillable="true" type="q7:ClientResponseOfstring" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

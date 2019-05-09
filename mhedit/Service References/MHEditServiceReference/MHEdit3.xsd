@@ -17,9 +17,15 @@
   <xs:element name="ArrayOfMazeItem" nillable="true" type="tns:ArrayOfMazeItem" />
   <xs:complexType name="MazeItem">
     <xs:sequence>
+      <xs:element minOccurs="0" name="AverageRating" type="xs:decimal" />
+      <xs:element minOccurs="0" name="CanDelete" type="xs:boolean" />
+      <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Id" type="ser:guid" />
       <xs:element minOccurs="0" name="MazeName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MazeType" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MazeTypeLetter" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="UploadedOn" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="UserRating" type="xs:decimal" />
       <xs:element minOccurs="0" name="Username" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>

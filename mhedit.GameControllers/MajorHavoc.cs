@@ -779,14 +779,11 @@ namespace mhedit.GameControllers
 
         public ushort GetAddress(string location)
         {
-            ushort address = 0;
             //search the export list for this address...
-
             if (!_exports.ContainsKey(location))
             {
                 throw new Exception("Address not found: " + location.ToString());
             }
-
             return _exports[location];
         }
 

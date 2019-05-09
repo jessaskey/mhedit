@@ -1315,22 +1315,27 @@ namespace mhedit
         {
             if (e.KeyCode == Keys.F10)
             {
-                if (treeView.SelectedNode?.Tag is MazeController mazeController)
+                MajorHavocPromisedEnd mhpe = new MajorHavocPromisedEnd();
+                if (mhpe.LoadTemplate(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation)))
                 {
-                    if (treeView.SelectedNode?.Parent?.Tag is MazeCollectionController mazeCollectionController)
+                    List<Tuple<Maze, int>> mazeInfo = new List<Tuple<Maze, int>>();
+                    foreach (TreeNode node in treeView.Descendants().Cast<TreeNode>().Where(n => n.Checked))
                     {
-                        MajorHavocPromisedEnd mhpe = new MajorHavocPromisedEnd();
-                        if (mhpe.LoadTemplate(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation)))
+                        if (node.Tag is MazeController mazeController)
                         {
-                            int level = mazeCollectionController.MazeCollection.Mazes.IndexOf(mazeController.Maze);
-                            string source = mhpe.ExtractSource(mazeController.Maze, level + 1);
-                            Clipboard.SetText(source);
-                        }
-                        else
-                        {
-                            MessageBox.Show("There was an issue loading the maze objects: " + mhpe.LastError, "ROM Load Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            if (node.Parent?.Tag is MazeCollectionController mazeCollectionController)
+                            {
+                                int level = mazeCollectionController.MazeCollection.Mazes.IndexOf(mazeController.Maze);
+                                mazeInfo.Add(new Tuple<Maze, int>(mazeController.Maze, level + 1));
+                            }
                         }
                     }
+                    string source = mhpe.ExtractSource(mazeInfo);
+                    Clipboard.SetText(source);
+                }
+                else
+                {
+                    MessageBox.Show("There was an issue loading the maze objects: " + mhpe.LastError, "ROM Load Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
         }
@@ -1346,6 +1351,11 @@ namespace mhedit
                 mazeCollectionController.MazeCollection.ValidateAndDisplayResults(
                     this.treeView.SelectedNode.Text );
             }
+        }
+
+        private void toolStripMenuItemCheckboxes_Click(object sender, EventArgs e)
+        {
+            treeView.CheckBoxes = !treeView.CheckBoxes;
         }
     }
 }

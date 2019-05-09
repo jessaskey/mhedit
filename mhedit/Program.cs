@@ -1,3 +1,4 @@
+using mhedit.Containers;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -118,7 +119,8 @@ namespace mhedit
                 }
 
                 MHEditServiceReference.MHEditClient client = MHPController.GetClient();
-                client.LogException(ex.Message, ex.Source, ex.StackTrace, username, Containers.VersionInformation.ApplicationVersion.ToString());
+                ExceptionSummary exceptionSummary = new ExceptionSummary(ex, username, Containers.VersionInformation.ApplicationVersion.ToString(), "");
+                client.LogException(exceptionSummary);
             }
             catch {}
             Cursor.Current = Cursors.Default;
