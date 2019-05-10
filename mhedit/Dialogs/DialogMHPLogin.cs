@@ -66,8 +66,8 @@ namespace mhedit
             set
             {
                 _mazeController = value;
-                textBoxDescription.Text = _mazeController.Maze.Description;
-                textBoxMazeName.Text = _mazeController.Maze.Name;
+                textBoxDescription.Text = _mazeController.Maze.Description.Length > 500 ? _mazeController.Maze.Description.Substring(0,500) : _mazeController.Maze.Description;
+                textBoxMazeName.Text = _mazeController.Maze.Name.Length > 50 ? _mazeController.Maze.Name.Substring(0, 50) : _mazeController.Maze.Name;
             }
         }
 

@@ -106,12 +106,6 @@
   <ItemGroup>
     <Compile Include="Controllers\MAMEHelper.cs" />
     <Compile Include="Controllers\MHPController.cs" />
-    <Compile Include="Controls\TreeViewEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\TreeViewEx.Designer.cs">
-      <DependentUpon>TreeViewEx.cs</DependentUpon>
-    </Compile>
     <Compile Include="Crc32.cs" />
     <Compile Include="Dialogs\DialogLoadROM.cs">
       <SubType>Form</SubType>
@@ -169,9 +163,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="VersionInformation.cs" />
-    <EmbeddedResource Include="Controls\TreeViewEx.resx">
-      <DependentUpon>TreeViewEx.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\DialogAbout.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DialogAbout.cs</DependentUpon>
@@ -455,9 +446,7 @@
       <DefaultIcon>app2.ico</DefaultIcon>
     </FileAssociation>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="doc\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\mhedit.Containers\mhedit.Containers.csproj">
       <Project>{56f50c8e-1406-4888-89a2-575abf86721e}</Project>
