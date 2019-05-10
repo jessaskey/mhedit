@@ -31,8 +31,10 @@ namespace mhedit.Containers
         public EditInfo( DateTime timeStamp, Version editorVersion )
         {
             this.TimeStamp = timeStamp;
-
-            this.EditorVersion = editorVersion.ToString();
+            if (editorVersion != null)
+            {
+                this.EditorVersion = editorVersion.ToString();
+            }
         }
 
         public DateTime TimeStamp;

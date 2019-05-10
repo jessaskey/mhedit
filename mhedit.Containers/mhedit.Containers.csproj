@@ -138,6 +138,7 @@
     <Compile Include="Validation\NamedPropertyRule.cs" />
     <Compile Include="Validation\NotNullRule.cs" />
     <Compile Include="Validation\RangeRule.cs" />
+    <Compile Include="Validation\StringLengthRule.cs" />
     <Compile Include="Validation\StringExistsRule.cs" />
     <Compile Include="Validation\ValidationData.cs" />
     <Compile Include="Validation\ValidationWindow.cs">

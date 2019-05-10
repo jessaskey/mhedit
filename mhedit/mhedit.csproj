@@ -137,6 +137,7 @@
     <Compile Include="Dialogs\DialogConfiguration.Designer.cs">
       <DependentUpon>DialogConfiguration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\TreeView.cs" />
     <Compile Include="GameProfile.cs" />
     <Compile Include="GameProfileFactory.cs" />
     <Compile Include="Globals.cs" />
@@ -266,6 +267,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\MHEditServiceReference\MHEdit3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\MHEditServiceReference\MHEdit4.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\MHEditServiceReference\MHEditService.wsdl" />
@@ -442,9 +446,7 @@
       <DefaultIcon>app2.ico</DefaultIcon>
     </FileAssociation>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="doc\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\mhedit.Containers\mhedit.Containers.csproj">
       <Project>{56f50c8e-1406-4888-89a2-575abf86721e}</Project>

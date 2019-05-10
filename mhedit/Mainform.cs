@@ -319,37 +319,49 @@ namespace mhedit
             {
                 if ( e.Label.Length > 0 )
                 {
-                    if ( e.Label.IndexOfAny( Path.GetInvalidFileNameChars() ) == -1 )
+                    if (e.Label.Length > 50)
                     {
-                        // Stop editing without canceling the label change.
-                        e.Node.EndEdit( false );
-
-                        if ( e.Node.Tag is MazeController controller )
+                        if (e.Label.IndexOfAny(Path.GetInvalidFileNameChars()) == -1)
                         {
-                            controller.Maze.Name = e.Label;
+                            // Stop editing without canceling the label change.
+                            e.Node.EndEdit(false);
 
-                            propertyGrid.Refresh();
+                            if (e.Node.Tag is MazeController controller)
+                            {
+                                controller.Maze.Name = e.Label;
+
+                                propertyGrid.Refresh();
+                            }
+                            else if (e.Node.Tag is MazeCollectionController collectionController)
+                            {
+                                collectionController.MazeCollection.Name = e.Label;
+
+                                propertyGrid.Refresh();
+                            }
                         }
-                        else if ( e.Node.Tag is MazeCollectionController collectionController )
+                        else
                         {
-                            collectionController.MazeCollection.Name = e.Label;
+                            /* Cancel the label edit action, inform the user, and 
+                               place the node in edit mode again. */
+                            e.CancelEdit = true;
 
-                            propertyGrid.Refresh();
+                            string invalid = new string(Path.GetInvalidFileNameChars()
+                                                         .Where(c => !char.IsControl(c))
+                                                         .ToArray());
+
+                            MessageBox.Show($"The name \"{e.Label}\" contains invalid characters: {invalid}",
+                                "Invalid Name");
+
+                            e.Node.BeginEdit();
                         }
                     }
                     else
                     {
                         /* Cancel the label edit action, inform the user, and 
-                           place the node in edit mode again. */
+                       place the node in edit mode again. */
                         e.CancelEdit = true;
-
-                        string invalid = new string( Path.GetInvalidFileNameChars()
-                                                     .Where( c => !char.IsControl( c ) )
-                                                     .ToArray() );
-
-                        MessageBox.Show( $"The name \"{e.Label}\" contains invalid characters: {invalid}",
-                            "Invalid Name" );
-
+                        MessageBox.Show("Maze Name cannot be longer than 50 characters.",
+                           "Node Label Edit");
                         e.Node.BeginEdit();
                     }
                 }
@@ -702,25 +714,35 @@ namespace mhedit
         {
             if ( this.treeView.SelectedNode?.Tag is MazeController mazeController )
             {
-                Image mazeImage = mazeController.GetImage();
+                ValidationResults validationResults = (ValidationResults)mazeController.Maze.Validate();
 
-                if ( mazeController.Maze != null && mazeImage != null )
+                if (validationResults.Where(v => v.Level == ValidationLevel.Error).Count() > 0)
                 {
-                    DialogMHPLogin mhpDialog = new DialogMHPLogin();
-                    if ( !String.IsNullOrEmpty( Properties.Settings.Default.MHPUsername ) )
+                    MessageBox.Show("There are validation errors on the maze selected for upload. Please correct all Validation errors before uploading. \r\n\r\nYou can " +
+                        "view all validation errors by selecting the maze in the tree, right clicking and selecting 'Validate'.", "Validation Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+                else
+                {
+                    Image mazeImage = mazeController.GetImage();
+
+                    if (mazeController.Maze != null && mazeImage != null)
                     {
-                        mhpDialog.Username = Properties.Settings.Default.MHPUsername;
+                        DialogMHPLogin mhpDialog = new DialogMHPLogin();
+                        if (!String.IsNullOrEmpty(Properties.Settings.Default.MHPUsername))
+                        {
+                            mhpDialog.Username = Properties.Settings.Default.MHPUsername;
+                        }
+                        if (!String.IsNullOrEmpty(Properties.Settings.Default.MHPPassword)
+                             && !String.IsNullOrEmpty(Properties.Settings.Default.MHPKey))
+                        {
+                            mhpDialog.Password = Properties.Settings.Default.MHPPassword;
+                            mhpDialog.PasswordKey = Properties.Settings.Default.MHPKey;
+                        }
+                        mhpDialog.SavePassword = Properties.Settings.Default.MHPSavePassword;
+                        mhpDialog.MazePreview = mazeImage;
+                        mhpDialog.MazeController = mazeController;
+                        mhpDialog.ShowDialog();
                     }
-                    if ( !String.IsNullOrEmpty( Properties.Settings.Default.MHPPassword )
-                         && !String.IsNullOrEmpty( Properties.Settings.Default.MHPKey ) )
-                    {
-                        mhpDialog.Password = Properties.Settings.Default.MHPPassword;
-                        mhpDialog.PasswordKey = Properties.Settings.Default.MHPKey;
-                    }
-                    mhpDialog.SavePassword = Properties.Settings.Default.MHPSavePassword;
-                    mhpDialog.MazePreview = mazeImage;
-                    mhpDialog.MazeController = mazeController;
-                    mhpDialog.ShowDialog();
                 }
             }
             else
@@ -1315,22 +1337,27 @@ namespace mhedit
         {
             if (e.KeyCode == Keys.F10)
             {
-                if (treeView.SelectedNode?.Tag is MazeController mazeController)
+                MajorHavocPromisedEnd mhpe = new MajorHavocPromisedEnd();
+                if (mhpe.LoadTemplate(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation)))
                 {
-                    if (treeView.SelectedNode?.Parent?.Tag is MazeCollectionController mazeCollectionController)
+                    List<Tuple<Maze, int>> mazeInfo = new List<Tuple<Maze, int>>();
+                    foreach (TreeNode node in treeView.Descendants().Cast<TreeNode>().Where(n => n.Checked))
                     {
-                        MajorHavocPromisedEnd mhpe = new MajorHavocPromisedEnd();
-                        if (mhpe.LoadTemplate(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation)))
+                        if (node.Tag is MazeController mazeController)
                         {
-                            int level = mazeCollectionController.MazeCollection.Mazes.IndexOf(mazeController.Maze);
-                            string source = mhpe.ExtractSource(mazeController.Maze, level + 1);
-                            Clipboard.SetText(source);
-                        }
-                        else
-                        {
-                            MessageBox.Show("There was an issue loading the maze objects: " + mhpe.LastError, "ROM Load Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            if (node.Parent?.Tag is MazeCollectionController mazeCollectionController)
+                            {
+                                int level = mazeCollectionController.MazeCollection.Mazes.IndexOf(mazeController.Maze);
+                                mazeInfo.Add(new Tuple<Maze, int>(mazeController.Maze, level + 1));
+                            }
                         }
                     }
+                    string source = mhpe.ExtractSource(mazeInfo);
+                    Clipboard.SetText(source);
+                }
+                else
+                {
+                    MessageBox.Show("There was an issue loading the maze objects: " + mhpe.LastError, "ROM Load Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
         }
@@ -1346,6 +1373,11 @@ namespace mhedit
                 mazeCollectionController.MazeCollection.ValidateAndDisplayResults(
                     this.treeView.SelectedNode.Text );
             }
+        }
+
+        private void toolStripMenuItemCheckboxes_Click(object sender, EventArgs e)
+        {
+            treeView.CheckBoxes = !treeView.CheckBoxes;
         }
     }
 }

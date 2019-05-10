@@ -6,6 +6,7 @@
       <xsd:import schemaLocation="http://localhost:52484/MHEdit.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
       <xsd:import schemaLocation="http://localhost:52484/MHEdit.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Models" />
       <xsd:import schemaLocation="http://localhost:52484/MHEdit.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/MHEdit.Web.Containers" />
+      <xsd:import schemaLocation="http://localhost:52484/MHEdit.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/mhedit.Containers" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IMHEdit_Ping_InputMessage">
@@ -38,6 +39,12 @@
   <wsdl:message name="IMHEdit_GetMazes_OutputMessage">
     <wsdl:part name="parameters" element="tns:GetMazesResponse" />
   </wsdl:message>
+  <wsdl:message name="IMHEdit_GetMazeThumbnail_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetMazeThumbnail" />
+  </wsdl:message>
+  <wsdl:message name="IMHEdit_GetMazeThumbnail_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetMazeThumbnailResponse" />
+  </wsdl:message>
   <wsdl:portType name="IMHEdit">
     <wsdl:operation name="Ping">
       <wsdl:input wsaw:Action="http://tempuri.org/IMHEdit/Ping" message="tns:IMHEdit_Ping_InputMessage" />
@@ -58,6 +65,10 @@
     <wsdl:operation name="GetMazes">
       <wsdl:input wsaw:Action="http://tempuri.org/IMHEdit/GetMazes" message="tns:IMHEdit_GetMazes_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IMHEdit/GetMazesResponse" message="tns:IMHEdit_GetMazes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMazeThumbnail">
+      <wsdl:input wsaw:Action="http://tempuri.org/IMHEdit/GetMazeThumbnail" message="tns:IMHEdit_GetMazeThumbnail_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IMHEdit/GetMazeThumbnailResponse" message="tns:IMHEdit_GetMazeThumbnail_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:service name="MHEditService" />

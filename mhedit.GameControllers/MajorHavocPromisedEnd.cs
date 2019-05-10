@@ -986,95 +986,127 @@ namespace mhedit.GameControllers
             return offset;
         }
 
-        public String ExtractSource(Maze maze, int level)
+        public String ExtractSource(List<Tuple<Maze, int>> selectedMazes)
         {
             int dataPosition = 8;
             int commentPosition = 60;
-
             string commentLine = ";********************************************************************";
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine(commentLine);
 
-            //;  Dif 3 -- Maze A - Level 13 - The IonCannon Trainer
+            StringBuilder page6Source = new StringBuilder();
+            StringBuilder page7Source = new StringBuilder();
+            StringBuilder cannonSource = new StringBuilder();
+
             List<String> mazeLetters = new List<string>() { "A", "B", "C", "D" };
-            sb.Append("; ");
-            sb.AppendLine(" Dif " + (level / 4).ToString() + " - Maze " + mazeLetters[((level-1) % 4)] + " - Level " + level.ToString() + " - " + maze.Name);
-            sb.AppendLine(commentLine);
 
-            //Maze Hints
-            if (!String.IsNullOrEmpty(maze.Hint))
+            foreach (Tuple<Maze, int> selectedMaze in selectedMazes)
             {
+                Maze maze = selectedMaze.Item1;
+                int level = selectedMaze.Item2;
+
+                page7Source.AppendLine(commentLine);
+                page7Source.Append("; ");
+                page7Source.AppendLine(" Dif " + (level / 4).ToString() + " - Maze " + mazeLetters[((level - 1) % 4)] + " - Level " + level.ToString() + " - " + maze.Name);
+                page7Source.AppendLine(commentLine);
+
+                //Maze Hints
                 StringBuilder mb = new StringBuilder();
                 mb.Append("mzh");
                 mb.Append(GetMazeCode(level));
                 Tabify(' ', dataPosition, mb);
                 mb.Append(".ctext \"");
-                mb.Append(maze.Hint.ToUpper());
+                if (!String.IsNullOrEmpty(maze.Hint)) { 
+                    mb.Append(maze.Hint.ToUpper());
+                }
                 mb.Append("\"");
-                sb.AppendLine(mb.ToString());
-            }
-            if (!String.IsNullOrEmpty(maze.Hint2))
-            {
-                StringBuilder mb = new StringBuilder();
-                mb.Append("mhz");
-                mb.Append(GetMazeCode(level));
-                mb.Append("a");
-                Tabify(' ', dataPosition, mb);
-                mb.Append(".ctext \"");
-                mb.Append(maze.Hint2.ToUpper());
-                mb.Append("\"");
-                sb.AppendLine(mb.ToString());
-            }
-            sb.AppendLine("");
+                page7Source.AppendLine(mb.ToString());
 
-            //Reactoid.Pyroids.Perkoids.Max
-            sb.AppendLine(DumpBytes("mzsc" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.ReactoidPyroidPerkoidMax).ObjectEncodings));
-            //Oxygen
-            sb.AppendLine(DumpBytes("mzdc" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Oxoids).ObjectEncodings));
-            //Lightning
-            sb.AppendLine(DumpBytes("mzlg" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Lightning).ObjectEncodings));
-            //Arrows
-            sb.AppendLine(DumpBytes("mzar" + GetMazeCode(level), dataPosition, commentPosition, 2, EncodeObjects(maze, EncodingGroup.Arrows).ObjectEncodings));
-            //Exit Arrows
-            sb.AppendLine(DumpBytes("mzor" + GetMazeCode(level), dataPosition, commentPosition, 2, EncodeObjects(maze, EncodingGroup.ArrowsOut).ObjectEncodings));
-            //Trip Pads
-            sb.AppendLine(DumpBytes("mztr" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.TripPoints).ObjectEncodings));
-            //Trip Pad Actions
-            sb.AppendLine(DumpBytes("trpa" + GetMazeCode(level), dataPosition, commentPosition, 3, EncodeObjects(maze, EncodingGroup.TripActions).ObjectEncodings));
-            //Static Walls
-            sb.AppendLine(DumpBytes("mzta" + GetMazeCode(level), dataPosition, commentPosition, 2, EncodeObjects(maze, EncodingGroup.StaticWalls).ObjectEncodings));
-            //Dynamic Walls
-            sb.AppendLine(DumpBytes("mztd" + GetMazeCode(level), dataPosition, commentPosition, 5, EncodeObjects(maze, EncodingGroup.DynamicWalls).ObjectEncodings));
-            //One Way Walls
-            sb.AppendLine(DumpBytes("mone" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.OneWay).ObjectEncodings));
-            //Ion Cannons
-            var cannonGroupEncodings = from e in EncodeObjects(maze, EncodingGroup.IonCannon).ObjectEncodings
-                                       group e by e.Group into g select new { Id = g.Key, Encodings = g.ToList() };
-            int ionIndexer = 0;
-            List<char> suffix = new List<char>() { 'a', 'b', 'c', 'd' };
-            foreach (var g in cannonGroupEncodings)
-            {
-                sb.AppendLine(DumpBytes("mcp" + GetMazeCode(level) + suffix[ionIndexer++], dataPosition, commentPosition, 16, g.Encodings));
+                StringBuilder mb2 = new StringBuilder();
+                mb2.Append("mhz");
+                mb2.Append(GetMazeCode(level));
+                mb2.Append("a");
+                Tabify(' ', dataPosition, mb2);
+                mb2.Append(".ctext \"");
+                if (!String.IsNullOrEmpty(maze.Hint))
+                {
+                    mb2.Append(maze.Hint2.ToUpper());
+                }
+                mb2.Append("\"");
+                page7Source.AppendLine(mb2.ToString());
+                page7Source.AppendLine("");
+
+                //Reactoid.Pyroids.Perkoids.Max
+                page7Source.AppendLine(DumpBytes("mzsc" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.ReactoidPyroidPerkoidMax).ObjectEncodings));
+
+
+                page6Source.AppendLine(commentLine);
+                page6Source.Append("; ");
+                page6Source.AppendLine(" Dif " + (level / 4).ToString() + " - Maze " + mazeLetters[((level - 1) % 4)] + " - Level " + level.ToString() + " - " + maze.Name);
+                page6Source.AppendLine(commentLine);
+                //Oxygen
+                page6Source.AppendLine(DumpBytes("mzdc" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Oxoids).ObjectEncodings));
+                //Lightning
+                page6Source.AppendLine(DumpBytes("mzlg" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Lightning).ObjectEncodings));
+                //Arrows
+                page6Source.AppendLine(DumpBytes("mzar" + GetMazeCode(level), dataPosition, commentPosition, 2, EncodeObjects(maze, EncodingGroup.Arrows).ObjectEncodings));
+                //Exit Arrows
+                page6Source.AppendLine(DumpBytes("mzor" + GetMazeCode(level), dataPosition, commentPosition, 2, EncodeObjects(maze, EncodingGroup.ArrowsOut).ObjectEncodings));
+                //Trip Pads
+                page6Source.AppendLine(DumpBytes("mztr" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.TripPoints).ObjectEncodings));
+                //Trip Pad Actions
+                page6Source.AppendLine(DumpBytes("trpa" + GetMazeCode(level), dataPosition, commentPosition, 3, EncodeObjects(maze, EncodingGroup.TripActions).ObjectEncodings));
+                //Static Walls
+                page6Source.AppendLine(DumpBytes("mzta" + GetMazeCode(level), dataPosition, commentPosition, 2, EncodeObjects(maze, EncodingGroup.StaticWalls).ObjectEncodings));
+                //Dynamic Walls
+                page6Source.AppendLine(DumpBytes("mztd" + GetMazeCode(level), dataPosition, commentPosition, 5, EncodeObjects(maze, EncodingGroup.DynamicWalls).ObjectEncodings));
+                //One Way Walls
+                page6Source.AppendLine(DumpBytes("mone" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.OneWay).ObjectEncodings));
+                //Ion Cannons
+                var cannonGroupEncodings = from e in EncodeObjects(maze, EncodingGroup.IonCannon).ObjectEncodings
+                                           group e by e.Group into g
+                                           select new { Id = g.Key, Encodings = g.ToList() };
+                int ionIndexer = 0;
+                List<char> suffix = new List<char>() { 'a', 'b', 'c', 'd' };
+                List<string> cannonLabels = new List<string>();
+                StringBuilder levelCannonSource = new StringBuilder();
+                foreach (var g in cannonGroupEncodings)
+                {
+                    string cannonLabel = "mcp" + GetMazeCode(level) + suffix[ionIndexer++];
+                    cannonLabels.Add(cannonLabel);
+                    page6Source.AppendLine(DumpBytes(cannonLabel, dataPosition, commentPosition, 16, g.Encodings)); 
+                }
+                levelCannonSource.Append("mcan" + GetMazeCode(level));
+                Tabify(' ', dataPosition ,levelCannonSource);
+                levelCannonSource.Append(String.Join(",", cannonLabels.ToArray()));
+                for(int i = cannonLabels.Count; i < 4; i++)
+                {
+                    levelCannonSource.Append(",0");
+                }
+                cannonSource.AppendLine(levelCannonSource.ToString());
+
+                //Stalactites
+                page6Source.AppendLine(DumpBytes("tite" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Spikes).ObjectEncodings));
+                //Locks and Keys
+                page6Source.AppendLine(DumpBytes("lock" + GetMazeCode(level), dataPosition, commentPosition, 3, EncodeObjects(maze, EncodingGroup.LocksKeys).ObjectEncodings));
+                //Transporters
+                page6Source.AppendLine(DumpBytes("tran" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Transporters).ObjectEncodings));
+                //DeHand
+                page6Source.AppendLine(DumpBytes("hand" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Hand).ObjectEncodings));
+
+                //misc stuff, defined as vars not tables
+                page6Source.AppendLine(DumpScalar("clock" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Clock).ObjectEncodings));
+                page6Source.AppendLine(DumpScalar("boot" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Boots).ObjectEncodings));
+                if ((level - 1) % 4 == 2)
+                {
+                    page6Source.AppendLine(DumpScalar("mpod" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.EscapePod).ObjectEncodings));
+                }
+                page6Source.AppendLine(DumpScalar("outi" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.OutTime).ObjectEncodings));
+                page6Source.AppendLine(DumpScalar("oxyb" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.OxygenReward).ObjectEncodings));
             }
 
-            //Stalactites
-            sb.AppendLine(DumpBytes("tite" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Spikes).ObjectEncodings));
-            //Locks and Keys
-            sb.AppendLine(DumpBytes("lock" + GetMazeCode(level), dataPosition, commentPosition, 3, EncodeObjects(maze, EncodingGroup.LocksKeys).ObjectEncodings));
-            //Transporters
-            sb.AppendLine(DumpBytes("tran" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Transporters).ObjectEncodings));
-            //DeHand
-            sb.AppendLine(DumpBytes("hand" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Hand).ObjectEncodings));
-
-            //misc stuff, defined as vars not tables
-            sb.AppendLine(DumpScalar("clock" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Clock).ObjectEncodings));
-            sb.AppendLine(DumpScalar("boot" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Boots).ObjectEncodings));
-            if ((level - 1) % 4 == 2)
-            {
-                sb.AppendLine(DumpScalar("mpod" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.EscapePod).ObjectEncodings));
-            }
-            sb.AppendLine(DumpScalar("outi" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.OutTime).ObjectEncodings));
-            sb.AppendLine(DumpScalar("oxyb" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.OxygenReward).ObjectEncodings));
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(cannonSource.ToString());
+            sb.AppendLine(page6Source.ToString());
+            sb.AppendLine(page7Source.ToString());
             return sb.ToString();
         }
 

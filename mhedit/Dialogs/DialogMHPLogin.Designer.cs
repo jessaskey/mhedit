@@ -69,7 +69,7 @@
             this.textBoxUsername.Location = new System.Drawing.Point(119, 103);
             this.textBoxUsername.Name = "textBoxUsername";
             this.textBoxUsername.Size = new System.Drawing.Size(236, 20);
-            this.textBoxUsername.TabIndex = 2;
+            this.textBoxUsername.TabIndex = 1;
             // 
             // textBoxPassword
             // 
@@ -77,7 +77,7 @@
             this.textBoxPassword.Name = "textBoxPassword";
             this.textBoxPassword.PasswordChar = '*';
             this.textBoxPassword.Size = new System.Drawing.Size(123, 20);
-            this.textBoxPassword.TabIndex = 4;
+            this.textBoxPassword.TabIndex = 2;
             // 
             // label3
             // 
@@ -125,7 +125,7 @@
             this.checkBoxSavePassword.Location = new System.Drawing.Point(255, 135);
             this.checkBoxSavePassword.Name = "checkBoxSavePassword";
             this.checkBoxSavePassword.Size = new System.Drawing.Size(100, 17);
-            this.checkBoxSavePassword.TabIndex = 12;
+            this.checkBoxSavePassword.TabIndex = 3;
             this.checkBoxSavePassword.Text = "Save Password";
             this.checkBoxSavePassword.UseVisualStyleBackColor = true;
             // 
@@ -136,7 +136,6 @@
             this.linkLabelWebLink.Name = "linkLabelWebLink";
             this.linkLabelWebLink.Size = new System.Drawing.Size(118, 13);
             this.linkLabelWebLink.TabIndex = 13;
-            this.linkLabelWebLink.TabStop = true;
             this.linkLabelWebLink.Text = "http://mhedit.askey.org";
             this.linkLabelWebLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelWebLink_LinkClicked);
             // 
@@ -164,14 +163,14 @@
             this.textBoxDescription.Multiline = true;
             this.textBoxDescription.Name = "textBoxDescription";
             this.textBoxDescription.Size = new System.Drawing.Size(236, 106);
-            this.textBoxDescription.TabIndex = 16;
+            this.textBoxDescription.TabIndex = 5;
             // 
             // textBoxMazeName
             // 
             this.textBoxMazeName.Location = new System.Drawing.Point(119, 160);
             this.textBoxMazeName.Name = "textBoxMazeName";
             this.textBoxMazeName.Size = new System.Drawing.Size(236, 20);
-            this.textBoxMazeName.TabIndex = 17;
+            this.textBoxMazeName.TabIndex = 4;
             // 
             // label7
             // 

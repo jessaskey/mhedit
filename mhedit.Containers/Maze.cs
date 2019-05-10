@@ -54,8 +54,7 @@ namespace mhedit.Containers
         private string _mazeHint2 = String.Empty;
         private int _oxygenReward = 16;
         private List<MazeWall> _mazeWallBase;
-        private readonly ExtendedObservableCollection<MazeObject> _mazeObjects =
-            new ExtendedObservableCollection<MazeObject>();
+        private readonly ExtendedObservableCollection<MazeObject> _mazeObjects = new ExtendedObservableCollection<MazeObject>();
         private List<bool> _transportabilityFlags = new List<bool>();
         private int _mazeStampsX = 0;
         private int _mazeStampsY = 0;
@@ -196,6 +195,8 @@ namespace mhedit.Containers
         }
 
         [Validation( typeof( FileNameRule ) )]
+        [Validation(typeof(StringLengthRule),
+            Options = "Minimum=1;Maximum=50")]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The name of the maze.")]
         public string Name
@@ -209,6 +210,8 @@ namespace mhedit.Containers
         [Validation( typeof( StringExistsRule ),
             Level = ValidationLevel.Warning,
             Message = "Maze Hint: {1}" )]
+        [Validation(typeof(StringLengthRule),
+            Options = "Minimum=0;Maximum=50")]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The text shown at the top of the screen when entering the maze. Valid characters are ' 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:'")]
         public string Hint
@@ -222,6 +225,8 @@ namespace mhedit.Containers
         [Validation( typeof( StringExistsRule ),
             Level = ValidationLevel.Warning,
             Message = "Maze Hint2: {1}" )]
+        [Validation(typeof(StringLengthRule),
+            Options = "Minimum=0;Maximum=50")]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("The second line of text shown at the top of the screen when entering the maze. Valid characters are ' 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:'")]
         public string Hint2
@@ -230,6 +235,8 @@ namespace mhedit.Containers
             set { this.SetField( ref this._mazeHint2, value ); }
         }
 
+        [Validation(typeof(StringLengthRule),
+            Options = "Minimum=0;Maximum=500")]
         [BrowsableAttribute(true)]
         [DescriptionAttribute("A description of gameplay and strategy for this maze.")]
         public string Description

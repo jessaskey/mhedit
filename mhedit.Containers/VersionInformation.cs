@@ -14,11 +14,15 @@ namespace mhedit.Containers
             {
                 if (_applicationVersion == null )
                 {
-                    _applicationVersion = Assembly.GetEntryAssembly().GetName().Version;
-
-                    if (ApplicationDeployment.IsNetworkDeployed )
+                    Assembly assembly = Assembly.GetEntryAssembly();
+                    if (assembly != null)
                     {
-                        _applicationVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                        _applicationVersion = assembly.GetName().Version;
+
+                        if (ApplicationDeployment.IsNetworkDeployed)
+                        {
+                            _applicationVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                        }
                     }
                 }
 
