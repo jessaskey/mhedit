@@ -319,7 +319,7 @@ namespace mhedit
             {
                 if ( e.Label.Length > 0 )
                 {
-                    if (e.Label.Length > 50)
+                    if (e.Label.Length <= 50)
                     {
                         if (e.Label.IndexOfAny(Path.GetInvalidFileNameChars()) == -1)
                         {
