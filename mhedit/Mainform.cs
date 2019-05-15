@@ -1366,12 +1366,11 @@ namespace mhedit
         {
             if ( treeView.SelectedNode?.Tag is MazeController mazeController )
             {
-                mazeController.Maze.ValidateAndDisplayResults( this.treeView.SelectedNode.Text );
+                mazeController.Maze.ValidateAndDisplayResults();
             }
             else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
             {
-                mazeCollectionController.MazeCollection.ValidateAndDisplayResults(
-                    this.treeView.SelectedNode.Text );
+                mazeCollectionController.MazeCollection.ValidateAndDisplayResults();
             }
         }
 

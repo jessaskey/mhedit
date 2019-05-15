@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace mhedit.Containers.Validation
@@ -38,18 +33,21 @@ namespace mhedit.Containers.Validation
         }
 
         public ValidationWindow()
-            : this( "Validation" )
-        {}
-
-        public ValidationWindow( string title )
-            : this( title, new ValidationResult() )
+            : this( new ValidationResult() )
         { }
 
-        public ValidationWindow( string title, IValidationResult result )
+        public ValidationWindow( IValidationResult result )
         {
             InitializeComponent();
 
-            this.Text = title;
+            if ( result.Context is IName iName )
+            {
+                this.Text = iName.Name;
+            }
+            else
+            {
+                this.Text = result.Context.GetType().Name;
+            }
 
             DataGridViewColumn column =
                 new DataGridViewImageColumn(  )
@@ -67,7 +65,7 @@ namespace mhedit.Containers.Validation
             this.dataGridView1.Columns.Add( "Maze", "Maze" );
             this.dataGridView1.Columns.Add( "Object", "Object" );
 
-            this.AddResult( result );
+            this.AddResult( result, string.Empty );
 
             this.SetVisible( this._errorRows, this.ErrorsButton );
             this.SetVisible( this._warningRows, this.WarningsButton );
@@ -77,13 +75,20 @@ namespace mhedit.Containers.Validation
                 DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders );
         }
 
-        private void AddResult( IValidationResult result )
+        private void AddResult( IValidationResult result, string name )
         {
+            if ( result.Context is IName iName )
+            {
+                name += string.IsNullOrEmpty( name ) ?
+                            iName.Name :
+                            $".{iName.Name}";
+            }
+
             if ( result is IEnumerable<IValidationResult> collection )
             {
                 foreach ( IValidationResult current in collection )
                 {
-                    this.AddResult( current );
+                    this.AddResult( current, name );
                 }
 
                 return;
@@ -99,6 +104,7 @@ namespace mhedit.Containers.Validation
             row.Cells[ "Object" ].Value = result.Context;
             row.Cells[ "Level" ].Value = IconList.Images[ result.Level.ToString() ];
             row.Cells[ "Description" ].Value = result.ToString();
+            row.Cells[ "Maze" ].Value = name;
 
             switch ( result.Level )
             {

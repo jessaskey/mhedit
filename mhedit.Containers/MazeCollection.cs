@@ -9,7 +9,7 @@ namespace mhedit.Containers
 {
     [DefaultPropertyAttribute("Name")]
     [Serializable]
-    public class MazeCollection : ChangeTrackingBase
+    public class MazeCollection : ChangeTrackingBase, IName
     {
         #region Declarations
 

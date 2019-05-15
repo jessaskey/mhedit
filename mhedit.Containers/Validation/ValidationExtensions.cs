@@ -9,9 +9,9 @@ namespace mhedit.Containers.Validation
     {
         public static ISystemWindows SystemWindows;
 
-        public static void ValidateAndDisplayResults( this object subject, string windowName )
+        public static void ValidateAndDisplayResults( this object subject )
         {
-            SystemWindows.Add( new ValidationWindow( windowName, subject.Validate() ) );
+            SystemWindows.Add( new ValidationWindow( subject.Validate() ) );
         }
 
         public static void ValidateToMessageBox( this object subject )
