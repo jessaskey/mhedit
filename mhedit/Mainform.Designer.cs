@@ -57,7 +57,7 @@ namespace mhedit
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripButtonContestUpload = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.treeView = new System.Windows.Forms.TreeView();
+            this.treeView = new AugmentedTreeview();
             this.contextMenuStripTree = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemNew = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemAddMazeCollection = new System.Windows.Forms.ToolStripMenuItem();
@@ -382,9 +382,6 @@ namespace mhedit
             this.treeView.AllowDrop = true;
             this.treeView.ContextMenuStrip = this.contextMenuStripTree;
             this.treeView.Dock = System.Windows.Forms.DockStyle.Left;
-            this.treeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            this.treeView.FullRowSelect = true;
-            this.treeView.HideSelection = false;
             this.treeView.ImageIndex = 0;
             this.treeView.ImageList = this.imageListTree;
             this.treeView.LabelEdit = true;
@@ -393,6 +390,7 @@ namespace mhedit
             this.treeView.SelectedImageIndex = 0;
             this.treeView.Size = new System.Drawing.Size(145, 663);
             this.treeView.TabIndex = 2;
+            this.treeView.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView_BeforeLabelEdit);
             this.treeView.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView_AfterLabelEdit);
             this.treeView.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.treeView_DrawNode);
             this.treeView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeView_ItemDrag);
@@ -797,7 +795,7 @@ namespace mhedit
 
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStrip toolStrip;
-        private System.Windows.Forms.TreeView treeView;
+        private AugmentedTreeview treeView;
         private System.Windows.Forms.Splitter splitterLeft;
         private System.Windows.Forms.Panel panelUnderneath;
         private System.Windows.Forms.Splitter splitterRight;

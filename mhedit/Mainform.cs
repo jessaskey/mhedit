@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -312,6 +313,14 @@ namespace mhedit
             }
         }
 
+        private void treeView_BeforeLabelEdit( object sender, NodeLabelEditEventArgs e )
+        {
+            if ( ( ModifierKeys & ( Keys.Control | Keys.Shift ) ) > 0  )
+            {
+                e.CancelEdit = true;
+            }
+        }
+
         private void treeView_AfterLabelEdit( object sender, NodeLabelEditEventArgs e )
         {
             //https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.nodelabelediteventargs?view=netframework-4.7.2
@@ -383,34 +392,26 @@ namespace mhedit
         private void treeView_DrawNode( object sender, DrawTreeNodeEventArgs e )
         {
             // Use the default background and node text.
-            e.DrawDefault = !e.Node.IsEditing;
-
-            if ( e.Node.IsEditing )
-            {
-                // While editing the Node Text don't paint the existing name behind.
-                e.Graphics.FillRectangle( new SolidBrush( SystemColors.Window ), e.Bounds );
-
-                return;
-            }
+            e.DrawDefault = true;
 
             // Extract the set font/color from the tree.
             Font nodeFont =
-                new Font( e.Node.NodeFont ?? ( (TreeView)sender ).Font, FontStyle.Bold );
+                new Font( e.Node.NodeFont ?? e.Node.TreeView.Font, FontStyle.Bold );
 
-            SolidBrush nodeBrush = new SolidBrush( ( (TreeView)sender ).ForeColor );
+            SolidBrush nodeBrush = new SolidBrush( e.Node.TreeView.ForeColor );
 
             // If a node tag is present, draw the IChangeTracking info if necessary.
             if ( e.Node.Tag is MazeController controller )
             {
                 e.Graphics.DrawString(
                     controller.Maze.IsChanged ? ChangeTrackingBase.ModifiedBullet : "",
-                    nodeFont, nodeBrush, e.Bounds.Right + 4, e.Bounds.Top );
+                    nodeFont, nodeBrush, e.Node.Bounds.Right + 4, e.Node.Bounds.Top );
             }
             else if ( e.Node.Tag is MazeCollectionController collection )
             {
                 e.Graphics.DrawString(
                     collection.MazeCollection.IsChanged ? ChangeTrackingBase.ModifiedBullet : "",
-                    nodeFont, nodeBrush, e.Bounds.Right + 4, e.Bounds.Top );
+                    nodeFont, nodeBrush, e.Node.Bounds.Right + 4, e.Node.Bounds.Top );
             }
         }
 

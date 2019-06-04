@@ -44,7 +44,7 @@
             this.toolStripComboBoxLoadPreset = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripButtonSaveProgram = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.treeViewProgram = new System.Windows.Forms.TreeView();
+            this.treeViewProgram = new AugmentedTreeview();
             this.propertyGridProgram = new System.Windows.Forms.PropertyGrid();
             this.panel1 = new System.Windows.Forms.Panel();
             this.buttonOK = new System.Windows.Forms.Button();
@@ -224,8 +224,6 @@
             // treeViewProgram
             // 
             this.treeViewProgram.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeViewProgram.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            this.treeViewProgram.HideSelection = false;
             this.treeViewProgram.Location = new System.Drawing.Point(0, 0);
             this.treeViewProgram.Name = "treeViewProgram";
             this.treeViewProgram.Size = new System.Drawing.Size(297, 382);
@@ -330,7 +328,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBoxLoadPreset;
         private System.Windows.Forms.ToolStripButton toolStripButtonSaveProgram;
-        private System.Windows.Forms.TreeView treeViewProgram;
+        private AugmentedTreeview treeViewProgram;
         private System.Windows.Forms.ToolStripButton toolStripButtonValidate;
     }
 }

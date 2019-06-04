@@ -112,6 +112,9 @@
     <Compile Include="MazeObjects\Spikes.cs" />
     <Compile Include="MazeObjects\Transporter.cs" />
     <Compile Include="MazeWall.cs" />
+    <Compile Include="AugmentedTreeview.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="NameFactory.cs" />
     <Compile Include="NotifyPropertyChangedBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
