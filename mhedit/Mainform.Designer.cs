@@ -1,3 +1,5 @@
+using mhedit.Containers;
+
 namespace mhedit
 {
     partial class Mainform
@@ -91,8 +93,6 @@ namespace mhedit
             this.tabControlSystemWindows = new mhedit.SystemWindowsTabControl();
             this.listView1 = new System.Windows.Forms.ListView();
             this.splitterSystemWindows = new System.Windows.Forms.Splitter();
-            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItemCheckboxes = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.contextMenuStripTree.SuspendLayout();
@@ -409,8 +409,6 @@ namespace mhedit
             this.toolStripMenuItemOpen,
             this.toolStripMenuItemClose,
             this.toolStripSeparator10,
-            this.toolStripMenuItemCheckboxes,
-            this.toolStripSeparator12,
             this.toolStripMenuItemSave,
             this.toolStripMenuItemSaveAs,
             this.toolStripMenuItemSaveAll,
@@ -422,7 +420,7 @@ namespace mhedit
             this.toolStripSeparator9,
             this.toolStripMenuItemPreview});
             this.contextMenuStripTree.Name = "contextMenuStripTree";
-            this.contextMenuStripTree.Size = new System.Drawing.Size(209, 304);
+            this.contextMenuStripTree.Size = new System.Drawing.Size(209, 254);
             this.contextMenuStripTree.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTree_Opening);
             // 
             // toolStripMenuItemNew
@@ -745,18 +743,6 @@ namespace mhedit
             this.splitterSystemWindows.TabIndex = 0;
             this.splitterSystemWindows.TabStop = false;
             // 
-            // toolStripSeparator12
-            // 
-            this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(205, 6);
-            // 
-            // toolStripMenuItemCheckboxes
-            // 
-            this.toolStripMenuItemCheckboxes.Name = "toolStripMenuItemCheckboxes";
-            this.toolStripMenuItemCheckboxes.Size = new System.Drawing.Size(208, 22);
-            this.toolStripMenuItemCheckboxes.Text = "Show/Hide Checkboxes";
-            this.toolStripMenuItemCheckboxes.Click += new System.EventHandler(this.toolStripMenuItemCheckboxes_Click);
-            // 
             // Mainform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -854,8 +840,6 @@ namespace mhedit
         private mhedit.SystemWindowsTabControl tabControlSystemWindows;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.Splitter splitterSystemWindows;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCheckboxes;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
     }
 }
 

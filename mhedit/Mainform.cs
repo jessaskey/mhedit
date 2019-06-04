@@ -1342,7 +1342,7 @@ namespace mhedit
                 if (mhpe.LoadTemplate(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation)))
                 {
                     List<Tuple<Maze, int>> mazeInfo = new List<Tuple<Maze, int>>();
-                    foreach (TreeNode node in treeView.Descendants().Cast<TreeNode>().Where(n => n.Checked))
+                    foreach (TreeNode node in treeView.SelectedNodes)
                     {
                         if (node.Tag is MazeController mazeController)
                         {
@@ -1373,11 +1373,6 @@ namespace mhedit
             {
                 mazeCollectionController.MazeCollection.ValidateAndDisplayResults();
             }
-        }
-
-        private void toolStripMenuItemCheckboxes_Click(object sender, EventArgs e)
-        {
-            treeView.CheckBoxes = !treeView.CheckBoxes;
         }
     }
 }
