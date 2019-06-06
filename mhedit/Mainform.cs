@@ -419,9 +419,13 @@ namespace mhedit
         {
             if ( args.Button == MouseButtons.Right )
             {
-                TreeNode node = treeView.GetNodeAt( args.Location );
+                TreeNode node = this.treeView.GetNodeAt( args.Location );
 
-                if ( node != null && node.Bounds.Contains( args.Location ) )
+                /// only force selection if someone right clicks on the node's text
+                /// and the node isn't already selected.
+                if ( node != null  &&
+                     node.Bounds.Contains( args.Location ) &&
+                     !this.treeView.SelectedNodes.Contains( node ) )
                 {
                     treeView.SelectedNode = node;
                 }
