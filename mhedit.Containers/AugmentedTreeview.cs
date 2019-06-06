@@ -105,6 +105,8 @@ namespace mhedit.Containers
         {
             try
             {
+                base.OnMouseDown( e );
+
                 this._state = MultiSelectState.MouseDown;
 
                 this._cancelSelectedNode = false;
@@ -115,9 +117,10 @@ namespace mhedit.Containers
                 TreeNode selected = this.GetNodeAt( e.Location );
 
                 this._currentSelection = selected != null &&
-                                        e.Location.X >= selected.Bounds.Left &&
-                                        e.Location.X <= selected.Bounds.Right ?
-                                            selected : null;
+                                         e.Button == MouseButtons.Left &&
+                                         e.Location.X >= selected.Bounds.Left &&
+                                         e.Location.X <= selected.Bounds.Right ?
+                                             selected : null;
 
                 this._isMultSelection = e.Clicks == 1 &&
                                         this._currentSelection != null &&
@@ -136,8 +139,6 @@ namespace mhedit.Containers
                 }
 
                 Debug.WriteLine( $"OnMouseDown {e.Clicks} {this._isMultSelection} {this._cancelSelectedNode} {this._mode} {this._currentSelection}" );
-
-                base.OnMouseDown( e );
             }
             catch ( Exception ex )
             {
@@ -161,6 +162,8 @@ namespace mhedit.Containers
         {
             try
             {
+                base.OnMouseUp( e );
+
                 this._state = MultiSelectState.MouseUp;
 
                 /// Only deal with UNSELECTING a node in OnMouseUp.
@@ -191,8 +194,6 @@ namespace mhedit.Containers
                 }
 
                 Debug.WriteLine( $"OnMouseUp {e.Clicks} {this._isMultSelection} {this._cancelSelectedNode} {this._mode} {this._currentSelection}" );
-
-                base.OnMouseUp( e );
             }
             catch ( Exception ex )
             {
@@ -204,8 +205,6 @@ namespace mhedit.Containers
         {
             try
             {
-                //this._state = MultiSelectState.BeforeSelect;
-
                 if ( e.Action == TreeViewAction.ByKeyboard )
                 {
                     /// user uses arrow keys to navigate tree
@@ -269,6 +268,8 @@ namespace mhedit.Containers
             }
             finally
             {
+                this._state = MultiSelectState.BeforeSelect;
+
                 Debug.WriteLine( $"OnBeforeSelect {e.Action} {e.Node} {this._isMultSelection} {this._cancelSelectedNode} {this._mode} {this._currentSelection}" );
 
                 this.EndUpdate();
