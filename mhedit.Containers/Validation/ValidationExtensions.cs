@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -12,6 +13,11 @@ namespace mhedit.Containers.Validation
         public static void ValidateAndDisplayResults( this object subject )
         {
             SystemWindows.Add( new ValidationWindow( subject.Validate() ) );
+        }
+
+        public static void DisplayResults( this IValidationResult results )
+        {
+            SystemWindows.Add( new ValidationWindow( results ) );
         }
 
         public static void ValidateToMessageBox( this object subject )

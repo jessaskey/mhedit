@@ -44,6 +44,10 @@ namespace mhedit.Containers.Validation
             {
                 this.Text = iName.Name;
             }
+            else if ( result.Context is string str )
+            {
+                this.Text = str;
+            }
             else
             {
                 this.Text = result.Context.GetType().Name;
