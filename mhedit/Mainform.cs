@@ -785,22 +785,30 @@ namespace mhedit
 
         private void toolStripMenuItemDelete_Click( object sender, EventArgs e )
         {
-            if ( treeView.SelectedNode != null )
+            if ( treeView.SelectedNodes.Count > 0 )
             {
                 DialogResult result = MessageBox.Show(
-                    $"{treeView.SelectedNode.Text} will be deleted permanently?",
+                    this.treeView.SelectedNodes.Count == 1 ?
+                        $"{this.treeView.SelectedNodes.First().Name} will be deleted permanently!" :
+                        $"All Selected nodes will be deleted permanently!",
                     "Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation );
 
                 if ( result == DialogResult.OK )
                 {
-                    // If maze is part of a collection must remove it too.
-                    if ( treeView.SelectedNode.Tag is MazeController controller &&
-                         treeView.SelectedNode.Parent?.Tag is MazeCollectionController collectionController)
-                    {
-                        collectionController.MazeCollection.Mazes.Remove( controller.Maze );
-                    }
+                    List<TreeNode> toDelete = new List<TreeNode>( this.treeView.SelectedNodes );
 
-                    treeView.SelectedNode.Remove();
+                    foreach ( TreeNode node in toDelete )
+                    {
+                        // If maze is part of a collection must remove it too.
+                        if ( node.Tag is MazeController controller &&
+                             node.Parent?.Tag is MazeCollectionController collectionController )
+                        {
+                            collectionController.MazeCollection.Mazes.Remove( controller.Maze );
+                        }
+
+                        node.Remove();
+                        this.treeView.SelectedNodes.Remove( node );
+                    }
 
                     this.RefreshTree();
                 }
