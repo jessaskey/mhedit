@@ -20,6 +20,8 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             : base( Commands.Move )
         {
             this.Velocity = new SimpleVelocity();
+
+            this.AcceptChanges();
         }
 
         //private Move( RomSerializationInfo si, StreamingContext context )

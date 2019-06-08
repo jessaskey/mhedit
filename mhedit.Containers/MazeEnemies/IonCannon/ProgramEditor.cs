@@ -235,7 +235,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             {
                 DialogResult result = MessageBox.Show(
                     this.treeViewProgram.SelectedNodes.Count == 1 ?
-                        $"{this.treeViewProgram.SelectedNodes.First().Name} will be deleted permanently!" :
+                        $"{this.treeViewProgram.SelectedNodes.First().Text} will be deleted permanently!" :
                         $"All Selected instructions will be deleted permanently!",
                     "Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation );
 
