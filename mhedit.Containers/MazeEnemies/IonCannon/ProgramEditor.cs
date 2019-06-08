@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
@@ -229,16 +231,26 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
         private void toolStripButtonDelete_Click( object sender, EventArgs e )
         {
-            if ( treeViewProgram.SelectedNode != null )
+            if ( treeViewProgram.SelectedNodes.Count > 0 )
             {
                 DialogResult result = MessageBox.Show(
-                    $"{treeViewProgram.SelectedNode.Text} will be deleted permanently?",
+                    this.treeViewProgram.SelectedNodes.Count == 1 ?
+                        $"{this.treeViewProgram.SelectedNodes.First().Name} will be deleted permanently!" :
+                        $"All Selected instructions will be deleted permanently!",
                     "Delete", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation );
 
                 if ( result == DialogResult.OK )
                 {
-                    this._program.Remove(
-                        (IonCannonInstruction) this.treeViewProgram.SelectedNode.Tag );
+                    List<TreeNode> toDelete = new List<TreeNode>( this.treeViewProgram.SelectedNodes );
+
+                    foreach ( TreeNode node in toDelete )
+                    {
+                        this._program.Remove( (IonCannonInstruction) node.Tag );
+                    }
+
+                    this.treeViewProgram.SelectedNodes.Clear();
+
+                    this.treeViewProgram.SelectedNodes.Add( this.treeViewProgram.SelectedNode );
                 }
             }
         }

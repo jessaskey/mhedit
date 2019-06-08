@@ -807,8 +807,11 @@ namespace mhedit
                         }
 
                         node.Remove();
-                        this.treeView.SelectedNodes.Remove( node );
                     }
+
+                    this.treeView.SelectedNodes.Clear();
+
+                    this.treeView.SelectedNodes.Add( this.treeView.SelectedNode );
 
                     this.RefreshTree();
                 }
