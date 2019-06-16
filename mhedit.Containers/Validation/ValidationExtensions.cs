@@ -24,10 +24,17 @@ namespace mhedit.Containers.Validation
         {
             IValidationResult validationResult = subject.Validate();
 
-            if ( validationResult.Level > ValidationLevel.Message )
-            {
-                MessageBox.Show( validationResult.ToString(), "Validation Errors", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
-            }
+            string resultsMessage = validationResult.ToString();
+
+            MessageBox.Show(
+                string.IsNullOrWhiteSpace( resultsMessage ) ?
+                    "There were no errors" : resultsMessage,
+                string.IsNullOrWhiteSpace( caption ) ?
+                    "Validation Errors" : caption,
+                MessageBoxButtons.OK,
+                validationResult.Level > ValidationLevel.Message ?
+                    MessageBoxIcon.Exclamation :
+                    MessageBoxIcon.Information );
         }
 
         public static IValidationResult Validate( this object subject )
