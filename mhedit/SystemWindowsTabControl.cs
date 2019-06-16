@@ -29,6 +29,7 @@ namespace mhedit
         {
             TabPage viewTab = new TabPage( view.Text )
                               {
+                                  Name = view.Text,
                                   Dock = DockStyle.Fill,
                                   UseVisualStyleBackColor = true
                               };
@@ -37,12 +38,26 @@ namespace mhedit
 
             viewTab.Controls.Add( view );
 
-            this.TabPages.Add( viewTab );
+            /// replace the existing.
+            if ( this.TabPages.ContainsKey( view.Text ) )
+            {
+                int insertIndex = this.TabPages.IndexOfKey( view.Text );
+
+                viewTab.Controls.RemoveByKey( view.Text );
+
+                this.TabPages.RemoveByKey( view.Text );
+
+                this.TabPages.Insert( insertIndex, viewTab );
+            }
+            else
+            {
+                this.TabPages.Add( viewTab );
+            }
 
             this.SelectedTab = viewTab;
         }
 
-        #endregion
+#endregion
 
         private void OnControlAdded( object sender, ControlEventArgs e )
         {
@@ -76,6 +91,13 @@ namespace mhedit
          
         private void OnDrawItem( object sender, DrawItemEventArgs e )
         {
+            /// This system keeps supplying an index that's bigger than the
+            /// collection!?
+            if ( e.Index >= this.TabPages.Count )
+            {
+                return;
+            }
+
             var tabPage = this.TabPages[ e.Index ];
             var tabRect = this.GetTabRect( e.Index );
             tabRect.Inflate( -2, -2 );
