@@ -1406,23 +1406,35 @@ namespace mhedit
 
         private void toolStripMenuItemValidate_Click( object sender, EventArgs e )
         {
-            ValidationResults results = new ValidationResults();
-
-            results.Context = NameFactory.Create( "Validation" );
-
-            foreach ( TreeNode selectedNode in this.treeView.SelectedNodes )
+            if ( this.treeView.SelectedNodes.Count == 1 )
             {
-                if ( selectedNode?.Tag is MazeController mazeController )
+                if ( this.treeView.SelectedNode?.Tag is MazeController mazeController )
                 {
-                    results.Add( mazeController.Maze.Validate() );
+                    mazeController.Maze.ValidateAndDisplayResults();
                 }
-                else if ( selectedNode?.Tag is MazeCollectionController mazeCollectionController )
+                else if ( this.treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
                 {
-                    results.Add( mazeCollectionController.MazeCollection.Validate() );
+                    mazeCollectionController.MazeCollection.ValidateAndDisplayResults();
                 }
             }
+            else
+            {
+                Collection mazesToValidate = new Collection();
 
-            results.DisplayResults();
+                foreach ( TreeNode selectedNode in this.treeView.SelectedNodes )
+                {
+                    if ( selectedNode?.Tag is MazeController mazeController )
+                    {
+                        mazesToValidate.Add( mazeController.Maze );
+                    }
+                    else if ( selectedNode?.Tag is MazeCollectionController mazeCollectionController )
+                    {
+                        mazesToValidate.Add( mazeCollectionController.MazeCollection );
+                    }
+                }
+
+                mazesToValidate.ValidateAndDisplayResults();
+            }
         }
     }
 }
