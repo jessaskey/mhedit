@@ -635,22 +635,43 @@ namespace mhedit
             if ( treeView.SelectedNode?.Tag is MazeController mazeController )
             {
                 toolStripMenuItemClose.Enabled = true;
-                toolStripMenuItemSave.Enabled = true;
-                toolStripMenuItemSaveAs.Enabled = true;
                 toolStripMenuItemValidate.Enabled = true;
                 toolStripMenuItemDelete.Enabled = true;
-                toolStripMenuItemRename.Enabled = true;
-                toolStripMenuItemPreview.Enabled = true;
+
+                if ( this.treeView.SelectedNodes.Count > 1 )
+                {
+                    toolStripMenuItemSave.Enabled = false;
+                    toolStripMenuItemSaveAs.Enabled = false;
+                    toolStripMenuItemRename.Enabled = false;
+                    toolStripMenuItemPreview.Enabled = false;
+                }
+                else
+                {
+                    toolStripMenuItemSave.Enabled = true;
+                    toolStripMenuItemSaveAs.Enabled = true;
+                    toolStripMenuItemRename.Enabled = true;
+                    toolStripMenuItemPreview.Enabled = true;
+                }
             }
             else if ( treeView.SelectedNode?.Tag is MazeCollectionController mazeCollectionController )
             {
                 toolStripMenuItemClose.Enabled = true;
-                toolStripMenuItemSave.Enabled = true;
-                toolStripMenuItemSaveAs.Enabled = true;
                 toolStripMenuItemValidate.Enabled = true;
                 toolStripMenuItemDelete.Enabled = true;
-                toolStripMenuItemRename.Enabled = true;
                 toolStripMenuItemPreview.Enabled = false;
+
+                if ( this.treeView.SelectedNodes.Count > 1 )
+                {
+                    toolStripMenuItemSave.Enabled = false;
+                    toolStripMenuItemSaveAs.Enabled = false;
+                    toolStripMenuItemRename.Enabled = false;
+                }
+                else
+                {
+                    toolStripMenuItemSave.Enabled = true;
+                    toolStripMenuItemSaveAs.Enabled = true;
+                    toolStripMenuItemRename.Enabled = true;
+                }
             }
             else
             {
@@ -809,9 +830,14 @@ namespace mhedit
                         node.Remove();
                     }
 
+                    /// HACK... need to fix the multiselect treeview to handle this stuff.
                     this.treeView.SelectedNodes.Clear();
 
-                    this.treeView.SelectedNodes.Add( this.treeView.SelectedNode );
+                    if ( this.treeView.SelectedNode != null )
+                    {
+                        this.treeView.SelectedNodes.Add( this.treeView.SelectedNode );
+                    }
+                    /// HACK
 
                     this.RefreshTree();
                 }
