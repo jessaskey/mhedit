@@ -200,7 +200,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
         private void treeViewProgram_AfterSelect( object sender, TreeViewEventArgs e )
         {
-            propertyGridProgram.SelectedObject = treeViewProgram.SelectedNode?.Tag;
+            this.propertyGridProgram.SelectedObjects = this.treeViewProgram.SelectedNodes.Select( node => node.Tag ).ToArray();
 
             this.UpdateButtons();
         }
