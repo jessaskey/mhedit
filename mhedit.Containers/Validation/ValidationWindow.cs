@@ -90,7 +90,7 @@ namespace mhedit.Containers.Validation
             if ( result.Context is IName iName )
             {
                 name += string.IsNullOrEmpty( name ) ?
-                            iName.Name :
+                            string.Empty :
                             $".{iName.Name}";
             }
 
