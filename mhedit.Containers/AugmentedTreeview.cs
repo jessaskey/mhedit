@@ -284,6 +284,8 @@ namespace mhedit.Containers
 
                 base.OnAfterSelect( e );
 
+                this._isMultSelection = false;
+
                 Debug.WriteLine( $"OnAfterSelect {e.Action} {e.Node} {this._isMultSelection} {this._cancelSelectedNode} {this._mode} {this._currentSelection}" );
             }
             catch ( Exception ex )
