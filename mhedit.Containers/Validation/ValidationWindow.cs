@@ -37,20 +37,26 @@ namespace mhedit.Containers.Validation
         { }
 
         public ValidationWindow( IValidationResult result )
+            : this( result, string.Empty )
+        { }
+
+        public ValidationWindow( IValidationResult result, string title )
         {
             InitializeComponent();
 
-            if ( result.Context is IName iName )
+            /// Always default to the provided title if one is passed in.
+            if ( !string.IsNullOrWhiteSpace( title ) )
+            {
+                this.Text = title;
+            }
+            /// following that, choose the Name of the object.
+            else if ( result.Context is IName iName && !string.IsNullOrWhiteSpace( iName.Name ) )
             {
                 this.Text = iName.Name;
             }
-            else if ( result.Context is string str )
-            {
-                this.Text = str;
-            }
             else
             {
-                this.Text = result.Context.GetType().Name;
+                this.Text = NameFactory.Create( "Validation Results" );
             }
 
             DataGridViewColumn column =
@@ -88,6 +94,8 @@ namespace mhedit.Containers.Validation
                             $".{iName.Name}";
             }
 
+            /// if this layer is a collection of results than skip down into the
+            /// collection without adding any rows.
             if ( result is IEnumerable<IValidationResult> collection )
             {
                 foreach ( IValidationResult current in collection )

@@ -10,17 +10,17 @@ namespace mhedit.Containers.Validation
     {
         public static ISystemWindows SystemWindows;
 
-        public static void ValidateAndDisplayResults( this object subject )
+        public static void ValidateAndDisplayResults( this object subject, string windowTitle = "" )
         {
-            SystemWindows.Add( new ValidationWindow( subject.Validate() ) );
+            SystemWindows.Add( new ValidationWindow( subject.Validate(), windowTitle ) );
         }
 
-        public static void DisplayResults( this IValidationResult results )
+        public static void DisplayResults( this IValidationResult results, string windowTitle = "" )
         {
-            SystemWindows.Add( new ValidationWindow( results ) );
+            SystemWindows.Add( new ValidationWindow( results, windowTitle ) );
         }
 
-        public static void ValidateToMessageBox( this object subject )
+        public static void ValidateToMessageBox( this object subject, string caption = "" )
         {
             IValidationResult validationResult = subject.Validate();
 
