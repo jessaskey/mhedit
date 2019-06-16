@@ -48,7 +48,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         {
             InitializeComponent();
 
-            LoadPresets();
+            this.treeViewProgram.ContextMenuStrip = this.contextMenuStripIonProgram;
 
             this._program = program;
 
@@ -89,6 +89,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             {
                 /// All elements removed
                 this.treeViewProgram.Nodes.Clear();
+                this.treeViewProgram.SelectedNodes.Clear();
             }
             else if ( e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null )
             {
@@ -106,6 +107,24 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             {
                 throw new NotSupportedException( e.Action.ToString() );
             }
+
+            this.UpdateButtons();
+        }
+
+        private void UpdateButtons()
+        {
+            bool hasInstructions = this.treeViewProgram.Nodes.Count != 0;
+
+            this.toolStripButtonDelete.Enabled = hasInstructions;
+            this.toolStripButtonValidate.Enabled = hasInstructions;
+            this.toolStripButtonPreview.Enabled = hasInstructions;
+            this.toolStripButtonSaveProgram.Enabled = hasInstructions;
+
+            bool singleSelected = 
+                hasInstructions && this.treeViewProgram.SelectedNodes.Count == 1;
+
+            this.toolStripButtonMoveUp.Enabled = singleSelected;
+            this.toolStripButtonMoveDown.Enabled = singleSelected;
         }
 
         private void AddNewItems( int index, IList newItems )
@@ -179,21 +198,11 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
         }
 
-        private void LoadPresets()
+        private void treeViewProgram_AfterSelect( object sender, TreeViewEventArgs e )
         {
-            string applicationPath = Path.GetDirectoryName( Application.ExecutablePath );
-            string cannonProgramPath = Path.Combine( applicationPath, "IonCannonPrograms" );
+            propertyGridProgram.SelectedObject = treeViewProgram.SelectedNode?.Tag;
 
-            toolStripComboBoxLoadPreset.Items.Clear();
-
-            if ( Directory.Exists( cannonProgramPath ) )
-            {
-                foreach ( string filename in Directory.GetFiles( cannonProgramPath ) )
-                {
-                    string name = Path.GetFileNameWithoutExtension( filename );
-                    toolStripComboBoxLoadPreset.Items.Add( name );
-                }
-            }
+            this.UpdateButtons();
         }
 
         private void toolStripButtonAddMove_Click( object sender, EventArgs e )
@@ -248,9 +257,14 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                         this._program.Remove( (IonCannonInstruction) node.Tag );
                     }
 
+                    /// HACK... need to fix the multiselect treeview to handle this stuff.
                     this.treeViewProgram.SelectedNodes.Clear();
 
-                    this.treeViewProgram.SelectedNodes.Add( this.treeViewProgram.SelectedNode );
+                    if ( this.treeViewProgram.SelectedNode != null )
+                    {
+                        this.treeViewProgram.SelectedNodes.Add( this.treeViewProgram.SelectedNode );
+                    }
+                    /// HACK
                 }
             }
         }
@@ -287,6 +301,11 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
         }
 
+        private void toolStripButtonValidate_Click( object sender, EventArgs e )
+        {
+            this._program.ValidateToMessageBox();
+        }
+
         private void toolStripButtonPreview_Click( object sender, EventArgs e )
         {
             MessageBox.Show( "Preview no workie. Preview in MAME please!" );
@@ -294,7 +313,56 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             //pd.ShowDialog();
         }
 
+        private void toolStripButtonNewProgram_Click( object sender, EventArgs e )
+        {
+            DialogResult result = DialogResult.OK;
+
+            if ( this._program.IsChanged && this._program.Count > 0 )
+            {
+                result = MessageBox.Show(
+                    $"There are unsaved changes from the current or a previous editor session. " +
+                    Environment.NewLine +
+                    $"Press OK to discard program and start new, or Cancel to return to the editor.",
+                    "New Program",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Warning );
+            }
+
+            if ( result == DialogResult.OK )
+            {
+                this._program.Clear();
+
+                this._program.Add( new ReturnToStart() );
+            }
+        }
+
+        private void toolStripButtonLoadProgram_Click( object sender, EventArgs e )
+        {
+            DialogResult result = DialogResult.OK;
+
+            if ( this._program.IsChanged && this._program.Count > 0 )
+            {
+                result = MessageBox.Show(
+                    $"There are unsaved changes from the current or a previous editor session. " +
+                    Environment.NewLine +
+                    $"Press OK to discard changes and Load, or Cancel to return to the editor.",
+                    "Load Program",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Warning );
+            }
+
+            if ( result == DialogResult.OK )
+            {
+                this.LoadProgram();
+            }
+        }
+
         private void toolStripButtonSaveProgram_Click( object sender, EventArgs e )
+        {
+            this.SaveProgram( this._program );
+        }
+
+        private void SaveProgram( IonCannonProgram programToSave )
         {
             string applicationPath = Path.GetDirectoryName( Application.ExecutablePath );
             string cannonProgramPath = Path.Combine( applicationPath, "IonCannonPrograms" );
@@ -349,7 +417,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                             {
                                 /// This needs to be pulled into common serialization code but I need to create a
                                 /// base/core project first.
-                                serializer.Serialize( writer, _program,
+                                serializer.Serialize( writer, programToSave,
                                     new XmlSerializerNamespaces( new[]
                                                                  {
                                                                      new XmlQualifiedName( "MHEdit",
@@ -358,9 +426,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                             }
                         }
 
-                        this._program.AcceptChanges();
-
-                        LoadPresets();
+                        programToSave.AcceptChanges();
                     }
 #if DEBUG
 #else
@@ -377,50 +443,53 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
         }
 
-        private void toolStripComboBoxLoadPreset_SelectedIndexChanged( object sender, EventArgs e )
+        private void LoadProgram( int insertIndex = -1 )
         {
-            DialogResult result = DialogResult.OK;
-
-            if ( this._program.IsChanged )
+            OpenFileDialog ofd = new OpenFileDialog
             {
-                result = MessageBox.Show(
-                    $"There are unsaved changes from the current or a previous editor session. " +
-                    Environment.NewLine +
-                    $"Press OK to discard changes and Load, or Cancel to return to the editor.",
-                    "Load Program",
-                    MessageBoxButtons.OKCancel,
-                    MessageBoxIcon.Warning );
-            }
+                Title = "Load Ion Cannon Program",
+                InitialDirectory = Path.Combine( Path.GetDirectoryName( Application.ExecutablePath ), "IonCannonPrograms" ),
+                Filter = "Ion Cannon Program|*.can",
+                CheckFileExists = true,
+            };
 
-            //load a preset
-            string applicationPath = Path.GetDirectoryName( Application.ExecutablePath );
-            string cannonProgramPath = Path.Combine( applicationPath, "IonCannonPrograms" );
-
-            string programFile = Path.Combine( cannonProgramPath, toolStripComboBoxLoadPreset.Text + ".can" );
-
-            if ( result == DialogResult.OK && File.Exists( programFile ) )
+            if ( ofd.ShowDialog() == DialogResult.OK && File.Exists( ofd.FileName ) )
             {
                 try
                 {
                     Cursor.Current = Cursors.WaitCursor;
 
-                    using ( FileStream fStream = new FileStream( programFile, FileMode.Open ) )
+                    IonCannonProgram loadedProgram;
+
+                    using ( FileStream fStream = new FileStream( ofd.FileName, FileMode.Open ) )
                     {
                         var serializer = new XmlSerializer( typeof( IonCannonProgram ) );
 
                         using ( var reader = XmlReader.Create( fStream ) )
                         {
-                            IonCannonProgram loadedProgram = (IonCannonProgram)serializer.Deserialize( reader );
+                            loadedProgram = (IonCannonProgram)serializer.Deserialize( reader );
 
                             loadedProgram.AcceptChanges();
-
-                            this._program.Clear();
-
-                            foreach ( IonCannonInstruction ionCannonInstruction in loadedProgram )
-                            {
-                                this._program.Add( ionCannonInstruction );
-                            }
                         }
+                    }
+
+                    /// If the insert index is negative, replace program rather than insert
+                    /// instructions.
+                    if ( insertIndex < 0 )
+                    {
+                        this._program.Clear();
+
+                        insertIndex = 0;
+                    }
+                    else if ( loadedProgram.LastOrDefault() is ReturnToStart )
+                    {
+                        /// remove the ReturnToStart if inserting.
+                        loadedProgram.RemoveAt( loadedProgram.Count - 1 );
+                    }
+
+                    foreach ( IonCannonInstruction ionCannonInstruction in loadedProgram )
+                    {
+                        this._program.Insert( insertIndex++, ionCannonInstruction );
                     }
                 }
 #if DEBUG
@@ -435,11 +504,6 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                     Cursor.Current = Cursors.Default;
                 }
             }
-        }
-
-        private void treeViewProgram_AfterSelect( object sender, TreeViewEventArgs e )
-        {
-            propertyGridProgram.SelectedObject = treeViewProgram.SelectedNode?.Tag;
         }
 
         private void CannonProgramEditor_FormClosing( object sender, FormClosingEventArgs e )
@@ -474,9 +538,66 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
         }
 
-        private void toolStripButtonValidate_Click( object sender, EventArgs e )
+        private void contextMenuStripIonProgram_Opening( object sender, CancelEventArgs e )
         {
-            this._program.ValidateToMessageBox();
+            bool instructionsSelected = this.treeViewProgram.SelectedNodes.Count != 0;
+
+            this.toolStripMenuItemValidate.Enabled = instructionsSelected;
+            this.toolStripMenuItemDelete.Enabled = instructionsSelected;
+            this.toolStripMenuItemSaveAs.Enabled = instructionsSelected;
+
+            if ( this.treeViewProgram.SelectedNodes.Count > 1 )
+            {
+                this.toolStripMenuItemInsertBefore.Enabled = false;
+                this.toolStripMenuItemInsertAfter.Enabled = false;
+            }
+            else
+            {
+                this.toolStripMenuItemInsertBefore.Enabled = true;
+                this.toolStripMenuItemInsertAfter.Enabled = true;
+            }
+        }
+
+        private void toolStripMenuItemInsertBefore_Click( object sender, EventArgs e )
+        {
+            this.LoadProgram(
+                this.treeViewProgram.Nodes.IndexOf( this.treeViewProgram.SelectedNode ) );
+        }
+
+        private void toolStripMenuItemInsertAfter_Click( object sender, EventArgs e )
+        {
+            this.LoadProgram(
+                this.treeViewProgram.Nodes.IndexOf( this.treeViewProgram.SelectedNode ) + 1 );
+        }
+
+        private void toolStripMenuItemSaveAs_Click( object sender, EventArgs e )
+        {
+            if ( this.treeViewProgram.SelectedNodes.Count > 0 )
+            {
+                IonCannonProgram selectedInstructions = new IonCannonProgram();
+
+                foreach ( TreeNode node in this.treeViewProgram.SelectedNodes )
+                {
+                    selectedInstructions.Add( node.Tag as IonCannonInstruction );
+                }
+
+                this.SaveProgram( selectedInstructions );
+            }
+        }
+
+        private void toolStripMenuItemValidate_Click( object sender, EventArgs e )
+        {
+            if ( this.treeViewProgram.SelectedNodes.Count > 0 )
+            {
+                Collection selectedInstructions = new Collection();
+
+                foreach ( TreeNode node in this.treeViewProgram.SelectedNodes )
+                {
+                    selectedInstructions.Add( node.Tag );
+                }
+
+                selectedInstructions.ValidateToMessageBox();
+            }
         }
     }
 }

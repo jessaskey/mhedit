@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CannonProgramEditor));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonAddMove = new System.Windows.Forms.ToolStripButton();
@@ -39,23 +40,32 @@
             this.toolStripButtonMoveUp = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonMoveDown = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButtonValidate = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonPreview = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripComboBoxLoadPreset = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripButtonSaveProgram = new System.Windows.Forms.ToolStripButton();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.treeViewProgram = new AugmentedTreeview();
             this.propertyGridProgram = new System.Windows.Forms.PropertyGrid();
             this.panel1 = new System.Windows.Forms.Panel();
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.toolStripButtonValidate = new System.Windows.Forms.ToolStripButton();
+            this.contextMenuStripIonProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemInsert = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemSaveAs = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemValidate = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButtonNewProgram = new System.Windows.Forms.ToolStripButton();
+            this.toolStripButtonLoadProgram = new System.Windows.Forms.ToolStripButton();
+            this.toolStripMenuItemInsertBefore = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemInsertAfter = new System.Windows.Forms.ToolStripMenuItem();
+            this.treeViewProgram = new mhedit.Containers.AugmentedTreeview();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.contextMenuStripIonProgram.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -73,7 +83,8 @@
             this.toolStripButtonValidate,
             this.toolStripButtonPreview,
             this.toolStripSeparator3,
-            this.toolStripComboBoxLoadPreset,
+            this.toolStripButtonNewProgram,
+            this.toolStripButtonLoadProgram,
             this.toolStripButtonSaveProgram});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
@@ -168,6 +179,17 @@
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
+            // toolStripButtonValidate
+            // 
+            this.toolStripButtonValidate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonValidate.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonValidate.Image")));
+            this.toolStripButtonValidate.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonValidate.Name = "toolStripButtonValidate";
+            this.toolStripButtonValidate.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonValidate.Text = "Validate";
+            this.toolStripButtonValidate.ToolTipText = "Validate";
+            this.toolStripButtonValidate.Click += new System.EventHandler(this.toolStripButtonValidate_Click);
+            // 
             // toolStripButtonPreview
             // 
             this.toolStripButtonPreview.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -184,17 +206,8 @@
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
             // 
-            // toolStripComboBoxLoadPreset
-            // 
-            this.toolStripComboBoxLoadPreset.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripComboBoxLoadPreset.Name = "toolStripComboBoxLoadPreset";
-            this.toolStripComboBoxLoadPreset.Size = new System.Drawing.Size(175, 25);
-            this.toolStripComboBoxLoadPreset.Text = "<Load Preset Program>";
-            this.toolStripComboBoxLoadPreset.SelectedIndexChanged += new System.EventHandler(this.toolStripComboBoxLoadPreset_SelectedIndexChanged);
-            // 
             // toolStripButtonSaveProgram
             // 
-            this.toolStripButtonSaveProgram.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.toolStripButtonSaveProgram.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolStripButtonSaveProgram.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSaveProgram.Image")));
             this.toolStripButtonSaveProgram.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -220,16 +233,6 @@
             this.splitContainer1.Size = new System.Drawing.Size(557, 382);
             this.splitContainer1.SplitterDistance = 297;
             this.splitContainer1.TabIndex = 2;
-            // 
-            // treeViewProgram
-            // 
-            this.treeViewProgram.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeViewProgram.Location = new System.Drawing.Point(0, 0);
-            this.treeViewProgram.Name = "treeViewProgram";
-            this.treeViewProgram.Size = new System.Drawing.Size(297, 382);
-            this.treeViewProgram.TabIndex = 0;
-            this.treeViewProgram.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.treeViewProgram_DrawNode);
-            this.treeViewProgram.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewProgram_AfterSelect);
             // 
             // propertyGridProgram
             // 
@@ -269,16 +272,105 @@
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
-            // toolStripButtonValidate
+            // contextMenuStripIonProgram
             // 
-            this.toolStripButtonValidate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonValidate.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonValidate.Image")));
-            this.toolStripButtonValidate.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonValidate.Name = "toolStripButtonValidate";
-            this.toolStripButtonValidate.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonValidate.Text = "Validate";
-            this.toolStripButtonValidate.ToolTipText = "Validate";
-            this.toolStripButtonValidate.Click += new System.EventHandler(this.toolStripButtonValidate_Click);
+            this.contextMenuStripIonProgram.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemInsert,
+            this.toolStripMenuItemSaveAs,
+            this.toolStripMenuItemDelete,
+            this.toolStripMenuItemValidate});
+            this.contextMenuStripIonProgram.Name = "contextMenuStripIonProgram";
+            this.contextMenuStripIonProgram.Size = new System.Drawing.Size(157, 92);
+            this.contextMenuStripIonProgram.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripIonProgram_Opening);
+            // 
+            // toolStripMenuItemInsert
+            // 
+            this.toolStripMenuItemInsert.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemInsertBefore,
+            this.toolStripMenuItemInsertAfter});
+            this.toolStripMenuItemInsert.Name = "toolStripMenuItemInsert";
+            this.toolStripMenuItemInsert.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemInsert.Text = "Insert";
+            // 
+            // toolStripMenuItemSaveAs
+            // 
+            this.toolStripMenuItemSaveAs.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemSaveAs.Image")));
+            this.toolStripMenuItemSaveAs.Name = "toolStripMenuItemSaveAs";
+            this.toolStripMenuItemSaveAs.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemSaveAs.Text = "Save As...";
+            this.toolStripMenuItemSaveAs.ToolTipText = "Save selected instructions as program";
+            this.toolStripMenuItemSaveAs.Click += new System.EventHandler(this.toolStripMenuItemSaveAs_Click);
+            // 
+            // toolStripMenuItemDelete
+            // 
+            this.toolStripMenuItemDelete.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemDelete.Image")));
+            this.toolStripMenuItemDelete.Name = "toolStripMenuItemDelete";
+            this.toolStripMenuItemDelete.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+            this.toolStripMenuItemDelete.Size = new System.Drawing.Size(156, 22);
+            this.toolStripMenuItemDelete.Text = "Delete";
+            this.toolStripMenuItemDelete.ToolTipText = "Delete selected instructions";
+            this.toolStripMenuItemDelete.Click += new System.EventHandler(this.toolStripButtonDelete_Click);
+            // 
+            // toolStripMenuItemValidate
+            // 
+            this.toolStripMenuItemValidate.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemValidate.Image")));
+            this.toolStripMenuItemValidate.Name = "toolStripMenuItemValidate";
+            this.toolStripMenuItemValidate.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+            this.toolStripMenuItemValidate.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemValidate.Text = "Validate";
+            this.toolStripMenuItemValidate.ToolTipText = "Validate selected instructions";
+            this.toolStripMenuItemValidate.Click += new System.EventHandler(this.toolStripMenuItemValidate_Click);
+            // 
+            // toolStripButtonNewProgram
+            // 
+            this.toolStripButtonNewProgram.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonNewProgram.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonNewProgram.Image")));
+            this.toolStripButtonNewProgram.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonNewProgram.Name = "toolStripButtonNewProgram";
+            this.toolStripButtonNewProgram.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonNewProgram.Text = "toolStripButton1";
+            this.toolStripButtonNewProgram.ToolTipText = "New Program";
+            this.toolStripButtonNewProgram.Click += new System.EventHandler(this.toolStripButtonNewProgram_Click);
+            // 
+            // toolStripButtonLoadProgram
+            // 
+            this.toolStripButtonLoadProgram.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonLoadProgram.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonLoadProgram.Image")));
+            this.toolStripButtonLoadProgram.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonLoadProgram.Name = "toolStripButtonLoadProgram";
+            this.toolStripButtonLoadProgram.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonLoadProgram.Text = "toolStripButton2";
+            this.toolStripButtonLoadProgram.ToolTipText = "Load Program";
+            this.toolStripButtonLoadProgram.Click += new System.EventHandler(this.toolStripButtonLoadProgram_Click);
+            // 
+            // toolStripMenuItemInsertBefore
+            // 
+            this.toolStripMenuItemInsertBefore.Name = "toolStripMenuItemInsertBefore";
+            this.toolStripMenuItemInsertBefore.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemInsertBefore.Text = "Before";
+            this.toolStripMenuItemInsertBefore.ToolTipText = "Insert program before selected";
+            this.toolStripMenuItemInsertBefore.Click += new System.EventHandler(this.toolStripMenuItemInsertBefore_Click);
+            // 
+            // toolStripMenuItemInsertAfter
+            // 
+            this.toolStripMenuItemInsertAfter.Name = "toolStripMenuItemInsertAfter";
+            this.toolStripMenuItemInsertAfter.Size = new System.Drawing.Size(180, 22);
+            this.toolStripMenuItemInsertAfter.Text = "After";
+            this.toolStripMenuItemInsertAfter.ToolTipText = "Insert program after selected";
+            this.toolStripMenuItemInsertAfter.Click += new System.EventHandler(this.toolStripMenuItemInsertAfter_Click);
+            // 
+            // treeViewProgram
+            // 
+            this.treeViewProgram.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeViewProgram.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.treeViewProgram.FullRowSelect = true;
+            this.treeViewProgram.HideSelection = false;
+            this.treeViewProgram.Location = new System.Drawing.Point(0, 0);
+            this.treeViewProgram.Name = "treeViewProgram";
+            this.treeViewProgram.Size = new System.Drawing.Size(297, 382);
+            this.treeViewProgram.TabIndex = 0;
+            this.treeViewProgram.DrawNode += new System.Windows.Forms.DrawTreeNodeEventHandler(this.treeViewProgram_DrawNode);
+            this.treeViewProgram.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewProgram_AfterSelect);
             // 
             // CannonProgramEditor
             // 
@@ -302,6 +394,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.contextMenuStripIonProgram.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -326,9 +419,17 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton toolStripButtonPreview;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripComboBox toolStripComboBoxLoadPreset;
         private System.Windows.Forms.ToolStripButton toolStripButtonSaveProgram;
         private AugmentedTreeview treeViewProgram;
         private System.Windows.Forms.ToolStripButton toolStripButtonValidate;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripIonProgram;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemInsert;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemSaveAs;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemDelete;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemValidate;
+        private System.Windows.Forms.ToolStripButton toolStripButtonNewProgram;
+        private System.Windows.Forms.ToolStripButton toolStripButtonLoadProgram;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemInsertBefore;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemInsertAfter;
     }
 }
