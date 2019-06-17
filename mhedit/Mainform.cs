@@ -1004,17 +1004,18 @@ namespace mhedit
                     // existing validation errors in the parent MazeCollection will keep us from
                     // being able to run the Preview of this level. So build a temporary collection
                     // from the template.
-                    IGameController mhpe = new MajorHavocPromisedEnd();
+                    //IGameController mhpe = new MajorHavocPromisedEnd();
 
-                    if (mhpe.LoadTemplate(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation)))
-                    {
-                        MazeCollection mazeCollection = mhpe.LoadMazes(new List<string>());
+                    //if (mhpe.LoadTemplate(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation)))
+                    //{
+                        //MazeCollection mazeCollection = mhpe.LoadMazes(new List<string>());
 
                         // inject our single maze based upon the maze type A=0,B=1,C=2,D=3
-                        mazeCollection.Mazes[(int)mazeController.Maze.MazeType] = mazeController.Maze;
-
+                        //mazeCollection.Mazes[(int)mazeController.Maze.MazeType] = mazeController.Maze;
+                    if (this.treeView.SelectedNode.Parent != null && this.treeView.SelectedNode.Parent.Tag is MazeCollectionController mazeCollectionController)
+                    {
                         // Now that we have a Maze in a MazeCollection we can build a ROM set to preview from.
-                        if (MAMEHelper.SaveROM(mazeCollection, mazeController.Maze))
+                        if (MAMEHelper.SaveROM(mazeCollectionController.MazeCollection, mazeController.Maze))
                         {
                             //now launch MAME for mhavoc..
                             string mameExe =
@@ -1056,10 +1057,13 @@ namespace mhedit
                             p.Start();
                         }
                     }
-                    else
-                    {
-                        MessageBox.Show("There was an issue loading the maze objects: " + mhpe.LastError, "ROM Load Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    }
+
+                        
+                    //}
+                    //else
+                    //{
+                    //    MessageBox.Show("There was an issue loading the maze objects: " + mhpe.LastError, "ROM Load Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    //}
                     
                 }
             }
