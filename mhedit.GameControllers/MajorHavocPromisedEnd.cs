@@ -1014,8 +1014,13 @@ namespace mhedit.GameControllers
                 mb.Append(GetMazeCode(level));
                 Tabify(' ', dataPosition, mb);
                 mb.Append(".ctext \"");
-                if (!String.IsNullOrEmpty(maze.Hint)) { 
+                if (!String.IsNullOrEmpty(maze.Hint))
+                {
                     mb.Append(maze.Hint.ToUpper());
+                }
+                else
+                {
+                    mb.Append(" ");
                 }
                 mb.Append("\"");
                 page7Source.AppendLine(mb.ToString());
@@ -1026,9 +1031,13 @@ namespace mhedit.GameControllers
                 mb2.Append("a");
                 Tabify(' ', dataPosition, mb2);
                 mb2.Append(".ctext \"");
-                if (!String.IsNullOrEmpty(maze.Hint))
+                if (!String.IsNullOrEmpty(maze.Hint2))
                 {
                     mb2.Append(maze.Hint2.ToUpper());
+                }
+                else
+                {
+                    mb2.Append(" ");
                 }
                 mb2.Append("\"");
                 page7Source.AppendLine(mb2.ToString());
@@ -1076,10 +1085,15 @@ namespace mhedit.GameControllers
                 }
                 levelCannonSource.Append("mcan" + GetMazeCode(level));
                 Tabify(' ', dataPosition ,levelCannonSource);
+                levelCannonSource.Append(".word ");
                 levelCannonSource.Append(String.Join(",", cannonLabels.ToArray()));
                 for(int i = cannonLabels.Count; i < 4; i++)
                 {
-                    levelCannonSource.Append(",0");
+                    if (i > 0)
+                    {
+                        levelCannonSource.Append(",");
+                    }
+                    levelCannonSource.Append("0");
                 }
                 cannonSource.AppendLine(levelCannonSource.ToString());
 
@@ -1095,7 +1109,7 @@ namespace mhedit.GameControllers
                 //misc stuff, defined as vars not tables
                 page6Source.AppendLine(DumpScalar("clock" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Clock).ObjectEncodings));
                 page6Source.AppendLine(DumpScalar("boot" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Boots).ObjectEncodings));
-                if ((level - 1) % 4 == 2)
+                if ((level - 1) % 4 == 1)
                 {
                     page6Source.AppendLine(DumpScalar("mpod" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.EscapePod).ObjectEncodings));
                 }
