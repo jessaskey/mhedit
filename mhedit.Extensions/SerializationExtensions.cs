@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 using ICSharpCode.SharpZipLib.BZip2;
 using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
+using mhedit.Containers.MazeEnemies.IonCannon;
 
 namespace mhedit.Extensions
 {
@@ -132,6 +133,7 @@ namespace mhedit.Extensions
                 {
                     FixParentChildOnTripPads( maze );
                     FixMaxMazeObjectViolations( maze );
+                    FixExcessiveCannonPauseValues(maze);
                 }
             }
             else if ( deserialized is Maze maze )
@@ -208,6 +210,33 @@ namespace mhedit.Extensions
             {
                 maze.MazeObjects.Add( tripPad.Pyroid );
             }
+        }
+
+        private static void FixExcessiveCannonPauseValues( Maze maze)
+        {
+            foreach (IonCannon cannon in maze.MazeObjects.OfType<IonCannon>().ToList())
+            {
+                foreach(IonCannonInstruction instruction in cannon.Program.ToList())
+                {
+                    Move moveCommand = instruction as Move;
+                    if (moveCommand != null)
+                    {
+                        if (moveCommand.WaitFrames >= 64)
+                        {
+                            moveCommand.WaitFrames = moveCommand.WaitFrames >> 2;
+                        }
+                    }
+                    Pause pauseCommand = instruction as Pause;
+                    if (pauseCommand != null)
+                    {
+                        if (pauseCommand.WaitFrames >= 64)
+                        {
+                            pauseCommand.WaitFrames = pauseCommand.WaitFrames >> 2;
+                        }
+                    }
+                }
+            }
+
         }
 
         /// <summary>

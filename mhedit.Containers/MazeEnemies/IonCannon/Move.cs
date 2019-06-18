@@ -45,7 +45,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
             set
             {
-                this.SetField( ref this._waitFrames, value & 0x3F );
+                this.SetField( ref this._waitFrames, value );
             }
         }
 
