@@ -2,7 +2,7 @@
 
 chka2            .EQU  $fd02
 dynamic_base     .EQU  $277e
-levelst          .EQU  $df63
+levelst          .EQU  $df66
 mzdc             .EQU  $2011
 mzlg             .EQU  $2049
 mzar             .EQU  $2081
