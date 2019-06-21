@@ -5,14 +5,15 @@ using mhedit.Containers.Validation;
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
     /// <summary>
-    /// Base class for cannon behavior programming.
+    /// Instruction that handles rotation/orientation of the cannon and
+    /// if it shoots and how fast that shot moves.
     /// </summary>
     [Serializable]
     public sealed class OrientAndFire : IonCannonInstruction
     {
         private Orientation _orientation = Orientation.Down;
         private RotateSpeed _rotateSpeed = RotateSpeed.Slow;
-        private int _shotSpeed = 1;
+        private int _shotSpeed;
 
         public OrientAndFire()
             : base( Commands.OrientAndFire )

@@ -131,18 +131,22 @@ namespace mhedit.Extensions
             {
                 foreach ( Maze maze in collection.Mazes )
                 {
-                    FixParentChildOnTripPads( maze );
-                    FixMaxMazeObjectViolations( maze );
-                    FixExcessiveCannonPauseValues(maze);
+                    PerformDeserializeHacksOn( maze );
                 }
             }
             else if ( deserialized is Maze maze )
             {
-                FixParentChildOnTripPads( maze );
-                FixMaxMazeObjectViolations( maze );
+                PerformDeserializeHacksOn( maze );
             }
 
             return (T)deserialized;
+        }
+
+        private static void PerformDeserializeHacksOn( Maze maze )
+        {
+            FixParentChildOnTripPads( maze );
+            FixMaxMazeObjectViolations( maze );
+            FixExcessiveCannonPauseValues( maze );
         }
 
         /// <summary>
@@ -212,24 +216,32 @@ namespace mhedit.Extensions
             }
         }
 
-        private static void FixExcessiveCannonPauseValues( Maze maze)
+        /// <summary>
+        /// HACK: Fixes issue where the WaitFrames were being multiplied by 4 and didn't
+        /// need to be.
+        /// </summary>
+        /// <param name="maze"></param>
+        private static void FixExcessiveCannonPauseValues( Maze maze )
         {
-            foreach (IonCannon cannon in maze.MazeObjects.OfType<IonCannon>().ToList())
+            foreach ( IonCannon cannon in maze.MazeObjects.OfType<IonCannon>() )
             {
-                foreach(IonCannonInstruction instruction in cannon.Program.ToList())
+                foreach ( IonCannonInstruction instruction in cannon.Program )
                 {
                     Move moveCommand = instruction as Move;
-                    if (moveCommand != null)
+
+                    if ( moveCommand != null )
                     {
-                        if (moveCommand.WaitFrames >= 64)
+                        if ( moveCommand.WaitFrames >= 64 )
                         {
                             moveCommand.WaitFrames = moveCommand.WaitFrames >> 2;
                         }
                     }
+
                     Pause pauseCommand = instruction as Pause;
-                    if (pauseCommand != null)
+
+                    if ( pauseCommand != null )
                     {
-                        if (pauseCommand.WaitFrames >= 64)
+                        if ( pauseCommand.WaitFrames >= 64 )
                         {
                             pauseCommand.WaitFrames = pauseCommand.WaitFrames >> 2;
                         }
