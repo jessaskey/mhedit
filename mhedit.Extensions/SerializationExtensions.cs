@@ -221,24 +221,27 @@ namespace mhedit.Extensions
         /// need to be.
         /// </summary>
         /// <param name="maze"></param>
-        private static void FixExcessiveCannonPauseValues( Maze maze)
+        private static void FixExcessiveCannonPauseValues( Maze maze )
         {
-            foreach (IonCannon cannon in maze.MazeObjects.OfType<IonCannon>().ToList())
+            foreach ( IonCannon cannon in maze.MazeObjects.OfType<IonCannon>() )
             {
-                foreach(IonCannonInstruction instruction in cannon.Program.ToList())
+                foreach ( IonCannonInstruction instruction in cannon.Program )
                 {
                     Move moveCommand = instruction as Move;
-                    if (moveCommand != null)
+
+                    if ( moveCommand != null )
                     {
-                        if (moveCommand.WaitFrames >= 64)
+                        if ( moveCommand.WaitFrames >= 64 )
                         {
                             moveCommand.WaitFrames = moveCommand.WaitFrames >> 2;
                         }
                     }
+
                     Pause pauseCommand = instruction as Pause;
-                    if (pauseCommand != null)
+
+                    if ( pauseCommand != null )
                     {
-                        if (pauseCommand.WaitFrames >= 64)
+                        if ( pauseCommand.WaitFrames >= 64 )
                         {
                             pauseCommand.WaitFrames = pauseCommand.WaitFrames >> 2;
                         }
