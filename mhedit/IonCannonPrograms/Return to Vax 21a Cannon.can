@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfIonCannonInstruction xmlns:MHEdit="http://mhedit.askey.org">
+  <IonCannonInstruction p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>DownLeft</Orientation>
+    <RotateSpeed>Fast</RotateSpeed>
+    <ShotSpeed>16</ShotSpeed>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Pause" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>5</WaitFrames>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="OrientAndFire" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <Orientation>DownRight</Orientation>
+    <RotateSpeed>Fast</RotateSpeed>
+    <ShotSpeed>16</ShotSpeed>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="Pause" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
+    <WaitFrames>5</WaitFrames>
+  </IonCannonInstruction>
+  <IonCannonInstruction p3:type="ReturnToStart" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance" />
+</ArrayOfIonCannonInstruction>
