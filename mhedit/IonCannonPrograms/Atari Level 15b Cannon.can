@@ -11,7 +11,7 @@
     <ShotSpeed>11</ShotSpeed>
   </IonCannonInstruction>
   <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
-    <WaitFrames>16</WaitFrames>
+    <WaitFrames>4</WaitFrames>
     <Velocity>
       <X>-8</X>
       <Y>0</Y>
@@ -30,7 +30,7 @@
     <ShotSpeed>0</ShotSpeed>
   </IonCannonInstruction>
   <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
-    <WaitFrames>16</WaitFrames>
+    <WaitFrames>4</WaitFrames>
     <Velocity>
       <X>8</X>
       <Y>0</Y>
@@ -49,7 +49,7 @@
     <ShotSpeed>0</ShotSpeed>
   </IonCannonInstruction>
   <IonCannonInstruction p3:type="Pause" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
-    <WaitFrames>64</WaitFrames>
+    <WaitFrames>16</WaitFrames>
   </IonCannonInstruction>
   <IonCannonInstruction p3:type="ReturnToStart" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance" />
 </ArrayOfIonCannonInstruction>
