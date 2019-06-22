@@ -14,6 +14,9 @@ namespace mhedit.GameControllers
 {
     public class MajorHavoc : GameController, IGameController
     {
+        private static string Production = "Major Havoc Production";
+        private static string ReturnToVax = "Major Havoc: Return to Vax";
+
         #region Private Variables
 
         private Dictionary<string, ushort> _exports = new Dictionary<string, ushort>();
@@ -27,22 +30,34 @@ namespace mhedit.GameControllers
         private string _lastError = String.Empty;
         private bool _isReturnToVaxx = false;
         private int _numberOfLevels = 20;
+        private readonly string _name;
 
         #endregion
 
+        public MajorHavoc()
+            : this( false )
+        { }
+
         public MajorHavoc(bool isReturnToVaxx)
+            : this( isReturnToVaxx, isReturnToVaxx ? ReturnToVax : Production )
+        { }
+
+        public MajorHavoc( bool isReturnToVaxx, string name )
         {
             _isReturnToVaxx = isReturnToVaxx;
-            if (_isReturnToVaxx)
+            if ( _isReturnToVaxx )
             {
                 _numberOfLevels = 24;
             }
+
+            this._name = name;
+
             InitializeExports();
         }
 
         public string Name
         {
-            get { return "Major Havoc Production"; }
+            get { return this._name; }
             set { }
         }
 
@@ -173,9 +188,9 @@ namespace mhedit.GameControllers
         public MazeCollection LoadMazes(List<string> loadMessages)
         {
             
-            MazeCollection mazeCollection = new MazeCollection("Production Mazes");
-            mazeCollection.AuthorEmail = "owen@maynard.vax";
-            mazeCollection.AuthorName = "Owen Rubin";
+            MazeCollection mazeCollection = new MazeCollection( this.Name );
+            mazeCollection.AuthorEmail =  this._isReturnToVaxx ? "Jess@maynard.vax": "owen@maynard.vax";
+            mazeCollection.AuthorName = this._isReturnToVaxx ? "Jess Askey" : "Owen Rubin";
 
             for ( int i = 0; i < _numberOfLevels; i++)
             {
@@ -479,11 +494,6 @@ namespace mhedit.GameControllers
                 }
 
                 //Laser IonCannon
-                // Ok, So looking at why the cannons are shifted down on level 16.
-                // The issue is that the cannon goes up and down. The key is where
-                // the cannon starts with respect to the ceiling. Cannons 2 and 3
-                // start low (closer to the floor) than all others.
-                // I need to figure out how that's encoded.
                 byte cannonAddressOffset = ReadByte(_exports["mcan"], i);
                 if (cannonAddressOffset != 0)
                 {
@@ -513,7 +523,7 @@ namespace mhedit.GameControllers
                                     cannonPosition.Orientation = (Orientation)gunAngle;
                                     int rotationSpeed = (commandStartByte & 0x06) >> 1;
                                     cannonPosition.RotateSpeed = (RotateSpeed)rotationSpeed;
-                                    int fireBit = (commandStartByte & 0x01);
+                                    int fireBit = commandStartByte & 0x01;
                                     if (fireBit > 0)
                                     {
                                         cannonCommandOffset++;
