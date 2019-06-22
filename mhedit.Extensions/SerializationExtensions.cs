@@ -146,7 +146,7 @@ namespace mhedit.Extensions
         {
             FixParentChildOnTripPads( maze );
             FixMaxMazeObjectViolations( maze );
-            FixExcessiveCannonPauseValues( maze );
+            //FixExcessiveCannonPauseValues( maze );
         }
 
         /// <summary>
@@ -219,37 +219,28 @@ namespace mhedit.Extensions
         /// <summary>
         /// HACK: Fixes issue where the WaitFrames were being multiplied by 4 and didn't
         /// need to be.
+        ///
+        /// THIS IS CURRENTLY DISABLED because we cannot determine when this should be
+        /// performed or ignored.
         /// </summary>
         /// <param name="maze"></param>
-        private static void FixExcessiveCannonPauseValues( Maze maze )
-        {
-            foreach ( IonCannon cannon in maze.MazeObjects.OfType<IonCannon>() )
-            {
-                foreach ( IonCannonInstruction instruction in cannon.Program )
-                {
-                    Move moveCommand = instruction as Move;
-
-                    if ( moveCommand != null )
-                    {
-                        if ( moveCommand.WaitFrames >= 64 )
-                        {
-                            moveCommand.WaitFrames = moveCommand.WaitFrames >> 2;
-                        }
-                    }
-
-                    Pause pauseCommand = instruction as Pause;
-
-                    if ( pauseCommand != null )
-                    {
-                        if ( pauseCommand.WaitFrames >= 64 )
-                        {
-                            pauseCommand.WaitFrames = pauseCommand.WaitFrames >> 2;
-                        }
-                    }
-                }
-            }
-
-        }
+        //private static void FixExcessiveCannonPauseValues( Maze maze )
+        //{
+        //    foreach ( IonCannon cannon in maze.MazeObjects.OfType<IonCannon>() )
+        //    {
+        //        foreach ( IonCannonInstruction instruction in cannon.Program )
+        //        {
+        //            if ( instruction is Move moveCommand )
+        //            {
+        //                moveCommand.WaitFrames = moveCommand.WaitFrames >> 2;
+        //            }
+        //            else if ( instruction is Pause pauseCommand )
+        //            {
+        //                pauseCommand.WaitFrames = pauseCommand.WaitFrames >> 2;
+        //            }
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Convert properties that no longer exist on objects to their new format/property.
