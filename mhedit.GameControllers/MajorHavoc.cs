@@ -523,7 +523,7 @@ namespace mhedit.GameControllers
                                     break;
                                 case Commands.Move:     //Move Position
                                     Move cannonMovement = new Move();
-                                    int waitFrames = (commandStartByte & 0x3F) << 2;
+                                    int waitFrames = (commandStartByte & 0x3F);
                                     cannonMovement.WaitFrames = waitFrames;
                                     if (waitFrames > 0)
                                     {
@@ -535,7 +535,7 @@ namespace mhedit.GameControllers
                                     break;
                                 case Commands.Pause:     //Pause
                                     Pause cannonPause = new Pause();
-                                    cannonPause.WaitFrames = (commandStartByte & 0x3F) << 2;
+                                    cannonPause.WaitFrames = (commandStartByte & 0x3F);
                                     cannon.Program.Add(cannonPause);
                                     break;
                             }
