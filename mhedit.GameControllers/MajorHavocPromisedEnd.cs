@@ -25,17 +25,23 @@ namespace mhedit.GameControllers
         private string _page2367ROM = "mhpe.1np";
         private string _alphaHighROM = "mhpe.1l";
         private string _lastError = String.Empty;
+        private readonly string _name;
 
         #endregion
 
 
         public MajorHavocPromisedEnd()
+            :this( "Major Havoc Promised End" )
+        { }
+
+        public MajorHavocPromisedEnd( string name )
         {
+            this._name = name;
         }
 
         public string Name
         {
-            get { return "Major Havoc Promised End"; }
+            get { return this._name; }
             set { }
         }
 
@@ -104,7 +110,7 @@ namespace mhedit.GameControllers
 
         public MazeCollection LoadMazes(List<string> loadMessages)
         {
-            MazeCollection mazeCollection = new MazeCollection("Promised End Mazes");
+            MazeCollection mazeCollection = new MazeCollection( this.Name );
             mazeCollection.AuthorEmail = "Jess@maynard.vax";
             mazeCollection.AuthorName = "Jess Askey";
 
@@ -454,7 +460,7 @@ namespace mhedit.GameControllers
                                     cannonPosition.Orientation = (Orientation)gunAngle;
                                     int rotationSpeed = (commandStartByte & 0x06) >> 1;
                                     cannonPosition.RotateSpeed = (RotateSpeed)rotationSpeed;
-                                    int fireBit = (commandStartByte & 0x01);
+                                    int fireBit = commandStartByte & 0x01;
                                     if (fireBit > 0)
                                     {
                                         cannonCommandOffset++;
@@ -464,7 +470,7 @@ namespace mhedit.GameControllers
                                     break;
                                 case Commands.Move:     //Move Position
                                     Move cannonMovement = new Move();
-                                    int waitFrames = (commandStartByte & 0x3F) << 2;
+                                    int waitFrames = commandStartByte & 0x3F;
                                     cannonMovement.WaitFrames = waitFrames;
                                     if (waitFrames > 0)
                                     {
@@ -476,7 +482,7 @@ namespace mhedit.GameControllers
                                     break;
                                 case Commands.Pause:     //Pause
                                     Pause cannonPause = new Pause();
-                                    cannonPause.WaitFrames = (commandStartByte & 0x3F) << 2;
+                                    cannonPause.WaitFrames = commandStartByte & 0x3F;
                                     cannon.Program.Add(cannonPause);
                                     break;
                             }
@@ -1014,8 +1020,13 @@ namespace mhedit.GameControllers
                 mb.Append(GetMazeCode(level));
                 Tabify(' ', dataPosition, mb);
                 mb.Append(".ctext \"");
-                if (!String.IsNullOrEmpty(maze.Hint)) { 
+                if (!String.IsNullOrEmpty(maze.Hint))
+                {
                     mb.Append(maze.Hint.ToUpper());
+                }
+                else
+                {
+                    mb.Append(" ");
                 }
                 mb.Append("\"");
                 page7Source.AppendLine(mb.ToString());
@@ -1026,9 +1037,13 @@ namespace mhedit.GameControllers
                 mb2.Append("a");
                 Tabify(' ', dataPosition, mb2);
                 mb2.Append(".ctext \"");
-                if (!String.IsNullOrEmpty(maze.Hint))
+                if (!String.IsNullOrEmpty(maze.Hint2))
                 {
                     mb2.Append(maze.Hint2.ToUpper());
+                }
+                else
+                {
+                    mb2.Append(" ");
                 }
                 mb2.Append("\"");
                 page7Source.AppendLine(mb2.ToString());
@@ -1076,10 +1091,15 @@ namespace mhedit.GameControllers
                 }
                 levelCannonSource.Append("mcan" + GetMazeCode(level));
                 Tabify(' ', dataPosition ,levelCannonSource);
+                levelCannonSource.Append(".word ");
                 levelCannonSource.Append(String.Join(",", cannonLabels.ToArray()));
                 for(int i = cannonLabels.Count; i < 4; i++)
                 {
-                    levelCannonSource.Append(",0");
+                    if (i > 0)
+                    {
+                        levelCannonSource.Append(",");
+                    }
+                    levelCannonSource.Append("0");
                 }
                 cannonSource.AppendLine(levelCannonSource.ToString());
 
@@ -1095,7 +1115,7 @@ namespace mhedit.GameControllers
                 //misc stuff, defined as vars not tables
                 page6Source.AppendLine(DumpScalar("clock" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Clock).ObjectEncodings));
                 page6Source.AppendLine(DumpScalar("boot" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Boots).ObjectEncodings));
-                if ((level - 1) % 4 == 2)
+                if ((level - 1) % 4 == 1)
                 {
                     page6Source.AppendLine(DumpScalar("mpod" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.EscapePod).ObjectEncodings));
                 }

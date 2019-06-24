@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 using ICSharpCode.SharpZipLib.BZip2;
 using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
+using mhedit.Containers.MazeEnemies.IonCannon;
 
 namespace mhedit.Extensions
 {
@@ -130,17 +131,22 @@ namespace mhedit.Extensions
             {
                 foreach ( Maze maze in collection.Mazes )
                 {
-                    FixParentChildOnTripPads( maze );
-                    FixMaxMazeObjectViolations( maze );
+                    PerformDeserializeHacksOn( maze );
                 }
             }
             else if ( deserialized is Maze maze )
             {
-                FixParentChildOnTripPads( maze );
-                FixMaxMazeObjectViolations( maze );
+                PerformDeserializeHacksOn( maze );
             }
 
             return (T)deserialized;
+        }
+
+        private static void PerformDeserializeHacksOn( Maze maze )
+        {
+            FixParentChildOnTripPads( maze );
+            FixMaxMazeObjectViolations( maze );
+            //FixExcessiveCannonPauseValues( maze );
         }
 
         /// <summary>
@@ -209,6 +215,32 @@ namespace mhedit.Extensions
                 maze.MazeObjects.Add( tripPad.Pyroid );
             }
         }
+
+        /// <summary>
+        /// HACK: Fixes issue where the WaitFrames were being multiplied by 4 and didn't
+        /// need to be.
+        ///
+        /// THIS IS CURRENTLY DISABLED because we cannot determine when this should be
+        /// performed or ignored.
+        /// </summary>
+        /// <param name="maze"></param>
+        //private static void FixExcessiveCannonPauseValues( Maze maze )
+        //{
+        //    foreach ( IonCannon cannon in maze.MazeObjects.OfType<IonCannon>() )
+        //    {
+        //        foreach ( IonCannonInstruction instruction in cannon.Program )
+        //        {
+        //            if ( instruction is Move moveCommand )
+        //            {
+        //                moveCommand.WaitFrames = moveCommand.WaitFrames >> 2;
+        //            }
+        //            else if ( instruction is Pause pauseCommand )
+        //            {
+        //                pauseCommand.WaitFrames = pauseCommand.WaitFrames >> 2;
+        //            }
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Convert properties that no longer exist on objects to their new format/property.

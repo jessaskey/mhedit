@@ -38,7 +38,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         //}
 
         [Validation( typeof( RangeRule<int> ),
-            Options = "Minimum=0;Maximum=255" )]
+            Options = "Minimum=0;Maximum=63" )]
         public int WaitFrames
         {
             get
@@ -47,7 +47,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             }
             set
             {
-                this.SetField( ref this._waitFrames, value & 0xFC );
+                this.SetField( ref this._waitFrames, value );
             }
         }
 
@@ -93,7 +93,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
         public override void GetObjectData( List<byte> bytes )
         {
-            bytes.Add( this.SerializeCommand( (byte)( this._waitFrames >> 2 ) ) );
+            bytes.Add( this.SerializeCommand( (byte)( this._waitFrames ) ) );
 
             if ( this._waitFrames > 0 )
             {

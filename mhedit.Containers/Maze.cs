@@ -207,9 +207,9 @@ namespace mhedit.Containers
 
         [Validation( typeof( MazeHintRule ),
             Message = "Maze Hint: {1}" )]
-        [Validation( typeof( StringExistsRule ),
-            Level = ValidationLevel.Warning,
-            Message = "Maze Hint: {1}" )]
+        //[Validation( typeof( StringExistsRule ),
+        //    Level = ValidationLevel.Warning,
+        //    Message = "Maze Hint: {1}" )]
         [Validation(typeof(StringLengthRule),
             Options = "Minimum=0;Maximum=50")]
         [BrowsableAttribute(true)]
