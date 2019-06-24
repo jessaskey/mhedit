@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ArrayOfIonCannonInstruction xmlns:MHEdit="http://mhedit.askey.org">
   <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
-    <WaitFrames>4</WaitFrames>
+    <WaitFrames>1</WaitFrames>
     <Velocity>
       <X>-4</X>
       <Y>0</Y>
@@ -23,7 +23,7 @@
     <ShotSpeed>0</ShotSpeed>
   </IonCannonInstruction>
   <IonCannonInstruction p3:type="Move" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
-    <WaitFrames>4</WaitFrames>
+    <WaitFrames>1</WaitFrames>
     <Velocity>
       <X>4</X>
       <Y>0</Y>

@@ -316,7 +316,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
                 // Define a regular expression that is true for the default program file names.
                 Regex rx = new Regex(
-                    @"Atari Level ([0-9][0-9]?)[abcd]? Cannon(.can)?$", RegexOptions.IgnoreCase );
+                    @"(Atari Level|Return to Vax) ([0-9][0-9]?)[abcd]? Cannon(.can)?$", RegexOptions.IgnoreCase );
 
                 if ( rx.IsMatch( name ) )
                 {

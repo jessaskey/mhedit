@@ -25,17 +25,23 @@ namespace mhedit.GameControllers
         private string _page2367ROM = "mhpe.1np";
         private string _alphaHighROM = "mhpe.1l";
         private string _lastError = String.Empty;
+        private readonly string _name;
 
         #endregion
 
 
         public MajorHavocPromisedEnd()
+            :this( "Major Havoc Promised End" )
+        { }
+
+        public MajorHavocPromisedEnd( string name )
         {
+            this._name = name;
         }
 
         public string Name
         {
-            get { return "Major Havoc Promised End"; }
+            get { return this._name; }
             set { }
         }
 
@@ -104,7 +110,7 @@ namespace mhedit.GameControllers
 
         public MazeCollection LoadMazes(List<string> loadMessages)
         {
-            MazeCollection mazeCollection = new MazeCollection("Promised End Mazes");
+            MazeCollection mazeCollection = new MazeCollection( this.Name );
             mazeCollection.AuthorEmail = "Jess@maynard.vax";
             mazeCollection.AuthorName = "Jess Askey";
 
@@ -454,7 +460,7 @@ namespace mhedit.GameControllers
                                     cannonPosition.Orientation = (Orientation)gunAngle;
                                     int rotationSpeed = (commandStartByte & 0x06) >> 1;
                                     cannonPosition.RotateSpeed = (RotateSpeed)rotationSpeed;
-                                    int fireBit = (commandStartByte & 0x01);
+                                    int fireBit = commandStartByte & 0x01;
                                     if (fireBit > 0)
                                     {
                                         cannonCommandOffset++;
@@ -464,7 +470,7 @@ namespace mhedit.GameControllers
                                     break;
                                 case Commands.Move:     //Move Position
                                     Move cannonMovement = new Move();
-                                    int waitFrames = (commandStartByte & 0x3F);
+                                    int waitFrames = commandStartByte & 0x3F;
                                     cannonMovement.WaitFrames = waitFrames;
                                     if (waitFrames > 0)
                                     {
@@ -476,7 +482,7 @@ namespace mhedit.GameControllers
                                     break;
                                 case Commands.Pause:     //Pause
                                     Pause cannonPause = new Pause();
-                                    cannonPause.WaitFrames = (commandStartByte & 0x3F);
+                                    cannonPause.WaitFrames = commandStartByte & 0x3F;
                                     cannon.Program.Add(cannonPause);
                                     break;
                             }
