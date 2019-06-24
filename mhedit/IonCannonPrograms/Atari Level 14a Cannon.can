@@ -21,7 +21,7 @@
     <ShotSpeed>0</ShotSpeed>
   </IonCannonInstruction>
   <IonCannonInstruction p3:type="Pause" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance">
-    <WaitFrames>68</WaitFrames>
+    <WaitFrames>17</WaitFrames>
   </IonCannonInstruction>
   <IonCannonInstruction p3:type="ReturnToStart" xmlns:p3="http://www.w3.org/2001/XMLSchema-instance" />
 </ArrayOfIonCannonInstruction>
