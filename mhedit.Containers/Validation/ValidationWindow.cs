@@ -67,12 +67,26 @@ namespace mhedit.Containers.Validation
                     AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader,
                     MinimumWidth = 16,
                     Resizable = DataGridViewTriState.False,
-                    SortMode = DataGridViewColumnSortMode.Automatic
+                    SortMode = DataGridViewColumnSortMode.Automatic,
+                    DefaultCellStyle =
+                    {
+                        Alignment = DataGridViewContentAlignment.TopCenter,
+                        Padding = new Padding(0,2,0,0)
+                    }
                 };
 
             this.dataGridView1.Columns.Add( column );
-            this.dataGridView1.Columns.Add( "Description", "Description" );
-            this.dataGridView1.Columns.Add( "Maze", "Maze" );
+
+            column = new DataGridViewTextBoxColumn()
+            {
+                Name = "Description",
+                HeaderText = "Description",
+                DefaultCellStyle = { WrapMode = DataGridViewTriState.True }
+            };
+
+            this.dataGridView1.Columns.Add( column );
+
+            this.dataGridView1.Columns.Add( "Maze", "Maze/Collection" );
             this.dataGridView1.Columns.Add( "Object", "Object" );
 
             this.AddResult( result, string.Empty );

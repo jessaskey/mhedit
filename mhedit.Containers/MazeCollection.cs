@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using mhedit.Containers.Validation;
+using mhedit.Containers.Validation.MajorHavoc;
 
 namespace mhedit.Containers
 {
@@ -50,6 +51,7 @@ namespace mhedit.Containers
         [BrowsableAttribute(false)]
         [Validation( typeof( CollectionSizeRule ),
             Options = "Minimum=1;Maximum=32" )]
+        //[Validation( typeof( MazeTypeOrderRule) )]
         [Validation( typeof( ElementsRule ) )]
         public ExtendedObservableCollection<Maze> Mazes
         {
