@@ -1578,9 +1578,7 @@ namespace mhedit.GameControllers
                 {
                     if (mazeCollection.Mazes[i] == maze)
                     {
-                        byte startLevel = (byte)i;
-                        if (startLevel > 24) startLevel = 24;
-                        WriteAlphaHigh((ushort)(_exports["levelst"] + 1), startLevel);
+                        WriteAlphaHigh((ushort)(_exports["levelst"] + 1), (byte)i );
                     }
                 }
             }
