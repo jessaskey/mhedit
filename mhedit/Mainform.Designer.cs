@@ -66,6 +66,8 @@ namespace mhedit
             this.toolStripMenuItemOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItemCheckboxes = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItemSave = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveAll = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,8 +93,6 @@ namespace mhedit
             this.tabControlSystemWindows = new mhedit.SystemWindowsTabControl();
             this.listView1 = new System.Windows.Forms.ListView();
             this.splitterSystemWindows = new System.Windows.Forms.Splitter();
-            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItemCheckboxes = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.contextMenuStripTree.SuspendLayout();
@@ -307,8 +307,8 @@ namespace mhedit
             this.toolStripButtonMAME.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonMAME.Name = "toolStripButtonMAME";
             this.toolStripButtonMAME.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonMAME.Text = "Run Maze in HBMAME";
-            this.toolStripButtonMAME.ToolTipText = "Run Maze in HBMAME - Hint, click on the maze in the tree first!";
+            this.toolStripButtonMAME.Text = "Preview Maze in HBMAME";
+            this.toolStripButtonMAME.ToolTipText = "Preview Maze in HBMAME - Hint, click on the maze in the tree first!";
             this.toolStripButtonMAME.Click += new System.EventHandler(this.toolStripMenuItemPreview_Click);
             // 
             // toolStripButtonHome
@@ -424,7 +424,7 @@ namespace mhedit
             this.toolStripSeparator9,
             this.toolStripMenuItemPreview});
             this.contextMenuStripTree.Name = "contextMenuStripTree";
-            this.contextMenuStripTree.Size = new System.Drawing.Size(209, 304);
+            this.contextMenuStripTree.Size = new System.Drawing.Size(225, 304);
             this.contextMenuStripTree.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTree_Opening);
             // 
             // toolStripMenuItemNew
@@ -433,7 +433,7 @@ namespace mhedit
             this.toolStripMenuItemAddMazeCollection,
             this.toolStripMenuItemAddNewMaze});
             this.toolStripMenuItemNew.Name = "toolStripMenuItemNew";
-            this.toolStripMenuItemNew.Size = new System.Drawing.Size(208, 22);
+            this.toolStripMenuItemNew.Size = new System.Drawing.Size(224, 22);
             this.toolStripMenuItemNew.Text = "Add";
             // 
             // toolStripMenuItemAddMazeCollection
@@ -456,7 +456,7 @@ namespace mhedit
             // toolStripSeparator8
             // 
             this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size(205, 6);
+            this.toolStripSeparator8.Size = new System.Drawing.Size(221, 6);
             // 
             // toolStripMenuItemOpen
             // 
@@ -464,7 +464,7 @@ namespace mhedit
             this.toolStripMenuItemOpen.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.toolStripMenuItemOpen.Name = "toolStripMenuItemOpen";
             this.toolStripMenuItemOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.toolStripMenuItemOpen.Size = new System.Drawing.Size(208, 22);
+            this.toolStripMenuItemOpen.Size = new System.Drawing.Size(224, 22);
             this.toolStripMenuItemOpen.Text = "Open";
             this.toolStripMenuItemOpen.ToolTipText = "Open";
             this.toolStripMenuItemOpen.Click += new System.EventHandler(this.toolStripMenuItemOpen_Click);
@@ -473,7 +473,7 @@ namespace mhedit
             // 
             this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
             this.toolStripMenuItemClose.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.toolStripMenuItemClose.Size = new System.Drawing.Size(208, 22);
+            this.toolStripMenuItemClose.Size = new System.Drawing.Size(224, 22);
             this.toolStripMenuItemClose.Text = "Close";
             this.toolStripMenuItemClose.ToolTipText = "Close";
             this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
@@ -481,14 +481,26 @@ namespace mhedit
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(205, 6);
+            this.toolStripSeparator10.Size = new System.Drawing.Size(221, 6);
+            // 
+            // toolStripMenuItemCheckboxes
+            // 
+            this.toolStripMenuItemCheckboxes.Name = "toolStripMenuItemCheckboxes";
+            this.toolStripMenuItemCheckboxes.Size = new System.Drawing.Size(224, 22);
+            this.toolStripMenuItemCheckboxes.Text = "Show/Hide Checkboxes";
+            this.toolStripMenuItemCheckboxes.Click += new System.EventHandler(this.toolStripMenuItemCheckboxes_Click);
+            // 
+            // toolStripSeparator12
+            // 
+            this.toolStripSeparator12.Name = "toolStripSeparator12";
+            this.toolStripSeparator12.Size = new System.Drawing.Size(221, 6);
             // 
             // toolStripMenuItemSave
             // 
             this.toolStripMenuItemSave.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemSave.Image")));
             this.toolStripMenuItemSave.Name = "toolStripMenuItemSave";
             this.toolStripMenuItemSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.toolStripMenuItemSave.Size = new System.Drawing.Size(208, 22);
+            this.toolStripMenuItemSave.Size = new System.Drawing.Size(224, 22);
             this.toolStripMenuItemSave.Text = "Save";
             this.toolStripMenuItemSave.ToolTipText = "Save";
             this.toolStripMenuItemSave.Click += new System.EventHandler(this.toolStripMenuItemSave_Click);
@@ -498,7 +510,7 @@ namespace mhedit
             this.toolStripMenuItemSaveAs.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemSaveAs.Image")));
             this.toolStripMenuItemSaveAs.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.toolStripMenuItemSaveAs.Name = "toolStripMenuItemSaveAs";
-            this.toolStripMenuItemSaveAs.Size = new System.Drawing.Size(208, 22);
+            this.toolStripMenuItemSaveAs.Size = new System.Drawing.Size(224, 22);
             this.toolStripMenuItemSaveAs.Text = "Save As...";
             this.toolStripMenuItemSaveAs.ToolTipText = "Save As";
             this.toolStripMenuItemSaveAs.Click += new System.EventHandler(this.toolStripMenuItemSaveAs_Click);
@@ -510,28 +522,28 @@ namespace mhedit
             this.toolStripMenuItemSaveAll.Name = "toolStripMenuItemSaveAll";
             this.toolStripMenuItemSaveAll.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-            this.toolStripMenuItemSaveAll.Size = new System.Drawing.Size(208, 22);
+            this.toolStripMenuItemSaveAll.Size = new System.Drawing.Size(224, 22);
             this.toolStripMenuItemSaveAll.Text = "Save All";
             this.toolStripMenuItemSaveAll.Click += new System.EventHandler(this.toolStripButtonSaveAll_Click);
             // 
             // toolStripSeparator11
             // 
             this.toolStripSeparator11.Name = "toolStripSeparator11";
-            this.toolStripSeparator11.Size = new System.Drawing.Size(205, 6);
+            this.toolStripSeparator11.Size = new System.Drawing.Size(221, 6);
             // 
             // toolStripMenuItemValidate
             // 
             this.toolStripMenuItemValidate.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemValidate.Image")));
             this.toolStripMenuItemValidate.Name = "toolStripMenuItemValidate";
             this.toolStripMenuItemValidate.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.toolStripMenuItemValidate.Size = new System.Drawing.Size(208, 22);
+            this.toolStripMenuItemValidate.Size = new System.Drawing.Size(224, 22);
             this.toolStripMenuItemValidate.Text = "Validate";
             this.toolStripMenuItemValidate.Click += new System.EventHandler(this.toolStripMenuItemValidate_Click);
             // 
             // toolStripSeparator7
             // 
             this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size(205, 6);
+            this.toolStripSeparator7.Size = new System.Drawing.Size(221, 6);
             // 
             // toolStripMenuItemDelete
             // 
@@ -539,7 +551,7 @@ namespace mhedit
             this.toolStripMenuItemDelete.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.toolStripMenuItemDelete.Name = "toolStripMenuItemDelete";
             this.toolStripMenuItemDelete.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.toolStripMenuItemDelete.Size = new System.Drawing.Size(208, 22);
+            this.toolStripMenuItemDelete.Size = new System.Drawing.Size(224, 22);
             this.toolStripMenuItemDelete.Text = "Delete";
             this.toolStripMenuItemDelete.ToolTipText = "Delete";
             this.toolStripMenuItemDelete.Click += new System.EventHandler(this.toolStripMenuItemDelete_Click);
@@ -547,7 +559,7 @@ namespace mhedit
             // toolStripMenuItemRename
             // 
             this.toolStripMenuItemRename.Name = "toolStripMenuItemRename";
-            this.toolStripMenuItemRename.Size = new System.Drawing.Size(208, 22);
+            this.toolStripMenuItemRename.Size = new System.Drawing.Size(224, 22);
             this.toolStripMenuItemRename.Text = "Rename";
             this.toolStripMenuItemRename.ToolTipText = "Rename";
             this.toolStripMenuItemRename.Click += new System.EventHandler(this.toolStripMenuItemRename_Click);
@@ -555,7 +567,7 @@ namespace mhedit
             // toolStripSeparator9
             // 
             this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size(205, 6);
+            this.toolStripSeparator9.Size = new System.Drawing.Size(221, 6);
             // 
             // toolStripMenuItemPreview
             // 
@@ -563,9 +575,9 @@ namespace mhedit
             this.toolStripMenuItemPreview.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripMenuItemPreview.Name = "toolStripMenuItemPreview";
             this.toolStripMenuItemPreview.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.toolStripMenuItemPreview.Size = new System.Drawing.Size(208, 22);
-            this.toolStripMenuItemPreview.Text = "Preview in MAME";
-            this.toolStripMenuItemPreview.ToolTipText = "Preview in MAME";
+            this.toolStripMenuItemPreview.Size = new System.Drawing.Size(224, 22);
+            this.toolStripMenuItemPreview.Text = "Preview in HBMAME";
+            this.toolStripMenuItemPreview.ToolTipText = "Preview in HBMAME";
             this.toolStripMenuItemPreview.Click += new System.EventHandler(this.toolStripMenuItemPreview_Click);
             // 
             // imageListTree
@@ -746,18 +758,6 @@ namespace mhedit
             this.splitterSystemWindows.Size = new System.Drawing.Size(885, 3);
             this.splitterSystemWindows.TabIndex = 0;
             this.splitterSystemWindows.TabStop = false;
-            // 
-            // toolStripSeparator12
-            // 
-            this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(205, 6);
-            // 
-            // toolStripMenuItemCheckboxes
-            // 
-            this.toolStripMenuItemCheckboxes.Name = "toolStripMenuItemCheckboxes";
-            this.toolStripMenuItemCheckboxes.Size = new System.Drawing.Size(208, 22);
-            this.toolStripMenuItemCheckboxes.Text = "Show/Hide Checkboxes";
-            this.toolStripMenuItemCheckboxes.Click += new System.EventHandler(this.toolStripMenuItemCheckboxes_Click);
             // 
             // Mainform
             // 
