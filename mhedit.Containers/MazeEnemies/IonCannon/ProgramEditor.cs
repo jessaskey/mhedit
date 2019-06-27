@@ -229,10 +229,17 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         {
             int index = -1;
 
-            if ( treeViewProgram.SelectedNode != null )
+            /// Insert after selected instruction.
+            if ( this.treeViewProgram.SelectedNode != null )
             {
                 index = this._program.IndexOf(
-                    treeViewProgram.SelectedNode.Tag as IonCannonInstruction );
+                    this.treeViewProgram.SelectedNode.Tag as IonCannonInstruction );
+
+                /// Unless it's a ReturnToStart, where we insert before since RTS should
+                /// be the last instruction.
+                index =
+                    this.treeViewProgram.SelectedNode?.Tag.GetType() == typeof( ReturnToStart ) ?
+                        index - 1 : index;
             }
 
             this._program.Insert( ++index, ionCannonInstruction );
