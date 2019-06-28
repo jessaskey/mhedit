@@ -59,7 +59,7 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         }
 
         [Validation( typeof( RangeRule<int> ),
-            Options = "Minimum=0;Maximum=255" )]
+            Options = "Minimum=0;Maximum=48" )]
         public int ShotSpeed
         {
             get
