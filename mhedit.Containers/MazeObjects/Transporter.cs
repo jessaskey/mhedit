@@ -15,7 +15,7 @@ namespace mhedit.Containers.MazeObjects
         private TransporterDirection _direction;
         private List<bool> _transportability = new List<bool>();
         private ObjectColor _color;
-        private bool _isBroken = false;
+        private bool _isSpecial = false;
         private bool _isHidden = false;
 
         public Transporter()
@@ -76,11 +76,11 @@ namespace mhedit.Containers.MazeObjects
             set { this.SetField( ref this._transportability, value ); }
         }
 
-        [DescriptionAttribute("Marks if the transporter is shown as 'Broken' (only for Promised End")]
-        public bool IsBroken
+        [DescriptionAttribute("Marks if the transporter has Special functionality (only for Promised End")]
+        public bool IsSpecial
         {
-            get { return _isBroken; }
-            set { this.SetField( ref this._isBroken, value ); }
+            get { return this._isSpecial; }
+            set { this.SetField( ref this._isSpecial, value ); }
         }
 
         [DescriptionAttribute("Marks if the transporter is invisible (only for Promised End")]
@@ -116,7 +116,7 @@ namespace mhedit.Containers.MazeObjects
             {
                 colorByte += 0x10;
             }
-            if (_isBroken)
+            if (this._isSpecial)
             {
                 colorByte += 0x40;
             }

@@ -10,6 +10,7 @@ using ICSharpCode.SharpZipLib.BZip2;
 using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
 using mhedit.Containers.MazeEnemies.IonCannon;
+using mhedit.Containers.MazeObjects;
 
 namespace mhedit.Extensions
 {
@@ -131,18 +132,18 @@ namespace mhedit.Extensions
             {
                 foreach ( Maze maze in collection.Mazes )
                 {
-                    PerformDeserializeHacksOn( maze );
+                    PerformPostDeserializeHacksOn( maze );
                 }
             }
             else if ( deserialized is Maze maze )
             {
-                PerformDeserializeHacksOn( maze );
+                PerformPostDeserializeHacksOn( maze );
             }
 
             return (T)deserialized;
         }
 
-        private static void PerformDeserializeHacksOn( Maze maze )
+        private static void PerformPostDeserializeHacksOn( Maze maze )
         {
             FixParentChildOnTripPads( maze );
             FixMaxMazeObjectViolations( maze );
@@ -250,6 +251,7 @@ namespace mhedit.Extensions
         private static void OnUnknownElement( object sender, XmlElementEventArgs e )
         {
             TripPadPyroidUnknownElement( e );
+            TransporterUnknownElement( e );
 
             /// Add future conversion methods here! Make new method for each type.
         }
@@ -282,6 +284,32 @@ namespace mhedit.Extensions
                     {
                         throw new SerializationException(
                             $"{typeof( TripPadPyroid ).Namespace} Velocity to Speed property conversion " +
+                            $"failed for value: {args.Element.InnerText}" );
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handle XML Property conversions for TripPadPyroids here.
+        /// </summary>
+        /// <param name="args"></param>
+        private static void TransporterUnknownElement( XmlElementEventArgs args )
+        {
+            if ( args.ObjectBeingDeserialized is Transporter transporter )
+            {
+                /// The Velocity Property has been converted to a SpeedIndex and a
+                /// Direction Property. 
+                if ( args.Element.Name == "IsBroken" )
+                {
+                    if ( bool.TryParse( args.Element.InnerText, out bool val ) )
+                    {
+                        transporter.IsSpecial = val;
+                    }
+                    else
+                    {
+                        throw new SerializationException(
+                            $"{typeof( Transporter ).Namespace} IsBroken to IsSpecial property conversion " +
                             $"failed for value: {args.Element.InnerText}" );
                     }
                 }

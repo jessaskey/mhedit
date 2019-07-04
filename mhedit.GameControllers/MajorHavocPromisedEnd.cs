@@ -508,7 +508,7 @@ namespace mhedit.GameControllers
                         transporter.Direction = TransporterDirection.Right;
                     }
                     transporter.Color = (ObjectColor)(colorValue & 0x0F);
-                    transporter.IsBroken = ((colorValue & 0x40) > 0);
+                    transporter.IsSpecial = ((colorValue & 0x40) > 0);
                     transporter.IsHidden = ((colorValue & 0x80) > 0);
                     maze.AddObject(transporter);
                     transporterBaseAddress++;
