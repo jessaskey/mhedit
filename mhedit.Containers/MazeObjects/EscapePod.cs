@@ -24,9 +24,6 @@ namespace mhedit.Containers.MazeObjects
                     Point.Empty )
         { }
 
-        [CategoryAttribute("Location")]
-        [ReadOnly(true)]
-        [DescriptionAttribute("The start location of the object in the maze.")]
         public override Point Position
         {
             get { return _position; }

@@ -5,16 +5,16 @@ namespace mhedit.Containers
 {
     public static class DataConverter
     {
-        private static int _vectorGridSize = 256;
+        private const int _vectorGridSize = 256;
         private const int GRIDUNITS = 8;
         private const int GRIDUNITSTAMPS = 8;
-        private static int _canvasGridOffsetX = 3;
-        private static int _canvasGridOffsetY = -3;
+        private const int _canvasGridOffsetX = 3;
+        private const int _canvasGridOffsetY = -3;
 
         /// <summary>
         /// The number of pixels in a Maze Grid/Stamp within the Editor.
         /// </summary>
-        public static int CanvasGridSize = GRIDUNITSTAMPS * GRIDUNITS;
+        public const int CanvasGridSize = GRIDUNITSTAMPS * GRIDUNITS;
 
         /// <summary>
         /// The number of pixels of Padding around the Maze Canvas in the editor.
@@ -25,7 +25,7 @@ namespace mhedit.Containers
         /// <summary>
         /// Scale Factor between Atari and Editor Canvas.
         /// </summary>
-        public static int PositionScaleFactor = _vectorGridSize / CanvasGridSize;
+        public const int PositionScaleFactor = _vectorGridSize / CanvasGridSize;
 
         /// <summary>
         /// Converts an Atari vector tuple into an editor
