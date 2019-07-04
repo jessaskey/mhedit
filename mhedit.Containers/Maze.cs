@@ -118,6 +118,7 @@ namespace mhedit.Containers
         [Validation( typeof( CollectionContentRule<Reactoid> ),
             Message = "Every Maze requires a single Reactoid. {4} were found.",
             Options = "Maximum=1;Minimum=1" )]
+        [Validation( typeof( HandReactorLocationRule ) )]
         [Validation( typeof( ElementsRule ) )]
         [BrowsableAttribute(false)]
         public ExtendedObservableCollection<MazeObject> MazeObjects
