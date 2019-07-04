@@ -212,7 +212,7 @@ namespace mhedit.Containers
 
         public void LoadPosition(byte[] longPosition)
         {
-            Position = DataConverter.ConvertVectorToPixels(DataConverter.ByteArrayLongToPoint(longPosition));
+            Position = DataConverter.ConvertVectorToPixels(DataConverter.ByteArrayLongToPoint(longPosition, this.StaticLSB ) );
         }
 
         protected virtual Image AddSelectedDecoration( Image img )
