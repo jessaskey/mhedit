@@ -1821,7 +1821,30 @@ namespace mhedit.GameControllers
                         List<Transporter> coloredTranporterMatches = maze.MazeObjects.OfType<Transporter>().Where(t => t.Color == transporterPair.Key).ToList();
                         foreach (Transporter t in coloredTranporterMatches)
                         {
-                            encodings.Add(t.ToBytes(), Enum.GetName(typeof(ObjectColor), t.Color));
+                            List<string> flags = new List<string>();
+                            flags.Add("col" + Enum.GetName(typeof(ObjectColor), t.Color).ToLower());
+                            if (t.Direction == TransporterDirection.Right)
+                            {
+                                flags.Add("tr_right");
+                            }
+                            else
+                            {
+                                flags.Add("tr_left");
+                            }
+                            if (t.IsHidden)
+                            {
+                                flags.Add("tr_hidden");
+                            }
+                            if (t.IsSpecial)
+                            {
+                                flags.Add("tr_special");
+                            }
+                            StringBuilder tMacro = new StringBuilder();
+                            tMacro.Append(".db (");
+                            tMacro.Append(String.Join("+", flags.ToArray()));
+                            tMacro.Append("),$");
+                            tMacro.Append(t.ToBytes()[1].ToString("X2"));
+                            encodings.Add(t.ToBytes(), Enum.GetName(typeof(ObjectColor), t.Color), "", tMacro.ToString());
                         }
                     }
                     //write end of transports
@@ -1870,30 +1893,6 @@ namespace mhedit.GameControllers
                         encodings.Add(transportabilityBytes.ToArray(), "Transportability Flags");
                     }
                     encodings.Add(0xee, "Transportability Flags");
-                    //{
-                    //    int flagCount = 0;
-                    //    int flagValue = 0;
-                    //    for (int f = 0; f < maze.TransportabilityFlags.Count; f++)
-                    //    {
-                    //        flagValue = flagValue << 1;
-                    //        if (f < maze.TransportabilityFlags.Count)
-                    //        {
-                    //            if (maze.TransportabilityFlags[f])
-                    //            {
-                    //                flagValue += 1;
-                    //            }
-                    //        }
-
-                    //        flagCount++;
-                    //        if (flagCount > 7)
-                    //        {
-                    //            encodings.Add((byte)flagValue, "Transportability Flags");
-                    //            flagCount = 0;
-                    //            flagValue = 0;
-                    //        }
-                    //    }
-                    //}
-                    //encodings.Add(0xee);
                     break;
                 case EncodingGroup.Hand:
                     Hand hand = maze.MazeObjects.OfType<Hand>().FirstOrDefault();
