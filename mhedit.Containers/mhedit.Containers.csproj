@@ -133,10 +133,15 @@
     <Compile Include="Validation\FileNameRule.cs" />
     <Compile Include="Validation\ISystemWindows.cs" />
     <Compile Include="Validation\MajorHavoc\HandReactorLocationRule.cs" />
+    <Compile Include="Validation\MajorHavoc\KeyLockPairsRule.cs" />
     <Compile Include="Validation\MajorHavoc\MazeHintRule.cs" />
     <Compile Include="Validation\MajorHavoc\MazeTypeOrderRule.cs" />
     <Compile Include="Validation\MajorHavoc\PerkoidVelocityRule.cs" />
     <Compile Include="Validation\MajorHavoc\PyroidVelocityRule.cs" />
+    <Compile Include="Validation\MajorHavoc\SingleColorKeyRule.cs" />
+    <Compile Include="Validation\MajorHavoc\SingleColorLockRule.cs" />
+    <Compile Include="Validation\MajorHavoc\TransporterDirectionRule.cs" />
+    <Compile Include="Validation\MajorHavoc\TransporterPairsRule.cs" />
     <Compile Include="Validation\NamedPropertyRule.cs" />
     <Compile Include="Validation\NotNullRule.cs" />
     <Compile Include="Validation\RangeRule.cs" />
