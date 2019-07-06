@@ -6,7 +6,9 @@ namespace mhedit.Containers.Validation.MajorHavoc
 {
     /// <summary>
     /// Validates that the MazeObject collection contains Transporter color matched
-    /// pairs. Any individual Transporter that doesn't have a match based on color
+    /// pairs. This does NOT validate Intra-Level Transporters, it ignores them. Please
+    /// see IntraLevelTransporterRule.
+    /// Any individual Transporter that doesn't have a match based on color
     /// fails this test is processed as an individual error.
     ///
     /// ValidationAttribute.Options (none)
@@ -28,7 +30,9 @@ namespace mhedit.Containers.Validation.MajorHavoc
 
             foreach ( MazeObject mazeObject in mazeObjects )
             {
-                if ( mazeObject is Transporter transporter )
+                /// Ignore Intra-Level Transporters!
+                if ( mazeObject is Transporter transporter &&
+                     !transporter.IsSpecial )
                 {
                     if ( !transporters.ContainsKey( transporter.Color ) )
                     {
