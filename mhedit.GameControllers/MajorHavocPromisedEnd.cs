@@ -1901,7 +1901,7 @@ namespace mhedit.GameControllers
                         Reactoid r = maze.MazeObjects.OfType<Reactoid>().FirstOrDefault();
                         if (r != null)
                         {
-                            encodings.Add(hand.ToBytes(r.Position), "Hand");
+                            encodings.Add(hand.ToBytes(r), "Hand");
                         }
                     }
                     else
