@@ -10,19 +10,26 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 {
     /// <summary>
     /// The IonCannon class shows the Ion IonCannon in the maze.
+    /// 
+    /// IonCannons are a Hybrid.. they have a High Resolution X component and a Low
+    /// Resolution Y component but are stored in High Resolution format. Several
+    /// cannons in the factory ROMs have High Resolution position data in the Y/Low
+    /// Resolution component. This shows as visual errors in the Editor but has no
+    /// effect on the actual game. This object corrects for those on load by using
+    /// a StaticLSB value of Point( 0, 0x80 ).
     /// </summary>
     [Serializable]
     public class IonCannon : MazeObject
     {
-        private static readonly Point _snapSize = new Point( 1, 1 );
+        private static readonly Point _snapSize = new Point( 1, 64 );
         private bool _isShotTransportable;
         private IonCannonProgram _program;
 
         public IonCannon()
-            : base( 4,
+            : base( Constants.MAXOBJECTS_CANNON,
                     ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.cannon_obj.png" ),
-                    Point.Empty,
-                    new Point( 32, 32 ) )
+                    new Point( 0, 0x80 ),
+                    new Point( 31, 32 ) )
         {
             this.Program = new IonCannonProgram();
         }
@@ -32,7 +39,6 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         {
             get { return _snapSize; }
         }
-
 
         #region Implementation of IChangeTracking
 
@@ -92,6 +98,23 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             {
                 this.SetField(ref this._isShotTransportable, value);
             }
+        }
+
+        public override Point GetAdjustedPosition( Point point )
+        {
+            Point adjusted = base.GetAdjustedPosition( point );
+
+            /// Make a special adjustment for drag/drop operations to make the drop 
+            /// behavior/location logical from the Users perspective. This is due 
+            /// to the Image being the same size as a maze stamp AND the image needs
+            /// to be displayed between 2 maze stamps.
+            /// Thus, make adjustments based upon the cursor being in the lower or
+            /// upper range of a maze stamp
+            adjusted.Y +=
+                ( ( point.Y - DataConverter.PADDING ) % DataConverter.CanvasGridSize ) < 32 ?
+                    -32 : 32;
+
+            return adjusted;
         }
 
         public override byte[] ToBytes()

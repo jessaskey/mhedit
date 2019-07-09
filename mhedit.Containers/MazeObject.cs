@@ -18,7 +18,7 @@ namespace mhedit.Containers
         private Point _position = Point.Empty;
         private readonly int _maxObjects;
         private Image _image;
-        private readonly Point _staticLsb;
+        private Point _staticLsb;
         private Point _renderOffset;
         private bool _selected = false;
 
@@ -89,9 +89,11 @@ namespace mhedit.Containers
         /// </summary>
         [BrowsableAttribute( false )]
         [IgnoreDataMemberAttribute]
+        [XmlIgnore]
         public Point StaticLSB
         {
             get { return _staticLsb; }
+            protected set { this._staticLsb = value; }
         }
 
         [BrowsableAttribute( false )]
@@ -210,7 +212,7 @@ namespace mhedit.Containers
 
         public void LoadPosition(byte[] longPosition)
         {
-            Position = DataConverter.ConvertVectorToPixels(DataConverter.ByteArrayLongToPoint(longPosition));
+            Position = DataConverter.ConvertVectorToPixels(DataConverter.ByteArrayLongToPoint(longPosition, this.StaticLSB ) );
         }
 
         protected virtual Image AddSelectedDecoration( Image img )

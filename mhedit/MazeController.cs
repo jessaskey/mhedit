@@ -280,8 +280,6 @@ namespace mhedit
 			//Console.Write("OnPaint Begin\n");
 
 			Pen bigGridPen = new Pen(Color.DimGray, 1);
-			Pen smallGridPen = new Pen(Color.DimGray, 1);
-			Pen backgroundPen = new Pen(Color.Gray, 1);
 			Brush referenceBrush = Brushes.Yellow;
 
 			int mazeWidth;

@@ -8,8 +8,12 @@ namespace mhedit.Containers.MazeObjects
     [Serializable]
     public class Reactoid : MazeObject
     {
-        private static readonly Point _snapSize = new Point( 1, 1 );
+        /// <summary>
+        /// The Width of the Reactoid in Atari Vector units.
+        /// </summary>
+        public const int VectorWidth = 110;
 
+        private static readonly Point _snapSize = new Point( 1, 1 );
         private int _timer = 30;
 
         public Reactoid()

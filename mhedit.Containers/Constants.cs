@@ -30,6 +30,6 @@ namespace mhedit.Containers
         public static int MAXOBJECTS_REACTOID = 1;
         public static int MAXOBJECTS_SPIKES = 5;
         public static int MAXOBJECTS_TRANSPORTER = 8;
-
+        public static int MAXOBJECTS_CANNON = 4;
     }
 }
