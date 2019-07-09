@@ -1015,38 +1015,7 @@ namespace mhedit.GameControllers
                 page7Source.AppendLine(commentLine);
 
                 //Maze Hints
-                StringBuilder mb = new StringBuilder();
-                mb.Append("mzh");
-                mb.Append(GetMazeCode(level));
-                Tabify(' ', dataPosition, mb);
-                mb.Append(".ctext \"");
-                if (!String.IsNullOrEmpty(maze.Hint))
-                {
-                    mb.Append(maze.Hint.ToUpper());
-                }
-                else
-                {
-                    mb.Append(" ");
-                }
-                mb.Append("\"");
-                page7Source.AppendLine(mb.ToString());
-
-                StringBuilder mb2 = new StringBuilder();
-                mb2.Append("mhz");
-                mb2.Append(GetMazeCode(level));
-                mb2.Append("a");
-                Tabify(' ', dataPosition, mb2);
-                mb2.Append(".ctext \"");
-                if (!String.IsNullOrEmpty(maze.Hint2))
-                {
-                    mb2.Append(maze.Hint2.ToUpper());
-                }
-                else
-                {
-                    mb2.Append(" ");
-                }
-                mb2.Append("\"");
-                page7Source.AppendLine(mb2.ToString());
+                AddHints(maze.Hint, maze.Hint2, page7Source, dataPosition, level);
                 page7Source.AppendLine("");
 
                 //Reactoid.Pyroids.Perkoids.Max
@@ -1129,6 +1098,42 @@ namespace mhedit.GameControllers
             sb.AppendLine(page6Source.ToString());
             sb.AppendLine(page7Source.ToString());
             return sb.ToString();
+        }
+
+        private void AddHints(string hint1, string hint2, StringBuilder sb, int dataPosition, int level)
+        {
+            string prefix = "mzh";
+            int hint1YPosition = 48;
+            int hint2YPosition = 50;
+            string label = prefix + GetMazeCode(level);
+            AddHint(hint1, label + "a", hint1YPosition, sb, dataPosition);
+            AddHint(hint2, label + "b", hint2YPosition, sb, dataPosition);
+        }
+
+        private void AddHint(string hint, string label, int yPosition, StringBuilder sb, int dataPosition)
+        {
+            if (!String.IsNullOrWhiteSpace(hint))
+            {
+                int position = 0 - (hint.Length * 3);
+                string xPositionHex = position.ToString("X8").Substring(6, 2);
+                if (position < -128)
+                {
+                    //cant go too far off left side of screen
+                    xPositionHex = "80";
+                }
+                StringBuilder mb = new StringBuilder();
+                mb.Append(label);
+                Tabify(' ', dataPosition, mb);
+                mb.Append(".ctext \"");
+                mb.Append(hint.ToUpper());
+                mb.Append("\"");
+                sb.AppendLine(mb.ToString());
+                //new line
+                mb.Clear();
+                Tabify(' ', dataPosition, mb);
+                mb.Append("zmess(" + label + ",$" + yPosition.ToString() + ",$" + xPositionHex + ")");
+                sb.AppendLine(mb.ToString());
+            }
         }
 
         private string DumpScalar(string label, int dataPosition, int commentPosition, List<ObjectEncoding> encodings)
