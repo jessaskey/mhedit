@@ -1,6 +1,6 @@
 .module alpha
 
-chka2            .EQU  $fd0b
+chka2            .EQU  $fd1c
 dynamic_base     .EQU  $279a
 levelst          .EQU  $df74
 mzdc             .EQU  $2011
@@ -23,7 +23,7 @@ mcan             .EQU  $23b4
 mzinit           .EQU  $2012
 mazehints        .EQU  $204a
 messagesbase     .EQU  $2162
-mzsc00           .EQU  $232f
+mzsc00           .EQU  $21a0
 outime           .EQU  $231c
 oxybonus         .EQU  $2338
 trtbll           .EQU  $2354
