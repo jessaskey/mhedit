@@ -427,6 +427,13 @@ namespace mhedit.GameControllers
                     maze.AddObject(boots);
                 }
 
+                byte pouchData = ReadByte(_exports["mkeyp"], i, 6);
+                if ( pouchData != 0)
+                {
+                    KeyPouch keyPouch = new KeyPouch();
+                    keyPouch.LoadPosition(pouchData);
+                    maze.AddObject(keyPouch);
+                }
 
                 //Laser Cannon
                 for (int c = 0; c < 4; c++)
@@ -1085,6 +1092,7 @@ namespace mhedit.GameControllers
                 page6Source.AppendLine(DumpScalar("mzty" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.MazeType).ObjectEncodings));
                 page6Source.AppendLine(DumpScalar("clock" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.Clock).ObjectEncodings));
                 page6Source.AppendLine(DumpScalar("boot" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.Boots).ObjectEncodings));
+                page6Source.AppendLine(DumpScalar("keyp" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.KeyPouch).ObjectEncodings));
                 if ((level - 1) % 4 == 1)
                 {
                     page6Source.AppendLine(DumpScalar("mpod" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.EscapePod).ObjectEncodings));
@@ -1551,6 +1559,14 @@ namespace mhedit.GameControllers
                 bootsIndex += WritePagedROM((ushort)_exports["mboots"], EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Boots).GetAllBytes().ToArray(), bootsIndex, 6);
             }
             //****************
+            //KeyPouch
+            //****************
+            int pouchIndex = 0;
+            for ( int i = 0; i < numMazes; i++ )
+            {
+                pouchIndex += WritePagedROM((ushort)_exports["mkeyp"], EncodeObjects( mazeCollection.Mazes[i], EncodingGroup.KeyPouch).GetAllBytes().ToArray(), pouchIndex, 6);
+            }
+            //****************
             //Escape Pod
             //****************
             int mpodAddressBase = _exports["mpod"];
@@ -1635,7 +1651,8 @@ namespace mhedit.GameControllers
             EscapePod,
             OutTime,
             OxygenReward,
-            MazeType
+            MazeType,
+            KeyPouch
         }
 
         /// <summary>
@@ -1932,6 +1949,18 @@ namespace mhedit.GameControllers
                     if (boots != null)
                     {
                         encodings.Add(boots.ToBytes(),"Boots");
+                    }
+                    else
+                    {
+                        encodings.Add(0x00);
+                    }
+                    break;
+                case EncodingGroup.KeyPouch:
+                    //KeyPouch Data
+                    KeyPouch keyPouch = maze.MazeObjects.OfType<KeyPouch>().FirstOrDefault();
+                    if ( keyPouch != null)
+                    {
+                        encodings.Add( keyPouch.ToBytes(), "KeyPouch" );
                     }
                     else
                     {
