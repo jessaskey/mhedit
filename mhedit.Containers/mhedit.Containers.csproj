@@ -104,6 +104,7 @@
     <Compile Include="MazeObjects\EscapePod.cs" />
     <Compile Include="MazeObjects\Hand.cs" />
     <Compile Include="MazeObjects\Key.cs" />
+    <Compile Include="MazeObjects\KeyPouch.cs" />
     <Compile Include="MazeObjects\Lock.cs" />
     <Compile Include="MazeObjects\ObjectColor.cs" />
     <Compile Include="MazeObjects\OneWay.cs" />
@@ -231,6 +232,9 @@
     <EmbeddedResource Include="Images\Error_red_16x16.png" />
     <EmbeddedResource Include="Images\Information_blue_6227_16x16.png" />
     <EmbeddedResource Include="Images\Warning_yellow_7231_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Objects\keypouch_32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

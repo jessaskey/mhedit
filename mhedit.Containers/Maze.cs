@@ -30,6 +30,7 @@ namespace mhedit.Containers
     [XmlInclude(typeof(Arrow))]
     [XmlInclude(typeof(ArrowOut))]
     [XmlInclude(typeof(Boots))]
+    [XmlInclude(typeof(KeyPouch))]
     [XmlInclude(typeof(Clock))]
     [XmlInclude(typeof(EscapePod))]
     [XmlInclude(typeof(Hand))]

@@ -99,6 +99,7 @@ namespace mhedit
             toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.pod_32.png"));
             toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.roboid_32.png"));
             toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.arrow_out_32.png"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.keypouch_32.png"));
             toolBox.SmallImageList = toolboxImageList;
 
             int tabIndex;
@@ -129,6 +130,7 @@ namespace mhedit
             itemIndex = toolBox[tabIndex].AddItem("Stalactites", 22, true, new Spikes());
             itemIndex = toolBox[tabIndex].AddItem("Transporter", 24, true, new Transporter());
             itemIndex = toolBox[tabIndex].AddItem("Booties", 23, true, new Boots());
+            itemIndex = toolBox[tabIndex].AddItem("KeyPouch", 28, true, new KeyPouch());
             itemIndex = toolBox[tabIndex].AddItem("Lock", 20, true, new Lock());
             itemIndex = toolBox[tabIndex].AddItem("Key", 12, true, new Key());
             itemIndex = toolBox[tabIndex].AddItem("De Hand", 21, true, new Hand());
