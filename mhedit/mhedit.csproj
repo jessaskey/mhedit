@@ -27,7 +27,7 @@
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>true</SignManifests>
     <TargetFrameworkProfile />
-    <PublishUrl>ftp://mhedit.askey.org:21/app/</PublishUrl>
+    <PublishUrl>ftps://mhedit.askey.org/app/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
