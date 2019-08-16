@@ -1,3 +1,4 @@
+using mhedit.Containers.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,13 +13,16 @@ namespace mhedit.Containers.MazeObjects
         /// The Width of the Reactoid in Atari Vector units.
         /// </summary>
         public const int VectorWidth = 110;
+        private const string ImageResource = "mhedit.Containers.Images.Objects.reactoid_obj.png";
+        private const string ImageResourceExtraLarge = "mhedit.Containers.Images.Objects.reactoid_extra_obj.png";
 
         private static readonly Point _snapSize = new Point( 1, 1 );
+        private bool _isExtraLarge = false;
         private int _timer = 30;
 
         public Reactoid()
             : base( Constants.MAXOBJECTS_REACTOID,
-                    ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.reactoid_obj.png" ),
+                    ResourceFactory.GetResourceImage(ImageResource),
                     Point.Empty,
                     new Point( 15, 20 ) )
         { }
@@ -31,10 +35,22 @@ namespace mhedit.Containers.MazeObjects
 
         [CategoryAttribute("Custom")]
         [DescriptionAttribute("The amount of time allowed to exit the maze upon triggering the reactoid.")]
+        [Validation(typeof(RangeRule<int>),
+            Options = "Minimum=-1;Maximum=99")]
         public int Timer
         {
             get { return _timer; }
             set { this.SetField( ref this._timer, value ); }
+        }
+
+        [DescriptionAttribute("Determines if the Reactor is extra large size.")]
+        public bool IsExtraLarge
+        {
+            get { return this._isExtraLarge; }
+            set {
+                this.Image = this.GetReactoidImage(value);
+                this.SetField(ref this._isExtraLarge, value);
+            }
         }
 
         public override byte[] ToBytes(object obj)
@@ -50,7 +66,7 @@ namespace mhedit.Containers.MazeObjects
                 //Decimal Mode here requires extra conversion for Timer value
                 bytes.Add((byte)Convert.ToInt16(("0x" + _timer.ToString()), 16));
             }
-            else
+            else if (obj is bool)
             {
 
             }
@@ -60,6 +76,16 @@ namespace mhedit.Containers.MazeObjects
         public override byte[] ToBytes()
         {
             throw new Exception("Reactoid must be serialized in parts. Use other ToBytes(object) method.");
+        }
+
+        private Image GetReactoidImage(bool isExtraLarge)
+        {
+            Image image = ResourceFactory.GetResourceImage(ImageResource);
+            if (isExtraLarge)
+            {
+                image = ResourceFactory.GetResourceImage(ImageResourceExtraLarge);
+            }
+            return image;
         }
     }
 }

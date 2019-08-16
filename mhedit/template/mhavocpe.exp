@@ -1,7 +1,7 @@
 .module alpha
 
 chka2            .EQU  $fd7a
-dynamic_base     .EQU  $27b6
+dynamic_base     .EQU  $27d2
 levelst          .EQU  $df93
 mzdc             .EQU  $2011
 mzlg             .EQU  $2049
@@ -20,14 +20,15 @@ mclock           .EQU  $22dd
 mboots           .EQU  $22f9
 mkeyp            .EQU  $2315
 mpod             .EQU  $2331
-mcan             .EQU  $23d0
+mcan             .EQU  $23ec
 mzinit           .EQU  $2012
 mazehints        .EQU  $204a
 messagesbase     .EQU  $2162
 mzsc00           .EQU  $21a0
 outime           .EQU  $2338
-oxybonus         .EQU  $2354
-trtbll           .EQU  $2370
+oxybonus         .EQU  $2370
+reacsz           .EQU  $2354
+trtbll           .EQU  $238c
 zmessptrl        .EQU  $2082
 zmessptrh        .EQU  $20ba
 zmessypos        .EQU  $20f2
