@@ -17,7 +17,7 @@ namespace mhedit.Containers.MazeObjects
         private const string ImageResourceExtraLarge = "mhedit.Containers.Images.Objects.reactoid_extra_obj.png";
 
         private static readonly Point _snapSize = new Point( 1, 1 );
-        private bool _isExtraLarge = false;
+        private bool _isMegaReactoid = false;
         private int _timer = 30;
 
         public Reactoid()
@@ -44,12 +44,12 @@ namespace mhedit.Containers.MazeObjects
         }
 
         [DescriptionAttribute("Determines if the Reactor is extra large size.")]
-        public bool IsExtraLarge
+        public bool MegaReactoid
         {
-            get { return this._isExtraLarge; }
+            get { return this._isMegaReactoid; }
             set {
                 this.Image = this.GetReactoidImage(value);
-                this.SetField(ref this._isExtraLarge, value);
+                this.SetField(ref this._isMegaReactoid, value);
             }
         }
 

@@ -139,7 +139,7 @@ namespace mhedit.GameControllers
                 int timer = DataConverter.FromDecimal((int)ReadByte(_exports["outime"], i, 6));
                 reactor.Timer = timer;
                 int reactorSize = DataConverter.FromDecimal((int)ReadByte(_exports["reacsz"], i, 6));
-                reactor.IsExtraLarge = reactorSize != 0 ? true : false;
+                reactor.MegaReactoid = reactorSize != 0 ? true : false;
                 maze.AddObject(reactor);
 
                 //pyroids
@@ -2004,7 +2004,7 @@ namespace mhedit.GameControllers
                     int reactorSize = 0;
                     if (reactoid != null)
                     {
-                        if (reactoid.IsExtraLarge)
+                        if (reactoid.MegaReactoid)
                         {
                             reactorSize = 1;
                         }
