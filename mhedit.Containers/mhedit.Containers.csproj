@@ -236,6 +236,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Images\Objects\keypouch_32.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Objects\reactoid_extra_obj.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

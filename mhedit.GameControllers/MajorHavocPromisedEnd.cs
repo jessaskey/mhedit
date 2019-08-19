@@ -118,7 +118,6 @@ namespace mhedit.GameControllers
             {
                 byte mazeType = ReadByte(_exports["mzty"], i, 6);
                 //byte mazeType = (byte)(i & 0x03);
-
                 Maze maze = new Maze((MazeType)mazeType, "Level " + (i + 1).ToString());
 
                 //hint text
@@ -139,6 +138,8 @@ namespace mhedit.GameControllers
                 mazeInitIndex += 4;
                 int timer = DataConverter.FromDecimal((int)ReadByte(_exports["outime"], i, 6));
                 reactor.Timer = timer;
+                int reactorSize = DataConverter.FromDecimal((int)ReadByte(_exports["reacsz"], i, 6));
+                reactor.MegaReactoid = reactorSize != 0 ? true : false;
                 maze.AddObject(reactor);
 
                 //pyroids
@@ -1098,6 +1099,7 @@ namespace mhedit.GameControllers
                     page6Source.AppendLine(DumpScalar("mpod" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.EscapePod).ObjectEncodings));
                 }
                 page6Source.AppendLine(DumpScalar("outi" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.OutTime).ObjectEncodings));
+                page6Source.AppendLine(DumpScalar("reaz" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.ReactorSize).ObjectEncodings));
                 page6Source.AppendLine(DumpScalar("oxyb" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.OxygenReward).ObjectEncodings));
             }
 
@@ -1583,6 +1585,14 @@ namespace mhedit.GameControllers
                 outAddressBase += WritePagedROM((ushort)outAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OutTime).GetAllBytes().ToArray(), 0, 6);
             }
             //****************
+            //Reactor Size
+            //****************
+            int rsizeAddressBase = _exports["reacsz"];
+            for (int i = 0; i < numMazes; i++)
+            {
+                rsizeAddressBase += WritePagedROM((ushort)rsizeAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.ReactorSize).GetAllBytes().ToArray(), 0, 6);
+            }
+            //****************
             //OxygenReward
             //****************
             int oxyAddressBase = _exports["oxybonus"];
@@ -1652,7 +1662,8 @@ namespace mhedit.GameControllers
             OutTime,
             OxygenReward,
             MazeType,
-            KeyPouch
+            KeyPouch,
+            ReactorSize
         }
 
         /// <summary>
@@ -1980,13 +1991,25 @@ namespace mhedit.GameControllers
                     }
                     break;
                 case EncodingGroup.OutTime:
-                    //Pod Data
+                    //Maze Escape Time
                     int reactorTimer = 0;
                     if (reactoid != null)
                     {
                         reactorTimer = DataConverter.ToDecimal(reactoid.Timer);
                     }
                     encodings.Add((byte)reactorTimer);
+                    break;
+                case EncodingGroup.ReactorSize:
+                    //Reactor Size
+                    int reactorSize = 0;
+                    if (reactoid != null)
+                    {
+                        if (reactoid.MegaReactoid)
+                        {
+                            reactorSize = 1;
+                        }
+                    }
+                    encodings.Add((byte)reactorSize);
                     break;
                 case EncodingGroup.OxygenReward:
                     encodings.Add((byte)maze.OxygenReward);
