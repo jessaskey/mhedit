@@ -50,12 +50,12 @@ namespace mhedit.Containers.MazeObjects
             set {
                 //some sizing hacks to show the reactor on the screen correctly, the position that goes into the ROM's needs to be the same as the 
                 //regular sized reactoid for several reasons unfortunately
-                if (value)
+                if (!MegaReactoid && value)
                 {
                     //from normal to mega
                     base.RenderOffset = new Point(RenderOffset.X + 48, RenderOffset.Y + 80);
                 }
-                else
+                else if(MegaReactoid && !value)
                 {
                     //from mega to normal
                     base.RenderOffset = new Point(RenderOffset.X - 48, RenderOffset.Y - 80);
