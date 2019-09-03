@@ -36,7 +36,7 @@ namespace mhedit.Containers.MazeObjects
         [CategoryAttribute("Custom")]
         [DescriptionAttribute("The amount of time allowed to exit the maze upon triggering the reactoid.")]
         [Validation(typeof(RangeRule<int>),
-            Options = "Minimum=-1;Maximum=99")]
+            Options = "Minimum=-1;Maximum=79")]
         public int Timer
         {
             get { return _timer; }
@@ -53,12 +53,12 @@ namespace mhedit.Containers.MazeObjects
                 if (!MegaReactoid && value)
                 {
                     //from normal to mega
-                    base.RenderOffset = new Point(RenderOffset.X + 48, RenderOffset.Y + 80);
+                    base.RenderOffset = new Point(RenderOffset.X + 60, RenderOffset.Y + 80);
                 }
                 else if(MegaReactoid && !value)
                 {
                     //from mega to normal
-                    base.RenderOffset = new Point(RenderOffset.X - 48, RenderOffset.Y - 80);
+                    base.RenderOffset = new Point(RenderOffset.X - 60, RenderOffset.Y - 80);
                 }
                 this.Image = this.GetReactoidImage(value);
                 this.SetField(ref this._isMegaReactoid, value);
