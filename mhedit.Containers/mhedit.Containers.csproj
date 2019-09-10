@@ -111,6 +111,7 @@
     <Compile Include="MazeObjects\Oxoid.cs" />
     <Compile Include="MazeObjects\Reactoid.cs" />
     <Compile Include="MazeObjects\Spikes.cs" />
+    <Compile Include="MazeObjects\HiddenLevelToken.cs" />
     <Compile Include="MazeObjects\Transporter.cs" />
     <Compile Include="MazeWall.cs" />
     <Compile Include="NameFactory.cs" />
@@ -240,10 +241,10 @@
     <EmbeddedResource Include="Images\Objects\reactoid_extra_obj.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Images\Objects\token_a_obj.png" />
-    <Content Include="Images\Objects\token_b_obj.png" />
-    <Content Include="Images\Objects\token_c_obj.png" />
-    <Content Include="Images\Objects\token_d_obj.png" />
+    <EmbeddedResource Include="Images\Objects\token_a_obj.png" />
+    <EmbeddedResource Include="Images\Objects\token_b_obj.png" />
+    <EmbeddedResource Include="Images\Objects\token_c_obj.png" />
+    <EmbeddedResource Include="Images\Objects\token_d_obj.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

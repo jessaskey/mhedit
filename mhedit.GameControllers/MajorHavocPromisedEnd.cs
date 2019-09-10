@@ -673,6 +673,37 @@ namespace mhedit.GameControllers
 
                 mazeCollection.Mazes.Add(maze);
             }
+
+            /// Extract and add HiddenLevelTokens
+            ushort hiddenLevelTokenIndex = _exports[ "mtok" ];
+
+            for ( int tokenIndex = 0; tokenIndex < Constants.MAXOBJECTS_TOKEN; tokenIndex++ )
+            {
+                sbyte level = (sbyte)ReadByte( hiddenLevelTokenIndex, 0, 6 );
+
+                if ( level < 0 )
+                {
+                    break;
+                }
+
+                HiddenLevelToken hiddenLevelToken = new HiddenLevelToken();
+                hiddenLevelToken.LoadPosition(
+                    ReadBytes( (ushort)( hiddenLevelTokenIndex + 1 ), 4, 6 ) );
+
+                hiddenLevelToken.TargetLevel = (HiddenLevels)
+                    ( ReadByte( hiddenLevelTokenIndex, 5, 6 ) + 1 );
+
+                hiddenLevelToken.ReturnLevel =
+                    ( ReadByte( hiddenLevelTokenIndex, 6, 6 ) + 1 );
+
+                hiddenLevelToken.VisibleDistance =
+                    ( ReadByte( hiddenLevelTokenIndex, 7, 6 ) );
+
+                mazeCollection.Mazes[ level ].AddObject( hiddenLevelToken );
+
+                hiddenLevelTokenIndex += 8;
+            }
+
             return mazeCollection;
         }
 
