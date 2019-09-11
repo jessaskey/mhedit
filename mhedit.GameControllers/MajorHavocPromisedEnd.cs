@@ -1632,6 +1632,27 @@ namespace mhedit.GameControllers
                 oxyAddressBase += WritePagedROM((ushort)oxyAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OxygenReward).GetAllBytes().ToArray(), 0, 6);
             }
             //****************
+            //Hidden Level Token
+            //****************
+            List<byte> tokens = new List<byte>();
+            int tokensFound = 0;
+            for ( int i = 0; i < numMazes; i++ )
+            {
+                List<byte> token = EncodeObjects( mazeCollection.Mazes[ i ], EncodingGroup.HiddenLevelToken ).GetAllBytes();
+
+                if ( token.Count > 0 )
+                {
+                    tokensFound++;
+                    tokens.Add( (byte)i );
+                    tokens.AddRange( token );
+                }
+            }
+            for ( ; tokensFound < Constants.MAXOBJECTS_TOKEN; tokensFound++ )
+            {
+                tokens.AddRange( new byte[] { 0xFF,0,0,0,0,0,0,0 } );
+            }
+            WritePagedROM( _exports[ "mtok" ], tokens.ToArray(), 0, 6);
+            //****************
             //set up starting level
             //****************
             if (maze != null)
@@ -1694,7 +1715,8 @@ namespace mhedit.GameControllers
             OxygenReward,
             MazeType,
             KeyPouch,
-            ReactorSize
+            ReactorSize,
+            HiddenLevelToken
         }
 
         /// <summary>
@@ -2044,6 +2066,13 @@ namespace mhedit.GameControllers
                     break;
                 case EncodingGroup.OxygenReward:
                     encodings.Add((byte)maze.OxygenReward);
+                    break;
+                case EncodingGroup.HiddenLevelToken:
+                    HiddenLevelToken token = maze.MazeObjects.OfType<HiddenLevelToken>().FirstOrDefault();
+                    if ( token != null )
+                    {
+                        encodings.Add( token.ToBytes(), "Token" );
+                    }
                     break;
             }
 

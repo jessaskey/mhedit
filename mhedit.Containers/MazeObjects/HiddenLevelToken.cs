@@ -20,7 +20,7 @@ namespace mhedit.Containers.MazeObjects
     {
         private static readonly Point _snapSize = new Point( 1, 1 );
         private HiddenLevels _hiddenLevel;
-        private int _returnLevel;
+        private int _returnLevel = 1;
         private int _visibleDistance;
 
         public HiddenLevelToken()
@@ -65,7 +65,7 @@ namespace mhedit.Containers.MazeObjects
         [ DescriptionAttribute(
             "The Level that Rex will return to after completion of the hidden level." ) ]
         [ Validation( typeof( RangeRule<int> ),
-            Options = "Minimum=1;Maximum=24" ) ]
+            Options = "Minimum=1;Maximum=21" ) ]
         public int ReturnLevel
         {
             get { return this._returnLevel; }
@@ -75,7 +75,7 @@ namespace mhedit.Containers.MazeObjects
         [CategoryAttribute( "Custom" )]
         [DescriptionAttribute( "How close Rex needs to be to the token before it's visible." )]
         [Validation( typeof( RangeRule<int> ),
-            Options = "Minimum=1;Maximum=255" )]
+            Options = "Minimum=0;Maximum=255" )]
         public int VisibleDistance
         {
             get { return this._visibleDistance; }
