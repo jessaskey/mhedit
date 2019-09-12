@@ -1134,11 +1134,39 @@ namespace mhedit.GameControllers
                 page6Source.AppendLine(DumpScalar("oxyb" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.OxygenReward).ObjectEncodings));
             }
 
+            /// Pull out Hidden Level Token info that isn't on every level.
+            page6Source.AppendLine( DumpBytes( "mtok" + "", dataPosition, commentPosition, 8,
+                this.GetHiddenLevelTokens( selectedMazes ) ) );
+
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(cannonSource.ToString());
             sb.AppendLine(page6Source.ToString());
             sb.AppendLine(page7Source.ToString());
             return sb.ToString();
+        }
+
+        private List<ObjectEncoding> GetHiddenLevelTokens( List<Tuple<Maze, int>> selectedMazes )
+        {
+            List<ObjectEncoding> tokens = new List<ObjectEncoding>();
+
+            foreach ( Tuple<Maze, int> selectedMaze in selectedMazes )
+            {
+                foreach ( var encoding in this.EncodeObjects( selectedMaze.Item1, EncodingGroup.HiddenLevelToken ).ObjectEncodings )
+                {
+                    encoding.Bytes.Insert( 0, (byte)(selectedMaze.Item2 - 1) );
+
+                    tokens.Add( encoding );
+                }
+            }
+
+            for ( int tokensFound = tokens.Count;
+                tokensFound < Constants.MAXOBJECTS_TOKEN;
+                tokensFound++ )
+            {
+                tokens.Add( new ObjectEncoding( new List<byte> { 0xFF, 0, 0, 0, 0, 0, 0, 0 } ) );
+            }
+
+            return tokens;
         }
 
         private void AddHints(string hint1, string hint2, StringBuilder sb, int dataPosition, int level)
