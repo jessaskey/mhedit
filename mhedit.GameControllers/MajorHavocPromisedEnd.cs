@@ -1666,13 +1666,12 @@ namespace mhedit.GameControllers
             int tokensFound = 0;
             for ( int i = 0; i < numMazes; i++ )
             {
-                List<byte> token = EncodeObjects( mazeCollection.Mazes[ i ], EncodingGroup.HiddenLevelToken ).GetAllBytes();
-
-                if ( token.Count > 0 )
+                foreach ( var encoding in
+                    this.EncodeObjects(mazeCollection.Mazes[ i ], EncodingGroup.HiddenLevelToken ).ObjectEncodings )
                 {
                     tokensFound++;
-                    tokens.Add( (byte)i );
-                    tokens.AddRange( token );
+                    encoding.Bytes.Insert( 0, (byte)i );
+                    tokens.AddRange( encoding.Bytes );
                 }
             }
             for ( ; tokensFound < Constants.MAXOBJECTS_TOKEN; tokensFound++ )
@@ -2096,10 +2095,9 @@ namespace mhedit.GameControllers
                     encodings.Add((byte)maze.OxygenReward);
                     break;
                 case EncodingGroup.HiddenLevelToken:
-                    HiddenLevelToken token = maze.MazeObjects.OfType<HiddenLevelToken>().FirstOrDefault();
-                    if ( token != null )
+                    foreach ( var token in maze.MazeObjects.OfType<HiddenLevelToken>() )
                     {
-                        encodings.Add( token.ToBytes(), "Token" );
+                        encodings.Add( token.ToBytes(), $"{token.TargetLevel}" );
                     }
                     break;
             }
