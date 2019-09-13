@@ -7,6 +7,7 @@ using mhedit.Containers.Validation;
 namespace mhedit.Containers.MazeObjects
 {
 
+    [Serializable]
     public enum HiddenLevels
     {
         _25_Fallout = 25,
