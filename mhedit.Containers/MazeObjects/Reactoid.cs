@@ -9,10 +9,6 @@ namespace mhedit.Containers.MazeObjects
     [Serializable]
     public class Reactoid : MazeObject
     {
-        /// <summary>
-        /// The Width of the Reactoid in Atari Vector units.
-        /// </summary>
-        public const int VectorWidth = 110;
         private const string ImageResource = "mhedit.Containers.Images.Objects.reactoid_obj.png";
         private const string ImageResourceExtraLarge = "mhedit.Containers.Images.Objects.reactoid_extra_obj.png";
 
@@ -65,7 +61,15 @@ namespace mhedit.Containers.MazeObjects
             }
         }
 
-        public override byte[] ToBytes(object obj)
+        /// <summary>
+        /// The Width of the Reactoid in Atari Vector units.
+        /// </summary>
+        public int VectorWidth
+        {
+            get { return this._isMegaReactoid ? 330 : 110;  }
+        }
+
+        public override byte[] ToBytes( object obj )
         {
             List<byte> bytes = new List<byte>();
             if (obj is Point)
