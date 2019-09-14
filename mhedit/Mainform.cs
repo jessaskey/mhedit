@@ -1146,7 +1146,7 @@ namespace mhedit
             catch ( Exception ex )
             {
                 Cursor.Current = Cursors.Default;
-                MessageBox.Show( $"Maze could not be opened: {ex.Message}",
+                MessageBox.Show( $@"Maze could not be opened: {( ex.InnerException != null ? ex.InnerException.Message : ex.Message )}",
                     "File Open Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
 
                 //Bryan, I put this here as an example of how to report Exceptions that are caught, but you still
@@ -1191,7 +1191,7 @@ namespace mhedit
             catch ( Exception ex )
             {
                 Cursor.Current = Cursors.Default;
-                MessageBox.Show( $"Maze Collection could not be opened: {ex.Message}",
+                MessageBox.Show( $@"Maze Collection could not be opened: {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}",
                     "File Open Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
             }
             finally
@@ -1248,7 +1248,7 @@ namespace mhedit
                 result = DialogResult.Cancel;
 
                 MessageBox.Show(
-                    $"An error has occurred while trying to save: {ex.Message}",
+                    $@"An error has occurred while trying to save: {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}",
                     "An Error Occurred",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error );
@@ -1311,7 +1311,7 @@ namespace mhedit
                 result = DialogResult.Cancel;
 
                 MessageBox.Show(
-                    $"An error has occurred while trying to save: {ex.Message}",
+                    $@"An error has occurred while trying to save: {( ex.InnerException != null ? ex.InnerException.Message : ex.Message )}",
                     "An Error Occurred",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error );
