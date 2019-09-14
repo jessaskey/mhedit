@@ -135,6 +135,9 @@
     <Compile Include="Validation\FileNameRule.cs" />
     <Compile Include="Validation\ISystemWindows.cs" />
     <Compile Include="Validation\MajorHavoc\HandReactorLocationRule.cs" />
+    <Compile Include="Validation\MajorHavoc\HiddenLevelTokenMissingRule.cs" />
+    <Compile Include="Validation\MajorHavoc\HiddenLevelTokensCountRule.cs" />
+    <Compile Include="Validation\MajorHavoc\HiddenLevelTokensRule.cs" />
     <Compile Include="Validation\MajorHavoc\KeyLockPairsRule.cs" />
     <Compile Include="Validation\MajorHavoc\MazeHintRule.cs" />
     <Compile Include="Validation\MajorHavoc\MazeTypeOrderRule.cs" />
