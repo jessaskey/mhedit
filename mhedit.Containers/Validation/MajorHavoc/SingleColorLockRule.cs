@@ -11,7 +11,7 @@ namespace mhedit.Containers.Validation.MajorHavoc
     /// ValidationAttribute.Options (none)
     ///
     /// Composite format string: 
-    ///     Unmatched Transporter is Index 0
+    ///     List of Lock with same ObjectColor is Index 0
     ///     Default Message is Index 1
     /// </summary>
     public class SingleColorLockRule : ValidationRule<IEnumerable<MazeObject>>
