@@ -26,31 +26,29 @@ namespace mhedit.Containers.Validation.MajorHavoc
 
         public override IValidationResult Validate( IEnumerable<Maze> mazes )
         {
-            Dictionary<HiddenLevels, List<Tuple<HiddenLevelToken, Maze>>> tokens =
-                new Dictionary<HiddenLevels, List<Tuple<HiddenLevelToken, Maze>>>();
+            Dictionary<TokenStyle, List<Tuple<HiddenLevelToken, Maze>>> tokens = new Dictionary<TokenStyle, List<Tuple<HiddenLevelToken, Maze>>>();
 
-            foreach ( Maze maze in mazes )
+            foreach (Maze maze in mazes)
             {
-                foreach ( var token in maze.MazeObjects.OfType<HiddenLevelToken>() )
+                foreach (var token in maze.MazeObjects.OfType<HiddenLevelToken>())
                 {
-                    if ( !tokens.ContainsKey( token.TargetLevel ) )
+                    if (!tokens.ContainsKey(token.TokenStyle))
                     {
-                        tokens[ token.TargetLevel ] = new List<Tuple<HiddenLevelToken, Maze>>();
+                        tokens[token.TokenStyle] = new List<Tuple<HiddenLevelToken, Maze>>();
                     }
-
-                    tokens[ token.TargetLevel ].Add( Tuple.Create( token, maze ) );
+                    tokens[token.TokenStyle].Add(Tuple.Create(token, maze));
                 }
             }
 
             ValidationResults results = new ValidationResults() { Context = mazes };
 
             /// Look for duplicates.
-            foreach ( KeyValuePair<HiddenLevels, List<Tuple<HiddenLevelToken, Maze>>> pair in tokens )
+            foreach (KeyValuePair<TokenStyle, List<Tuple<HiddenLevelToken, Maze>>> pair in tokens)
             {
-                if ( pair.Value.Count > 1 )
+                if (pair.Value.Count > 1)
                 {
-                    results.Add( this.CreateResult( pair.Value,
-                        $"Duplicate Token for Hidden Level {pair.Key} in Maze: {pair.Value.LastOrDefault()?.Item2.Name}. Only one Token for each Hidden Level is allowed." ) );
+                    results.Add(this.CreateResult(pair.Value,
+                        $"Duplicate Token Style in Maze Collection {pair.Key} in Maze: {pair.Value.LastOrDefault()?.Item2.Name}. Each Token Style may only be used once in the entire maze collection."));
                 }
             }
 

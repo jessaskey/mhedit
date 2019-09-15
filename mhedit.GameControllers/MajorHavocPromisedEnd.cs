@@ -111,7 +111,7 @@ namespace mhedit.GameControllers
         public MazeCollection LoadMazes(List<string> loadMessages)
         {
             MazeCollection mazeCollection = new MazeCollection( this.Name );
-            mazeCollection.AuthorEmail = "Jess@maynard.vax";
+            mazeCollection.AuthorEmail = "jess@askey.org";
             mazeCollection.AuthorName = "Jess Askey";
 
             for ( int i = 0; i < 28; i++)
@@ -683,24 +683,16 @@ namespace mhedit.GameControllers
 
                 if ( level < 0 )
                 {
-                    break;
+                    continue;
                 }
 
                 HiddenLevelToken hiddenLevelToken = new HiddenLevelToken();
-                hiddenLevelToken.LoadPosition(
-                    ReadBytes( (ushort)( hiddenLevelTokenIndex + 1 ), 4, 6 ) );
-
-                hiddenLevelToken.TargetLevel = (HiddenLevels)
-                    ( ReadByte( hiddenLevelTokenIndex, 5, 6 ) + 1 );
-
-                hiddenLevelToken.ReturnLevel =
-                    ( ReadByte( hiddenLevelTokenIndex, 6, 6 ) + 1 );
-
-                hiddenLevelToken.VisibleDistance =
-                    ( ReadByte( hiddenLevelTokenIndex, 7, 6 ) );
-
+                hiddenLevelToken.TokenStyle = (TokenStyle)tokenIndex;
+                hiddenLevelToken.LoadPosition(ReadBytes( (ushort)( hiddenLevelTokenIndex + 1 ), 4, 6 ) );
+                hiddenLevelToken.TargetLevel = ( ReadByte( hiddenLevelTokenIndex, 5, 6 ) + 1 );
+                hiddenLevelToken.ReturnLevel = ( ReadByte( hiddenLevelTokenIndex, 6, 6 ) + 1 );
+                hiddenLevelToken.VisibleDistance = ( ReadByte( hiddenLevelTokenIndex, 7, 6 ) );
                 mazeCollection.Mazes[ level ].AddObject( hiddenLevelToken );
-
                 hiddenLevelTokenIndex += 8;
             }
 
@@ -1042,6 +1034,7 @@ namespace mhedit.GameControllers
             StringBuilder cannonSource = new StringBuilder();
 
             List<String> mazeLetters = new List<string>() { "A", "B", "C", "D" };
+            KeyValuePair<int,HiddenLevelToken>[] tokens = new KeyValuePair<int, HiddenLevelToken>[4];
 
             foreach (Tuple<Maze, int> selectedMaze in selectedMazes)
             {
@@ -1132,41 +1125,40 @@ namespace mhedit.GameControllers
                 page6Source.AppendLine(DumpScalar("outi" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.OutTime).ObjectEncodings));
                 page6Source.AppendLine(DumpScalar("reaz" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.ReactorSize).ObjectEncodings));
                 page6Source.AppendLine(DumpScalar("oxyb" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.OxygenReward).ObjectEncodings));
-            }
 
-            /// Pull out Hidden Level Token info that isn't on every level.
-            page6Source.AppendLine( DumpBytes( "mtok" + "", dataPosition, commentPosition, 8,
-                this.GetHiddenLevelTokens( selectedMazes ) ) );
-
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine(cannonSource.ToString());
-            sb.AppendLine(page6Source.ToString());
-            sb.AppendLine(page7Source.ToString());
-            return sb.ToString();
-        }
-
-        private List<ObjectEncoding> GetHiddenLevelTokens( List<Tuple<Maze, int>> selectedMazes )
-        {
-            List<ObjectEncoding> tokens = new List<ObjectEncoding>();
-
-            foreach ( Tuple<Maze, int> selectedMaze in selectedMazes )
-            {
-                foreach ( var encoding in this.EncodeObjects( selectedMaze.Item1, EncodingGroup.HiddenLevelToken ).ObjectEncodings )
+                HiddenLevelToken token = maze.MazeObjects.Where(o => o.GetType() == typeof(HiddenLevelToken)).FirstOrDefault() as HiddenLevelToken;
+                if (token != null)
                 {
-                    encoding.Bytes.Insert( 0, (byte)(selectedMaze.Item2 - 1) );
-
-                    tokens.Add( encoding );
+                    tokens[(int)token.TokenStyle] = new KeyValuePair<int, HiddenLevelToken>(level-1, token);
                 }
             }
 
-            for ( int tokensFound = tokens.Count;
-                tokensFound < Constants.MAXOBJECTS_TOKEN;
-                tokensFound++ )
+            /// Pull out Hidden Level Token info that isn't on every level.
+            StringBuilder tokenSource = new StringBuilder();
+            List<ObjectEncoding> tokenEncodings = new List<ObjectEncoding>();
+            for (int i = 0; i < tokens.Length; i++)
             {
-                tokens.Add( new ObjectEncoding( new List<byte> { 0xFF, 0, 0, 0, 0, 0, 0, 0 } ) );
+                KeyValuePair<int,HiddenLevelToken> tokenInfo = tokens[i];
+                if (tokenInfo.Value == null)
+                {
+                    tokenEncodings.Add(new ObjectEncoding(HiddenLevelToken.EmptyBytes.ToList()));
+                }
+                else
+                {
+                    List<byte> tokenBytes = new List<byte>();
+                    tokenBytes.Add((byte)tokenInfo.Key);
+                    tokenBytes.AddRange(tokenInfo.Value.ToBytes());
+                    tokenEncodings.Add(new ObjectEncoding(tokenBytes));
+                }
             }
+            tokenSource.AppendLine( DumpBytes( "mtok" + "", dataPosition, commentPosition, 8, tokenEncodings) );
 
-            return tokens;
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(cannonSource.ToString());
+            sb.AppendLine(tokenSource.ToString());
+            sb.AppendLine(page6Source.ToString());
+            sb.AppendLine(page7Source.ToString());
+            return sb.ToString();
         }
 
         private void AddHints(string hint1, string hint2, StringBuilder sb, int dataPosition, int level)
@@ -1332,10 +1324,12 @@ namespace mhedit.GameControllers
             int currentAddressPage7 = _exports["messagesbase"];
             //Maze Hints
             byte messageIndexer = 0;
+            KeyValuePair<int, HiddenLevelToken>[] tokens = new KeyValuePair<int, HiddenLevelToken>[4];
             for (int i = 0; i < numMazes; i++)
             {
                 if (mazeCollection.Mazes[i] != null)
                 {
+                    int levelIndex = mazeCollection.Mazes.IndexOf(maze);
                     //Write Table Pointer - First Hint
                     if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint))
                     {
@@ -1372,6 +1366,12 @@ namespace mhedit.GameControllers
                     {
                         WritePagedROM((ushort)_exports["mazehints"], new byte[] { 0xff }, (i * 2)+1, 7);
                     }
+
+                    HiddenLevelToken token = maze.MazeObjects.Where(o => o.GetType() == typeof(HiddenLevelToken)).FirstOrDefault() as HiddenLevelToken;
+                    if (token != null)
+                    {
+                        tokens[(int)token.TokenStyle] = new KeyValuePair<int, HiddenLevelToken>(levelIndex, token);
+                    }
                 }
             }
 
@@ -1400,6 +1400,32 @@ namespace mhedit.GameControllers
             {
                 typeIndex += WritePagedROM((ushort)_exports["mzty"], EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.MazeType).GetAllBytes().ToArray(), typeIndex, 6);
             }
+            //****************
+            //Hidden Level Token
+            //****************
+            List<byte> allTokenBytes = new List<byte>();
+            List<ObjectEncoding> tokenEncodings = new List<ObjectEncoding>();
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                KeyValuePair<int, HiddenLevelToken> tokenInfo = tokens[i];
+                if (tokenInfo.Value == null)
+                {
+                    tokenEncodings.Add(new ObjectEncoding(HiddenLevelToken.EmptyBytes.ToList()));
+                }
+                else
+                {
+                    List<byte> tokenBytes = new List<byte>();
+                    tokenBytes.Add((byte)tokenInfo.Key);
+                    tokenBytes.AddRange(tokenInfo.Value.ToBytes());
+                    tokenEncodings.Add(new ObjectEncoding(tokenBytes));
+                }
+            }
+            foreach(ObjectEncoding encoding in tokenEncodings)
+            {
+                allTokenBytes.AddRange(encoding.Bytes);
+            }
+            WritePagedROM(_exports["mtok"], allTokenBytes.ToArray(), 0, 6); 
+
             //****************
             //Oxoid data
             //****************
@@ -1660,26 +1686,6 @@ namespace mhedit.GameControllers
                 oxyAddressBase += WritePagedROM((ushort)oxyAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OxygenReward).GetAllBytes().ToArray(), 0, 6);
             }
             //****************
-            //Hidden Level Token
-            //****************
-            List<byte> tokens = new List<byte>();
-            int tokensFound = 0;
-            for ( int i = 0; i < numMazes; i++ )
-            {
-                foreach ( var encoding in
-                    this.EncodeObjects(mazeCollection.Mazes[ i ], EncodingGroup.HiddenLevelToken ).ObjectEncodings )
-                {
-                    tokensFound++;
-                    encoding.Bytes.Insert( 0, (byte)i );
-                    tokens.AddRange( encoding.Bytes );
-                }
-            }
-            for ( ; tokensFound < Constants.MAXOBJECTS_TOKEN; tokensFound++ )
-            {
-                tokens.AddRange( new byte[] { 0xFF,0,0,0,0,0,0,0 } );
-            }
-            WritePagedROM( _exports[ "mtok" ], tokens.ToArray(), 0, 6);
-            //****************
             //set up starting level
             //****************
             if (maze != null)
@@ -1758,7 +1764,11 @@ namespace mhedit.GameControllers
         {
             ObjectEncodingCollection encodings = new ObjectEncodingCollection();
 
-            Reactoid reactoid = maze.MazeObjects.OfType<Reactoid>().FirstOrDefault();
+            Reactoid reactoid = null;
+            if (maze != null)
+            {
+                reactoid = maze.MazeObjects.OfType<Reactoid>().FirstOrDefault();
+            }
             int counter = 0;
 
             switch (group)
@@ -2097,7 +2107,7 @@ namespace mhedit.GameControllers
                 case EncodingGroup.HiddenLevelToken:
                     foreach ( var token in maze.MazeObjects.OfType<HiddenLevelToken>() )
                     {
-                        encodings.Add( token.ToBytes(), $"{token.TargetLevel}" );
+                        encodings.Add( token.ToBytes(), $"{token.TokenStyle}" );
                     }
                     break;
             }

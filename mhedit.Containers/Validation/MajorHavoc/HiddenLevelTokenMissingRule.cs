@@ -26,26 +26,26 @@ namespace mhedit.Containers.Validation.MajorHavoc
 
         public override IValidationResult Validate( IEnumerable<Maze> mazes )
         {
-            Hashtable tokens = new Hashtable();
+            //Hashtable tokens = new Hashtable();
 
-            foreach ( Maze maze in mazes )
-            {
-                foreach ( HiddenLevelToken token in maze.MazeObjects.OfType<HiddenLevelToken>() )
-                {
-                    tokens[ token.TargetLevel ] = token;
-                }
-            }
+            //foreach ( Maze maze in mazes )
+            //{
+            //    foreach ( HiddenLevelToken token in maze.MazeObjects.OfType<HiddenLevelToken>() )
+            //    {
+            //        tokens[ token.TargetLevel ] = token;
+            //    }
+            //}
 
             ValidationResults results = new ValidationResults() { Context = mazes };
 
             /// If there are unreferenced Hidden levels start generating validation results.
-            foreach ( HiddenLevels en in Enum.GetValues( typeof( HiddenLevels ) ) )
-            {
-                if ( !tokens.ContainsKey( en ) )
-                {
-                    results.Add( this.CreateResult( en, $"Hidden Level {en} not referenced via Hidden Level Token." ) );
-                }
-            }
+            //foreach ( TokenStyle en in Enum.GetValues( typeof(TokenStyle) ) )
+            //{
+            //    if ( !tokens.ContainsKey( en ) )
+            //    {
+            //        results.Add( this.CreateResult( en, $"Hidden Level {en} not referenced via Hidden Level Token." ) );
+            //    }
+            //}
 
             return results;
         }

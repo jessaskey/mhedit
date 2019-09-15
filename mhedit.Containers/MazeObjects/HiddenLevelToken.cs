@@ -8,33 +8,34 @@ namespace mhedit.Containers.MazeObjects
 {
 
     [Serializable]
-    public enum HiddenLevels
+    public enum TokenStyle
     {
-        _25_Fallout = 25,
-        _26_Star,
-        _27_Diamond,
-        _28_Particle
+        Fallout = 0,
+        Star = 1,
+        Diamond = 2,
+        Particle = 3
     }
 
     [ Serializable ]
     public class HiddenLevelToken : MazeObject
     {
         private static readonly Point _snapSize = new Point( 1, 1 );
-        private HiddenLevels _hiddenLevel;
+        private TokenStyle _tokenStyle;
+        private int _targetLevel = 25;
         private int _returnLevel = 1;
         private int _visibleDistance;
 
         public HiddenLevelToken()
-            : this( HiddenLevels._25_Fallout )
+            : this( TokenStyle.Fallout )
         { }
 
-        private HiddenLevelToken( HiddenLevels level )
+        private HiddenLevelToken( TokenStyle style )
             : base( Constants.MAXOBJECTS_TOKEN,
-                ImageFactory.Create( level ),
+                ImageFactory.Create( style ),
                 Point.Empty,
                 new Point( 8, 8 ) )
         {
-            this._hiddenLevel = level;
+            this._tokenStyle = style;
         }
 
         [ Browsable( false ) ]
@@ -43,30 +44,41 @@ namespace mhedit.Containers.MazeObjects
             get { return _snapSize; }
         }
 
-        [ CategoryAttribute( "Custom" ) ]
-        [ DescriptionAttribute(
-            "Selects the Hidden Level that Rex will visit with this Token. Can only have one for each Hidden Level." ) ]
-        public HiddenLevels TargetLevel
+
+        [CategoryAttribute("Custom")]
+        [DescriptionAttribute(
+            "Selects the Hidden Level that Rex will visit with this Token.")]
+        public TokenStyle TokenStyle
         {
-            get { return this._hiddenLevel; }
+            get { return this._tokenStyle; }
             set
             {
-                if ( this._hiddenLevel != value )
+                if (this._tokenStyle != value)
                 {
                     /// Must change Image first then property so any UX updates get proper
                     /// image.
-                    this.Image = ImageFactory.Create( value );
-
-                    this.SetField( ref this._hiddenLevel, value );
+                    this.Image = ImageFactory.Create(value);
+                    this.SetField(ref this._tokenStyle, value);
                 }
             }
+        }
+
+        [CategoryAttribute("Custom")]
+        [DescriptionAttribute(
+            "Selects the Hidden Level that Rex will visit with this Token.")]
+        [Validation(typeof(RangeRule<int>),
+            Options = "Minimum=1;Maximum=28")]
+        public int TargetLevel
+        {
+            get { return this._targetLevel; }
+            set { this.SetField(ref this._targetLevel, value); }
         }
 
         [ CategoryAttribute( "Custom" ) ]
         [ DescriptionAttribute(
             "The Level that Rex will return to after completion of the hidden level." ) ]
         [ Validation( typeof( RangeRule<int> ),
-            Options = "Minimum=1;Maximum=21" ) ]
+            Options = "Minimum=1;Maximum=28" ) ]
         public int ReturnLevel
         {
             get { return this._returnLevel; }
@@ -76,7 +88,7 @@ namespace mhedit.Containers.MazeObjects
         [CategoryAttribute( "Custom" )]
         [DescriptionAttribute( "How close Rex needs to be to the token before it's visible." )]
         [Validation( typeof( RangeRule<int> ),
-            Options = "Minimum=0;Maximum=255" )]
+            Options = "Minimum=0;Maximum=10" )]
         public int VisibleDistance
         {
             get { return this._visibleDistance; }
@@ -106,30 +118,38 @@ namespace mhedit.Containers.MazeObjects
             return ToBytes();
         }
 
+        public static byte[] EmptyBytes
+        {
+            get
+            {
+                return new byte[] { 0xFF, 0, 0, 0, 0, 0, 0, 0 };
+            }
+        }
+
         private class ImageFactory
         {
-            public static Image Create( HiddenLevels hiddenLevel )
+            public static Image Create( TokenStyle hiddenLevel )
             {
                 Image image = null;
 
                 switch ( hiddenLevel )
                 {
-                    case HiddenLevels._25_Fallout:
+                    case TokenStyle.Fallout:
                         image = ResourceFactory.GetResourceImage(
                             "mhedit.Containers.Images.Objects.token_a_obj.png" );
                         break;
 
-                    case HiddenLevels._26_Star:
+                    case TokenStyle.Star:
                         image = ResourceFactory.GetResourceImage(
                             "mhedit.Containers.Images.Objects.token_b_obj.png" );
                         break;
 
-                    case HiddenLevels._27_Diamond:
+                    case TokenStyle.Diamond:
                         image = ResourceFactory.GetResourceImage(
                             "mhedit.Containers.Images.Objects.token_c_obj.png" );
                         break;
 
-                    case HiddenLevels._28_Particle:
+                    case TokenStyle.Particle:
                         image = ResourceFactory.GetResourceImage(
                             "mhedit.Containers.Images.Objects.token_d_obj.png" );
                         break;
