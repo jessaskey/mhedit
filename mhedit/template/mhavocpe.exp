@@ -1,8 +1,8 @@
 .module alpha
 
-chka2            .EQU  $fdfd
-dynamic_base     .EQU  $27f2
-levelst          .EQU  $e016
+chka2            .EQU  $fe1b
+dynamic_base     .EQU  $280e
+levelst          .EQU  $e01d
 mzdc             .EQU  $2011
 mzlg             .EQU  $2049
 mzar             .EQU  $2081
@@ -17,19 +17,20 @@ mtran            .EQU  $2241
 mhand            .EQU  $2279
 mzty             .EQU  $22b1
 mtok             .EQU  $22cd
-mclock           .EQU  $22fd
-mboots           .EQU  $2319
-mkeyp            .EQU  $2335
-mpod             .EQU  $2351
-mcan             .EQU  $240c
+mscstl           .EQU  $22ed
+mclock           .EQU  $2319
+mboots           .EQU  $2335
+mkeyp            .EQU  $2351
+mpod             .EQU  $236d
+mcan             .EQU  $2428
 mzinit           .EQU  $2012
 mazehints        .EQU  $204a
 messagesbase     .EQU  $2162
 mzsc00           .EQU  $21a0
-outime           .EQU  $2358
-oxybonus         .EQU  $2390
-reacsz           .EQU  $2374
-trtbll           .EQU  $23ac
+outime           .EQU  $2374
+oxybonus         .EQU  $23ac
+reacsz           .EQU  $2390
+trtbll           .EQU  $23c8
 zmessptrl        .EQU  $2082
 zmessptrh        .EQU  $20ba
 zmessypos        .EQU  $20f2
