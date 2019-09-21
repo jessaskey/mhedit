@@ -32,5 +32,6 @@ namespace mhedit.Containers
         public static int MAXOBJECTS_TRANSPORTER = 8;
         public static int MAXOBJECTS_CANNON = 4;
         public static int MAXOBJECTS_KEYPOUCH = 1;
+        public static int MAXOBJECTS_TOKEN = 4;
     }
 }

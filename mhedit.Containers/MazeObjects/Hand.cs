@@ -88,7 +88,7 @@ namespace mhedit.Containers.MazeObjects
                 /// be reduced for both the Reactoid and the Hand. Remove half the Reactoid width
                 /// (it's centered on X) and the full width of the drawn hand. The leftover
                 /// displacement is the total length of all the X Accordions.
-                int xAccordionDisplacement = xDisplacement - ( Reactoid.VectorWidth / 2 ) - Hand.VectorWidth;
+                int xAccordionDisplacement = xDisplacement - ( reactoid.VectorWidth / 2 ) - Hand.VectorWidth;
 
                 ///There aren't any adjustments to the displacement in the Y direction.
                 int yAccordionDisplacement = yDisplacement;

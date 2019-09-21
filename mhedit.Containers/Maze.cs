@@ -42,6 +42,7 @@ namespace mhedit.Containers
     [XmlInclude(typeof(Spikes))]
     [XmlInclude(typeof(Transporter))]
     [XmlInclude(typeof(MazeWall))]
+    [XmlInclude(typeof(HiddenLevelToken))]
     public class Maze : ChangeTrackingBase, IName
     {
 

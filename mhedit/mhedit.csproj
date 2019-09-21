@@ -197,7 +197,7 @@
       <SubType>Designer</SubType>
     </None>
     <EmbeddedResource Include="images\buttons\keypouch_32.png" />
-    <Content Include="images\buttons\token_32.png" />
+    <EmbeddedResource Include="images\buttons\token_32.png" />
     <Content Include="images\toolbarbuttons\Close.png" />
     <Content Include="images\toolbarbuttons\delete.ico" />
     <Content Include="images\toolbarbuttons\hbmame_32.png" />

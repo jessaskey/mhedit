@@ -14,8 +14,12 @@ namespace mhedit.GameControllers
         public String Comment { get; set; }
 
         public ObjectEncoding()
+            : this( new List<byte>() )
+        {}
+
+        public ObjectEncoding( List<byte> bytes )
         {
-            Bytes = new List<byte>();
+            Bytes = bytes;
         }
 
     }
