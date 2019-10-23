@@ -350,13 +350,13 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
                         LoadPresets();
                     }
-#if DEBUG
-#else
+//#if DEBUG
+//#else
                     catch ( Exception ex )
                     {
                         MessageBox.Show( ex.Message, "Serialization Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
                     }
-#endif
+//#endif
                     finally
                     {
                         Cursor.Current = Cursors.Default;
@@ -411,13 +411,13 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                         }
                     }
                 }
-#if DEBUG
-#else
+//#if DEBUG
+//#else
                 catch ( Exception ex )
                 {
                     MessageBox.Show( ex.Message, "Deserialization Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
                 }
-#endif
+//#endif
                 finally
                 {
                     Cursor.Current = Cursors.Default;

@@ -97,13 +97,13 @@ namespace mhedit
                     DialogResult = DialogResult.Abort;
                 }
             }
-#if DEBUG
-#else
+//#if DEBUG
+//#else
             catch ( Exception ex )
             {
                 MessageBox.Show( ex.Message, "ROM Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
             }
-#endif
+//#endif
             finally
             {
                 Cursor.Current = Cursors.Default;
