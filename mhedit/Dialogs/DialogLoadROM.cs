@@ -36,6 +36,10 @@ namespace mhedit
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
+            /// The Ok button was selected... but lets assume that it wasn't until
+            /// we successfully load the ROMs.
+            this.DialogResult = DialogResult.None;
+
             try
             {
                 IGameController controller = null;
