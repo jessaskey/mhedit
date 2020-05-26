@@ -132,12 +132,12 @@ namespace mhedit.Containers
             }
         }
 
-#if DEBUG
-        [TypeConverter( typeof( TypeConverters.VectorPositionTypeConverter ) )]
-        [ReadOnly( true )]
-#else
+//#if DEBUG
+//        [TypeConverter( typeof( TypeConverters.VectorPositionTypeConverter ) )]
+//        [ReadOnly( true )]
+//#else
         [BrowsableAttribute( false )]
-#endif
+//#endif
         public Point VectorPosition
         {
             get
