@@ -1164,8 +1164,8 @@ namespace mhedit.GameControllers
         private void AddHints(string hint1, string hint2, StringBuilder sb, int dataPosition, int level)
         {
             string prefix = "mzh";
-            int hint1YPosition = 48;
-            int hint2YPosition = 50;
+            int hint1YPosition = 50;
+            int hint2YPosition = 48;
             string label = prefix + GetMazeCode(level);
             AddHint(hint1, label + "a", hint1YPosition, sb, dataPosition);
             AddHint(hint2, label + "b", hint2YPosition, sb, dataPosition);
