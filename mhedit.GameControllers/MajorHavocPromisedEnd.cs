@@ -1186,7 +1186,7 @@ namespace mhedit.GameControllers
                 mb.Append(label);
                 Tabify(' ', dataPosition, mb);
                 mb.Append(".ctext \"");
-                mb.Append(hint.ToUpper());
+                mb.Append(hint);
                 mb.Append("\"");
                 sb.AppendLine(mb.ToString());
                 //new line
@@ -1336,17 +1336,17 @@ namespace mhedit.GameControllers
                         //update pointers and locations
                         WritePagedROM((ushort)_exports["zmessptrl"], new byte[] { (byte)(currentAddressPage7 & 0xFF) }, messageIndexer, 7);
                         WritePagedROM((ushort)_exports["zmessptrh"], new byte[] { (byte)((currentAddressPage7 >> 8) & 0xFF) }, messageIndexer, 7);
-                        WritePagedROM((ushort)_exports["zmessypos"], new byte[] { 0x48 }, messageIndexer, 7);
+                        WritePagedROM((ushort)_exports["zmessypos"], new byte[] { 0x50 }, messageIndexer, 7);
                         WritePagedROM((ushort)_exports["zmessxpos"], new byte[] { GetTextPosition(mazeCollection.Mazes[i].Hint) }, messageIndexer, 7);
                         //write the data stream
                         currentAddressPage7 += WritePagedROM((ushort)currentAddressPage7, GetBytesFromString(mazeCollection.Mazes[i].Hint), 0, 7);
                         //finally, book the index and increment
-                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2) + 1, 7);
+                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2) , 7);
                         messageIndexer++;
                     }
                     else
                     {
-                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { 0xff }, i * 2, 7);
+                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { 0xff }, (i * 2), 7);
                     }
                     //Write Table Pointer - Second Hint
                     if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint2))
@@ -1354,17 +1354,17 @@ namespace mhedit.GameControllers
                         //update pointers and locations
                         WritePagedROM((ushort)_exports["zmessptrl"], new byte[] { (byte)(currentAddressPage7 & 0xFF) }, messageIndexer, 7);
                         WritePagedROM((ushort)_exports["zmessptrh"], new byte[] { (byte)((currentAddressPage7 >> 8) & 0xFF) }, messageIndexer, 7);
-                        WritePagedROM((ushort)_exports["zmessypos"], new byte[] { 0x50 }, messageIndexer, 7);
+                        WritePagedROM((ushort)_exports["zmessypos"], new byte[] { 0x48 }, messageIndexer, 7);
                         WritePagedROM((ushort)_exports["zmessxpos"], new byte[] { GetTextPosition(mazeCollection.Mazes[i].Hint2) }, messageIndexer, 7);
                         //write the data stream
                         currentAddressPage7 += WritePagedROM((ushort)currentAddressPage7, GetBytesFromString(mazeCollection.Mazes[i].Hint2), 0, 7);
                         //finally, book the index and increment
-                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2)+1, 7);
+                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2)+ 1, 7);
                         messageIndexer++;
                     }
                     else
                     {
-                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { 0xff }, (i * 2)+1, 7);
+                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { 0xff }, (i * 2)+ 1, 7);
                     }
 
                     HiddenLevelToken token = maze.MazeObjects.Where(o => o.GetType() == typeof(HiddenLevelToken)).FirstOrDefault() as HiddenLevelToken;
