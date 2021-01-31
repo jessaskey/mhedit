@@ -22,8 +22,8 @@ namespace mhedit.GameControllers
         private byte[] _page2367 = new byte[0x8000];
         private byte[] _alphaHigh = new byte[0x4000];
         private Dictionary<string, ushort> _exports = new Dictionary<string, ushort>();
-        private string _page2367ROM = "mhpe.1np";
-        private string _alphaHighROM = "mhpe.1l";
+        private string _page2367ROM = "mhavocpe.1np";
+        private string _alphaHighROM = "mhavocpe.1l";
         private string _lastError = String.Empty;
         private readonly string _name;
 
@@ -934,13 +934,16 @@ namespace mhedit.GameControllers
 
                 //copy others 
                 List<string> otherROMs = new List<string>();
-                otherROMs.Add("mhpe.1mn");
-                otherROMs.Add("mhpe.1q");
-                otherROMs.Add("mhpe.6kl");
-                otherROMs.Add("mhpe.6h");
-                otherROMs.Add("mhpe.6jk");
-                otherROMs.Add("mhpe.9s");
-                otherROMs.Add("036408-01.b1");
+                otherROMs.Add("mhavocpe.1mn");
+                otherROMs.Add("mhavocpe.1q");
+                otherROMs.Add("mhavocpe.6kl");
+                otherROMs.Add("mhavocpe.6h");
+                otherROMs.Add("mhavocpe.6jk");
+                otherROMs.Add("mhavocpe.9s");
+                otherROMs.Add("mhavocpe.1bc");
+                otherROMs.Add("mhavocpe.1d");
+                //otherROMs.Add("036408-01.b1");
+                otherROMs.Add("136002-125.6c");
 
                 foreach (string rom in otherROMs)
                 {
