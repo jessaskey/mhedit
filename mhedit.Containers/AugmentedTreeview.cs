@@ -160,13 +160,15 @@ namespace mhedit.Containers
 
         protected override void OnMouseUp( MouseEventArgs e )
         {
+            /// Only deal with UNSELECTING a node in OnMouseUp.
             try
             {
                 base.OnMouseUp( e );
 
                 this._state = MultiSelectState.MouseUp;
 
-                /// Only deal with UNSELECTING a node in OnMouseUp.
+                /// When the currentSelection equals the SelectedNode the user is attempting to
+                /// unselect the node that was last selected.
                 if ( this._currentSelection == this.SelectedNode )
                 {
                     if ( this._selectedNodes.Count <= 1 )
@@ -176,7 +178,9 @@ namespace mhedit.Containers
                     }
                     else
                     {
-                        /// There are multiple selected nodes, unselect the current node
+                        /// There are multiple selected nodes, remove it from the SelectedNodes,
+                        /// unselect the current node, and make the node at the beginning of the
+                        /// list the SelectedNode.
                         this._cancelSelectedNode =
                             this.RemoveSelectedNode( this._currentSelection );
 
@@ -184,7 +188,14 @@ namespace mhedit.Containers
                         //this._currentSelection = null;
 
                         /// or possibly do select the previously selected node.
+                        /// Set the SelectedNode to the previously selected node. This will
+                        /// cause the On Before/After Select methods to be called.
                         this.SelectedNode = this._selectedNodes.FirstOrDefault();
+
+                        /// However, the On Before/After Select methods will now be called
+                        /// for the Current Selection which started the whole process. So
+                        /// we want to cancel that action. 
+                        this._state = MultiSelectState.Canceled;
                     }
                 }
                 else if ( this._isMultSelection && this._selectedNodes.Count > 1 )
