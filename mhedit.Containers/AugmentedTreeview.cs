@@ -32,6 +32,7 @@ namespace mhedit.Containers
         private readonly List<TreeNode> _selectedNodes = new List<TreeNode>();
         private TreeNode _currentSelection;
         private MultiSelectMode _mode;
+        private bool _cancelLabelEdit;
         private MultiSelectState _state;
         private bool _cancelSelectedNode;
         private bool _isMultSelection;
@@ -101,11 +102,23 @@ namespace mhedit.Containers
             }
         }
 
+        protected override void OnBeforeLabelEdit( NodeLabelEditEventArgs e )
+        {
+            e.CancelEdit = this._cancelLabelEdit;
+
+            if ( !e.CancelEdit )
+            {
+                base.OnBeforeLabelEdit(e);
+            }
+        }
+
         protected override void OnMouseDown( MouseEventArgs e )
         {
             try
             {
                 base.OnMouseDown( e );
+
+                this._cancelLabelEdit = false;
 
                 this._state = MultiSelectState.MouseDown;
 
@@ -191,6 +204,12 @@ namespace mhedit.Containers
                         /// Set the SelectedNode to the previously selected node. This will
                         /// cause the On Before/After Select methods to be called.
                         this.SelectedNode = this._selectedNodes.FirstOrDefault();
+
+                        /// When the last node becomes the SelectedNode, and then the user
+                        /// releases the Multiselect key it can result in a LabelEdit occuring.
+                        /// Cancel that here. The next mouse down will clear it which would be
+                        /// the next attept to Edit the label. 
+                        this._cancelLabelEdit = this._selectedNodes.Count <= 1;
 
                         /// However, the On Before/After Select methods will now be called
                         /// for the Current Selection which started the whole process. So
