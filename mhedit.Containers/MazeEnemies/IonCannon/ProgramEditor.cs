@@ -89,7 +89,6 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             {
                 /// All elements removed
                 this.treeViewProgram.Nodes.Clear();
-                this.treeViewProgram.SelectedNodes.Clear();
             }
             else if ( e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null )
             {
@@ -263,15 +262,6 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                     {
                         this._program.Remove( (IonCannonInstruction) node.Tag );
                     }
-
-                    /// HACK... need to fix the multiselect treeview to handle this stuff.
-                    this.treeViewProgram.SelectedNodes.Clear();
-
-                    if ( this.treeViewProgram.SelectedNode != null )
-                    {
-                        this.treeViewProgram.SelectedNodes.Add( this.treeViewProgram.SelectedNode );
-                    }
-                    /// HACK
                 }
             }
         }

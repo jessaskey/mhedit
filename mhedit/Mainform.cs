@@ -841,15 +841,6 @@ namespace mhedit
                         node.Remove();
                     }
 
-                    /// HACK... need to fix the multiselect treeview to handle this stuff.
-                    this.treeView.SelectedNodes.Clear();
-
-                    if ( this.treeView.SelectedNode != null )
-                    {
-                        this.treeView.SelectedNodes.Add( this.treeView.SelectedNode );
-                    }
-                    /// HACK
-
                     this.RefreshTree();
                 }
             }

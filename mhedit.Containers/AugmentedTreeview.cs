@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace mhedit.Containers
@@ -47,11 +48,33 @@ namespace mhedit.Containers
             this.HideSelection = false;
         }
 
-        public List<TreeNode> SelectedNodes
+        public IReadOnlyCollection<TreeNode> SelectedNodes
         {
             get { return this._selectedNodes; }
             //set { this._selectedNodes = value; }
         }
+
+#region Overrides of Control
+
+        protected override void WndProc(ref Message m)
+        {
+            /// Node Delete message.
+            if ( m.Msg == 4353 )
+            {
+                /// Call the following "internal" method to get the Node from the Handle..
+                /// internal TreeNode NodeFromHandle(IntPtr handle)
+                var deletedNode = (TreeNode) this.GetType()
+                                             .GetMethod( "NodeFromHandle",BindingFlags.Instance | BindingFlags.NonPublic )
+                                             ?.Invoke( this, new object[] { m.LParam } );
+                
+                /// Dump all selected nodes..
+                this.ClearSelectedNodes();
+            }
+
+            base.WndProc( ref m );
+        }
+
+#endregion
 
 #region Overrides of TreeView
 
