@@ -44,6 +44,13 @@ namespace mhedit.Containers.Validation
         {
             InitializeComponent();
 
+            /// Avoid possible InvalidOperationException: This operation cannot be
+            /// performed while an auto-filled column is being resized.
+            /// 
+            /// https://stackoverflow.com/a/34345439
+            /// Make sure TopLeftHeaderCell is created
+            var topLeftHeaderCell = this.dataGridView1.TopLeftHeaderCell;
+
             /// Always default to the provided title if one is passed in.
             if ( !string.IsNullOrWhiteSpace( title ) )
             {

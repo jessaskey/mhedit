@@ -104,12 +104,14 @@
     <Compile Include="MazeObjects\EscapePod.cs" />
     <Compile Include="MazeObjects\Hand.cs" />
     <Compile Include="MazeObjects\Key.cs" />
+    <Compile Include="MazeObjects\KeyPouch.cs" />
     <Compile Include="MazeObjects\Lock.cs" />
     <Compile Include="MazeObjects\ObjectColor.cs" />
     <Compile Include="MazeObjects\OneWay.cs" />
     <Compile Include="MazeObjects\Oxoid.cs" />
     <Compile Include="MazeObjects\Reactoid.cs" />
     <Compile Include="MazeObjects\Spikes.cs" />
+    <Compile Include="MazeObjects\HiddenLevelToken.cs" />
     <Compile Include="MazeObjects\Transporter.cs" />
     <Compile Include="MazeWall.cs" />
     <Compile Include="AugmentedTreeview.cs">
@@ -136,10 +138,19 @@
     <Compile Include="Validation\ElementsRule.cs" />
     <Compile Include="Validation\FileNameRule.cs" />
     <Compile Include="Validation\ISystemWindows.cs" />
+    <Compile Include="Validation\MajorHavoc\HandReactorLocationRule.cs" />
+    <Compile Include="Validation\MajorHavoc\HiddenLevelTokenMissingRule.cs" />
+    <Compile Include="Validation\MajorHavoc\HiddenLevelTokensCountRule.cs" />
+    <Compile Include="Validation\MajorHavoc\HiddenLevelTokensRule.cs" />
+    <Compile Include="Validation\MajorHavoc\KeyLockPairsRule.cs" />
     <Compile Include="Validation\MajorHavoc\MazeHintRule.cs" />
     <Compile Include="Validation\MajorHavoc\MazeTypeOrderRule.cs" />
     <Compile Include="Validation\MajorHavoc\PerkoidVelocityRule.cs" />
     <Compile Include="Validation\MajorHavoc\PyroidVelocityRule.cs" />
+    <Compile Include="Validation\MajorHavoc\SingleColorKeyRule.cs" />
+    <Compile Include="Validation\MajorHavoc\SingleColorLockRule.cs" />
+    <Compile Include="Validation\MajorHavoc\TransporterDirectionRule.cs" />
+    <Compile Include="Validation\MajorHavoc\TransporterPairsRule.cs" />
     <Compile Include="Validation\NamedPropertyRule.cs" />
     <Compile Include="Validation\NotNullRule.cs" />
     <Compile Include="Validation\RangeRule.cs" />
@@ -229,6 +240,18 @@
     <EmbeddedResource Include="Images\Error_red_16x16.png" />
     <EmbeddedResource Include="Images\Information_blue_6227_16x16.png" />
     <EmbeddedResource Include="Images\Warning_yellow_7231_16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Objects\keypouch_32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Objects\reactoid_extra_obj.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Objects\token_a_obj.png" />
+    <EmbeddedResource Include="Images\Objects\token_b_obj.png" />
+    <EmbeddedResource Include="Images\Objects\token_c_obj.png" />
+    <EmbeddedResource Include="Images\Objects\token_d_obj.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

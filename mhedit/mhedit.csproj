@@ -27,7 +27,7 @@
     <GenerateManifests>true</GenerateManifests>
     <SignManifests>true</SignManifests>
     <TargetFrameworkProfile />
-    <PublishUrl>C:\SVN\jesscode\MHEdit.Web\MHEdit.Web\MHEdit.Web\App\</PublishUrl>
+    <PublishUrl>ftps://mhedit.askey.org/app/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -44,8 +44,8 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>default.aspx</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>1.0.596.%2a</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.1.964.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -196,6 +196,8 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <EmbeddedResource Include="images\buttons\keypouch_32.png" />
+    <EmbeddedResource Include="images\buttons\token_32.png" />
     <Content Include="images\toolbarbuttons\Close.png" />
     <Content Include="images\toolbarbuttons\delete.ico" />
     <Content Include="images\toolbarbuttons\hbmame_32.png" />
@@ -322,36 +324,42 @@
     <Content Include="images\toolbarbuttons\login.png" />
     <Content Include="images\toolbarbuttons\rom.png" />
     <Content Include="images\toolbarbuttons\script-binary-icon.png" />
-    <Content Include="template\mhpe.1l">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="template\mhpe.1mn">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="template\mhpe.1np">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="template\mhpe.1q">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="template\mhpe.6h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="template\mhpe.6jk">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="template\mhpe.6kl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="template\mhpe.9s">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="template\036408-01.b1">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="template\mhavocpe.exp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="template\136002-125.6c">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="template\mhavocpe.1bc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="template\mhavocpe.1d">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="template\mhavocpe.1l">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="template\mhavocpe.1mn">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="template\mhavocpe.1np">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="template\mhavocpe.1q">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="template\mhavocpe.6h">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="template\mhavocpe.6jk">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="template\mhavocpe.6kl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="template\mhavocpe.9s">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.ico">

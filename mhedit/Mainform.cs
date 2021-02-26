@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -70,7 +69,7 @@ namespace mhedit
             toolBox.AllowSwappingByDragDrop = false;
             //create our image lists...
             ImageList toolboxImageList = new ImageList();
-            Size iconSize = new Size(32,32);
+            Size iconSize = new Size(32, 32);
             toolboxImageList.ImageSize = iconSize;
             toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.wall_horizontal_32.png"));
             toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.wall_leftup_32.png"));
@@ -100,6 +99,8 @@ namespace mhedit
             toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.pod_32.png"));
             toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.roboid_32.png"));
             toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.arrow_out_32.png"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.keypouch_32.png"));
+            toolboxImageList.Images.Add(ResourceFactory.GetResourceImage("mhedit.images.buttons.token_32.png"));
             toolBox.SmallImageList = toolboxImageList;
 
             int tabIndex;
@@ -130,11 +131,13 @@ namespace mhedit
             itemIndex = toolBox[tabIndex].AddItem("Stalactites", 22, true, new Spikes());
             itemIndex = toolBox[tabIndex].AddItem("Transporter", 24, true, new Transporter());
             itemIndex = toolBox[tabIndex].AddItem("Booties", 23, true, new Boots());
+            itemIndex = toolBox[tabIndex].AddItem("KeyPouch", 28, true, new KeyPouch());
             itemIndex = toolBox[tabIndex].AddItem("Lock", 20, true, new Lock());
             itemIndex = toolBox[tabIndex].AddItem("Key", 12, true, new Key());
             itemIndex = toolBox[tabIndex].AddItem("De Hand", 21, true, new Hand());
             itemIndex = toolBox[tabIndex].AddItem("Clock", 16, true, new Clock());
             itemIndex = toolBox[tabIndex].AddItem("Escape Pod", 25, true, new EscapePod());
+            itemIndex = toolBox[tabIndex].AddItem("Hidden Level Token", 29, true, new HiddenLevelToken());
 
             toolBox.SelectedTabIndex = 2;
         }
@@ -392,7 +395,15 @@ namespace mhedit
         private void treeView_DrawNode( object sender, DrawTreeNodeEventArgs e )
         {
             // Use the default background and node text.
-            e.DrawDefault = true;
+            e.DrawDefault = !e.Node.IsEditing;
+
+            if ( e.Node.IsEditing )
+            {
+                // While editing the Node Text don't paint the existing name behind.
+                e.Graphics.FillRectangle( new SolidBrush( SystemColors.Window ), e.Bounds );
+
+                return;
+            }
 
             // Extract the set font/color from the tree.
             Font nodeFont =
@@ -1037,8 +1048,7 @@ namespace mhedit
 
         private void toolStripMenuItemPreview_Click( object sender, EventArgs e )
         {
-            try
-            {
+
                 // Get the selected node's MazeController/Maze so we can make it the preview target.
                 if ( this.treeView.SelectedNode?.Tag is MazeController mazeController )
                 {
@@ -1081,6 +1091,8 @@ namespace mhedit
 
                             args += Properties.Settings.Default.MameDriver;
 
+                        try
+                        {
                             ProcessStartInfo info = new ProcessStartInfo(mameExe, args)
                             {
                                 ErrorDialog = true,
@@ -1098,6 +1110,12 @@ namespace mhedit
                             p.Exited += this.ProcessExited;
                             p.Start();
                         }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"There was an error launching HBMAME (" + mameExe + " " + args + ")." +
+                                             $" Verify your HBMAME paths in the configuration. {ex.Message}");
+                        }
+                    }
                     }
 
                         
@@ -1108,12 +1126,7 @@ namespace mhedit
                     //}
                     
                 }
-            }
-            catch ( Exception ex )
-            {
-                MessageBox.Show( $"There was an error launching HBMAME," +
-                                 $" verify your HBMAME paths in the configuration. {ex.Message}" );
-            }
+
         }
 
         private void ProcessExited( object sender, EventArgs e )
@@ -1184,8 +1197,8 @@ namespace mhedit
             catch ( Exception ex )
             {
                 Cursor.Current = Cursors.Default;
-                MessageBox.Show( $"Maze could not be opened: {ex.Message}",
-                    "File Open Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                MessageBox.Show($@"Maze could not be opened: {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}",
+                    "File Open Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 //Bryan, I put this here as an example of how to report Exceptions that are caught, but you still
                 //may want to log them. All un-handled exceptions will still log.
@@ -1229,8 +1242,8 @@ namespace mhedit
             catch ( Exception ex )
             {
                 Cursor.Current = Cursors.Default;
-                MessageBox.Show( $"Maze Collection could not be opened: {ex.Message}",
-                    "File Open Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
+                MessageBox.Show($@"Maze Collection could not be opened: {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}",
+                    "File Open Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -1286,7 +1299,7 @@ namespace mhedit
                 result = DialogResult.Cancel;
 
                 MessageBox.Show(
-                    $"An error has occurred while trying to save: {ex.Message}",
+                    $@"An error has occurred while trying to save: {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}",
                     "An Error Occurred",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error );
@@ -1349,7 +1362,7 @@ namespace mhedit
                 result = DialogResult.Cancel;
 
                 MessageBox.Show(
-                    $"An error has occurred while trying to save: {ex.Message}",
+                    $@"An error has occurred while trying to save: {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}",
                     "An Error Occurred",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error );

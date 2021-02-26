@@ -22,8 +22,8 @@ namespace mhedit.GameControllers
         private byte[] _page2367 = new byte[0x8000];
         private byte[] _alphaHigh = new byte[0x4000];
         private Dictionary<string, ushort> _exports = new Dictionary<string, ushort>();
-        private string _page2367ROM = "mhpe.1np";
-        private string _alphaHighROM = "mhpe.1l";
+        private string _page2367ROM = "mhavocpe.1np";
+        private string _alphaHighROM = "mhavocpe.1l";
         private string _lastError = String.Empty;
         private readonly string _name;
 
@@ -111,14 +111,13 @@ namespace mhedit.GameControllers
         public MazeCollection LoadMazes(List<string> loadMessages)
         {
             MazeCollection mazeCollection = new MazeCollection( this.Name );
-            mazeCollection.AuthorEmail = "Jess@maynard.vax";
+            mazeCollection.AuthorEmail = "jess@askey.org";
             mazeCollection.AuthorName = "Jess Askey";
 
             for ( int i = 0; i < 28; i++)
             {
-
-                byte mazeType = (byte)(i & 0x03);
-
+                byte mazeType = ReadByte(_exports["mzty"], i, 6);
+                //byte mazeType = (byte)(i & 0x03);
                 Maze maze = new Maze((MazeType)mazeType, "Level " + (i + 1).ToString());
 
                 //hint text
@@ -139,6 +138,8 @@ namespace mhedit.GameControllers
                 mazeInitIndex += 4;
                 int timer = DataConverter.FromDecimal((int)ReadByte(_exports["outime"], i, 6));
                 reactor.Timer = timer;
+                int reactorSize = DataConverter.FromDecimal((int)ReadByte(_exports["reacsz"], i, 6));
+                reactor.MegaReactoid = reactorSize != 0 ? true : false;
                 maze.AddObject(reactor);
 
                 //pyroids
@@ -427,6 +428,13 @@ namespace mhedit.GameControllers
                     maze.AddObject(boots);
                 }
 
+                byte pouchData = ReadByte(_exports["mkeyp"], i, 6);
+                if ( pouchData != 0)
+                {
+                    KeyPouch keyPouch = new KeyPouch();
+                    keyPouch.LoadPosition(pouchData);
+                    maze.AddObject(keyPouch);
+                }
 
                 //Laser Cannon
                 for (int c = 0; c < 4; c++)
@@ -508,7 +516,7 @@ namespace mhedit.GameControllers
                         transporter.Direction = TransporterDirection.Right;
                     }
                     transporter.Color = (ObjectColor)(colorValue & 0x0F);
-                    transporter.IsBroken = ((colorValue & 0x40) > 0);
+                    transporter.IsSpecial = ((colorValue & 0x40) > 0);
                     transporter.IsHidden = ((colorValue & 0x80) > 0);
                     maze.AddObject(transporter);
                     transporterBaseAddress++;
@@ -665,6 +673,29 @@ namespace mhedit.GameControllers
 
                 mazeCollection.Mazes.Add(maze);
             }
+
+            /// Extract and add HiddenLevelTokens
+            ushort hiddenLevelTokenIndex = _exports[ "mtok" ];
+
+            for ( int tokenIndex = 0; tokenIndex < Constants.MAXOBJECTS_TOKEN; tokenIndex++ )
+            {
+                sbyte level = (sbyte)ReadByte( hiddenLevelTokenIndex, 0, 6 );
+
+                if ( level < 0 )
+                {
+                    continue;
+                }
+
+                HiddenLevelToken hiddenLevelToken = new HiddenLevelToken();
+                hiddenLevelToken.TokenStyle = (TokenStyle)tokenIndex;
+                hiddenLevelToken.LoadPosition(ReadBytes( (ushort)( hiddenLevelTokenIndex + 1 ), 4, 6 ) );
+                hiddenLevelToken.TargetLevel = ( ReadByte( hiddenLevelTokenIndex, 5, 6 ) + 1 );
+                hiddenLevelToken.ReturnLevel = ( ReadByte( hiddenLevelTokenIndex, 6, 6 ) + 1 );
+                hiddenLevelToken.VisibleDistance = ( ReadByte( hiddenLevelTokenIndex, 7, 6 ) );
+                mazeCollection.Mazes[ level ].AddObject( hiddenLevelToken );
+                hiddenLevelTokenIndex += 8;
+            }
+
             return mazeCollection;
         }
 
@@ -903,13 +934,16 @@ namespace mhedit.GameControllers
 
                 //copy others 
                 List<string> otherROMs = new List<string>();
-                otherROMs.Add("mhpe.1mn");
-                otherROMs.Add("mhpe.1q");
-                otherROMs.Add("mhpe.6kl");
-                otherROMs.Add("mhpe.6h");
-                otherROMs.Add("mhpe.6jk");
-                otherROMs.Add("mhpe.9s");
-                otherROMs.Add("036408-01.b1");
+                otherROMs.Add("mhavocpe.1mn");
+                otherROMs.Add("mhavocpe.1q");
+                otherROMs.Add("mhavocpe.6kl");
+                otherROMs.Add("mhavocpe.6h");
+                otherROMs.Add("mhavocpe.6jk");
+                otherROMs.Add("mhavocpe.9s");
+                otherROMs.Add("mhavocpe.1bc");
+                otherROMs.Add("mhavocpe.1d");
+                //otherROMs.Add("036408-01.b1");
+                otherROMs.Add("136002-125.6c");
 
                 foreach (string rom in otherROMs)
                 {
@@ -1003,6 +1037,7 @@ namespace mhedit.GameControllers
             StringBuilder cannonSource = new StringBuilder();
 
             List<String> mazeLetters = new List<string>() { "A", "B", "C", "D" };
+            KeyValuePair<int,HiddenLevelToken>[] tokens = new KeyValuePair<int, HiddenLevelToken>[4];
 
             foreach (Tuple<Maze, int> selectedMaze in selectedMazes)
             {
@@ -1015,38 +1050,7 @@ namespace mhedit.GameControllers
                 page7Source.AppendLine(commentLine);
 
                 //Maze Hints
-                StringBuilder mb = new StringBuilder();
-                mb.Append("mzh");
-                mb.Append(GetMazeCode(level));
-                Tabify(' ', dataPosition, mb);
-                mb.Append(".ctext \"");
-                if (!String.IsNullOrEmpty(maze.Hint))
-                {
-                    mb.Append(maze.Hint.ToUpper());
-                }
-                else
-                {
-                    mb.Append(" ");
-                }
-                mb.Append("\"");
-                page7Source.AppendLine(mb.ToString());
-
-                StringBuilder mb2 = new StringBuilder();
-                mb2.Append("mhz");
-                mb2.Append(GetMazeCode(level));
-                mb2.Append("a");
-                Tabify(' ', dataPosition, mb2);
-                mb2.Append(".ctext \"");
-                if (!String.IsNullOrEmpty(maze.Hint2))
-                {
-                    mb2.Append(maze.Hint2.ToUpper());
-                }
-                else
-                {
-                    mb2.Append(" ");
-                }
-                mb2.Append("\"");
-                page7Source.AppendLine(mb2.ToString());
+                AddHints(maze.Hint, maze.Hint2, page7Source, dataPosition, level);
                 page7Source.AppendLine("");
 
                 //Reactoid.Pyroids.Perkoids.Max
@@ -1113,28 +1117,95 @@ namespace mhedit.GameControllers
                 page6Source.AppendLine(DumpBytes("hand" + GetMazeCode(level), dataPosition, commentPosition, 16, EncodeObjects(maze, EncodingGroup.Hand).ObjectEncodings));
 
                 //misc stuff, defined as vars not tables
-                page6Source.AppendLine(DumpScalar("clock" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Clock).ObjectEncodings));
-                page6Source.AppendLine(DumpScalar("boot" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.Boots).ObjectEncodings));
+                page6Source.AppendLine(DumpScalar("mzty" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.MazeType).ObjectEncodings));
+                page6Source.AppendLine(DumpScalar("clock" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.Clock).ObjectEncodings));
+                page6Source.AppendLine(DumpScalar("boot" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.Boots).ObjectEncodings));
+                page6Source.AppendLine(DumpScalar("keyp" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.KeyPouch).ObjectEncodings));
                 if ((level - 1) % 4 == 1)
                 {
-                    page6Source.AppendLine(DumpScalar("mpod" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.EscapePod).ObjectEncodings));
+                    page6Source.AppendLine(DumpScalar("mpod" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.EscapePod).ObjectEncodings));
                 }
-                page6Source.AppendLine(DumpScalar("outi" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.OutTime).ObjectEncodings));
-                page6Source.AppendLine(DumpScalar("oxyb" + GetMazeCode(level), commentPosition, EncodeObjects(maze, EncodingGroup.OxygenReward).ObjectEncodings));
+                page6Source.AppendLine(DumpScalar("outi" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.OutTime).ObjectEncodings));
+                page6Source.AppendLine(DumpScalar("reaz" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.ReactorSize).ObjectEncodings));
+                page6Source.AppendLine(DumpScalar("oxyb" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.OxygenReward).ObjectEncodings));
+
+                HiddenLevelToken token = maze.MazeObjects.Where(o => o.GetType() == typeof(HiddenLevelToken)).FirstOrDefault() as HiddenLevelToken;
+                if (token != null)
+                {
+                    tokens[(int)token.TokenStyle] = new KeyValuePair<int, HiddenLevelToken>(level-1, token);
+                }
             }
+
+            /// Pull out Hidden Level Token info that isn't on every level.
+            StringBuilder tokenSource = new StringBuilder();
+            List<ObjectEncoding> tokenEncodings = new List<ObjectEncoding>();
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                KeyValuePair<int,HiddenLevelToken> tokenInfo = tokens[i];
+                if (tokenInfo.Value == null)
+                {
+                    tokenEncodings.Add(new ObjectEncoding(HiddenLevelToken.EmptyBytes.ToList()));
+                }
+                else
+                {
+                    List<byte> tokenBytes = new List<byte>();
+                    tokenBytes.Add((byte)tokenInfo.Key);
+                    tokenBytes.AddRange(tokenInfo.Value.ToBytes());
+                    tokenEncodings.Add(new ObjectEncoding(tokenBytes));
+                }
+            }
+            tokenSource.AppendLine( DumpBytes( "mtok" + "", dataPosition, commentPosition, 8, tokenEncodings) );
 
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(cannonSource.ToString());
+            sb.AppendLine(tokenSource.ToString());
             sb.AppendLine(page6Source.ToString());
             sb.AppendLine(page7Source.ToString());
             return sb.ToString();
         }
 
-        private string DumpScalar(string label, int commentPosition, List<ObjectEncoding> encodings)
+        private void AddHints(string hint1, string hint2, StringBuilder sb, int dataPosition, int level)
+        {
+            string prefix = "mzh";
+            int hint1YPosition = 50;
+            int hint2YPosition = 48;
+            string label = prefix + GetMazeCode(level);
+            AddHint(hint1, label + "a", hint1YPosition, sb, dataPosition);
+            AddHint(hint2, label + "b", hint2YPosition, sb, dataPosition);
+        }
+
+        private void AddHint(string hint, string label, int yPosition, StringBuilder sb, int dataPosition)
+        {
+            if (!String.IsNullOrWhiteSpace(hint))
+            {
+                int position = 0 - (hint.Length * 3);
+                string xPositionHex = position.ToString("X8").Substring(6, 2);
+                if (position < -128)
+                {
+                    //cant go too far off left side of screen
+                    xPositionHex = "80";
+                }
+                StringBuilder mb = new StringBuilder();
+                mb.Append(label);
+                Tabify(' ', dataPosition, mb);
+                mb.Append(".ctext \"");
+                mb.Append(hint);
+                mb.Append("\"");
+                sb.AppendLine(mb.ToString());
+                //new line
+                mb.Clear();
+                Tabify(' ', dataPosition, mb);
+                mb.Append("zmess(" + label + ",$" + yPosition.ToString() + ",$" + xPositionHex + ")");
+                sb.AppendLine(mb.ToString());
+            }
+        }
+
+        private string DumpScalar(string label, int dataPosition, int commentPosition, List<ObjectEncoding> encodings)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(label);
-            sb.Append(" = $");
+            Tabify(' ', dataPosition, sb);
+            sb.Append("= $");
             if (encodings.Count > 0)
             {
                 sb.Append(encodings[0].Bytes[0].ToString("X2"));
@@ -1256,27 +1327,29 @@ namespace mhedit.GameControllers
             int currentAddressPage7 = _exports["messagesbase"];
             //Maze Hints
             byte messageIndexer = 0;
+            KeyValuePair<int, HiddenLevelToken>[] tokens = new KeyValuePair<int, HiddenLevelToken>[4];
             for (int i = 0; i < numMazes; i++)
             {
                 if (mazeCollection.Mazes[i] != null)
                 {
+                    int levelIndex = mazeCollection.Mazes.IndexOf(maze);
                     //Write Table Pointer - First Hint
                     if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint))
                     {
                         //update pointers and locations
                         WritePagedROM((ushort)_exports["zmessptrl"], new byte[] { (byte)(currentAddressPage7 & 0xFF) }, messageIndexer, 7);
                         WritePagedROM((ushort)_exports["zmessptrh"], new byte[] { (byte)((currentAddressPage7 >> 8) & 0xFF) }, messageIndexer, 7);
-                        WritePagedROM((ushort)_exports["zmessypos"], new byte[] { 0x48 }, messageIndexer, 7);
+                        WritePagedROM((ushort)_exports["zmessypos"], new byte[] { 0x50 }, messageIndexer, 7);
                         WritePagedROM((ushort)_exports["zmessxpos"], new byte[] { GetTextPosition(mazeCollection.Mazes[i].Hint) }, messageIndexer, 7);
                         //write the data stream
                         currentAddressPage7 += WritePagedROM((ushort)currentAddressPage7, GetBytesFromString(mazeCollection.Mazes[i].Hint), 0, 7);
                         //finally, book the index and increment
-                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2) + 1, 7);
+                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2) , 7);
                         messageIndexer++;
                     }
                     else
                     {
-                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { 0xff }, i * 2, 7);
+                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { 0xff }, (i * 2), 7);
                     }
                     //Write Table Pointer - Second Hint
                     if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint2))
@@ -1284,17 +1357,23 @@ namespace mhedit.GameControllers
                         //update pointers and locations
                         WritePagedROM((ushort)_exports["zmessptrl"], new byte[] { (byte)(currentAddressPage7 & 0xFF) }, messageIndexer, 7);
                         WritePagedROM((ushort)_exports["zmessptrh"], new byte[] { (byte)((currentAddressPage7 >> 8) & 0xFF) }, messageIndexer, 7);
-                        WritePagedROM((ushort)_exports["zmessypos"], new byte[] { 0x50 }, messageIndexer, 7);
+                        WritePagedROM((ushort)_exports["zmessypos"], new byte[] { 0x48 }, messageIndexer, 7);
                         WritePagedROM((ushort)_exports["zmessxpos"], new byte[] { GetTextPosition(mazeCollection.Mazes[i].Hint2) }, messageIndexer, 7);
                         //write the data stream
                         currentAddressPage7 += WritePagedROM((ushort)currentAddressPage7, GetBytesFromString(mazeCollection.Mazes[i].Hint2), 0, 7);
                         //finally, book the index and increment
-                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2)+1, 7);
+                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { messageIndexer }, (i * 2)+ 1, 7);
                         messageIndexer++;
                     }
                     else
                     {
-                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { 0xff }, (i * 2)+1, 7);
+                        WritePagedROM((ushort)_exports["mazehints"], new byte[] { 0xff }, (i * 2)+ 1, 7);
+                    }
+
+                    HiddenLevelToken token = maze.MazeObjects.Where(o => o.GetType() == typeof(HiddenLevelToken)).FirstOrDefault() as HiddenLevelToken;
+                    if (token != null)
+                    {
+                        tokens[(int)token.TokenStyle] = new KeyValuePair<int, HiddenLevelToken>(levelIndex, token);
                     }
                 }
             }
@@ -1315,13 +1394,46 @@ namespace mhedit.GameControllers
             //********************************
             int currentAddressPage6 = _exports["dynamic_base"];
             Dictionary<byte, ushort> existingOxoids = new Dictionary<byte, ushort>();
-            //Oxygen Discs
             pointerIndex = 0;
+            //****************
+            //Maze Type
+            //****************
+            int typeIndex = 0;
             for (int i = 0; i < numMazes; i++)
             {
-                //****************
-                //Oxoid data
-                //****************
+                typeIndex += WritePagedROM((ushort)_exports["mzty"], EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.MazeType).GetAllBytes().ToArray(), typeIndex, 6);
+            }
+            //****************
+            //Hidden Level Token
+            //****************
+            List<byte> allTokenBytes = new List<byte>();
+            List<ObjectEncoding> tokenEncodings = new List<ObjectEncoding>();
+            for (int i = 0; i < tokens.Length; i++)
+            {
+                KeyValuePair<int, HiddenLevelToken> tokenInfo = tokens[i];
+                if (tokenInfo.Value == null)
+                {
+                    tokenEncodings.Add(new ObjectEncoding(HiddenLevelToken.EmptyBytes.ToList()));
+                }
+                else
+                {
+                    List<byte> tokenBytes = new List<byte>();
+                    tokenBytes.Add((byte)tokenInfo.Key);
+                    tokenBytes.AddRange(tokenInfo.Value.ToBytes());
+                    tokenEncodings.Add(new ObjectEncoding(tokenBytes));
+                }
+            }
+            foreach(ObjectEncoding encoding in tokenEncodings)
+            {
+                allTokenBytes.AddRange(encoding.Bytes);
+            }
+            WritePagedROM(_exports["mtok"], allTokenBytes.ToArray(), 0, 6); 
+
+            //****************
+            //Oxoid data
+            //****************
+            for (int i = 0; i < numMazes; i++)
+            {
                 byte[] oxoidBytes = EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Oxoids).GetAllBytes().ToArray();
                 byte byteHash = GetByteHash(oxoidBytes);
                 if (existingOxoids.ContainsKey(byteHash))
@@ -1537,6 +1649,14 @@ namespace mhedit.GameControllers
                 bootsIndex += WritePagedROM((ushort)_exports["mboots"], EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.Boots).GetAllBytes().ToArray(), bootsIndex, 6);
             }
             //****************
+            //KeyPouch
+            //****************
+            int pouchIndex = 0;
+            for ( int i = 0; i < numMazes; i++ )
+            {
+                pouchIndex += WritePagedROM((ushort)_exports["mkeyp"], EncodeObjects( mazeCollection.Mazes[i], EncodingGroup.KeyPouch).GetAllBytes().ToArray(), pouchIndex, 6);
+            }
+            //****************
             //Escape Pod
             //****************
             int mpodAddressBase = _exports["mpod"];
@@ -1551,6 +1671,14 @@ namespace mhedit.GameControllers
             for (int i = 0; i < numMazes; i++)
             {
                 outAddressBase += WritePagedROM((ushort)outAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OutTime).GetAllBytes().ToArray(), 0, 6);
+            }
+            //****************
+            //Reactor Size
+            //****************
+            int rsizeAddressBase = _exports["reacsz"];
+            for (int i = 0; i < numMazes; i++)
+            {
+                rsizeAddressBase += WritePagedROM((ushort)rsizeAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.ReactorSize).GetAllBytes().ToArray(), 0, 6);
             }
             //****************
             //OxygenReward
@@ -1569,9 +1697,7 @@ namespace mhedit.GameControllers
                 {
                     if (mazeCollection.Mazes[i] == maze)
                     {
-                        byte startLevel = (byte)i;
-                        if (startLevel > 24) startLevel = 24;
-                        WriteAlphaHigh((ushort)(_exports["levelst"] + 1), startLevel);
+                        WriteAlphaHigh((ushort)(_exports["levelst"] + 1), (byte)i );
                     }
                 }
             }
@@ -1622,7 +1748,11 @@ namespace mhedit.GameControllers
             Boots,
             EscapePod,
             OutTime,
-            OxygenReward
+            OxygenReward,
+            MazeType,
+            KeyPouch,
+            ReactorSize,
+            HiddenLevelToken
         }
 
         /// <summary>
@@ -1637,7 +1767,11 @@ namespace mhedit.GameControllers
         {
             ObjectEncodingCollection encodings = new ObjectEncodingCollection();
 
-            Reactoid reactoid = maze.MazeObjects.OfType<Reactoid>().FirstOrDefault();
+            Reactoid reactoid = null;
+            if (maze != null)
+            {
+                reactoid = maze.MazeObjects.OfType<Reactoid>().FirstOrDefault();
+            }
             int counter = 0;
 
             switch (group)
@@ -1678,6 +1812,9 @@ namespace mhedit.GameControllers
                         }
                         encodings.Add(0xff); //Data End Flag
                     }
+                    break;
+                case EncodingGroup.MazeType:
+                    encodings.Add((byte)maze.MazeType, Enum.GetName(typeof(MazeType),maze.MazeType));
                     break;
                 case EncodingGroup.Oxoids:
                     List<byte> oxygenBytes = new List<byte>();
@@ -1810,7 +1947,30 @@ namespace mhedit.GameControllers
                         List<Transporter> coloredTranporterMatches = maze.MazeObjects.OfType<Transporter>().Where(t => t.Color == transporterPair.Key).ToList();
                         foreach (Transporter t in coloredTranporterMatches)
                         {
-                            encodings.Add(t.ToBytes(), Enum.GetName(typeof(ObjectColor), t.Color));
+                            List<string> flags = new List<string>();
+                            flags.Add("col" + Enum.GetName(typeof(ObjectColor), t.Color).ToLower());
+                            if (t.Direction == TransporterDirection.Right)
+                            {
+                                flags.Add("tr_right");
+                            }
+                            else
+                            {
+                                flags.Add("tr_left");
+                            }
+                            if (t.IsHidden)
+                            {
+                                flags.Add("tr_hidden");
+                            }
+                            if (t.IsSpecial)
+                            {
+                                flags.Add("tr_special");
+                            }
+                            StringBuilder tMacro = new StringBuilder();
+                            tMacro.Append(".db (");
+                            tMacro.Append(String.Join("+", flags.ToArray()));
+                            tMacro.Append("),$");
+                            tMacro.Append(t.ToBytes()[1].ToString("X2"));
+                            encodings.Add(t.ToBytes(), Enum.GetName(typeof(ObjectColor), t.Color), "", tMacro.ToString());
                         }
                     }
                     //write end of transports
@@ -1859,30 +2019,6 @@ namespace mhedit.GameControllers
                         encodings.Add(transportabilityBytes.ToArray(), "Transportability Flags");
                     }
                     encodings.Add(0xee, "Transportability Flags");
-                    //{
-                    //    int flagCount = 0;
-                    //    int flagValue = 0;
-                    //    for (int f = 0; f < maze.TransportabilityFlags.Count; f++)
-                    //    {
-                    //        flagValue = flagValue << 1;
-                    //        if (f < maze.TransportabilityFlags.Count)
-                    //        {
-                    //            if (maze.TransportabilityFlags[f])
-                    //            {
-                    //                flagValue += 1;
-                    //            }
-                    //        }
-
-                    //        flagCount++;
-                    //        if (flagCount > 7)
-                    //        {
-                    //            encodings.Add((byte)flagValue, "Transportability Flags");
-                    //            flagCount = 0;
-                    //            flagValue = 0;
-                    //        }
-                    //    }
-                    //}
-                    //encodings.Add(0xee);
                     break;
                 case EncodingGroup.Hand:
                     Hand hand = maze.MazeObjects.OfType<Hand>().FirstOrDefault();
@@ -1891,7 +2027,7 @@ namespace mhedit.GameControllers
                         Reactoid r = maze.MazeObjects.OfType<Reactoid>().FirstOrDefault();
                         if (r != null)
                         {
-                            encodings.Add(hand.ToBytes(r.Position), "Hand");
+                            encodings.Add(hand.ToBytes(r), "Hand");
                         }
                     }
                     else
@@ -1923,6 +2059,18 @@ namespace mhedit.GameControllers
                         encodings.Add(0x00);
                     }
                     break;
+                case EncodingGroup.KeyPouch:
+                    //KeyPouch Data
+                    KeyPouch keyPouch = maze.MazeObjects.OfType<KeyPouch>().FirstOrDefault();
+                    if ( keyPouch != null)
+                    {
+                        encodings.Add( keyPouch.ToBytes(), "KeyPouch" );
+                    }
+                    else
+                    {
+                        encodings.Add(0x00);
+                    }
+                    break;
                 case EncodingGroup.EscapePod:
                     //Pod Data
                     EscapePod pod = maze.MazeObjects.OfType<EscapePod>().FirstOrDefault();
@@ -1936,7 +2084,7 @@ namespace mhedit.GameControllers
                     }
                     break;
                 case EncodingGroup.OutTime:
-                    //Pod Data
+                    //Maze Escape Time
                     int reactorTimer = 0;
                     if (reactoid != null)
                     {
@@ -1944,8 +2092,26 @@ namespace mhedit.GameControllers
                     }
                     encodings.Add((byte)reactorTimer);
                     break;
+                case EncodingGroup.ReactorSize:
+                    //Reactor Size
+                    int reactorSize = 0;
+                    if (reactoid != null)
+                    {
+                        if (reactoid.MegaReactoid)
+                        {
+                            reactorSize = 1;
+                        }
+                    }
+                    encodings.Add((byte)reactorSize);
+                    break;
                 case EncodingGroup.OxygenReward:
                     encodings.Add((byte)maze.OxygenReward);
+                    break;
+                case EncodingGroup.HiddenLevelToken:
+                    foreach ( var token in maze.MazeObjects.OfType<HiddenLevelToken>() )
+                    {
+                        encodings.Add( token.ToBytes(), $"{token.TokenStyle}" );
+                    }
                     break;
             }
 

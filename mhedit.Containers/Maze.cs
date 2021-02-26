@@ -30,6 +30,7 @@ namespace mhedit.Containers
     [XmlInclude(typeof(Arrow))]
     [XmlInclude(typeof(ArrowOut))]
     [XmlInclude(typeof(Boots))]
+    [XmlInclude(typeof(KeyPouch))]
     [XmlInclude(typeof(Clock))]
     [XmlInclude(typeof(EscapePod))]
     [XmlInclude(typeof(Hand))]
@@ -41,6 +42,7 @@ namespace mhedit.Containers
     [XmlInclude(typeof(Spikes))]
     [XmlInclude(typeof(Transporter))]
     [XmlInclude(typeof(MazeWall))]
+    [XmlInclude(typeof(HiddenLevelToken))]
     public class Maze : ChangeTrackingBase, IName
     {
 
@@ -118,6 +120,12 @@ namespace mhedit.Containers
         [Validation( typeof( CollectionContentRule<Reactoid> ),
             Message = "Every Maze requires a single Reactoid. {4} were found.",
             Options = "Maximum=1;Minimum=1" )]
+        [Validation( typeof( HandReactorLocationRule ) )]
+        [Validation( typeof( KeyLockPairsRule ) )]
+        [Validation( typeof( SingleColorKeyRule ) )]
+        [Validation( typeof( SingleColorLockRule ) )]
+        [Validation( typeof( TransporterPairsRule ) )]
+        [Validation( typeof( TransporterDirectionRule ) )]
         [Validation( typeof( ElementsRule ) )]
         [BrowsableAttribute(false)]
         public ExtendedObservableCollection<MazeObject> MazeObjects

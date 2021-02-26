@@ -5,16 +5,16 @@ namespace mhedit.Containers
 {
     public static class DataConverter
     {
-        private static int _vectorGridSize = 256;
+        private const int _vectorGridSize = 256;
         private const int GRIDUNITS = 8;
         private const int GRIDUNITSTAMPS = 8;
-        private static int _canvasGridOffsetX = 3;
-        private static int _canvasGridOffsetY = -3;
+        private const int _canvasGridOffsetX = 3;
+        private const int _canvasGridOffsetY = -3;
 
         /// <summary>
         /// The number of pixels in a Maze Grid/Stamp within the Editor.
         /// </summary>
-        public static int CanvasGridSize = GRIDUNITSTAMPS * GRIDUNITS;
+        public const int CanvasGridSize = GRIDUNITSTAMPS * GRIDUNITS;
 
         /// <summary>
         /// The number of pixels of Padding around the Maze Canvas in the editor.
@@ -25,7 +25,7 @@ namespace mhedit.Containers
         /// <summary>
         /// Scale Factor between Atari and Editor Canvas.
         /// </summary>
-        public static int PositionScaleFactor = _vectorGridSize / CanvasGridSize;
+        public const int PositionScaleFactor = _vectorGridSize / CanvasGridSize;
 
         /// <summary>
         /// Converts an Atari vector tuple into an editor
@@ -83,14 +83,11 @@ namespace mhedit.Containers
             return new byte[] { xl, xh, yl, yh };
         }
 
-        public static Tuple<short, short> ByteArrayLongToPoint(byte[] bytes)
+        public static Tuple<short, short> ByteArrayLongToPoint( byte[] bytes, Point staticLsb = new Point() )
         {
-            short x = (short)(bytes[0] + (bytes[1] << 8));
-            short y = (short)(bytes[2] + (bytes[3] << 8));
-            Tuple<short, short> vector = new Tuple<short, short>(x, y);
-            return vector;
+            return AdjustForStaticLsb( bytes, ref staticLsb );
         }
-        
+
 
         public static Tuple<short, short> BytePackedToVector(byte b, Point staticLsb)
         {
@@ -101,20 +98,27 @@ namespace mhedit.Containers
             longBytes[2] = 0;
             longBytes[3] = (byte)((b >> 4) | 0xf0);
 
+            return AdjustForStaticLsb( longBytes, ref staticLsb );
+        }
+
+        private static Tuple<short, short> AdjustForStaticLsb( byte[] bytes, ref Point staticLsb )
+        {
             //some packed objects have a pre-defined LSB byte in the code
             //we need to set this upon decoding of the packed data
             //for encoding, it doesn't matter since it goes away.
-            if (staticLsb != Point.Empty)
+            if ( staticLsb.X != Point.Empty.X )
             {
-                longBytes[0] = (byte)staticLsb.X; // (byte)_objectLSBs[type].X;
-                longBytes[2] = (byte)staticLsb.Y; //(byte)_objectLSBs[type].Y;
+                bytes[ 0 ] = (byte)staticLsb.X;
             }
 
-            return ByteArrayLongToPoint(longBytes);
+            if ( staticLsb.Y != Point.Empty.Y )
+            {
+                bytes[ 2 ] = (byte)staticLsb.Y;
+            }
 
-            //ushort yh = (ushort)((((b >> 4) & 0x0f) << 8) | 0xf000);
-            //ushort xh = (ushort)(((b & 0x0f) + 1) << 8);
-            //return new Tuple<ushort, ushort>(xh, yh);
+            return new Tuple<short, short>(
+                (short) ( bytes[ 0 ] + ( bytes[ 1 ] << 8 ) ),
+                (short) ( bytes[ 2 ] + ( bytes[ 3 ] << 8 ) ) );
         }
 
         public static byte[] PointToByteArrayShort(Point point)

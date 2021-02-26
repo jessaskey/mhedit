@@ -1,21 +1,20 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 
 namespace mhedit.Containers.MazeObjects
 {
     /// <summary>
-    /// Boots are a special gift in the maze, when the player is wearing the boots, they have the 
-    /// ability to levitate in place by holding the jump button. 
+    /// KeyPouch allows users to hold keys beyond a single level. 
     /// </summary>
     [Serializable]
-    public class Boots : MazeObject
+    public class KeyPouch : MazeObject
     {
-        public Boots()
-            : base( Constants.MAXOBJECTS_BOOTS,
-                    ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.booties_obj.png" ),
-                    new Point( 0x00, 0x34 ),
-                    new Point( 8, 8 ) )
+        public KeyPouch()
+            : base( Constants.MAXOBJECTS_KEYPOUCH,
+                ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.keypouch_32.png" ),
+                new Point( 0x00, 0x34 ),
+                new Point( 16, 16 ) )
         { }
 
         public override Point GetAdjustedPosition( Point point )
@@ -29,7 +28,7 @@ namespace mhedit.Containers.MazeObjects
             /// upper range of a maze stamp
             adjusted.Y +=
                 ( ( point.Y - DataConverter.PADDING ) % DataConverter.CanvasGridSize ) < 32 ?
-                0 : 64;
+                    0 : 64;
 
             return adjusted;
         }
@@ -37,11 +36,11 @@ namespace mhedit.Containers.MazeObjects
         public override byte[] ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(DataConverter.PointToByteArrayPacked(this.Position));
+            bytes.AddRange( DataConverter.PointToByteArrayPacked( this.Position ) );
             return bytes.ToArray();
         }
 
-        public override byte[] ToBytes(object obj)
+        public override byte[] ToBytes( object obj )
         {
             return ToBytes();
         }

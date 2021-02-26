@@ -52,6 +52,11 @@ namespace mhedit.Containers
         [Validation( typeof( CollectionSizeRule ),
             Options = "Minimum=1;Maximum=32" )]
         //[Validation( typeof( MazeTypeOrderRule) )]
+        [Validation( typeof(HiddenLevelTokensRule) )]
+        [Validation( typeof(HiddenLevelTokensCountRule),
+            Options = "Minimum=0;Maximum=4" )]
+        //[Validation( typeof( HiddenLevelTokenMissingRule ),
+        //    Level = ValidationLevel.Warning )]
         [Validation( typeof( ElementsRule ) )]
         public ExtendedObservableCollection<Maze> Mazes
         {

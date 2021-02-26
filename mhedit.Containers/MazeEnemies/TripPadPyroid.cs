@@ -17,7 +17,7 @@ namespace mhedit.Containers.MazeEnemies
         private TripPad _tripPad;
         private TripPyroidSpeedIndex _speedIndex = TripPyroidSpeedIndex.Slowest;
         private PyroidStyle _pyroidStyle = PyroidStyle.Double;
-        private TripPyroidDirection _direction = TripPyroidDirection.Right;
+        private TripPyroidDirection _direction = TripPyroidDirection.Left;
 
         public TripPadPyroid()
             : this( PyroidStyle.Double )
@@ -26,7 +26,7 @@ namespace mhedit.Containers.MazeEnemies
         private TripPadPyroid( PyroidStyle pyroidStyle )
             : base( Constants.MAXOBJECTS_TRIPPADPYROID,
                 ImageFactory.Create( pyroidStyle ),
-                    new Point( 0x40, 0x00 ),
+                    new Point( 0x40, 0x80 ), /// Direction.Right 0x80, Direction.Left 0x40
                     new Point( 8, 32 ) )
         { }
 
@@ -54,7 +54,20 @@ namespace mhedit.Containers.MazeEnemies
         public TripPyroidDirection Direction
         {
             get { return this._direction; }
-            set { this.SetField( ref this._direction, value ); }
+            set
+            {
+                this.StaticLSB = new Point(
+                    value == TripPyroidDirection.Right ? 0x80 : 0x40, this.StaticLSB.Y );
+
+                Point currentPosition = this.Position;
+
+                currentPosition.X = ( currentPosition.X & ~0x3F ) +
+                                    this.StaticLSB.X / DataConverter.PositionScaleFactor;
+
+                this.Position = currentPosition;
+
+                this.SetField( ref this._direction, value );
+            }
         }
 
         [CategoryAttribute("Location")]
@@ -80,6 +93,23 @@ namespace mhedit.Containers.MazeEnemies
                     this.SetField( ref this._pyroidStyle, value );
                 }
             }
+        }
+
+        public override Point GetAdjustedPosition( Point point )
+        {
+            Point adjusted = base.GetAdjustedPosition( point );
+
+            /// Make a special adjustment for drag/drop operations to make the drop 
+            /// behavior/location logical from the Users perspective. This is due 
+            /// to the Image being the same size as a maze stamp AND the image needs
+            /// to be displayed between 2 maze stamps.
+            /// Thus, make adjustments based upon the cursor being in the lower or
+            /// upper range of a maze stamp
+            adjusted.Y +=
+                ( ( point.Y - DataConverter.PADDING ) % DataConverter.CanvasGridSize ) < 32 ?
+                    -32 : 32;
+
+            return adjusted;
         }
 
         public override byte[] ToBytes()

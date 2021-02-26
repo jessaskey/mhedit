@@ -36,6 +36,10 @@ namespace mhedit
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
+            /// The Ok button was selected... but lets assume that it wasn't until
+            /// we successfully load the ROMs.
+            this.DialogResult = DialogResult.None;
+
             try
             {
                 IGameController controller = null;
@@ -97,13 +101,13 @@ namespace mhedit
                     DialogResult = DialogResult.Abort;
                 }
             }
-#if DEBUG
-#else
+//#if DEBUG
+//#else
             catch ( Exception ex )
             {
                 MessageBox.Show( ex.Message, "ROM Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
             }
-#endif
+//#endif
             finally
             {
                 Cursor.Current = Cursors.Default;
