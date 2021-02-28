@@ -1391,7 +1391,7 @@ namespace mhedit
                 if (mhpe.LoadTemplate(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation)))
                 {
                     List<Tuple<Maze, int>> mazeInfo = new List<Tuple<Maze, int>>();
-                    foreach (TreeNode node in treeView.SelectedNodes)
+                    foreach (TreeNode node in treeView.SelectedNodes.OrderBy(n => n.Index))
                     {
                         if (node.Tag is MazeController mazeController)
                         {
