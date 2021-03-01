@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -15,9 +16,9 @@ namespace mhedit
 {
 	[DefaultPropertyAttribute("Name")]
 	[Serializable]
-	public class MazeController : Panel, ITreeObject, ICustomTypeDescriptor, IChangeTracking
+	public partial class MazeController : UserControl, ITreeObject, ICustomTypeDescriptor, IChangeTracking
 	{
-		#region Declarations
+#region Declarations
 
 		public const int MAXWALLS = 209;
 
@@ -25,17 +26,20 @@ namespace mhedit
 		//private const int STAMPS_TRIM_LEFT = 3;
 		//private Point objectOffset = new Point(-16, 16);
 
-		private Maze _maze = null;
+		private Maze _maze;
 		private decimal _zoom = 1;
         private Point _mouseDownLocation;
 		private bool _repainted = false;
 		private string _fileName = String.Empty;
-		private PropertyGrid _propertyGrid = null;
-		private ComboBox _comboBoxObjects = null;
+		private PropertyGrid _propertyGrid;
+		private ComboBox _comboBoxObjects;
 		private bool _gridLines = false;
 		private string _lastError = string.Empty;
 
-		#endregion
+        private ObservableCollection<MazeObject> _selectedMazeObjects =
+            new ObservableCollection<MazeObject>();
+
+#endregion
 
 		#region PropertyIncludes
 
@@ -66,6 +70,12 @@ namespace mhedit
 
 		public MazeController( Maze maze )
 		{
+            this.InitializeComponent();
+
+            this.ContextMenuStrip = this.mazeControllerContextMenu;
+
+            this.selectAllToolStripMenuItem.DropDown.ImageList = MazeObjectImages.List;
+
 			this._maze = maze;
 
 			this._maze.PropertyChanged += this.OnMazePropertyChanged;
@@ -109,10 +119,7 @@ namespace mhedit
 		[BrowsableAttribute(false)]
 		public Maze Maze
 		{
-			get
-			{
-				return _maze;
-			}
+			get { return _maze; }
 		}
 
 		[BrowsableAttribute(false)]
@@ -446,6 +453,10 @@ namespace mhedit
 					SetSelectedObject(selectedIndex);
 					Invalidate();
 					break;
+				case Keys.Escape:
+                    this.ClearSelectedObjects();
+                    this.Invalidate();
+					break;
 				case Keys.Delete:
 					MazeObject obj = GetSelectedObject();
 					if (obj != null)
@@ -500,26 +511,36 @@ namespace mhedit
 
 		protected override void OnMouseDown( MouseEventArgs e )
 		{
-            base.OnMouseDown( e );
+            base.OnMouseDown(e);
 
-            /// Apparently the Panel that MazeController inherits from doesn't naturally get focus
-            /// on click.
-            this.Focus();
-
-            if ( e.Button == MouseButtons.Left && this.ComboBoxObjects != null )
+            if ( e.Button == MouseButtons.Left &&
+                 ( ModifierKeys & Keys.Control ) != Keys.Control
+                 && this.ComboBoxObjects != null )
             {
                 this._mouseDownLocation = e.Location;
 
-                //look for objects here...
-                this.ComboBoxObjects.SelectedItem = SelectObject( e.Location );
+                this.ComboBoxObjects.SelectedItem = SelectObject(e.Location);
 			}
+
+			//this._mode = (MultiSelectMode)( ModifierKeys & Keys.Control );
+
+			///// Always need to know what, if any, node is clicked on.
+			//TreeNode selected = this.GetNodeAt( e.Location );
+
+			//this._currentSelection = selected != null &&
+			//                         e.Button == MouseButtons.Left &&
+			//                         e.Location.X >= selected.Bounds.Left &&
+			//                         e.Location.X <= selected.Bounds.Right ?
+			//                             selected : null;
 		}
 
-        protected override void OnMouseMove( MouseEventArgs e )
+		protected override void OnMouseMove( MouseEventArgs e )
         {
             base.OnMouseMove( e );
 
-            if ( e.Button == MouseButtons.Left && this._mouseDownLocation != e.Location )
+            if ( e.Button == MouseButtons.Left &&
+                 (ModifierKeys & Keys.Control) != Keys.Control &&
+                 this._mouseDownLocation != e.Location )
             {
                 MazeObject obj = this.ComboBoxObjects?.SelectedItem as MazeObject;
                 if ( obj != null )
@@ -958,7 +979,7 @@ namespace mhedit
 			{
 				/// If object already selected, shift key is pressed, and multiple hit objects then
 				/// cycle through and choose the "next" object in the z order.
-				if ( Control.ModifierKeys == Keys.Shift && hitList.Count() > 1 )
+				if ( ModifierKeys == Keys.Shift && hitList.Count > 1 )
 				{
 					selectedObject.Selected = false;
 
@@ -1031,19 +1052,22 @@ namespace mhedit
 
 		private void comboBoxObjects_SelectedIndexChanged(object sender, EventArgs e)
 		{
+            //ClearSelectedObjects();
+
 			if ( _comboBoxObjects.SelectedItem is MazeObject mazeObject )
 			{
-				ClearSelectedObjects();
 
-				mazeObject.Selected = true;
+                this.SelectObjects( new List<MazeObject>() {mazeObject} );
+
+                //mazeObject.Selected = true;
 			}
 
-			if ( _comboBoxObjects.SelectedItem != null )
-			{
-				this._propertyGrid.SelectedObject = _comboBoxObjects.SelectedItem;
-			}
+            //if ( _comboBoxObjects.SelectedItem != null )
+            //         {
+            //             this._propertyGrid.SelectedObjects = new object[] { _comboBoxObjects.SelectedItem };
+            //         }
 
-			Invalidate();
+            //Invalidate();
 		}
 
 		#endregion
@@ -1066,5 +1090,194 @@ namespace mhedit
 				this._propertyGrid.Refresh();
 			}
 		}
+
+        private void mazeControllerContextMenu_Opening( object sender, CancelEventArgs e )
+        {
+            this.selectAllToolStripMenuItem.Enabled = this.Maze.MazeObjects.Count != 0;
+
+            this.cutToolStripMenuItem.Enabled =
+                this.copyToolStripMenuItem.Enabled =
+                    this.deleteToolStripMenuItem.Enabled = this.GetSelectedObject() != null;
+
+            this.pasteToolStripMenuItem.Enabled = Clipboard.ContainsData(ClipboardFormatId);
+        }
+
+		private void selectAllToolStripMenuItem_DropDownOpening( object sender, EventArgs e )
+        {
+            HashSet<Type> mazeObjectTypes = new HashSet<Type>();
+
+            foreach ( MazeObject mazeObject in this._maze.MazeObjects )
+            {
+                mazeObjectTypes.Add( mazeObject.GetType() );
+            }
+
+            this.selectAllToolStripMenuItem.DropDownItems.Clear();
+
+            foreach ( Type type in mazeObjectTypes )
+            {
+                if ( type == typeof( TripPadPyroid ) )
+                {
+					continue;
+                }
+
+                ToolStripMenuItem newItem =
+                    new ToolStripMenuItem( type.Name )
+                    {
+                        Tag = type,
+                        DisplayStyle = ToolStripItemDisplayStyle.ImageAndText,
+                        ImageKey = type.Name,
+                    };
+
+                newItem.Click += this.SelectAllMazeObjectOfType_Click;
+
+                this.selectAllToolStripMenuItem.DropDownItems.Add( newItem );
+            }
+        }
+
+        private void SelectAllMazeObjectOfType_Click( object sender, EventArgs e )
+        {
+            ToolStripItem item = (ToolStripItem)sender;
+
+            //if ( ( ModifierKeys & Keys.Control ) != Keys.Control )
+            //{
+            //    foreach ( MazeObject mazeObject in this.Maze.MazeObjects )
+            //    {
+            //        mazeObject.Selected = false;
+            //    }
+            //}
+
+            //List<MazeObject> selectedObjects = this._maze.MazeObjects
+            //                                       .Where( mo => mo.GetType() == (Type) item.Tag )
+            //                                       .ToList();
+
+            //foreach ( MazeObject mazeObject in selectedObjects )
+            //{
+            //    mazeObject.Selected = true;
+            //}
+
+            //this._propertyGrid.SelectedObjects = selectedObjects.Cast<object>().ToArray();
+
+            //this.ComboBoxObjects.SelectedItem = selectedObjects.Count > 1 ? null : selectedObjects.FirstOrDefault();
+
+            this.SelectObjects( this._maze.MazeObjects.Where( mo => mo.GetType() == (Type) item.Tag ) );
+        }
+
+        private void SelectObjects( IEnumerable<MazeObject> objectsToSelect )
+        {
+            if ( ( ModifierKeys & Keys.Control ) != Keys.Control )
+            {
+                foreach ( MazeObject mazeObject in this.Maze.MazeObjects )
+                {
+                    mazeObject.Selected = false;
+                }
+
+                this._propertyGrid.SelectedObjects = null;
+            }
+
+            foreach ( MazeObject mazeObject in objectsToSelect )
+            {
+                mazeObject.Selected = true;
+            }
+
+            this._propertyGrid.SelectedObjects =
+                ( this._propertyGrid.SelectedObjects == null ?
+                      objectsToSelect :
+                      this._propertyGrid.SelectedObjects.Concat( objectsToSelect ) )
+                .ToArray();
+
+            this.ComboBoxObjects.SelectedItem =
+                this._propertyGrid.SelectedObjects.Length > 1 ?
+                    null : this._propertyGrid.SelectedObjects.FirstOrDefault();
+
+            this.Invalidate();
+        }
+
+        private static string ClipboardFormatId = "MazeObjectFormat";
+
+		private void toolStripMenuItemCut_Click(object sender, EventArgs e)
+		{
+            foreach ( MazeObject mazeObject in this.CopySelectedToClipboard() )
+            {
+				/// Call Delete to deal with trips/trippyroids?
+                this._maze.MazeObjects.Remove( mazeObject );
+
+                if ( mazeObject is TripPad tripPad )
+                {
+                    this._maze.MazeObjects.Remove(tripPad.Pyroid);
+                }
+			}
+        }
+
+		private void toolStripMenuItemCopy_Click(object sender, EventArgs e)
+        {
+            this.CopySelectedToClipboard();
+        }
+
+        private IEnumerable<MazeObject> CopySelectedToClipboard()
+        {
+            List<MazeObject> selected = this._maze.MazeObjects.Where( o => o.Selected ).ToList();
+
+			///TripPadPyroids can't be copied/cut by themselves!!!!
+            if ( selected.Any( s => s.GetType() == typeof(TripPadPyroid)) )
+            {
+                MessageBox.Show(
+                    "The selection includes at least one Trip Pad Pyroid. Remove to complete this action.");
+
+                selected.Clear();
+
+                return selected;
+            }
+
+			if ( selected.Count != 0 )
+            {
+				/// Wrap in DataObject so that this data is cleared from clipboard on exit.
+                Clipboard.SetDataObject( new DataObject(ClipboardFormatId, selected ), false );
+            }
+
+            return selected;
+        }
+
+		private void toolStripMenuItemPaste_Click(object sender, EventArgs e)
+        {
+            if ( Clipboard.ContainsData( ClipboardFormatId ) )
+            {
+                IEnumerable<MazeObject> selected =
+                    Clipboard.GetData( ClipboardFormatId ) as IEnumerable<MazeObject>;
+
+				/// Always clear any selection before paste.
+                this.ClearSelectedObjects();
+
+				/// TODO: Deal with adding to many of any given object.
+                //bool promptUser = true;
+
+                //_maze.MazeObjects.OrderBy(o => o.GetType() == typeof(MazeWall)).
+                //      ThenBy(o => o.GetType().Name).ToList().ConvertAll(m => (IName)m) );
+
+				foreach ( MazeObject mazeObject in selected )
+                {
+                    //if (this._maze.GetObjectTypeCount(mazeObject.GetType()) >= mazeObject.MaxObjects)
+                    //{
+                    //    MessageBox.Show($"You can't add any more {mazeObject.GetType().Name} objects.",
+                    //        "The Homeworld is near", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    //}
+
+					/// Don't need to set MazeObject.Selected to True because it was when it was Cut.
+					this._maze.MazeObjects.Add( mazeObject );
+
+                    if (mazeObject is TripPad tripPad)
+                    {
+                        this._maze.MazeObjects.Add(tripPad.Pyroid);
+                    }
+                }
+			}
+        }
+
+		private void toolStripMenuItemDelete_Click(object sender, EventArgs e)
+        {
+            foreach (MazeObject mazeObject in this._maze.MazeObjects.Where(o => o.Selected) )
+            {
+            }
+        }
+
 	}
 }
