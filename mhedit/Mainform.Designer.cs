@@ -59,7 +59,7 @@ namespace mhedit
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripButtonContestUpload = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.treeView = new AugmentedTreeview();
+            this.treeView = new mhedit.Containers.AugmentedTreeview();
             this.contextMenuStripTree = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemNew = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemAddMazeCollection = new System.Windows.Forms.ToolStripMenuItem();
@@ -382,6 +382,9 @@ namespace mhedit
             this.treeView.AllowDrop = true;
             this.treeView.ContextMenuStrip = this.contextMenuStripTree;
             this.treeView.Dock = System.Windows.Forms.DockStyle.Left;
+            this.treeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
+            this.treeView.FullRowSelect = true;
+            this.treeView.HideSelection = false;
             this.treeView.ImageIndex = 0;
             this.treeView.ImageList = this.imageListTree;
             this.treeView.LabelEdit = true;
@@ -420,7 +423,7 @@ namespace mhedit
             this.toolStripSeparator9,
             this.toolStripMenuItemPreview});
             this.contextMenuStripTree.Name = "contextMenuStripTree";
-            this.contextMenuStripTree.Size = new System.Drawing.Size(225, 304);
+            this.contextMenuStripTree.Size = new System.Drawing.Size(225, 254);
             this.contextMenuStripTree.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTree_Opening);
             // 
             // toolStripMenuItemNew
@@ -477,7 +480,7 @@ namespace mhedit
             // toolStripSeparator10
             // 
             this.toolStripSeparator10.Name = "toolStripSeparator10";
-            this.toolStripSeparator10.Size = new System.Drawing.Size(205, 6);
+            this.toolStripSeparator10.Size = new System.Drawing.Size(221, 6);
             // 
             // toolStripMenuItemSave
             // 
@@ -728,6 +731,7 @@ namespace mhedit
             // listView1
             // 
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(3, 3);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(871, 66);

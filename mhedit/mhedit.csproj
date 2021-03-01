@@ -211,10 +211,13 @@
     <Content Include="images\toolbarbuttons\NewFileCollection_16x_24.bmp" />
     <Content Include="images\toolbarbuttons\OpenFolder_16x_24.bmp" />
     <Content Include="images\toolbarbuttons\Paste_6520_24.bmp" />
+    <Content Include="images\toolbarbuttons\Redo_16x_24.bmp" />
     <Content Include="images\toolbarbuttons\rom_32.png" />
     <Content Include="images\toolbarbuttons\SaveAll_16x_24.bmp" />
     <Content Include="images\toolbarbuttons\SaveAs_16x_24.bmp" />
     <Content Include="images\toolbarbuttons\Save_16x_24.bmp" />
+    <Content Include="images\toolbarbuttons\Undo_16x_24.bmp" />
+    <Content Include="images\toolbarbuttons\ValidateDocument_315.png" />
     <Content Include="IonCannonPrograms\Atari Level 02 Cannon.can">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -2165,7 +2165,7 @@ namespace Silver.UI
                 return;
             }
 
-            System.Diagnostics.Debug.WriteLine("ToolBox DoLayout called...");
+            //System.Diagnostics.Debug.WriteLine("ToolBox DoLayout called...");
 
             rect.Height = _tabHeight;
             rect.Width  = DisplayRectangle.Width-2;
