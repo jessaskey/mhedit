@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -36,7 +38,7 @@ namespace mhedit
 		private bool _gridLines = false;
 		private string _lastError = string.Empty;
 
-        private ObservableCollection<MazeObject> _selectedMazeObjects =
+        private ObservableCollection<MazeObject> _selectedObjects =
             new ObservableCollection<MazeObject>();
 
 #endregion
@@ -80,6 +82,8 @@ namespace mhedit
 
 			this._maze.PropertyChanged += this.OnMazePropertyChanged;
 
+            this._selectedObjects.CollectionChanged += this.OnSelectedObjectsChanged;
+
 			DoubleBuffered = true;
 			SetStyle( ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true );
 			UpdateStyles();
@@ -88,13 +92,44 @@ namespace mhedit
 			base.Width = ( DataConverter.CanvasGridSize * _maze.MazeStampsX ) + ( DataConverter.PADDING * 2 );
 
 			//event methods
-			base.AllowDrop = true;
-			base.TabStop = true;
+			//base.AllowDrop = true;
+			//base.TabStop = true;
 
 			//DragOver += new DragEventHandler(Maze_DragOver);
 		}
 
-		#endregion
+        private void OnSelectedObjectsChanged( object sender, NotifyCollectionChangedEventArgs e )
+        {
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                foreach (MazeObject mazeObject in this.Maze.MazeObjects)
+                {
+                    mazeObject.Selected = false;
+                }
+            }
+			else if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null)
+            {
+                foreach (MazeObject mazeObject in e.NewItems)
+                {
+                    mazeObject.Selected = true;
+                }
+            }
+			else if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null)
+            {
+                foreach (MazeObject mazeObject in e.OldItems)
+                {
+                    mazeObject.Selected = false;
+                }
+            }
+			else if (e.Action != NotifyCollectionChangedAction.Move)
+            {
+                throw new NotSupportedException(e.Action.ToString());
+            }
+
+			this.Invalidate();
+		}
+
+#endregion
 
 		/// <summary>
 		/// Because the base class control also has a Name property its easy to
@@ -275,11 +310,11 @@ namespace mhedit
             get { return this._maze.IsChanged; }
         }
 
-#endregion
+		#endregion
 
-        #region Overrides
+#region Overrides of Control
 
-        protected override void OnPaint(PaintEventArgs e)
+		protected override void OnPaint(PaintEventArgs e)
 		{
 			//Stopwatch stopwatch = new Stopwatch();
 			//long time = stopwatch.ElapsedMilliseconds;
@@ -442,66 +477,57 @@ namespace mhedit
 			//if (propertyGrid != null) propertyGrid.Refresh();
 		}
 
-		protected override void OnKeyDown(KeyEventArgs e)
+		/// When inheriting from UserControl we must override this method to forward certain
+		/// keystrokes to the maze actions.
+		/// Inheriting from UserControl makes editing the context menu MUCH easier in the designer.
+        protected override bool IsInputKey(Keys keyData)
+        {
+            switch (keyData & Keys.KeyCode)
+            {
+                case Keys.Up:
+                case Keys.Down:
+                case Keys.Right:
+                case Keys.Left:
+                case Keys.Tab:
+                    return true;
+                    break;
+            }
+
+            return base.IsInputKey(keyData);
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
 		{
 			switch (e.KeyCode)
 			{
 				case Keys.Tab:
-					int selectedIndex = GetSelectedObjectIndex();
-					selectedIndex++;
-					selectedIndex %= _maze.MazeObjects.Count;
-					SetSelectedObject(selectedIndex);
-					Invalidate();
+					//int selectedIndex = GetSelectedObjectIndex();
+					//selectedIndex++;
+					//selectedIndex %= _maze.MazeObjects.Count;
+					//SetSelectedObject(selectedIndex);
+					//Invalidate();
 					break;
 				case Keys.Escape:
-                    this.ClearSelectedObjects();
+                    this._selectedObjects.Clear();
                     this.Invalidate();
 					break;
 				case Keys.Delete:
-					MazeObject obj = GetSelectedObject();
-					if (obj != null)
-					{
-						if (obj is TripPadPyroid )
-						{
-							MessageBox.Show("This Pyroid is part of a Trip Pad and cannot be deleted. Delete the related Trip Pad to remove this Pyroid.");
-							return;
-						}
-						DialogResult dr = MessageBox.Show("Are you sure you want to remove this object from the Maze?", "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-						if (dr == DialogResult.Yes)
-						{
-							if (obj is TripPad && ((TripPad)obj).Pyroid != null)
-                            {
-                                _maze.MazeObjects.Remove( ( (TripPad) obj ).Pyroid );
-
-                                ( (IList)this._comboBoxObjects.DataSource ).Remove( ( (TripPad)obj ).Pyroid );
-							}
-                            _maze.MazeObjects.Remove(obj);
-
-                            ((IList)this._comboBoxObjects.DataSource).Remove( obj );
-
-                            object sav = this.ComboBoxObjects.SelectedItem;
-
-                            this.ComboBoxObjects.SelectedItem = null;
-                            this.ComboBoxObjects.SelectedItem = sav;
-
-                            Invalidate();
-						}
-					}
-					break;
+                    this.DeleteSelectedObjects();
+                    break;
 				case Keys.Up:
-					MoveSelectedObject(0, -1);
+                    this.TranslateObject(this._selectedObjects.FirstOrDefault(), 0, -1);
 					Invalidate();
 					break;
 				case Keys.Down:
-					MoveSelectedObject(0, 1);
+                    this.TranslateObject(this._selectedObjects.FirstOrDefault(), 0, 1);
 					Invalidate();
 					break;
 				case Keys.Left:
-					MoveSelectedObject(-1, 0);
+                    this.TranslateObject(this._selectedObjects.FirstOrDefault(), -1, 0);
 					Invalidate();
 					break;
 				case Keys.Right:
-					MoveSelectedObject(1, 0);
+                    this.TranslateObject(this._selectedObjects.FirstOrDefault(), 1, 0);
 					Invalidate();
 					break;
 
@@ -513,14 +539,27 @@ namespace mhedit
 		{
             base.OnMouseDown(e);
 
-            if ( e.Button == MouseButtons.Left &&
-                 ( ModifierKeys & Keys.Control ) != Keys.Control
-                 && this.ComboBoxObjects != null )
+            /// Apparently the Panel that MazeController inherits from doesn't naturally get focus
+            /// on click.
+            this.Focus();
+
+			//         if ( e.Button == MouseButtons.Left &&
+			//              ( ModifierKeys & Keys.Control ) != Keys.Control
+			//              && this.ComboBoxObjects != null )
+			//         {
+			//             this._mouseDownLocation = e.Location;
+
+			//             this.ComboBoxObjects.SelectedItem = this.ObtainObjectAt(e.Location);
+			//}
+
+			if (e.Button == MouseButtons.Left)
             {
                 this._mouseDownLocation = e.Location;
 
-                this.ComboBoxObjects.SelectedItem = SelectObject(e.Location);
-			}
+                this.SelectObject(this.ObtainObjectAt(e.Location),
+                    (ModifierKeys & Keys.Control) == Keys.Control);
+            }
+
 
 			//this._mode = (MultiSelectMode)( ModifierKeys & Keys.Control );
 
@@ -534,6 +573,50 @@ namespace mhedit
 			//                             selected : null;
 		}
 
+		private MazeObject SelectObject( MazeObject mazeObject, bool isMultiSelect )
+        {
+            if ( !isMultiSelect )
+            {
+				/// Avoid re-selecting a single node. (Do we care about extra events?)
+                //if ( !mazeObject.Selected || this._selectedObjects.Count > 1 )
+                {
+                    this._selectedObjects.Clear();
+                }
+			}
+
+			/// If someone clicks on "nothing" mazeObject will be null and nothing will be added.
+			/// When not multiselect and nothing selected then it results in clearing selection.
+			/// Selecting the same object 2x removes it.
+            if ( !this._selectedObjects.Remove(mazeObject) && mazeObject != null )
+            {
+                this._selectedObjects.Add(mazeObject);
+            }
+
+			return mazeObject;
+        }
+
+        //private MazeObject SelectObject(IEnumerable<MazeObject> mazeObjects, bool isMultiSelect)
+        //{
+        //    if (!isMultiSelect)
+        //    {
+        //        /// Avoid re-selecting a single node. (Do we care about extra events?)
+        //        //if ( !mazeObject.Selected || this._selectedObjects.Count > 1 )
+        //        {
+        //            this._selectedObjects.Clear();
+        //        }
+        //    }
+
+        //    /// If someone clicks on "nothing" mazeObject will be null and nothing will be added.
+        //    /// When not multiselect and nothing selected then it results in clearing selection.
+        //    /// Selecting the same object 2x removes it.
+        //    if (!this._selectedObjects.Remove(mazeObject) && mazeObject != null)
+        //    {
+        //        this._selectedObjects.Add(mazeObject);
+        //    }
+
+        //    return mazeObject;
+        //}
+
 		protected override void OnMouseMove( MouseEventArgs e )
         {
             base.OnMouseMove( e );
@@ -542,7 +625,7 @@ namespace mhedit
                  (ModifierKeys & Keys.Control) != Keys.Control &&
                  this._mouseDownLocation != e.Location )
             {
-                MazeObject obj = this.ComboBoxObjects?.SelectedItem as MazeObject;
+                MazeObject obj = this._selectedObjects.FirstOrDefault();
                 if ( obj != null )
                 {
                     DoDragDrop( obj,
@@ -560,7 +643,7 @@ namespace mhedit
 				{
 					if (item.Object is MazeWall)
 					{
-						MazeObject mObject = SelectObject(this.PointToClient(new Point(drgevent.X, drgevent.Y)));
+						MazeObject mObject = this.ObtainObjectAt(this.PointToClient(new Point(drgevent.X, drgevent.Y)));
 						
 						if (mObject != null && mObject is MazeWall)
 						{
@@ -643,7 +726,7 @@ namespace mhedit
 			}
 			else
 			{
-				MoveSelectedObject(panelXY);
+				this.MoveObject( this._selectedObjects.FirstOrDefault(), panelXY );
 				Invalidate();
 			}
 			this.Focus();   //this is required so that when dropping an object, the maze panel gets focus so keys work immediately with out clicking on the maze first.
@@ -826,7 +909,7 @@ namespace mhedit
 			{
 				if ( mazeObject.MaxObjects > _maze.GetObjectTypeCount( obj.GetType() ) )
 				{
-					ClearSelectedObjects();
+					this._selectedObjects.Clear();
 
 					mazeObject.Name = NameFactory.Create( obj.GetType().Name );
 
@@ -858,7 +941,7 @@ namespace mhedit
 			{
 				if ( mazeObject.MaxObjects > _maze.GetObjectTypeCount( obj.GetType() ) )
 				{
-					ClearSelectedObjects();
+					this._selectedObjects.Clear();
 
 					if ( obj is MazeWall mazeWall )
 					{
@@ -925,43 +1008,77 @@ namespace mhedit
 			}
 		}
 
-		private void MoveSelectedObject(Point newpos)
-		{
-			MazeObject obj = GetSelectedObject();
-			if (obj != null)
-			{
-				obj.Position = obj.GetAdjustedPosition( newpos);
-			}
-		}
+		//private void MoveSelectedObject(Point newpos)
+		//{
+		//	MazeObject obj = GetSelectedObject();
+		//	if (obj != null)
+		//	{
+		//		obj.Position = obj.GetAdjustedPosition( newpos);
+		//	}
+		//}
 
-		private void MoveSelectedObject(int x, int y)
-		{
-			MazeObject obj = GetSelectedObject();
-			if (obj != null)
-			{
-				int new_x = obj.Position.X + (x * obj.SnapSize.X);
-				int new_y = obj.Position.Y + (y * obj.SnapSize.Y);
+		//private void MoveSelectedObject(int x, int y)
+		//{
+		//	MazeObject obj = GetSelectedObject();
+		//	if (obj != null)
+		//	{
+		//		int new_x = obj.Position.X + (x * obj.SnapSize.X);
+		//		int new_y = obj.Position.Y + (y * obj.SnapSize.Y);
 
-				if (new_x >= 0)
-				{
-					if (new_y >= 0)
-					{
-						if (new_x <= base.Width - obj.Size.Width)
-						{
-							if (new_y <= base.Height - obj.Size.Height)
-							{
-								if (new_x != obj.Position.X || new_y != obj.Position.Y)
-								{
-									obj.Position = new Point(new_x, new_y);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+		//		if (new_x >= 0)
+		//		{
+		//			if (new_y >= 0)
+		//			{
+		//				if (new_x <= base.Width - obj.Size.Width)
+		//				{
+		//					if (new_y <= base.Height - obj.Size.Height)
+		//					{
+		//						if (new_x != obj.Position.X || new_y != obj.Position.Y)
+		//						{
+		//							obj.Position = new Point(new_x, new_y);
+		//						}
+		//					}
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
 
-		private MazeObject SelectObject(Point location)
+        private void MoveObject(MazeObject mazeObject, Point newpos)
+        {
+            if (mazeObject != null)
+            {
+                mazeObject.Position = mazeObject.GetAdjustedPosition(newpos);
+            }
+        }
+
+        private void TranslateObject(MazeObject mazeObject, int x, int y)
+        {
+            if (mazeObject != null)
+            {
+                int new_x = mazeObject.Position.X + (x * mazeObject.SnapSize.X);
+                int new_y = mazeObject.Position.Y + (y * mazeObject.SnapSize.Y);
+
+                if (new_x >= 0)
+                {
+                    if (new_y >= 0)
+                    {
+                        if (new_x <= base.Width - mazeObject.Size.Width)
+                        {
+                            if (new_y <= base.Height - mazeObject.Size.Height)
+                            {
+                                if (new_x != mazeObject.Position.X || new_y != mazeObject.Position.Y)
+                                {
+                                    mazeObject.Position = new Point(new_x, new_y);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+		private MazeObject ObtainObjectAt(Point location)
 		{
 			//Adjust select point based upon some of our Panel dimension 'hacks'.
 			Point adjustedLocation = new Point( (int)( location.X - DataConverter.PADDING ), location.Y - DataConverter.PADDING );
@@ -981,24 +1098,15 @@ namespace mhedit
 				/// cycle through and choose the "next" object in the z order.
 				if ( ModifierKeys == Keys.Shift && hitList.Count > 1 )
 				{
-					selectedObject.Selected = false;
-
 					int index = hitList.IndexOf( selectedObject );
 
 					selectedObject = hitList[ ( index + 1 ) % hitList.Count ];
-
-					selectedObject.Selected = true;
 				}
 			}
 			else
 			{
 				/// Grab first in z order if no object already selected.
 				selectedObject = hitList.FirstOrDefault();
-
-				if ( selectedObject != null )
-				{
-					selectedObject.Selected = true;
-				}
 			}
 
 			return selectedObject;
@@ -1016,39 +1124,39 @@ namespace mhedit
 			return false;
 		}
 
-		private MazeObject GetSelectedObject()
-		{
-			return this._maze.MazeObjects.FirstOrDefault( o => o.Selected );
-		}
+		//private MazeObject GetSelectedObject()
+		//{
+		//	return this._maze.MazeObjects.FirstOrDefault( o => o.Selected );
+		//}
 
-		private int GetSelectedObjectIndex()
-		{
-			for ( int i = 0; i < _maze.MazeObjects.Count; i++)
-			{
-				if (_maze.MazeObjects[i].Selected) return i;
-			}
-			return -1;
-		}
+		//private int GetSelectedObjectIndex()
+		//{
+		//	for ( int i = 0; i < _maze.MazeObjects.Count; i++)
+		//	{
+		//		if (_maze.MazeObjects[i].Selected) return i;
+		//	}
+		//	return -1;
+		//}
 
-		private void ClearSelectedObjects()
-		{
-			foreach ( MazeObject mazeObject in _maze.MazeObjects )
-			{
-				mazeObject.Selected = false;
-			}
-		}
+		//private void ClearSelectedObjects()
+		//{
+		//	foreach ( MazeObject mazeObject in _maze.MazeObjects )
+		//	{
+		//		mazeObject.Selected = false;
+		//	}
+		//}
 
-		private void SetSelectedObject(int index)
-		{
-			MazeObject mazeObject = this._maze.MazeObjects.ElementAtOrDefault( index );
+		//private void SetSelectedObject(int index)
+		//{
+		//	MazeObject mazeObject = this._maze.MazeObjects.ElementAtOrDefault( index );
 
-			if ( mazeObject != null )
-			{
-				ClearSelectedObjects();
+		//	if ( mazeObject != null )
+		//	{
+		//		ClearSelectedObjects();
 
-				mazeObject.Selected = true;
-			}
-		}
+		//		mazeObject.Selected = true;
+		//	}
+		//}
 
 		private void comboBoxObjects_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -1057,7 +1165,7 @@ namespace mhedit
 			if ( _comboBoxObjects.SelectedItem is MazeObject mazeObject )
 			{
 
-                this.SelectObjects( new List<MazeObject>() {mazeObject} );
+                //this.SelectObjects( new List<MazeObject>() {mazeObject} );
 
                 //mazeObject.Selected = true;
 			}
@@ -1097,7 +1205,7 @@ namespace mhedit
 
             this.cutToolStripMenuItem.Enabled =
                 this.copyToolStripMenuItem.Enabled =
-                    this.deleteToolStripMenuItem.Enabled = this.GetSelectedObject() != null;
+                    this.deleteToolStripMenuItem.Enabled = this._selectedObjects.Count > 0;
 
             this.pasteToolStripMenuItem.Enabled = Clipboard.ContainsData(ClipboardFormatId);
         }
@@ -1138,56 +1246,30 @@ namespace mhedit
         {
             ToolStripItem item = (ToolStripItem)sender;
 
-            //if ( ( ModifierKeys & Keys.Control ) != Keys.Control )
-            //{
-            //    foreach ( MazeObject mazeObject in this.Maze.MazeObjects )
-            //    {
-            //        mazeObject.Selected = false;
-            //    }
-            //}
+            /// By default this operation is basically a multiselect since there are likely to be multiple
+            /// objects in the passed collection. However, the multiselect now determines if we add to
+            /// the currently selected or replace them.
+            bool addToSelection = (ModifierKeys & Keys.Control) == Keys.Control;
 
-            //List<MazeObject> selectedObjects = this._maze.MazeObjects
-            //                                       .Where( mo => mo.GetType() == (Type) item.Tag )
-            //                                       .ToList();
-
-            //foreach ( MazeObject mazeObject in selectedObjects )
-            //{
-            //    mazeObject.Selected = true;
-            //}
-
-            //this._propertyGrid.SelectedObjects = selectedObjects.Cast<object>().ToArray();
-
-            //this.ComboBoxObjects.SelectedItem = selectedObjects.Count > 1 ? null : selectedObjects.FirstOrDefault();
-
-            this.SelectObjects( this._maze.MazeObjects.Where( mo => mo.GetType() == (Type) item.Tag ) );
-        }
-
-        private void SelectObjects( IEnumerable<MazeObject> objectsToSelect )
-        {
-            if ( ( ModifierKeys & Keys.Control ) != Keys.Control )
+            foreach ( MazeObject mazeObject in
+                this._maze.MazeObjects.Where( mo => mo.GetType() == (Type) item.Tag ) )
             {
-                foreach ( MazeObject mazeObject in this.Maze.MazeObjects )
-                {
-                    mazeObject.Selected = false;
-                }
+                /// if we are replacing the selected objects, addToSelection will clear on first add.
+                this.SelectObject( mazeObject, addToSelection );
 
-                this._propertyGrid.SelectedObjects = null;
+                /// and then multiselect the rest.
+                addToSelection = true;
             }
 
-            foreach ( MazeObject mazeObject in objectsToSelect )
-            {
-                mazeObject.Selected = true;
-            }
+            //this._propertyGrid.SelectedObjects =
+            //    ( this._propertyGrid.SelectedObjects == null ?
+            //          objectsToSelect :
+            //          this._propertyGrid.SelectedObjects.Concat( objectsToSelect ) )
+            //    .ToArray();
 
-            this._propertyGrid.SelectedObjects =
-                ( this._propertyGrid.SelectedObjects == null ?
-                      objectsToSelect :
-                      this._propertyGrid.SelectedObjects.Concat( objectsToSelect ) )
-                .ToArray();
-
-            this.ComboBoxObjects.SelectedItem =
-                this._propertyGrid.SelectedObjects.Length > 1 ?
-                    null : this._propertyGrid.SelectedObjects.FirstOrDefault();
+            //this.ComboBoxObjects.SelectedItem =
+            //    this._propertyGrid.SelectedObjects.Length > 1 ?
+            //        null : this._propertyGrid.SelectedObjects.FirstOrDefault();
 
             this.Invalidate();
         }
@@ -1245,7 +1327,7 @@ namespace mhedit
                     Clipboard.GetData( ClipboardFormatId ) as IEnumerable<MazeObject>;
 
 				/// Always clear any selection before paste.
-                this.ClearSelectedObjects();
+                this._selectedObjects.Clear();
 
 				/// TODO: Deal with adding to many of any given object.
                 //bool promptUser = true;
@@ -1274,10 +1356,53 @@ namespace mhedit
 
 		private void toolStripMenuItemDelete_Click(object sender, EventArgs e)
         {
-            foreach (MazeObject mazeObject in this._maze.MazeObjects.Where(o => o.Selected) )
-            {
-            }
-        }
+			this.DeleteSelectedObjects();
+		}
 
+        private void DeleteSelectedObjects()
+        {
+            string plural = this._selectedObjects.Count == 1 ? "this object" : "these objects";
+
+            DialogResult result = MessageBox.Show(
+                $"Are you sure you want to remove {plural} from the Maze?", "Confirm Delete",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.No)
+            {
+                return;
+            }
+
+            //result = DialogResult.None;
+
+            IEnumerable<MazeObject> tripPyroids =
+                this._selectedObjects.Where(so => so is TripPadPyroid);
+
+            if (tripPyroids.FirstOrDefault() != null)
+            {
+                result = MessageBox.Show("TripPadPyroids can not be individually added or removed from " +
+                                         $"a Maze. Select the parent TripPad to perform this action.{Environment.NewLine}{Environment.NewLine}" +
+                                         "Press OK to skip the TripPadPyroids and continue.", "Selection includes TripPadPyroid",
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
+            }
+
+            if (result == DialogResult.Cancel)
+            {
+                return;
+            }
+
+            IEnumerable<MazeObject> objectsToDelete = this._selectedObjects.Except(tripPyroids);
+
+            foreach (MazeObject mazeObject in objectsToDelete)
+            {
+                if (mazeObject is TripPad tripPad)
+                {
+                    this._maze.MazeObjects.Remove(tripPad.Pyroid);
+                }
+
+                this._maze.MazeObjects.Remove(mazeObject);
+            }
+
+            this.Invalidate();
+        }
 	}
 }

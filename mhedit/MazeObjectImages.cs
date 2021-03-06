@@ -64,8 +64,10 @@ namespace mhedit
                 ResourceFactory.GetResourceImage( "mhedit.images.buttons.pod_32.png" ) );
             List.Images.Add( typeof( Maxoid ).Name,
                 ResourceFactory.GetResourceImage( "mhedit.images.buttons.roboid_32.png" ) );
-            List.Images.Add( typeof( ArrowOut ).Name,
-                ResourceFactory.GetResourceImage( "mhedit.images.buttons.arrow_out_32.png" ) );
+            List.Images.Add(typeof(ArrowOut).Name,
+                ResourceFactory.GetResourceImage("mhedit.images.buttons.arrow_out_32.png"));
+            List.Images.Add(typeof(HiddenLevelToken).Name,
+                ResourceFactory.GetResourceImage("mhedit.images.buttons.token_32.png"));
         }
     }
 }

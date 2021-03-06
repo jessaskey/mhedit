@@ -55,7 +55,7 @@ namespace mhedit
             this.toolStripSeparator13,
             this.selectAllToolStripMenuItem});
             this.mazeControllerContextMenu.Name = "mazeControllerContextMenu";
-            this.mazeControllerContextMenu.Size = new System.Drawing.Size(181, 148);
+            this.mazeControllerContextMenu.Size = new System.Drawing.Size(145, 126);
             this.mazeControllerContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.mazeControllerContextMenu_Opening);
             // 
             // cutToolStripMenuItem
@@ -64,7 +64,7 @@ namespace mhedit
             this.cutToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
             this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.cutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cutToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.cutToolStripMenuItem.Text = "Cut";
             this.cutToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItemCut_Click);
             // 
@@ -74,7 +74,7 @@ namespace mhedit
             this.copyToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
             this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItemCopy_Click);
             // 
@@ -84,14 +84,14 @@ namespace mhedit
             this.pasteToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
             this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.pasteToolStripMenuItem.Text = "Paste";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItemPaste_Click);
             // 
             // toolStripSeparator12
             // 
             this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator12.Size = new System.Drawing.Size(141, 6);
             // 
             // deleteToolStripMenuItem
             // 
@@ -99,29 +99,29 @@ namespace mhedit
             this.deleteToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
             this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.toolStripMenuItemDelete_Click);
             // 
             // toolStripSeparator13
             // 
             this.toolStripSeparator13.Name = "toolStripSeparator13";
-            this.toolStripSeparator13.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator13.Size = new System.Drawing.Size(141, 6);
             // 
             // selectAllToolStripMenuItem
             // 
             this.selectAllToolStripMenuItem.Enabled = false;
             this.selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
-            this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.selectAllToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.selectAllToolStripMenuItem.Text = "Select All";
             this.selectAllToolStripMenuItem.ToolTipText = "Select All Maze Objects";
             this.selectAllToolStripMenuItem.DropDownOpening += new System.EventHandler(this.selectAllToolStripMenuItem_DropDownOpening);
             // 
             // MazeController
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AllowDrop = true;
             this.Size = new System.Drawing.Size(447, 152);
+            this.TabStop = true;
             this.mazeControllerContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
