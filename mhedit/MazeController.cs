@@ -541,7 +541,7 @@ namespace mhedit
 
             /// Apparently the Panel that MazeController inherits from doesn't naturally get focus
             /// on click.
-            this.Focus();
+            //this.Focus();
 
 			//         if ( e.Button == MouseButtons.Left &&
 			//              ( ModifierKeys & Keys.Control ) != Keys.Control
@@ -1278,16 +1278,18 @@ namespace mhedit
 
 		private void toolStripMenuItemCut_Click(object sender, EventArgs e)
 		{
-            foreach ( MazeObject mazeObject in this.CopySelectedToClipboard() )
-            {
-				/// Call Delete to deal with trips/trippyroids?
-                this._maze.MazeObjects.Remove( mazeObject );
+   //         foreach ( MazeObject mazeObject in this.CopySelectedToClipboard() )
+   //         {
+			//	/// Call Delete to deal with trips/trippyroids?
+   //             this._maze.MazeObjects.Remove( mazeObject );
 
-                if ( mazeObject is TripPad tripPad )
-                {
-                    this._maze.MazeObjects.Remove(tripPad.Pyroid);
-                }
-			}
+   //             if ( mazeObject is TripPad tripPad )
+   //             {
+   //                 this._maze.MazeObjects.Remove(tripPad.Pyroid);
+   //             }
+			//}
+
+            this.RemoveObjectsFromMaze( this.CopySelectedToClipboard() );
         }
 
 		private void toolStripMenuItemCopy_Click(object sender, EventArgs e)
@@ -1297,26 +1299,35 @@ namespace mhedit
 
         private IEnumerable<MazeObject> CopySelectedToClipboard()
         {
-            List<MazeObject> selected = this._maze.MazeObjects.Where( o => o.Selected ).ToList();
+            //         List<MazeObject> selected = this._maze.MazeObjects.Where( o => o.Selected ).ToList();
 
-			///TripPadPyroids can't be copied/cut by themselves!!!!
-            if ( selected.Any( s => s.GetType() == typeof(TripPadPyroid)) )
+            /////TripPadPyroids can't be copied/cut by themselves!!!!
+            //         if ( selected.Any( s => s.GetType() == typeof(TripPadPyroid)) )
+            //         {
+            //             MessageBox.Show(
+            //                 "The selection includes at least one Trip Pad Pyroid. Remove to complete this action.");
+
+            //             selected.Clear();
+
+            //             return selected;
+            //         }
+
+
+            if ( this.TryRemoveTripPadPyroids( this._selectedObjects,
+                out IEnumerable<MazeObject> noPyroids ) )
             {
-                MessageBox.Show(
-                    "The selection includes at least one Trip Pad Pyroid. Remove to complete this action.");
+                List<MazeObject> asList = noPyroids.ToList();
 
-                selected.Clear();
+                if (asList.Count != 0 )
+                {
+                    /// Wrap in DataObject so that this data is cleared from clipboard on exit.
+                    Clipboard.SetDataObject( new DataObject( ClipboardFormatId, asList), false );
+                }
 
-                return selected;
+                return noPyroids;
             }
 
-			if ( selected.Count != 0 )
-            {
-				/// Wrap in DataObject so that this data is cleared from clipboard on exit.
-                Clipboard.SetDataObject( new DataObject(ClipboardFormatId, selected ), false );
-            }
-
-            return selected;
+            return new List<MazeObject>();
         }
 
 		private void toolStripMenuItemPaste_Click(object sender, EventArgs e)
@@ -1361,10 +1372,12 @@ namespace mhedit
 
         private void DeleteSelectedObjects()
         {
-            string plural = this._selectedObjects.Count == 1 ? "this object" : "these objects";
+            string plural = this._selectedObjects.Count == 1 ?
+                                this._selectedObjects[0].Name :
+                                $"all {this._selectedObjects.Count} objects";
 
             DialogResult result = MessageBox.Show(
-                $"Are you sure you want to remove {plural} from the Maze?", "Confirm Delete",
+                $"Are you sure you want to delete {plural}?", "Confirm Delete",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.No)
@@ -1374,25 +1387,53 @@ namespace mhedit
 
             //result = DialogResult.None;
 
-            IEnumerable<MazeObject> tripPyroids =
-                this._selectedObjects.Where(so => so is TripPadPyroid);
+            //IEnumerable<MazeObject> tripPyroids =
+            //    this._selectedObjects.Where(so => so is TripPadPyroid);
+
+            //if (tripPyroids.FirstOrDefault() != null)
+            //{
+            //    result = MessageBox.Show("TripPadPyroids can not be individually added or removed from " +
+            //                             $"a Maze. Select the parent TripPad to perform this action.{Environment.NewLine}{Environment.NewLine}" +
+            //                             "Press OK to skip the TripPadPyroids and continue.", "Selection includes TripPadPyroid",
+            //        MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
+            //}
+
+            //if (result == DialogResult.Cancel)
+            //{
+            //    return;
+            //}
+
+            //this.RemoveObjectsFromMaze( this._selectedObjects.Except( tripPyroids ) );
+            if ( this.TryRemoveTripPadPyroids( this._selectedObjects,
+                out IEnumerable<MazeObject> noPyroids ) )
+            {
+                this.RemoveObjectsFromMaze( noPyroids );
+			}
+        }
+
+        private bool TryRemoveTripPadPyroids( in IEnumerable<MazeObject> mazeObjects, out IEnumerable<MazeObject> freeOfTripPadPyroids )
+        {
+            IEnumerable<MazeObject> tripPyroids = mazeObjects.Where( so => so is TripPadPyroid );
+
+			DialogResult result = DialogResult.None;
 
             if (tripPyroids.FirstOrDefault() != null)
             {
-                result = MessageBox.Show("TripPadPyroids can not be individually added or removed from " +
-                                         $"a Maze. Select the parent TripPad to perform this action.{Environment.NewLine}{Environment.NewLine}" +
-                                         "Press OK to skip the TripPadPyroids and continue.", "Selection includes TripPadPyroid",
-                    MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
+                result = MessageBox.Show(
+                    "TripPadPyroids can not be individually added to/removed from a Maze. Select the parent TripPad to perform this action." +
+                    $"{Environment.NewLine}{Environment.NewLine}Press OK to skip the TripPadPyroids and continue.",
+                    "Selection includes TripPadPyroid",
+                    MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation );
             }
 
-            if (result == DialogResult.Cancel)
-            {
-                return;
-            }
+            freeOfTripPadPyroids = mazeObjects.Except( tripPyroids );
 
-            IEnumerable<MazeObject> objectsToDelete = this._selectedObjects.Except(tripPyroids);
+			return result != DialogResult.Cancel;
+        }
 
-            foreach (MazeObject mazeObject in objectsToDelete)
+		private void RemoveObjectsFromMaze( IEnumerable<MazeObject> objectsToRemove )
+        {
+            foreach (MazeObject mazeObject in objectsToRemove)
             {
                 if (mazeObject is TripPad tripPad)
                 {
