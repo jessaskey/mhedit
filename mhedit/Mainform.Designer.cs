@@ -81,7 +81,7 @@ namespace mhedit
             this.imageListTree = new System.Windows.Forms.ImageList(this.components);
             this.splitterLeft = new System.Windows.Forms.Splitter();
             this.panelUnderneath = new System.Windows.Forms.Panel();
-            this.panelContent = new System.Windows.Forms.Panel();
+            this.panelContent = new CustomPanel();
             this.splitterRight = new System.Windows.Forms.Splitter();
             this.panelRight = new System.Windows.Forms.Panel();
             this.splitContainerRight = new System.Windows.Forms.SplitContainer();
