@@ -269,7 +269,7 @@ namespace mhedit
 
             e.Effect = DragDropEffects.None;
 
-            if ( targetNode != _draggedNode && targetNode?.Tag is MazeController targetMaze )
+            if ( _draggedNode != null && targetNode != _draggedNode && targetNode?.Tag is MazeController targetMaze )
             {
                 MazeController draggedMaze = _draggedNode.Tag as MazeController;
 
@@ -285,7 +285,7 @@ namespace mhedit
             TreeNode targetNode = this.treeView.GetNodeAt(
                 treeView.PointToClient( new Point( e.X, e.Y ) ) );
 
-            if ( targetNode != _draggedNode && targetNode?.Tag is MazeController targetMaze )
+            if ( _draggedNode != null && targetNode != _draggedNode && targetNode?.Tag is MazeController targetMaze )
             {
                 MazeController draggedMaze = _draggedNode.Tag as MazeController;
 
