@@ -911,7 +911,7 @@ namespace mhedit.GameControllers
             WriteAlphaHigh(alphaHighCsumAddress, (byte)(currentMajorVersion[0] | 0xE0));
         }
 
-        public bool WriteFiles(string destinationPath)
+        public bool WriteFiles(string destinationPath, string driverName)
         {
             bool success = false;
             try
@@ -947,7 +947,7 @@ namespace mhedit.GameControllers
 
                 foreach (string rom in otherROMs)
                 {
-                    File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, rom), true);
+                    File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, rom.Replace("mhavocpe", driverName)), true);
                 }
                 success = true;
             }

@@ -66,7 +66,7 @@ namespace mhedit.Controllers
                         bool serializeSuccess = controller.EncodeObjects(collection, maze);
                         if (serializeSuccess)
                         {
-                            success = controller.WriteFiles(mamePath);
+                            success = controller.WriteFiles(mamePath, Properties.Settings.Default.MameDriver);
                         }
                         else
                         {

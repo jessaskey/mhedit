@@ -961,7 +961,7 @@ namespace mhedit.GameControllers
 
 
 
-        public bool WriteFiles(string mamePath)
+        public bool WriteFiles(string mamePath, string driverName)
         {
 
             //fix csums...
