@@ -925,8 +925,8 @@ namespace mhedit.GameControllers
                 MarkPagedROM(7);
                 MarkAlphaHighROM();
 
-                string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM);
-                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM);
+                string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM.Replace("mhavocpe", driverName) );
+                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM.Replace("mhavocpe", driverName) );
 
                 //save each
                 File.WriteAllBytes(page67FileNameMame, _page2367);
@@ -1698,6 +1698,7 @@ namespace mhedit.GameControllers
                     if (mazeCollection.Mazes[i] == maze)
                     {
                         WriteAlphaHigh((ushort)(_exports["levelst"] + 1), (byte)i );
+                        break;
                     }
                 }
             }
