@@ -14,7 +14,7 @@ namespace mhedit
         static VersionInformation()
         {
             /// if someone changes the templates dir update the version.
-            Properties.Settings.Default.PropertyChanged += OnSettingsChanged;
+            //Properties.Settings.Default.PropertyChanged += OnSettingsChanged;
         }
 
         private static void OnSettingsChanged( object sender, PropertyChangedEventArgs e )
@@ -30,15 +30,15 @@ namespace mhedit
 
                 if ( version == null )
                 {
-                    string fullTemplatePath = Path.GetFullPath( Properties.Settings.Default.TemplatesLocation );
+                    //string fullTemplatePath = Path.GetFullPath( Properties.Settings.Default.TemplatesLocation );
 
-                    MajorHavocPromisedEnd controller = new MajorHavocPromisedEnd();
-                    if (controller.LoadTemplate(fullTemplatePath))
-                    {
-                        _romVersion = controller.GetROMVersion();
-                    }
+                    //MajorHavocPromisedEnd controller = new MajorHavocPromisedEnd();
+                    //if (controller.LoadTemplate(fullTemplatePath))
+                    //{
+                    //    _romVersion = controller.GetROMVersion();
+                    //}
 
-                    return _romVersion;
+                    return new Version(1, 1); //_romVersion;
                 }
 
                 return version;

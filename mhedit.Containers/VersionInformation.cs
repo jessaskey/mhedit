@@ -19,10 +19,10 @@ namespace mhedit.Containers
                     {
                         _applicationVersion = assembly.GetName().Version;
 
-                        if (ApplicationDeployment.IsNetworkDeployed)
-                        {
-                            _applicationVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion;
-                        }
+                        //if (ApplicationDeployment.IsNetworkDeployed)
+                        //{
+                        //    _applicationVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion;
+                        //}
                     }
                 }
 

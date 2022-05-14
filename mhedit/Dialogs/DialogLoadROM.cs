@@ -23,7 +23,8 @@ namespace mhedit
         {
             InitializeComponent();
             comboBoxGameDriver.SelectedIndex = 0;
-            textBoxROMPath.Text = templatePath;
+            //textBoxROMPath.Text = templatePath;
+            textBoxROMPath.Text = @"C:\Users\Public\Local Storage\Repos\MajorHavocEditTesting\mhedit\template";
         }
 
         public MazeCollection MazeCollection
@@ -88,9 +89,9 @@ namespace mhedit
                     _mazeCollection.AcceptChanges();
                     if (loadMessages.Count > 0)
                     {
-                        DialogMessages dm = new DialogMessages();
-                        dm.SetMessages(loadMessages);
-                        dm.ShowDialog();
+                        //DialogMessages dm = new DialogMessages();
+                        //dm.SetMessages(loadMessages);
+                        //dm.ShowDialog();
                     }
                     DialogResult = DialogResult.OK;
                     Close();

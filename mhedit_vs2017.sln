@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mhedit.GameControllers", "m
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mhedit.Extensions", "mhedit.Extensions\mhedit.Extensions.csproj", "{AD8EEF75-39BE-41AC-8A16-176190D0FA3E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MajorHavocEditor", "MajorHavocEditor\MajorHavocEditor.csproj", "{CBC2C381-4F59-4A63-B7A3-EB59ECC1961F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{AD8EEF75-39BE-41AC-8A16-176190D0FA3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD8EEF75-39BE-41AC-8A16-176190D0FA3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD8EEF75-39BE-41AC-8A16-176190D0FA3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBC2C381-4F59-4A63-B7A3-EB59ECC1961F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBC2C381-4F59-4A63-B7A3-EB59ECC1961F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBC2C381-4F59-4A63-B7A3-EB59ECC1961F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBC2C381-4F59-4A63-B7A3-EB59ECC1961F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,48 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="MHavocEditor.Properties" GeneratedClassName="Settings">
+    <Profiles />
+    <Settings>
+        <Setting Name="MameExecutable" Type="System.String" Scope="User">
+            <Value Profile="(Default)">c:\hbmame\hbmame64.exe</Value>
+        </Setting>
+        <Setting Name="MameDriver" Type="System.String" Scope="User">
+            <Value Profile="(Default)">mhavocpex</Value>
+        </Setting>
+        <Setting Name="MHPUsername" Type="System.String" Scope="User">
+            <Value Profile="(Default)" />
+        </Setting>
+        <Setting Name="MHPPassword" Type="System.String" Scope="User">
+            <Value Profile="(Default)" />
+        </Setting>
+        <Setting Name="MameDebug" Type="System.Boolean" Scope="User">
+            <Value Profile="(Default)">False</Value>
+        </Setting>
+        <Setting Name="ShowGridReferences" Type="System.Boolean" Scope="User">
+            <Value Profile="(Default)">False</Value>
+        </Setting>
+        <Setting Name="MHPKey" Type="System.String" Scope="User">
+            <Value Profile="(Default)" />
+        </Setting>
+        <Setting Name="MHPSavePassword" Type="System.Boolean" Scope="User">
+            <Value Profile="(Default)">False</Value>
+        </Setting>
+        <Setting Name="MameWindow" Type="System.Boolean" Scope="User">
+            <Value Profile="(Default)">False</Value>
+        </Setting>
+        <Setting Name="TemplatesLocation" Type="System.String" Scope="User">
+            <Value Profile="(Default)">.\\template</Value>
+        </Setting>
+        <Setting Name="WindowPosition" Type="System.Drawing.Rectangle" Scope="User">
+            <Value Profile="(Default)">0, 0, -1, -1</Value>
+        </Setting>
+        <Setting Name="IsMaximized" Type="System.Boolean" Scope="User">
+            <Value Profile="(Default)">False</Value>
+        </Setting>
+        <Setting Name="MameCommandLineOptions" Type="System.String" Scope="User">
+            <Value Profile="(Default)" />
+        </Setting>
+        <Setting Name="UpdateSettings" Type="System.Boolean" Scope="User">
+            <Value Profile="(Default)">True</Value>
+        </Setting>
+    </Settings>
+</SettingsFile>

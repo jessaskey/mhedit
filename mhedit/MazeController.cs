@@ -18,7 +18,7 @@ namespace mhedit
 {
 	[DefaultPropertyAttribute("Name")]
 	[Serializable]
-	public partial class MazeController : UserControl, ITreeObject, ICustomTypeDescriptor, IChangeTracking
+	public partial class MazeController : UserControl, ITreeObject, IChangeTracking//, ICustomTypeDescriptor
 	{
 #region Declarations
 
@@ -218,85 +218,85 @@ namespace mhedit
 
 #endregion
 
-#region ICustomTypeDescriptor
+//#region ICustomTypeDescriptor
 
-		private PropertyDescriptorCollection FilterProperties(PropertyDescriptorCollection pdc)
-		{
-			ArrayList toInclude = new ArrayList();
-			foreach (string s in NamesToInclude)
-				toInclude.Add(s); 
+//		private PropertyDescriptorCollection FilterProperties(PropertyDescriptorCollection pdc)
+//		{
+//			ArrayList toInclude = new ArrayList();
+//			foreach (string s in NamesToInclude)
+//				toInclude.Add(s); 
 
-			PropertyDescriptorCollection adjustedProps = new PropertyDescriptorCollection(new PropertyDescriptor[] { });
-			foreach (PropertyDescriptor pd in pdc)
-				if (toInclude.Contains(pd.Name))
-					adjustedProps.Add(pd);
+//			PropertyDescriptorCollection adjustedProps = new PropertyDescriptorCollection(new PropertyDescriptor[] { });
+//			foreach (PropertyDescriptor pd in pdc)
+//				if (toInclude.Contains(pd.Name))
+//					adjustedProps.Add(pd);
 
-			return adjustedProps;
-		} 
+//			return adjustedProps;
+//		} 
 
-		public TypeConverter GetConverter()
-		{
-			return TypeDescriptor.GetConverter(this, true);
-		}
+//		public TypeConverter GetConverter()
+//		{
+//			return TypeDescriptor.GetConverter(this, true);
+//		}
 
-		public EventDescriptorCollection GetEvents(Attribute[] attributes)
-		{
-			return TypeDescriptor.GetEvents(this, attributes, true);
-		}
+//		public EventDescriptorCollection GetEvents(Attribute[] attributes)
+//		{
+//			return TypeDescriptor.GetEvents(this, attributes, true);
+//		}
 
-		EventDescriptorCollection System.ComponentModel.ICustomTypeDescriptor.GetEvents()
-		{
-			return TypeDescriptor.GetEvents(this, true);
-		}
+//		EventDescriptorCollection System.ComponentModel.ICustomTypeDescriptor.GetEvents()
+//		{
+//			return TypeDescriptor.GetEvents(this, true);
+//		}
 
-		public string GetComponentName()
-		{
-			return TypeDescriptor.GetComponentName(this, true);
-		}
+//		public string GetComponentName()
+//		{
+//			return TypeDescriptor.GetComponentName(this, true);
+//		}
 
-		public object GetPropertyOwner(PropertyDescriptor pd)
-		{
-			return this;
-		}
+//		public object GetPropertyOwner(PropertyDescriptor pd)
+//		{
+//			return this;
+//		}
 
-		public AttributeCollection GetAttributes()
-		{
-			return TypeDescriptor.GetAttributes(this, true);
-		}
+//		public AttributeCollection GetAttributes()
+//		{
+//			return TypeDescriptor.GetAttributes(this, true);
+//		}
 
-		public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
-		{
-			PropertyDescriptorCollection pdc = TypeDescriptor.GetProperties(this, attributes, true);
-			return FilterProperties(pdc);
-		}
+//		public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
+//		{
+//			PropertyDescriptorCollection pdc = TypeDescriptor.GetProperties(this, attributes, true);
+//			return FilterProperties(pdc);
+//		}
 
-		PropertyDescriptorCollection System.ComponentModel.ICustomTypeDescriptor.GetProperties()
-		{
-			PropertyDescriptorCollection pdc = TypeDescriptor.GetProperties(this,true);
-			return FilterProperties(pdc);
-		}
+//		PropertyDescriptorCollection System.ComponentModel.ICustomTypeDescriptor.GetProperties()
+//		{
+//			PropertyDescriptorCollection pdc = TypeDescriptor.GetProperties(this,true);
+//			return FilterProperties(pdc);
+//		}
 
-		public object GetEditor(Type editorBaseType)
-		{
-			return TypeDescriptor.GetEditor(this, editorBaseType, true);
-		}
+//		public object GetEditor(Type editorBaseType)
+//		{
+//			return TypeDescriptor.GetEditor(this, editorBaseType, true);
+//		}
 
-		public PropertyDescriptor GetDefaultProperty()
-		{
-			return TypeDescriptor.GetDefaultProperty(this, true);
-		}
+//		public PropertyDescriptor GetDefaultProperty()
+//		{
+//			return TypeDescriptor.GetDefaultProperty(this, true);
+//		}
 
-		public EventDescriptor GetDefaultEvent()
-		{
-			return TypeDescriptor.GetDefaultEvent(this, true);
-		}
+//		public EventDescriptor GetDefaultEvent()
+//		{
+//			return TypeDescriptor.GetDefaultEvent(this, true);
+//		}
 
-		public string GetClassName()
-		{
-			return TypeDescriptor.GetClassName(this, true);
-		}
+//		public string GetClassName()
+//		{
+//			return TypeDescriptor.GetClassName(this, true);
+//		}
 
-        #endregion
+//        #endregion
 
 #region Implementation of IChangeTracking
 
@@ -836,66 +836,66 @@ namespace mhedit
 			}
 		}
 
-		public TreeNode TreeRender(TreeView treeView, TreeNode currentNode, bool gridLines)
-		{
-			_gridLines = gridLines;
-			TreeNode parentNode = null;
-			TreeNode mazeNode = null;
-			if (treeView != null)
-			{
-				try
-				{
-					treeView.BeginUpdate();
+		//public TreeNode TreeRender(TreeView treeView, TreeNode currentNode, bool gridLines)
+		//{
+		//	_gridLines = gridLines;
+		//	TreeNode parentNode = null;
+		//	TreeNode mazeNode = null;
+		//	if (treeView != null)
+		//	{
+		//		try
+		//		{
+		//			treeView.BeginUpdate();
 
-					//see if it has a parent node...
-					if ( ( parentNode = currentNode?.Parent ) != null )
-					{
-						treeView.Nodes.Remove( currentNode );
-					}
+		//			//see if it has a parent node...
+		//			if ( ( parentNode = currentNode?.Parent ) != null )
+		//			{
+		//				treeView.Nodes.Remove( currentNode );
+		//			}
 
-					/// Add node after selected
-					mazeNode = new TreeNode( this._maze.Name )
-					{
-						Tag = this
-					};
+		//			/// Add node after selected
+		//			mazeNode = new TreeNode( this._maze.Name )
+		//			{
+		//				Tag = this
+		//			};
 
-					/// if Add maze occurs inside a MazeCollection
-					if ( treeView.SelectedNode?.Parent?.Tag is MazeCollectionController collectionController )
-					{
-						/// Insert After
-						int mazeIndex = 
-							treeView.SelectedNode.Parent.Nodes.IndexOf( treeView.SelectedNode ) + 1;
+		//			/// if Add maze occurs inside a MazeCollection
+		//			if ( treeView.SelectedNode?.Parent?.Tag is MazeCollectionController collectionController )
+		//			{
+		//				/// Insert After
+		//				int mazeIndex = 
+		//					treeView.SelectedNode.Parent.Nodes.IndexOf( treeView.SelectedNode ) + 1;
 
-						treeView.SelectedNode.Parent.Nodes.Insert( mazeIndex, mazeNode );
+		//				treeView.SelectedNode.Parent.Nodes.Insert( mazeIndex, mazeNode );
 
-						collectionController.MazeCollection.Mazes.Insert( mazeIndex, this._maze );
-					}
-					else
-					{
-						/// top level maze.
-						treeView.Nodes.Insert(
-							treeView.Nodes.IndexOf( treeView.SelectedNode?.Parent ?? treeView.SelectedNode ) + 1,
-							mazeNode );
-					}
+		//				collectionController.MazeCollection.Mazes.Insert( mazeIndex, this._maze );
+		//			}
+		//			else
+		//			{
+		//				/// top level maze.
+		//				treeView.Nodes.Insert(
+		//					treeView.Nodes.IndexOf( treeView.SelectedNode?.Parent ?? treeView.SelectedNode ) + 1,
+		//					mazeNode );
+		//			}
 
-					mazeNode.ImageIndex = ((int)_maze.MazeType) + 1;
-					mazeNode.SelectedImageIndex = mazeNode.ImageIndex;
-				}
-				catch (Exception ex)
-				{
-					_lastError = ex.Message;
-				}
-				finally
-				{
-					treeView.EndUpdate();
-				}
-			}
-			else
-			{
-				_lastError = "Tree not defined.";
-			}
-			return mazeNode;
-		}
+		//			mazeNode.ImageIndex = ((int)_maze.MazeType) + 1;
+		//			mazeNode.SelectedImageIndex = mazeNode.ImageIndex;
+		//		}
+		//		catch (Exception ex)
+		//		{
+		//			_lastError = ex.Message;
+		//		}
+		//		finally
+		//		{
+		//			treeView.EndUpdate();
+		//		}
+		//	}
+		//	else
+		//	{
+		//		_lastError = "Tree not defined.";
+		//	}
+		//	return mazeNode;
+		//}
 
 #endregion
 

@@ -81,7 +81,6 @@ namespace mhedit
             this.imageListTree = new System.Windows.Forms.ImageList(this.components);
             this.splitterLeft = new System.Windows.Forms.Splitter();
             this.panelUnderneath = new System.Windows.Forms.Panel();
-            this.panelContent = new CustomPanel();
             this.splitterRight = new System.Windows.Forms.Splitter();
             this.panelRight = new System.Windows.Forms.Panel();
             this.splitContainerRight = new System.Windows.Forms.SplitContainer();
@@ -90,7 +89,6 @@ namespace mhedit
             this.comboBoxMazeObjects = new System.Windows.Forms.ComboBox();
             this.splitterUpDown = new System.Windows.Forms.Splitter();
             this.timerMain = new System.Windows.Forms.Timer(this.components);
-            this.tabControlSystemWindows = new mhedit.SystemWindowsTabControl();
             this.listView1 = new System.Windows.Forms.ListView();
             this.splitterSystemWindows = new System.Windows.Forms.Splitter();
             this.statusStrip.SuspendLayout();
@@ -380,6 +378,7 @@ namespace mhedit
             // treeView
             // 
             this.treeView.AllowDrop = true;
+            this.treeView.CheckBoxes = true;
             this.treeView.ContextMenuStrip = this.contextMenuStripTree;
             this.treeView.Dock = System.Windows.Forms.DockStyle.Left;
             this.treeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
@@ -587,35 +586,20 @@ namespace mhedit
             // 
             // panelUnderneath
             // 
-            this.panelUnderneath.Controls.Add(this.panelContent);
             this.panelUnderneath.Controls.Add(this.splitterRight);
             this.panelUnderneath.Controls.Add(this.panelRight);
             this.panelUnderneath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelUnderneath.Location = new System.Drawing.Point(148, 25);
             this.panelUnderneath.Name = "panelUnderneath";
-            this.panelUnderneath.Size = new System.Drawing.Size(885, 560);
+            this.panelUnderneath.Size = new System.Drawing.Size(885, 660);
             this.panelUnderneath.TabIndex = 5;
-            // 
-            // panelContent
-            // 
-            this.panelContent.AutoScroll = true;
-            this.panelContent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.panelContent.BackColor = System.Drawing.Color.Black;
-            this.panelContent.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelContent.CausesValidation = false;
-            this.panelContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelContent.Location = new System.Drawing.Point(0, 0);
-            this.panelContent.Name = "panelContent";
-            this.panelContent.Size = new System.Drawing.Size(632, 560);
-            this.panelContent.TabIndex = 3;
-            this.panelContent.Paint += new System.Windows.Forms.PaintEventHandler(this.panelContent_Paint);
             // 
             // splitterRight
             // 
             this.splitterRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.splitterRight.Location = new System.Drawing.Point(632, 0);
             this.splitterRight.Name = "splitterRight";
-            this.splitterRight.Size = new System.Drawing.Size(3, 560);
+            this.splitterRight.Size = new System.Drawing.Size(3, 660);
             this.splitterRight.TabIndex = 1;
             this.splitterRight.TabStop = false;
             // 
@@ -626,7 +610,7 @@ namespace mhedit
             this.panelRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.panelRight.Location = new System.Drawing.Point(635, 0);
             this.panelRight.Name = "panelRight";
-            this.panelRight.Size = new System.Drawing.Size(250, 560);
+            this.panelRight.Size = new System.Drawing.Size(250, 660);
             this.panelRight.TabIndex = 0;
             // 
             // splitContainerRight
@@ -646,8 +630,8 @@ namespace mhedit
             this.splitContainerRight.Panel2.Controls.Add(this.propertyGrid);
             this.splitContainerRight.Panel2.Controls.Add(this.comboBoxMazeObjects);
             this.splitContainerRight.Panel2MinSize = 50;
-            this.splitContainerRight.Size = new System.Drawing.Size(250, 557);
-            this.splitContainerRight.SplitterDistance = 337;
+            this.splitContainerRight.Size = new System.Drawing.Size(250, 657);
+            this.splitContainerRight.SplitterDistance = 397;
             this.splitContainerRight.TabIndex = 4;
             // 
             // toolBox
@@ -674,7 +658,7 @@ namespace mhedit
             this.toolBox.SelectAllTextWhileRenaming = true;
             this.toolBox.SelectedTabIndex = -1;
             this.toolBox.ShowOnlyOneItemPerRow = false;
-            this.toolBox.Size = new System.Drawing.Size(250, 337);
+            this.toolBox.Size = new System.Drawing.Size(250, 397);
             this.toolBox.SmallItemSize = new System.Drawing.Size(32, 32);
             this.toolBox.TabHeight = 18;
             this.toolBox.TabHoverTextColor = System.Drawing.SystemColors.ControlText;
@@ -690,7 +674,7 @@ namespace mhedit
             this.propertyGrid.LineColor = System.Drawing.SystemColors.ControlDark;
             this.propertyGrid.Location = new System.Drawing.Point(0, 21);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(250, 195);
+            this.propertyGrid.Size = new System.Drawing.Size(250, 235);
             this.propertyGrid.TabIndex = 5;
             // 
             // comboBoxMazeObjects
@@ -705,7 +689,7 @@ namespace mhedit
             // splitterUpDown
             // 
             this.splitterUpDown.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitterUpDown.Location = new System.Drawing.Point(0, 557);
+            this.splitterUpDown.Location = new System.Drawing.Point(0, 657);
             this.splitterUpDown.Name = "splitterUpDown";
             this.splitterUpDown.Size = new System.Drawing.Size(250, 3);
             this.splitterUpDown.TabIndex = 1;
@@ -715,18 +699,6 @@ namespace mhedit
             // 
             this.timerMain.Interval = 1000;
             this.timerMain.Tick += new System.EventHandler(this.timerMain_Tick);
-            // 
-            // tabControlSystemWindows
-            // 
-            this.tabControlSystemWindows.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tabControlSystemWindows.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            this.tabControlSystemWindows.Location = new System.Drawing.Point(148, 588);
-            this.tabControlSystemWindows.Name = "tabControlSystemWindows";
-            this.tabControlSystemWindows.Padding = new System.Drawing.Point(12, 4);
-            this.tabControlSystemWindows.SelectedIndex = 0;
-            this.tabControlSystemWindows.Size = new System.Drawing.Size(885, 100);
-            this.tabControlSystemWindows.TabIndex = 0;
-            this.tabControlSystemWindows.Visible = false;
             // 
             // listView1
             // 
@@ -741,7 +713,7 @@ namespace mhedit
             // splitterSystemWindows
             // 
             this.splitterSystemWindows.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitterSystemWindows.Location = new System.Drawing.Point(148, 585);
+            this.splitterSystemWindows.Location = new System.Drawing.Point(148, 685);
             this.splitterSystemWindows.Name = "splitterSystemWindows";
             this.splitterSystemWindows.Size = new System.Drawing.Size(885, 3);
             this.splitterSystemWindows.TabIndex = 0;
@@ -754,7 +726,6 @@ namespace mhedit
             this.ClientSize = new System.Drawing.Size(1033, 710);
             this.Controls.Add(this.panelUnderneath);
             this.Controls.Add(this.splitterSystemWindows);
-            this.Controls.Add(this.tabControlSystemWindows);
             this.Controls.Add(this.splitterLeft);
             this.Controls.Add(this.treeView);
             this.Controls.Add(this.toolStrip);
@@ -792,7 +763,6 @@ namespace mhedit
         private System.Windows.Forms.Panel panelRight;
         private System.Windows.Forms.Splitter splitterUpDown;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
-        private System.Windows.Forms.Panel panelContent;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton toolStripButtonGrid;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
@@ -844,6 +814,7 @@ namespace mhedit
         private mhedit.SystemWindowsTabControl tabControlSystemWindows;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.Splitter splitterSystemWindows;
+        private CustomPanel panelContent;
     }
 }
 

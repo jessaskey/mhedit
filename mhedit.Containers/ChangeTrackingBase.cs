@@ -18,7 +18,7 @@ namespace mhedit.Containers
         /// Used to mark a TreeView Node as Modified.
         /// </summary>
         public static readonly string ModifiedBullet =
-            Encoding.GetEncoding( 1252 ).GetString( new byte[] { (byte)149 } );
+            Encoding.UTF8.GetString( new byte[] { (byte)149 } );
 
         private bool _isChanged = false;
 

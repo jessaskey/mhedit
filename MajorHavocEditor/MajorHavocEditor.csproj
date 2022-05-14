@@ -1,0 +1,103 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net5.0-windows</TargetFramework>
+        <UseWindowsForms>true</UseWindowsForms>
+        <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Remove="Views\MazeView.cs" />
+        <Compile Remove="Views\MazeView.Designer.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Remove="Views\MazeView.resx" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!--<PackageReference Include="Krypton.Docking" Version="6.2201.4" />-->
+        <!--<PackageReference Include="Krypton.Docking" Version="5.550.2108.1" />-->
+        <!--<PackageReference Include="Krypton.Docking.Canary" Version="65.22.4.103-beta" />-->
+        <PackageReference Include="Krypton.Docking.Canary" Version="65.22.5.123-beta" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="..\mhedit\CustomPanel.cs" Link="Views\CustomPanel.cs" />
+        <Compile Include="..\mhedit\CustomPanel.Designer.cs" Link="Views\CustomPanel.Designer.cs" />
+        <Compile Include="..\mhedit\MazeController.cs" Link="Views\MazeController.cs" />
+        <Compile Include="..\mhedit\MazeController.Designer.cs" Link="Views\MazeController.Designer.cs" />
+        <Compile Include="..\mhedit\MazeObjectImages.cs" Link="MazeObjectImages.cs" />
+        <EmbeddedResource Include="..\mhedit\MazeController.resx" Link="Views\MazeController.resx" />
+        <Compile Include="..\mhedit\Dialogs\DialogLoadROM.cs" Link="Views\DialogLoadROM.cs" />
+        <Compile Include="..\mhedit\Dialogs\DialogLoadROM.Designer.cs" Link="Views\DialogLoadROM.Designer.cs" />
+        <EmbeddedResource Include="..\mhedit\Dialogs\DialogLoadROM.resx" Link="Views\DialogLoadROM.resx" />
+        <!--<Compile Include="..\MajorHavocEditor\Views\GameExplorer.cs" Link="Views\GameExplorer.cs" />
+        <Compile Include="..\MajorHavocEditor\Views\GameExplorer.Designer.cs" Link="Views\GameExplorer.Designer.cs" />
+        <EmbeddedResource Include="..\MajorHavocEditor\Views\GameExplorer.resx" Link="Views\GameExplorer.resx" />
+        <Compile Include="..\MajorHavocEditor\Views\GameToolbox.cs" Link="Views\GameToolbox.cs" />
+        <Compile Include="..\MajorHavocEditor\Views\GameToolbox.Designer.cs" Link="Views\GameToolbox.Designer.cs" />
+        <EmbeddedResource Include="..\MajorHavocEditor\Views\GameToolbox.resx" Link="Views\GameToolbox.resx" />-->
+        <Compile Include="..\mhedit\VersionInformation.cs" Link="VersionInformation.cs" />
+        <!--<Compile Include="..\MajorHavocEditor\ResourceLoader.cs" Link="ResourceLoader.cs" />-->
+    </ItemGroup>
+
+    <!--<ItemGroup>
+        <Compile Include="..\MajorHavocEditor\Interfaces\Ui\DockingPosition.cs" Link="Interfaces\Ui\DockingPosition.cs" />
+        <Compile Include="..\MajorHavocEditor\Interfaces\Ui\IMenuItem.cs" Link="Interfaces\Ui\IMenuItem.cs" />
+        <Compile Include="..\MajorHavocEditor\Interfaces\Ui\IMenuManager.cs" Link="Interfaces\Ui\IMenuManager.cs" />
+        <Compile Include="..\MajorHavocEditor\Interfaces\Ui\IUserInterface.cs" Link="Interfaces\Ui\IUserInterface.cs" />
+        <Compile Include="..\MajorHavocEditor\Interfaces\Ui\IWindowManager.cs" Link="Interfaces\Ui\IWindowManager.cs" />
+    </ItemGroup>-->
+
+    <!--<ItemGroup>
+        <Compile Include="..\MajorHavocEditor\Controls\Menu\MenuCommand.cs" Link="Controls\Menu\MenuCommand.cs" />
+        <Compile Include="..\MajorHavocEditor\Controls\Menu\MenuItem.cs" Link="Controls\Menu\MenuItem.cs" />
+        <Compile Include="..\MajorHavocEditor\Controls\Menu\Separator.cs" Link="Controls\Menu\Separator.cs" />
+        <Compile Include="..\MajorHavocEditor\Controls\Menu\MenuManager.cs" Link="Controls\Menu\MenuManager.cs" />
+        <Compile Include="..\MajorHavocEditor\Controls\Menu\MenuManager.Designer.cs" Link="Controls\Menu\MenuManager.Designer.cs" />
+        <EmbeddedResource Include="..\MajorHavocEditor\Controls\Menu\MenuManager.resx" Link="Controls\Menu\MenuManager.resx" />
+    </ItemGroup>-->
+
+    <ItemGroup>
+        <EmbeddedResource Include="..\mhedit\images\toolbarbuttons\ThumbnailViewHS.bmp" Link="Resources\Images\ThumbnailViewHS.bmp" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="..\mhedit\images\toolbarbuttons\maze_a.bmp" Link="Resources\Images\maze_a.bmp" />
+        <EmbeddedResource Include="..\mhedit\images\toolbarbuttons\maze_b.bmp" Link="Resources\Images\maze_b.bmp" />
+        <EmbeddedResource Include="..\mhedit\images\toolbarbuttons\maze_c.bmp" Link="Resources\Images\maze_c.bmp" />
+        <EmbeddedResource Include="..\mhedit\images\toolbarbuttons\maze_d.bmp" Link="Resources\Images\maze_d.bmp" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="..\mhedit\images\toolbarbuttons\rom_32.png" Link="Resources\Images\Buttons\rom_32.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\mhedit.Containers\mhedit.Containers.csproj" />
+        <ProjectReference Include="..\mhedit.GameControllers\mhedit.GameControllers.csproj" />
+        <ProjectReference Include="..\Silver.UI.ToolBox\Silver.UI.ToolBox.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Properties\Settings.Designer.cs">
+            <DesignTimeSharedInput>True</DesignTimeSharedInput>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Settings.settings</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Properties\Settings.settings">
+            <Generator>SettingsSingleFileGenerator</Generator>
+            <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+        </None>
+    </ItemGroup>
+
+</Project>
