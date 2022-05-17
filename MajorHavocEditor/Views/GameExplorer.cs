@@ -20,106 +20,163 @@ using MajorHavocEditor.Interfaces.Ui;
 
 namespace MajorHavocEditor.Views
 {
+
+    public static class TreeNodeExtensions
+    {
+        /// <summary>
+        /// This is enough to look through 2 levels of node hierarchy. 
+        /// </summary>
+        /// <param name="tree"></param>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
+        public static TreeNode FindNodeOrDefault(this TreeView tree, object itemId)
+        {
+            var result = tree.Nodes.Cast<TreeNode>()
+                             .FirstOrDefault(node => node.Tag.Equals(itemId));
+
+            return result ?? tree.Nodes.Cast<TreeNode>()
+                                 .SelectMany( n => n.Nodes.Cast<TreeNode>() )
+                                 .FirstOrDefault(node => node.Tag.Equals(itemId));
+        }
+    }
+
     public partial class GameExplorer : UserControl, IUserInterface
     {
-//        internal interface ISelectedNodes
-//        {
-//            int Count { get; }
-//            void Add(TreeNode node);
-//            void Clear();
-//            bool Contains(TreeNode node);
-//            bool Remove(TreeNode node);
-//            IEnumerator<TreeNode> GetEnumerator();
-//        }
+        internal interface ISelectedNodes : IEnumerable<TreeNode>
+        {
+            int Count { get; }
+            void Add(TreeNode node);
+            void Clear();
+            bool Contains(TreeNode node);
+            bool Remove(TreeNode node);
+        }
 
-//        public class SelectedItems : ISelectedNodes
-//        {
-//            private readonly TreeView _treeView;
-//            private readonly Dictionary<object, TreeNode> _lookup = 
-//                new Dictionary<object, TreeNode>();
-//            private readonly IList _items;
+        public delegate bool TryFindNode(object key, out TreeNode found);
 
-//            //public SelectedItems()
-//            //        :this(new ObservableCollection<object>())
-//            //{}
+        public class SelectedItems : ISelectedNodes //List<TreeNode>
+        {
 
-//            public SelectedItems(TreeView treeView, IList items)
-//            {
-//                this._treeView = treeView;
-//                this._items = items;
+            //private readonly Dictionary<object, TreeNode> _lookup =
+            //    new Dictionary<object, TreeNode>();
+            public readonly IList _items;
+            private readonly TryFindNode _tryFindNode;
+            private readonly List<TreeNode> _nodes = new List<TreeNode>();
 
-//                if (items is INotifyCollectionChanged incc)
-//                {
-//                    incc.CollectionChanged += this.OnItemsCollectionChanged;
-//                }
-//            }
+            public SelectedItems( TryFindNode tryFindNode )
+                    : this(new ObservableCollection<object>(), tryFindNode)
+            { }
 
-//            private void OnItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-//            {
-//                if (e.Action == NotifyCollectionChangedAction.Reset)
-//                {
-//                }
-//                else if (e.Action == NotifyCollectionChangedAction.Add)
-//                {
-//                }
-//                else if (e.Action == NotifyCollectionChangedAction.Remove)
-//                {
-//                }
-//            }
+            public SelectedItems(IList items, TryFindNode tryFindNode )
+            {
+                this._items = items;
+                this._tryFindNode = tryFindNode;
 
-//#region Implementation of ISelectedNodes
+                if (items is INotifyCollectionChanged incc)
+                {
+                    incc.CollectionChanged += this.OnItemsCollectionChanged;
+                }
+            }
 
-//            /// <inheritdoc />
-//            public int Count
-//            {
-//                get { return this._items.Count; }
-//            }
+            private void OnItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+            {
+                if (e.Action == NotifyCollectionChangedAction.Reset)
+                {
+                    foreach ( TreeNode node in this._nodes )
+                    {
+                        node.Checked = false;
+                    }
 
-//            /// <inheritdoc />
-//            public void Add( TreeNode node )
-//            {
-//                node.Checked = true;
+                    this._nodes.Clear();
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    foreach (object newItem in e.NewItems)
+                    {
+                        if (this._tryFindNode(newItem, out TreeNode node))
+                        {
+                            node.Checked = true;
 
-//                this._items.Add( node.Tag );
-//            }
+                            this._nodes.Add( node );
+                        }
+                    }
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Remove)
+                {
+                    foreach ( object oldItem in e.OldItems )
+                    {
+                        if ( this._tryFindNode( oldItem, out TreeNode node ) )
+                        {
+                            node.Checked = false;
 
-//            /// <inheritdoc />
-//            public void Clear()
-//            {
-//                throw new NotImplementedException();
-//            }
+                            this._nodes.Remove( node );
+                        }
+                    }
+                }
+            }
 
-//            /// <inheritdoc />
-//            public bool Contains( TreeNode node)
-//            {
-//                throw new NotImplementedException();
-//            }
+#region Implementation of ISelectedNodes
 
-//            /// <inheritdoc />
-//            public bool Remove( TreeNode node)
-//            {
-//                node.Checked = false;
+            /// <inheritdoc />
+            int ISelectedNodes.Count
+            {
+                get { return this._nodes.Count; }
+            }
 
-//                this._items.Remove(node.Tag);
+            /// <inheritdoc />
+            void ISelectedNodes.Add(TreeNode node)
+            {
+                //node.Checked = true;
 
-//                return true;
-//            }
+                this._items.Add(node.Tag);
+            }
 
-//            /// <inheritdoc />
-//            public IEnumerator<TreeNode> GetEnumerator()
-//            {
-//                throw new NotImplementedException();
-//            }
+            /// <inheritdoc />
+            void ISelectedNodes.Clear()
+            {
+                this._items.Clear();
+            }
 
-//#endregion
-//        }
+            /// <inheritdoc />
+            bool ISelectedNodes.Contains(TreeNode node)
+            {
+                return this._nodes.Contains( node );
+            }
+
+            /// <inheritdoc />
+            bool ISelectedNodes.Remove(TreeNode node)
+            {
+                //node.Checked = false;
+
+                this._items.Remove(node.Tag);
+
+                return true;
+            }
+
+            /// <inheritdoc />
+            IEnumerator<TreeNode> IEnumerable<TreeNode>.GetEnumerator()
+            {
+                return this._nodes.GetEnumerator();
+            }
+
+#endregion
+
+#region Implementation of IEnumerable
+
+            /// <inheritdoc />
+            public IEnumerator GetEnumerator()
+            {
+                return this._items.GetEnumerator();
+            }
+
+#endregion
+        }
 
 
 
 
 
         private readonly IWindowManager _windowManager;
-        private readonly List<TreeNode> _selectedNodes = new List<TreeNode>();
+        private readonly ISelectedNodes _selectedNodes;
 
         private static readonly string ResourcePath =
             $"/{typeof(GameExplorer).Assembly.GetName().Name};component/Resources/Images/";
@@ -177,6 +234,8 @@ namespace MajorHavocEditor.Views
             this.treeView.ShowLines = false;
             //this.treeView.ShowPlusMinus = false;
 
+            this._selectedNodes = new SelectedItems(this.SearchNodesForTag);
+
             menuManager?.Add(
                 new MenuItem( "LoadFromROM" )
                 {
@@ -192,18 +251,25 @@ namespace MajorHavocEditor.Views
             //}
         }
 
-        private void OnSelectedNodesChanged( object sender, NotifyCollectionChangedEventArgs e )
+        private bool SearchNodesForTag( object key, out TreeNode found )
         {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-            }
+            found = this.treeView.FindNodeOrDefault( key );
+
+            return found != null;
         }
+
+        //private void OnSelectedNodesChanged( object sender, NotifyCollectionChangedEventArgs e )
+        //{
+        //    if (e.Action == NotifyCollectionChangedAction.Reset)
+        //    {
+        //    }
+        //    else if (e.Action == NotifyCollectionChangedAction.Add)
+        //    {
+        //    }
+        //    else if (e.Action == NotifyCollectionChangedAction.Remove)
+        //    {
+        //    }
+        //}
 
         private void OnBeforeLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
@@ -227,13 +293,9 @@ namespace MajorHavocEditor.Views
                             // Stop editing without canceling the label change.
                             e.Node.EndEdit(false);
 
-                            if (e.Node.Tag is Maze maze)
+                            if (e.Node.Tag is IName iName)
                             {
-                                maze.Name = e.Label;
-                            }
-                            else if (e.Node.Tag is MazeCollection mazeCollection)
-                            {
-                                mazeCollection.Name = e.Label;
+                                iName.Name = e.Label;
                             }
                         }
                         else
@@ -276,8 +338,9 @@ namespace MajorHavocEditor.Views
 
         /// <summary>
         /// https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.treeview.drawnode?redirectedfrom=MSDN&view=netframework-4.7.2
+        /// TODO: Move Editing/ChangeTracking outside of the Treeview? 
         /// </summary>
-        private void treeView_DrawNode(object sender, DrawTreeNodeEventArgs e)
+        private void OnEditDrawNode(object sender, DrawTreeNodeEventArgs e)
         {
             // Use the default background and node text.
             e.DrawDefault = !e.Node.IsEditing;
@@ -294,23 +357,19 @@ namespace MajorHavocEditor.Views
             Font nodeFont =
                 new Font(e.Node.NodeFont ?? e.Node.TreeView.Font, FontStyle.Bold);
 
-            SolidBrush nodeBrush = new SolidBrush(e.Node.TreeView.ForeColor);
-
             // If a node tag is present, draw the IChangeTracking info if necessary.
-            if (e.Node.Tag is Maze maze)
+            if ( e.Node.Tag is IChangeTracking ict )
             {
-                e.Graphics.DrawString(
-                    maze.IsChanged ? ChangeTrackingBase.ModifiedBullet : "",
-                    nodeFont, nodeBrush, e.Node.Bounds.Right + 4, e.Node.Bounds.Top);
-            }
-            else if (e.Node.Tag is MazeCollection mazeCollection)
-            {
-                e.Graphics.DrawString(
-                    mazeCollection.IsChanged ? ChangeTrackingBase.ModifiedBullet : "",
-                    nodeFont, nodeBrush, e.Node.Bounds.Right + 4, e.Node.Bounds.Top);
+                TextRenderer.DrawText(
+                    e.Graphics,
+                    ict.IsChanged ? "*" : "",
+                    nodeFont,
+                    new Point( e.Node.Bounds.Right + 4, e.Node.Bounds.Top ),
+                    ( e.State & TreeNodeStates.Selected ) != 0 ? SystemColors.HighlightText :
+                        SystemColors.ControlText,
+                    TextFormatFlags.Left );
             }
         }
-
 
         protected void OnDrawNode(object sender, DrawTreeNodeEventArgs e)
         {
@@ -441,6 +500,11 @@ namespace MajorHavocEditor.Views
         private void OnMouseDown(object sender, MouseEventArgs e)
         {
             TreeNode clickedNode = this.treeView.GetNodeAt(e.X, e.Y);
+
+            if ( clickedNode == null )
+            {
+                return;
+            }
 
             this._mouseDownMultiSelectNode = clickedNode.Checked &&
                                           this._selectedNodes.Count > 1 &&
@@ -631,7 +695,8 @@ namespace MajorHavocEditor.Views
 
                 dlr.MazeCollection.PropertyChanged += this.OnMazeCollectionPropertyChanged;
 
-                this.treeView.SelectedNode = this.Add(dlr.MazeCollection); ;
+                this.treeView.SelectedNode = this.Add(dlr.MazeCollection);
+                //((SelectedItems)this._selectedNodes)._items.Add( dlr.MazeCollection.Mazes[8]);
             }
         }
 
