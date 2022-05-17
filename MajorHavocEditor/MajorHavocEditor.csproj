@@ -8,15 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="Views\MazeView.cs" />
-        <Compile Remove="Views\MazeView.Designer.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Remove="Views\MazeView.resx" />
-    </ItemGroup>
-
-    <ItemGroup>
         <!--<PackageReference Include="Krypton.Docking" Version="6.2201.4" />-->
         <!--<PackageReference Include="Krypton.Docking" Version="5.550.2108.1" />-->
         <!--<PackageReference Include="Krypton.Docking.Canary" Version="65.22.4.103-beta" />-->
@@ -37,32 +28,8 @@
         <Compile Include="..\mhedit\Dialogs\DialogLoadROM.cs" Link="Views\DialogLoadROM.cs" />
         <Compile Include="..\mhedit\Dialogs\DialogLoadROM.Designer.cs" Link="Views\DialogLoadROM.Designer.cs" />
         <EmbeddedResource Include="..\mhedit\Dialogs\DialogLoadROM.resx" Link="Views\DialogLoadROM.resx" />
-        <!--<Compile Include="..\MajorHavocEditor\Views\GameExplorer.cs" Link="Views\GameExplorer.cs" />
-        <Compile Include="..\MajorHavocEditor\Views\GameExplorer.Designer.cs" Link="Views\GameExplorer.Designer.cs" />
-        <EmbeddedResource Include="..\MajorHavocEditor\Views\GameExplorer.resx" Link="Views\GameExplorer.resx" />
-        <Compile Include="..\MajorHavocEditor\Views\GameToolbox.cs" Link="Views\GameToolbox.cs" />
-        <Compile Include="..\MajorHavocEditor\Views\GameToolbox.Designer.cs" Link="Views\GameToolbox.Designer.cs" />
-        <EmbeddedResource Include="..\MajorHavocEditor\Views\GameToolbox.resx" Link="Views\GameToolbox.resx" />-->
         <Compile Include="..\mhedit\VersionInformation.cs" Link="VersionInformation.cs" />
-        <!--<Compile Include="..\MajorHavocEditor\ResourceLoader.cs" Link="ResourceLoader.cs" />-->
     </ItemGroup>
-
-    <!--<ItemGroup>
-        <Compile Include="..\MajorHavocEditor\Interfaces\Ui\DockingPosition.cs" Link="Interfaces\Ui\DockingPosition.cs" />
-        <Compile Include="..\MajorHavocEditor\Interfaces\Ui\IMenuItem.cs" Link="Interfaces\Ui\IMenuItem.cs" />
-        <Compile Include="..\MajorHavocEditor\Interfaces\Ui\IMenuManager.cs" Link="Interfaces\Ui\IMenuManager.cs" />
-        <Compile Include="..\MajorHavocEditor\Interfaces\Ui\IUserInterface.cs" Link="Interfaces\Ui\IUserInterface.cs" />
-        <Compile Include="..\MajorHavocEditor\Interfaces\Ui\IWindowManager.cs" Link="Interfaces\Ui\IWindowManager.cs" />
-    </ItemGroup>-->
-
-    <!--<ItemGroup>
-        <Compile Include="..\MajorHavocEditor\Controls\Menu\MenuCommand.cs" Link="Controls\Menu\MenuCommand.cs" />
-        <Compile Include="..\MajorHavocEditor\Controls\Menu\MenuItem.cs" Link="Controls\Menu\MenuItem.cs" />
-        <Compile Include="..\MajorHavocEditor\Controls\Menu\Separator.cs" Link="Controls\Menu\Separator.cs" />
-        <Compile Include="..\MajorHavocEditor\Controls\Menu\MenuManager.cs" Link="Controls\Menu\MenuManager.cs" />
-        <Compile Include="..\MajorHavocEditor\Controls\Menu\MenuManager.Designer.cs" Link="Controls\Menu\MenuManager.Designer.cs" />
-        <EmbeddedResource Include="..\MajorHavocEditor\Controls\Menu\MenuManager.resx" Link="Controls\Menu\MenuManager.resx" />
-    </ItemGroup>-->
 
     <ItemGroup>
         <EmbeddedResource Include="..\mhedit\images\toolbarbuttons\ThumbnailViewHS.bmp" Link="Resources\Images\ThumbnailViewHS.bmp" />

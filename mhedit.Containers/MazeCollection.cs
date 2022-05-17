@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
@@ -68,7 +69,27 @@ namespace mhedit.Containers
         public string Name
         {
             get { return _collectionName; }
-            set { this.SetField( ref this._collectionName, value ); }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("Is null or empty.", nameof(this.Name));
+                }
+                if (value.Length > 50)
+                {
+                    throw new ArgumentException("Is longer than 50 characters.", nameof(this.Name));
+                }
+                if (value.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                {
+                    string invalid = new string(Path.GetInvalidFileNameChars()
+                                                    .Where(c => !char.IsControl(c))
+                                                    .ToArray());
+
+                    throw new ArgumentException($"\"{value}\" contains invalid characters: {invalid}", nameof(this.Name));
+                }
+
+                this.SetField(ref this._collectionName, value);
+            }
         }
 
         [DescriptionAttribute("The name of the person who created this maze.")]

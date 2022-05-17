@@ -1,6 +1,4 @@
-﻿
-using System.Windows.Forms;
-using Krypton.Toolkit;
+﻿using System.Windows.Forms;
 
 namespace MajorHavocEditor.Views
 {
@@ -33,17 +31,12 @@ namespace MajorHavocEditor.Views
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            //this.treeView = new KryptonTreeView();
-            //this.treeView = new mhedit.Containers.AugmentedTreeview();
-            this.treeView = new TreeView();
+            this.treeView = new MultiSelectTreeView();
             this.SuspendLayout();
             // 
             // treeView
             // 
             this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            //this.treeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            //this.treeView.FullRowSelect = true;
-            //this.treeView.HideSelection = false;
             this.treeView.Location = new System.Drawing.Point(0, 0);
             this.treeView.Name = "treeView";
             this.treeView.Size = new System.Drawing.Size(226, 424);
@@ -62,7 +55,6 @@ namespace MajorHavocEditor.Views
 
         #endregion
 
-        //private KryptonTreeView treeView;
         private TreeView treeView;
     }
 }

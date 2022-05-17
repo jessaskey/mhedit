@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -210,7 +211,27 @@ namespace mhedit.Containers
         public string Name
         {
             get { return this._mazeName; }
-            set { this.SetField( ref this._mazeName, value ); }
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value) )
+                {
+                    throw new ArgumentException("Is null or empty.", nameof(this.Name));
+                }
+                if (value.Length > 50)
+                {
+                    throw new ArgumentException("Is longer than 50 characters.", nameof(this.Name));
+                }
+                if ( value.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                {
+                    string invalid = new string(Path.GetInvalidFileNameChars()
+                                                    .Where(c => !char.IsControl(c))
+                                                    .ToArray());
+
+                    throw new ArgumentException($"\"{value}\" contains invalid characters: {invalid}", nameof(this.Name));
+                }
+
+                this.SetField( ref this._mazeName, value );
+            }
         }
 
         [Validation( typeof( MazeHintRule ),
