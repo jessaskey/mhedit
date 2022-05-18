@@ -4,6 +4,7 @@ using System.Windows.Input;
 
 namespace MajorHavocEditor.Controls.Menu
 {
+
     /// <summary>
     /// Implements the basics of the ICommand interface for use with the IMenuManager.
     /// </summary>
@@ -12,35 +13,35 @@ namespace MajorHavocEditor.Controls.Menu
         private readonly Action<object> _execute;
         private readonly Func<object, bool> _canExecute;
 
-        public MenuCommand(Action<object> execute)
-            : this(execute, _ => true)
-        { }
+        public MenuCommand( Action<object> execute )
+            : this( execute, _ => true )
+        {
+        }
 
-        public MenuCommand(Action<object> execute, Func<object, bool> canExecute)
+        public MenuCommand( Action<object> execute, Func<object, bool> canExecute )
         {
             this._execute = execute;
             this._canExecute = canExecute;
         }
 
-        #region Implementation of ICommand
+#region Implementation of ICommand
 
-        public virtual bool CanExecute(object parameter)
+        public virtual bool CanExecute( object parameter )
         {
-            bool result = false;
-
             try
             {
-                return this._canExecute?.Invoke(parameter) ?? true;
+                return this._canExecute?.Invoke( parameter ) ?? true;
             }
-            catch (Exception e)
+            catch ( Exception e )
             {
-                Console.WriteLine(e);
+                //BUG: Add a dialog box for error..
+                Console.WriteLine( e );
 
                 throw;
             }
         }
 
-        public void Execute(object parameter)
+        public void Execute( object parameter )
         {
             Cursor original = Cursor.Current;
 
@@ -51,14 +52,15 @@ namespace MajorHavocEditor.Controls.Menu
                 Cursor.Current = Cursors.WaitCursor;
 
                 // Should I test or leave it up to the menu system?
-                if (this._canExecute(parameter))
+                if ( this._canExecute( parameter ) )
                 {
-                    this._execute(parameter);
+                    this._execute( parameter );
                 }
             }
-            catch (Exception e)
+            catch ( Exception e )
             {
-                Console.WriteLine(e);
+                //BUG: Add a dialog box for error..
+                Console.WriteLine( e );
 
                 throw;
             }
@@ -70,7 +72,7 @@ namespace MajorHavocEditor.Controls.Menu
 
         public event EventHandler CanExecuteChanged;
 
-        #endregion
+#endregion
 
         public void UpdateCanExecute()
         {
@@ -79,7 +81,8 @@ namespace MajorHavocEditor.Controls.Menu
 
         protected virtual void OnCanExecuteChanged()
         {
-            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            this.CanExecuteChanged?.Invoke( this, EventArgs.Empty );
         }
     }
+
 }
