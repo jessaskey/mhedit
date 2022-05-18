@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
 using mhedit.Containers.Validation;
 using mhedit.Containers.Validation.MajorHavoc;
@@ -130,6 +129,16 @@ namespace mhedit.Containers
         }
 
         #endregion
-        
+
+#region Overrides of Object
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return this.Name;
+        }
+
+#endregion
+
     }
 }

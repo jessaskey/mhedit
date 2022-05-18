@@ -8,68 +8,106 @@ using System.Windows.Forms;
 namespace MajorHavocEditor.Views
 {
 
-    public class SelectedItems : ISelectedNodes //List<TreeNode>
+    /// <summary>
+    /// Provides TreeNode implementation details for the objects contained
+    /// in the TreeView's ItemsSource. 
+    /// </summary>
+    public interface IItemsSourceDelegate
     {
+        /// <summary>
+        /// Creates a TreeNode for the item.
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        TreeNode CreateNode( object item );
 
-        //private readonly Dictionary<object, TreeNode> _lookup =
-        //    new Dictionary<object, TreeNode>();
-        public readonly IList _items;
+        /// <summary>
+        /// Determines if the TreeNode is the node containing the Item.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        bool Equals( TreeNode node, object item );
+
+        /// <summary>
+        /// Returns an Enumerable for the children of the item, or null
+        /// if the item has no children. 
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        IEnumerable GetEnumerable( object item );
+    }
+
+    /// <summary>
+    /// Public facing type for the TreeView.ItemsSource
+    /// </summary>
+    public interface IItemsSource : IList
+    {
+        IItemsSourceDelegate ItemsDelegate { get; set; }
+    }
+
+    public class SelectedItems : ISelectedNodes
+    {
+        private readonly IList _items;
         private readonly TryFindNode _tryFindNode;
         private readonly List<TreeNode> _nodes = new List<TreeNode>();
 
-        public SelectedItems(TryFindNode tryFindNode)
-            : this(new ObservableCollection<object>(), tryFindNode)
-        { }
+        public SelectedItems( TryFindNode tryFindNode )
+            : this( new ObservableCollection<object>(), tryFindNode )
+        {
+        }
 
-        public SelectedItems(IList items, TryFindNode tryFindNode)
+        public SelectedItems( IList items, TryFindNode tryFindNode )
         {
             this._items = items;
             this._tryFindNode = tryFindNode;
 
-            if (items is INotifyCollectionChanged incc)
+            if ( items is INotifyCollectionChanged incc )
             {
                 incc.CollectionChanged += this.OnItemsCollectionChanged;
             }
         }
 
-        private void OnItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnItemsCollectionChanged( object sender, NotifyCollectionChangedEventArgs e )
         {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
+            if ( e.Action == NotifyCollectionChangedAction.Reset )
             {
-                foreach (TreeNode node in this._nodes)
+                foreach ( TreeNode node in this._nodes )
                 {
                     node.Checked = false;
 
-                    Debug.WriteLine($"Removed {node.Tag}");
+                    Debug.WriteLine( $"Removed {node.Tag}" );
                 }
 
                 this._nodes.Clear();
             }
-            else if (e.Action == NotifyCollectionChangedAction.Add)
+            else if ( e.Action == NotifyCollectionChangedAction.Add )
             {
-                foreach (object newItem in e.NewItems)
+                foreach ( object newItem in e.NewItems )
                 {
-                    Debug.WriteLine($"Added {newItem}");
+                    Debug.WriteLine( $"Added {newItem}" );
 
-                    if (this._tryFindNode(newItem, out TreeNode node))
+                    if ( this._tryFindNode( newItem, out TreeNode node ) )
                     {
                         node.Checked = true;
 
-                        this._nodes.Add(node);
+                        this._nodes.Add( node );
+
+                        node.TreeView.SelectedNode = node;
                     }
                 }
             }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            else if ( e.Action == NotifyCollectionChangedAction.Remove )
             {
-                foreach (object oldItem in e.OldItems)
+                foreach ( object oldItem in e.OldItems )
                 {
-                    Debug.WriteLine($"Removed {oldItem}");
+                    Debug.WriteLine( $"Removed {oldItem}" );
 
-                    if (this._tryFindNode(oldItem, out TreeNode node))
+                    if ( this._tryFindNode( oldItem, out TreeNode node ) )
                     {
                         node.Checked = false;
 
-                        this._nodes.Remove(node);
+                        this._nodes.Remove( node );
                     }
                 }
             }
@@ -84,11 +122,9 @@ namespace MajorHavocEditor.Views
         }
 
         /// <inheritdoc />
-        void ISelectedNodes.Add(TreeNode node)
+        void ISelectedNodes.Add( TreeNode node )
         {
-            //node.Checked = true;
-
-            this._items.Add(node.Tag);
+            this._items.Add( node.Tag );
         }
 
         /// <inheritdoc />
@@ -98,19 +134,23 @@ namespace MajorHavocEditor.Views
         }
 
         /// <inheritdoc />
-        bool ISelectedNodes.Contains(TreeNode node)
+        bool ISelectedNodes.Contains( TreeNode node )
         {
-            return this._nodes.Contains(node);
+            return this._nodes.Contains( node );
         }
 
         /// <inheritdoc />
-        bool ISelectedNodes.Remove(TreeNode node)
+        bool ISelectedNodes.Remove( TreeNode node )
         {
-            //node.Checked = false;
-
-            this._items.Remove(node.Tag);
+            this._items.Remove( node.Tag );
 
             return true;
+        }
+
+        /// <inheritdoc />
+        public IList Items
+        {
+            get { return this._items; }
         }
 
         /// <inheritdoc />
@@ -124,9 +164,10 @@ namespace MajorHavocEditor.Views
 #region Implementation of IEnumerable
 
         /// <inheritdoc />
-        public IEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
-            return this._items.GetEnumerator();
+            // IEnumerable<TreeNode> inherits from IEnumerable so return the NODES collection!!!
+            return this._nodes.GetEnumerator();
         }
 
 #endregion

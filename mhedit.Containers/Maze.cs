@@ -327,6 +327,16 @@ namespace mhedit.Containers
 
         #endregion
 
+#region Overrides of Object
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return this.Name;
+        }
+
+#endregion
+
         private void InitBaseMap( MazeType type )
         {
             //initialize our base maze maps

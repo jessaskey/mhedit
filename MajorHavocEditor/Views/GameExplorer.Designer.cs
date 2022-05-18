@@ -55,6 +55,6 @@ namespace MajorHavocEditor.Views
 
         #endregion
 
-        private TreeView treeView;
+        private MultiSelectTreeView treeView;
     }
 }

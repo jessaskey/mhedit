@@ -1,11 +1,10 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections;
 using System.Drawing;
 using System.IO;
 using System.IO.Packaging;
 using System.Linq;
 using System.Windows.Forms;
-using Krypton.Toolkit;
 using mhedit;
 using mhedit.Containers;
 using MajorHavocEditor.Controls.Menu;
@@ -16,6 +15,52 @@ namespace MajorHavocEditor.Views
 
     public partial class GameExplorer : UserControl, IUserInterface
     {
+
+        private class ItemsSourceDelegate : IItemsSourceDelegate
+        {
+#region Implementation of IItemsSourceDelegate
+
+            /// <inheritdoc />
+            public TreeNode CreateNode( object item )
+            {
+                if ( item is Maze maze )
+                {
+                    return new TreeNode( maze.Name )
+                           {
+                               Tag = maze,
+                               ForeColor = Color.Black,
+                               ImageIndex = (int) maze.MazeType + 1,
+                               SelectedImageIndex = (int) maze.MazeType + 1
+                           };
+                }
+
+                MazeCollection mazeCollection = (MazeCollection) item;
+
+                return new TreeNode( mazeCollection.Name )
+                       {
+                           Tag = mazeCollection,
+                           ImageIndex = 0,
+                           SelectedImageIndex = 0
+                       };
+            }
+
+            /// <inheritdoc />
+            public bool Equals( TreeNode node, object item )
+            {
+                return node.Tag.Equals( item );
+            }
+
+            /// <inheritdoc />
+            public IEnumerable GetEnumerable( object item )
+            {
+                return item is MazeCollection mazeCollection ?
+                           mazeCollection.Mazes :
+                           null;
+            }
+
+#endregion
+        }
+
         private readonly IWindowManager _windowManager;
 
         private static readonly string ResourcePath =
@@ -23,7 +68,8 @@ namespace MajorHavocEditor.Views
 
         public GameExplorer()
             : this( null, null )
-        {}
+        {
+        }
 
         public GameExplorer( IMenuManager menuManager, IWindowManager windowManager )
         {
@@ -36,6 +82,8 @@ namespace MajorHavocEditor.Views
             this.MinimumSize = new Size( 200, 200 );
 
             this._windowManager = windowManager;
+
+            this.treeView.ItemsSource.ItemsDelegate = new ItemsSourceDelegate();
 
             this.treeView.ImageList = new ImageList( this.components )
                                       {
@@ -59,6 +107,34 @@ namespace MajorHavocEditor.Views
                     Icon = PackUriHelper.Create( ResourceLoader.ApplicationUri,
                         new Uri( $"{ResourcePath}Buttons/rom_32.png", UriKind.Relative ) )
                 } );
+
+            menuManager?.Add(
+                new MenuItem( "SelectMaze" )
+                {
+                    Command = new MenuCommand(
+                        _ => ( (IList) this.treeView.SelectedItems ).Add(
+                            this.treeView.Nodes[ 0 ].Nodes[ new Random().Next( 0, 27 ) ].Tag ) ),
+                    Display = "zap",
+                    Icon = PackUriHelper.Create( ResourceLoader.ApplicationUri,
+                        new Uri( $"{ResourcePath}Buttons/rom_32.png", UriKind.Relative ) )
+                } );
+
+            menuManager?.Add(
+                new MenuItem( "DeleteMaze" )
+                {
+                    Command = new MenuCommand( _ => this.RemoveNode( new Random().Next( 0, 27 ) ) ),
+                    Display = "delete",
+                    Icon = PackUriHelper.Create( ResourceLoader.ApplicationUri,
+                        new Uri( $"{ResourcePath}Buttons/rom_32.png", UriKind.Relative ) )
+                } );
+
+        }
+
+        private void RemoveNode( int next )
+        {
+            TreeNode node = this.treeView.Nodes[ 0 ].Nodes[ next ];
+
+            ( (MazeCollection) this.treeView.ItemsSource[ 0 ] ).Mazes.Remove( (Maze) node.Tag );
         }
 
 #region Implementation of IUserInterface
@@ -148,69 +224,8 @@ namespace MajorHavocEditor.Views
 
             if ( dr == DialogResult.OK )
             {
-                dlr.MazeCollection.PropertyChanged += this.OnMazeCollectionPropertyChanged;
-
-                this.treeView.SelectedNode = this.Add( dlr.MazeCollection );
+                this.treeView.ItemsSource.Add( dlr.MazeCollection );
             }
-        }
-
-        private void OnMazeCollectionPropertyChanged( object sender, PropertyChangedEventArgs e )
-        {
-        }
-
-        private TreeNode Add( MazeCollection mazeCollection )
-        {
-            TreeNode mazeCollectionNode;
-
-            try
-            {
-                this.treeView.BeginUpdate();
-
-                mazeCollectionNode = new KryptonTreeNode( mazeCollection.Name )
-                                     {
-                                         Tag = mazeCollection,
-                                         ImageIndex = 0,
-                                         SelectedImageIndex = 0
-                                     };
-
-                foreach ( Maze maze in mazeCollection.Mazes )
-                {
-                    this.AddSibling( mazeCollectionNode, maze );
-                }
-
-                this.treeView.Nodes.Insert(
-                    this.treeView.Nodes.IndexOf(
-                        this.treeView.SelectedNode?.Parent ??
-                        this.treeView.SelectedNode ) + 1, mazeCollectionNode );
-
-                mazeCollectionNode.Expand();
-
-                if ( !mazeCollectionNode.IsVisible )
-                {
-                    // must end update before EnsureVisible 
-                    this.treeView.EndUpdate();
-                    mazeCollectionNode.EnsureVisible();
-                }
-            }
-            finally
-            {
-                this.treeView.EndUpdate();
-            }
-
-            return mazeCollectionNode;
-        }
-
-        private void AddSibling( TreeNode parent, Maze maze )
-        {
-            TreeNode child = new KryptonTreeNode( maze.Name )
-                             {
-                                 Tag = maze,
-                                 ForeColor = Color.Black,
-                                 ImageIndex = (int) maze.MazeType + 1,
-                                 SelectedImageIndex = (int) maze.MazeType + 1
-                             };
-
-            parent.Nodes.Add( child );
         }
     }
 
