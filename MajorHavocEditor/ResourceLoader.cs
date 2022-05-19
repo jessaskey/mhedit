@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.IO.Packaging;
@@ -20,6 +21,18 @@ namespace MajorHavocEditor
     /// </remarks>
     public static class ResourceLoader
     {
+        //BUG? Not sure that all assemblies will be loaded when lazy evaluated...
+        private static readonly IList<Assembly> EditorAssemblies =
+            new Lazy<IList<Assembly>>(
+                () =>
+                {
+                    return AppDomain.CurrentDomain
+                                    .GetAssemblies()
+                                    .Where( a => a.GetName().Name.Contains( "mhedit" ) ||
+                                                 a.GetName().Name.Contains( "MajorHavocEditor" ) )
+                                    .ToList();
+                } ).Value;
+
         public static Uri ApplicationUri = new Uri("application:///");
 
         public static Image GetEmbeddedImage( Uri uri )
@@ -60,10 +73,8 @@ namespace MajorHavocEditor
             ///TODO: this is total crap. Clean this up.
             string assemblyName = uri.Segments[1].Split(';')[0];
 
-            Assembly assembly = AppDomain.CurrentDomain
-                                         .GetAssemblies()
-                                         .FirstOrDefault(
-                                             a => a.GetName().Name.Equals(assemblyName));
+            Assembly assembly =
+                EditorAssemblies.FirstOrDefault( a => a.GetName().Name.Equals( assemblyName ) );
 
             if (assembly != null)
             {

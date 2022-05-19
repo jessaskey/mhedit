@@ -8,6 +8,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Resources\Images\Buttons\rom_32.png" />
+      <None Remove="Resources\Images\maze_a.bmp" />
+      <None Remove="Resources\Images\maze_b.bmp" />
+      <None Remove="Resources\Images\maze_c.bmp" />
+      <None Remove="Resources\Images\maze_d.bmp" />
+      <None Remove="Resources\Images\ThumbnailViewHS.bmp" />
+    </ItemGroup>
+
+    <ItemGroup>
         <!--<PackageReference Include="Krypton.Docking" Version="6.2201.4" />-->
         <!--<PackageReference Include="Krypton.Docking" Version="5.550.2108.1" />-->
         <!--<PackageReference Include="Krypton.Docking.Canary" Version="65.22.4.103-beta" />-->
@@ -28,22 +37,13 @@
         <Compile Include="..\mhedit\Dialogs\DialogLoadROM.cs" Link="Views\DialogLoadROM.cs" />
         <Compile Include="..\mhedit\Dialogs\DialogLoadROM.Designer.cs" Link="Views\DialogLoadROM.Designer.cs" />
         <EmbeddedResource Include="..\mhedit\Dialogs\DialogLoadROM.resx" Link="Views\DialogLoadROM.resx" />
+        <EmbeddedResource Include="Resources\Images\Buttons\rom_32.png" />
+        <EmbeddedResource Include="Resources\Images\maze_a.bmp" />
+        <EmbeddedResource Include="Resources\Images\maze_b.bmp" />
+        <EmbeddedResource Include="Resources\Images\maze_c.bmp" />
+        <EmbeddedResource Include="Resources\Images\maze_d.bmp" />
+        <EmbeddedResource Include="Resources\Images\ThumbnailViewHS.bmp" />
         <Compile Include="..\mhedit\VersionInformation.cs" Link="VersionInformation.cs" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Include="..\mhedit\images\toolbarbuttons\ThumbnailViewHS.bmp" Link="Resources\Images\ThumbnailViewHS.bmp" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Include="..\mhedit\images\toolbarbuttons\maze_a.bmp" Link="Resources\Images\maze_a.bmp" />
-        <EmbeddedResource Include="..\mhedit\images\toolbarbuttons\maze_b.bmp" Link="Resources\Images\maze_b.bmp" />
-        <EmbeddedResource Include="..\mhedit\images\toolbarbuttons\maze_c.bmp" Link="Resources\Images\maze_c.bmp" />
-        <EmbeddedResource Include="..\mhedit\images\toolbarbuttons\maze_d.bmp" Link="Resources\Images\maze_d.bmp" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Include="..\mhedit\images\toolbarbuttons\rom_32.png" Link="Resources\Images\Buttons\rom_32.png" />
     </ItemGroup>
 
     <ItemGroup>

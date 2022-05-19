@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Drawing;
 using System.IO;
-using System.IO.Packaging;
 using System.Linq;
 using System.Windows.Forms;
 using mhedit;
@@ -16,9 +15,6 @@ namespace MajorHavocEditor.Views
     public partial class GameExplorer : UserControl, IUserInterface
     {
         private readonly IWindowManager _windowManager;
-
-        private static readonly string ResourcePath =
-            $"/{typeof( GameExplorer ).Assembly.GetName().Name};component/Resources/Images/";
 
         public GameExplorer()
             : this( null, null )
@@ -38,16 +34,18 @@ namespace MajorHavocEditor.Views
 
             this.treeView.ItemsSource.ItemsDelegate = new ItemsSourceDelegate();
 
-            this.treeView.ImageList = new ImageList( this.components )
-                                      {
-                                          TransparentColor = Color.Fuchsia,
-                                      };
-
-            this.treeView.ImageList.Images.Add( this.LoadImage( "ThumbnailViewHS.bmp" ) );
-            this.treeView.ImageList.Images.Add( this.LoadImage( "maze_a.bmp" ) );
-            this.treeView.ImageList.Images.Add( this.LoadImage( "maze_b.bmp" ) );
-            this.treeView.ImageList.Images.Add( this.LoadImage( "maze_c.bmp" ) );
-            this.treeView.ImageList.Images.Add( this.LoadImage( "maze_d.bmp" ) );
+            this.treeView.ImageList =
+                new ImageList { TransparentColor = Color.Fuchsia }
+                    .AddImages( new[]
+                                 {
+                                     "ThumbnailViewHS.bmp",
+                                     "maze_a.bmp",
+                                     "maze_b.bmp",
+                                     "maze_c.bmp",
+                                     "maze_d.bmp"
+                                 } )
+                    .WithResourcePath( "Resources/Images" )
+                    .Load();
 
             this.treeView.AfterSelect += this.OnTreeViewAfterSelect;
             this.treeView.MouseDoubleClick += this.OnTreeViewMouseDoubleClick;
@@ -57,29 +55,26 @@ namespace MajorHavocEditor.Views
                 {
                     Command = new MenuCommand( this.OnLoadFromRomCommand ),
                     Display = "Load From ROM",
-                    Icon = PackUriHelper.Create( ResourceLoader.ApplicationUri,
-                        new Uri( $"{ResourcePath}Buttons/rom_32.png", UriKind.Relative ) )
+                    Icon = @"Resources\Images\Buttons\rom_32.png".CreateResourceUri()
                 } );
 
             menuManager?.Add(
-                new MenuItem( "SelectMaze" )
+                new MenuItem("SelectMaze")
                 {
                     Command = new MenuCommand(
-                        _ => ( (IList) this.treeView.SelectedItems ).Add(
-                            this.treeView.Nodes[ 0 ].Nodes[ new Random().Next( 0, 27 ) ].Tag ) ),
+                        _ => ((IList)this.treeView.SelectedItems).Add(
+                            this.treeView.Nodes[0].Nodes[new Random().Next(0, 27)].Tag)),
                     Display = "zap",
-                    Icon = PackUriHelper.Create( ResourceLoader.ApplicationUri,
-                        new Uri( $"{ResourcePath}Buttons/rom_32.png", UriKind.Relative ) )
-                } );
+                    Icon = @"Resources\Images\Buttons\rom_32.png".CreateResourceUri()
+                });
 
             menuManager?.Add(
-                new MenuItem( "DeleteMaze" )
+                new MenuItem("DeleteMaze")
                 {
-                    Command = new MenuCommand( _ => this.RemoveNode( new Random().Next( 0, 27 ) ) ),
+                    Command = new MenuCommand(_ => this.RemoveNode(new Random().Next(0, 27))),
                     Display = "delete",
-                    Icon = PackUriHelper.Create( ResourceLoader.ApplicationUri,
-                        new Uri( $"{ResourcePath}Buttons/rom_32.png", UriKind.Relative ) )
-                } );
+                    Icon = @"Resources\Images\Buttons\rom_32.png".CreateResourceUri()
+                });
 
         }
 
@@ -156,17 +151,6 @@ namespace MajorHavocEditor.Views
 
                 this._windowManager.Show( mazeUi );
             }
-        }
-
-        private Image LoadImage( string imagePath )
-        {
-            return ResourceLoader.GetEmbeddedImage( this.GetImageUri( imagePath ) );
-        }
-
-        private Uri GetImageUri( string imagePath )
-        {
-            return PackUriHelper.Create( ResourceLoader.ApplicationUri,
-                new Uri( $"{ResourcePath}{imagePath}", UriKind.Relative ) );
         }
 
         private void OnLoadFromRomCommand( object obj )
