@@ -15,7 +15,7 @@ namespace MajorHavocEditor
 
     public partial class Form2 : KryptonForm
     {
-        private MenuManager _menuManager = new MenuManager();
+        private MenuManager _menuManager = new MenuStripManager(DockStyle.Top);
         private WindowManager _windowManager;
         private GameExplorer _gameExplorer;
         private KryptonManager _kryptonManager = new KryptonManager();
@@ -32,8 +32,7 @@ namespace MajorHavocEditor
                 this.kryptonDockingManager);
             this._gameExplorer = new GameExplorer(this._menuManager, this._windowManager);
 
-            this._menuManager.Dock = DockStyle.Top;
-            this.Controls.Add(this._menuManager);
+            this.Controls.Add((Control) this._menuManager.Menu);
 
             this.kryptonDockingManager.DefaultCloseRequest = DockingCloseRequest.RemovePage;
             //this.kryptonDockableWorkspace.WorkspaceCellAdding += this.kryptonDockableWorkspace_WorkspaceCellAdding;

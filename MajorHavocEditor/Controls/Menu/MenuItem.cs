@@ -5,6 +5,7 @@ using MajorHavocEditor.Interfaces.Ui;
 
 namespace MajorHavocEditor.Controls.Menu
 {
+
     public class MenuItem : NotifyPropertyChangedBase, IMenuItem
     {
         /// <summary>
@@ -41,38 +42,38 @@ namespace MajorHavocEditor.Controls.Menu
         private string _parentName = string.Empty;
         private object _display;
 
-        public MenuItem(string name)
+        public MenuItem( string name )
         {
             this.Name = name;
         }
 
-        #region Overrides of Object
+#region Overrides of Object
 
         public override string ToString()
         {
-            return string.IsNullOrEmpty(this._parentName)
-                       ? string.Format("{0} [Top Level]", this.Name)
-                       : string.Format("{0} [Parent:{1}]", this.Name, this.ParentName);
+            return string.IsNullOrEmpty( this._parentName )
+                       ? string.Format( "{0} [Top Level]", this.Name )
+                       : string.Format( "{0} [Parent:{1}]", this.Name, this.ParentName );
         }
 
-        #endregion
+#endregion
 
-        #region Implementation of IMenuItem
+#region Implementation of IMenuItem
 
         public string Name
         {
             get { return this._name; }
             private set
             {
-                if (value == null)
+                if ( value == null )
                 {
-                    throw new ArgumentNullException("value",
-                                                    "Must provide a name for the MenuItem.");
+                    throw new ArgumentNullException( "value",
+                        "Must provide a name for the MenuItem." );
                 }
 
-                if (this._parentName.Equals(value))
+                if ( this._parentName.Equals( value ) )
                 {
-                    throw new ArgumentException("Name can't equal ParentName.", value);
+                    throw new ArgumentException( "Name can't equal ParentName.", value );
                 }
 
                 this._name = value;
@@ -84,9 +85,9 @@ namespace MajorHavocEditor.Controls.Menu
             get { return this._parentName; }
             set
             {
-                if (value != null && this._name.Equals(value))
+                if ( value != null && this._name.Equals( value ) )
                 {
-                    throw new ArgumentException("ParentName can't equal Name.", "value");
+                    throw new ArgumentException( "ParentName can't equal Name.", "value" );
                 }
 
                 this._parentName = value;
@@ -98,6 +99,9 @@ namespace MajorHavocEditor.Controls.Menu
             get { return this._display; }
             set { this.SetField( ref this._display, value ); }
         }
+
+        /// <inheritdoc />
+        public string ToolTipText { get; set; }
 
         public object Icon { get; set; }
 
@@ -111,6 +115,7 @@ namespace MajorHavocEditor.Controls.Menu
 
         public object CommandParameter { get; set; }
 
-        #endregion
+#endregion
     }
+
 }

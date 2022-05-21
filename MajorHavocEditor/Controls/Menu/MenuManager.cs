@@ -7,18 +7,35 @@ using MajorHavocEditor.Interfaces.Ui;
 
 namespace MajorHavocEditor.Controls.Menu
 {
-    public partial class MenuManager : ToolStrip, IMenuManager
+
+    public class MenuStripManager : MenuManager
     {
-        public MenuManager()
+        public MenuStripManager( DockStyle dockStyle )
+            : base( new ToolStrip { Dock = dockStyle } )
+        {}
+    }
+
+    public class ContextMenuManager : MenuManager
+    {
+        public ContextMenuManager()
+            : base(new ContextMenuStrip())
+        { }
+    }
+
+    public abstract class MenuManager : IMenuManager
+    {
+        private readonly ToolStrip _toolStrip;
+
+        protected MenuManager( ToolStrip toolStrip )
         {
-            InitializeComponent();
+            this._toolStrip = toolStrip;
         }
 
 #region Implementation of IMenuManager
 
         public object Menu
         {
-            get { return this; }
+            get { return this._toolStrip; }
         }
 
         public void Add( IMenuItem menuItem )
@@ -32,29 +49,27 @@ namespace MajorHavocEditor.Controls.Menu
                 _ => throw new NotImplementedException()
             };
 
-            ToolStripButton newItem =
-                new ToolStripButton( display )
-                {
-                    Tag = menuItem,
-                    Name = menuItem.Name,
-                    Image = image,
-                    DisplayStyle = image == null ? ToolStripItemDisplayStyle.Text :
-                                       ToolStripItemDisplayStyle.Image
-                };
+            ToolStripItem newItem = this._toolStrip switch
+            {
+                ContextMenuStrip => CreateMenuItem(menuItem, display, image),
+                ToolStrip => this.CreateButton( menuItem, display, image ),
+                _ => throw new NotImplementedException()
+            };
+
 
             newItem.Click += ( s, e ) => menuItem.Command.Execute( menuItem.CommandParameter );
 
             if ( string.IsNullOrWhiteSpace( menuItem.ParentName ) )
             {
-                this.Items.Add( newItem );
+                this._toolStrip.Items.Add( newItem );
             }
             else
             {
                 ToolStripDropDownButton parent;
 
-                if ( this.Items.ContainsKey( menuItem.ParentName ) )
+                if ( this._toolStrip.Items.ContainsKey( menuItem.ParentName ) )
                 {
-                    parent = (ToolStripDropDownButton)this.Items[ menuItem.ParentName ];
+                    parent = (ToolStripDropDownButton) this._toolStrip.Items[ menuItem.ParentName ];
                 }
                 else
                 {
@@ -87,7 +102,32 @@ namespace MajorHavocEditor.Controls.Menu
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
+
+        private ToolStripItem CreateMenuItem( IMenuItem menuItem, string display, Image image )
+        {
+            return new ToolStripMenuItem(display)
+                   {
+                       Tag = menuItem,
+                       ToolTipText = menuItem.ToolTipText,
+                       Name = menuItem.Name,
+                       Image = image,
+                       DisplayStyle = image == null ? ToolStripItemDisplayStyle.Text :
+                                          ToolStripItemDisplayStyle.ImageAndText
+            };
+        }
+
+        private ToolStripItem CreateButton( IMenuItem menuItem, string display, Image image )
+        {
+            return new ToolStripButton( display )
+                   {
+                       Tag = menuItem,
+                       Name = menuItem.Name,
+                       Image = image,
+                       DisplayStyle = image == null ? ToolStripItemDisplayStyle.Text :
+                                          ToolStripItemDisplayStyle.Image
+                   };
+        }
     }
 
 }

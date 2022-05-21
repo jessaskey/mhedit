@@ -11,17 +11,16 @@ namespace MajorHavocEditor.Views
 
     public partial class MultiSelectTreeView : TreeView
     {
+        private NodeManager _nodeManager;
         private ISelectedNodes _selectedNodes;
         private TreeNode _mouseDownMultiSelectNode;
         private TreeNode _mouseDownSelectedNode;
         private bool _cancelUnwantedLabelEdit;
 
-        private readonly IItemsSource _itemsSource;
-
         public MultiSelectTreeView()
         {
-            this._selectedNodes = new SelectedItems( this.SearchNodesForTag );
-            this._itemsSource = new TreeViewItemsSource( this );
+            this._selectedNodes = new SelectedNodes( this.SearchNodesForTag );
+            this._nodeManager = new NodeManager( this );
             this.LabelEdit = true;
             this.DrawMode = TreeViewDrawMode.OwnerDrawText;
             this.HideSelection = false;
@@ -29,29 +28,62 @@ namespace MajorHavocEditor.Views
         }
 
         /// <summary>
-        /// Collection of nodes..
+        /// A hierarchical collection of items that are contained in the TreeView.
+        /// An item that implements <see cref="Enumerable"/> will be set as a parent
+        /// node with it's children expanded below.
         /// </summary>
-        public IItemsSource ItemsSource
+        public IList ItemsSource
         {
-            get { return this._itemsSource; }
+            get { return this._nodeManager.Items; }
+            set
+            {
+                this._nodeManager.Items.Clear();
+
+                this._nodeManager = new NodeManager(value, this);
+            }
+        }
+
+        /// <summary>
+        /// Could put this beside the ItemSource and allow users to set the ItemSource
+        /// with their own collection....
+        /// </summary>
+        public IItemsSourceDelegate ItemsDelegate
+        {
+            get { return this._nodeManager.ItemsDelegate; }
+            set { this._nodeManager.ItemsDelegate = value; }
         }
 
         /// <summary>
         /// The collection of selected Items in the TreeView. If the user wants to
         /// be able to manipulate the set of SelectedItems they should set the property
-        /// with their own IEnumerable that implements INotifyCollectionChanged.
+        /// with their own <see cref="IList"/> that implements INotifyCollectionChanged.
         /// </summary>
-        public IEnumerable SelectedItems
+        public IList SelectedItems
         {
-            get { return this._selectedNodes.Items; }
+            get { return this._selectedNodes.SelectedItems; }
             set
             {
-                if ( value is IList iList )
-                {
-                    this._selectedNodes.Clear();
+                this._selectedNodes.Clear();
 
-                    this._selectedNodes = new SelectedItems( iList, this.SearchNodesForTag );
-                }
+                this._selectedNodes = new SelectedNodes(value, this.SearchNodesForTag);
+            }
+        }
+
+        /// <summary>
+        /// Gets the selected Item. If <see cref="SelectedItems.Count"/> is greater
+        /// than 1, it gets the most recently selected item. 
+        /// Sets the selected Item. If <see cref="SelectedItems.Count"/> is greater
+        /// than 1, it will clear the <see cref="SelectedItems"/> and then select
+        /// the item. 
+        /// </summary>
+        public object SelectedItem
+        {
+            get { return this.SelectedNode?.Tag; }
+            set
+            {
+                this.SelectedItems.Clear();
+
+                this.SelectedItems.Add( value );
             }
         }
 

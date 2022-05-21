@@ -10,11 +10,11 @@ namespace MajorHavocEditor.Views
 
     public partial class MultiSelectTreeView
     {
-        private class TreeViewItemsSource : ObservableCollection<object>, IItemsSource
+        private class NodeManager
         {
             private class DefaultDelegate : IItemsSourceDelegate
             {
-                public static IItemsSourceDelegate Instance =
+                public static readonly IItemsSourceDelegate Instance =
                     new Lazy<IItemsSourceDelegate>( () => new DefaultDelegate() ).Value;
 
 #region Implementation of IItemsSourceDelegate
@@ -44,16 +44,26 @@ namespace MajorHavocEditor.Views
             }
 
             private readonly MultiSelectTreeView _treeView;
+            private readonly IList _items;
             private IItemsSourceDelegate _itemsDelegate = DefaultDelegate.Instance;
 
-            public TreeViewItemsSource( MultiSelectTreeView treeView )
+            public NodeManager( MultiSelectTreeView treeView )
+                : this( new ObservableCollection<object>(), treeView )
             {
-                this._treeView = treeView;
             }
 
-#region Implementation of IItemsSource
+            public NodeManager( IList items, MultiSelectTreeView treeView )
+            {
+                this._items = items;
 
-            /// <inheritdoc />
+                this._treeView = treeView;
+
+                if ( items is INotifyCollectionChanged incc )
+                {
+                    incc.CollectionChanged += this.OnItemsCollectionChanged;
+                }
+            }
+
             public IItemsSourceDelegate ItemsDelegate
             {
                 get { return this._itemsDelegate; }
@@ -64,19 +74,10 @@ namespace MajorHavocEditor.Views
                 }
             }
 
-#endregion
-
-#region Overrides of ObservableCollection<object>
-
-            /// <inheritdoc />
-            protected override void OnCollectionChanged( NotifyCollectionChangedEventArgs e )
+            public IList Items
             {
-                base.OnCollectionChanged( e );
-
-                this.OnItemsCollectionChanged( this, e );
+                get { return this._items; }
             }
-
-#endregion
 
             private void OnItemsCollectionChanged( object sender,
                 NotifyCollectionChangedEventArgs e )
@@ -87,26 +88,32 @@ namespace MajorHavocEditor.Views
 
                     if ( e.Action == NotifyCollectionChangedAction.Reset )
                     {
-                        // for now...
-                        throw new NotImplementedException();
+                        // Find root NodeCollection to add this leaf to.
+                        TreeNodeCollection root =
+                            ReferenceEquals( sender, this._items ) ?
+                                this._treeView.Nodes :
+                                this._treeView.FindNodeOrDefault(
+                                    n => this._itemsDelegate.Equals( n, sender ) ).Nodes;
 
-                        //foreach (TreeNode node in this.)
-                        //{
-                        //    Debug.WriteLine($"Removed {node.Tag}");
-                        //}
+                        root.Clear();
+
+                        // reload any nodes that are remaining.
+                        this.OnItemsCollectionChanged( sender,
+                            new NotifyCollectionChangedEventArgs(
+                                NotifyCollectionChangedAction.Add, (IList) sender ) );
                     }
                     else if ( e.Action == NotifyCollectionChangedAction.Add )
                     {
+                        // Find root NodeCollection to add this leaf to.
+                        TreeNodeCollection root =
+                            ReferenceEquals( sender, this._items ) ?
+                                this._treeView.Nodes :
+                                this._treeView.FindNodeOrDefault(
+                                    n => this._itemsDelegate.Equals( n, sender ) ).Nodes;
+
                         foreach ( object newItem in e.NewItems )
                         {
                             Debug.WriteLine( $"Added {newItem}" );
-
-                            // Find root NodeCollection to add this leaf to.
-                            TreeNodeCollection root =
-                                sender == this ?
-                                    this._treeView.Nodes :
-                                    this._treeView.FindNodeOrDefault(
-                                        n => this._itemsDelegate.Equals( n, sender ) ).Nodes;
 
                             TreeNode nodeToAdd = this.CreateHierarchy( newItem );
 

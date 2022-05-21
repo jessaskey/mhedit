@@ -13,7 +13,7 @@ namespace MajorHavocEditor.Controls.Menu
         private readonly Action<object> _execute;
         private readonly Func<object, bool> _canExecute;
 
-        public MenuCommand( Action<object> execute )
+        public MenuCommand( Action<object> execute)
             : this( execute, _ => true )
         {
         }

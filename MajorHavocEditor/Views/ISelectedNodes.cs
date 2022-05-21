@@ -5,8 +5,19 @@ using System.Windows.Forms;
 namespace MajorHavocEditor.Views
 {
 
+    /// <summary>
+    /// A delegate that provides a search algo for the ISelectedNodes
+    /// implementation.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="found"></param>
+    /// <returns></returns>
     public delegate bool TryFindNode( object key, out TreeNode found );
 
+    /// <summary>
+    /// Defines the interface between user code that needs a SelectedItems
+    /// collection and MultiselectTreeView which requires SelectedNodes.  
+    /// </summary>
     internal interface ISelectedNodes : IEnumerable<TreeNode>
     {
         /// <summary>
@@ -43,7 +54,7 @@ namespace MajorHavocEditor.Views
         /// Exposes the underlying selected object collection, not the nodes that
         /// contain them in the tree.
         /// </summary>
-        IList Items { get; }
+        IList SelectedItems { get; }
     }
 
 }

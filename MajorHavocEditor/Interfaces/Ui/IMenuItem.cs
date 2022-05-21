@@ -29,6 +29,12 @@ namespace MajorHavocEditor.Interfaces.Ui
         object Display { get; }
 
         /// <summary>
+        /// Text to be displayed in the tool Tip. This will default to
+        /// <see cref="Display"/> if this is null.
+        /// </summary>
+        string ToolTipText { get; }
+
+        /// <summary>
         /// Object that represents the Icon that is displayed with the menuItem.
         /// Typically these would be Uri or string objects that point to resources.
         /// <see cref="http://msdn.microsoft.com/en-us/library/aa970069.aspx"/>
