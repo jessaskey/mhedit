@@ -7,6 +7,7 @@ using Krypton.Docking;
 using Krypton.Toolkit;
 using Krypton.Workspace;
 using MajorHavocEditor.Controls.Menu;
+using MajorHavocEditor.Interfaces.Ui;
 using MajorHavocEditor.Views;
 using MHavocEditor;
 
@@ -15,8 +16,8 @@ namespace MajorHavocEditor
 
     public partial class Form2 : KryptonForm
     {
-        private MenuManager _menuManager = new MenuStripManager(DockStyle.Top);
-        private WindowManager _windowManager;
+        private IMenuManager _menuManager = new MenuStripManager(DockStyle.Top);
+        private IWindowManager _windowManager;
         private GameExplorer _gameExplorer;
         private KryptonManager _kryptonManager = new KryptonManager();
 

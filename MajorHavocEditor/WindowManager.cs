@@ -259,6 +259,15 @@ namespace MHavocEditor
         {
             if (this._interfaces.TryGetValue(userInterface, out KryptonPage window))
             {
+                //if ( this._dockingManager.Pages.Contains( window ) )
+                //{
+                //    if ( this._dockingManager.PagesWorkspace.Contains( window ) )
+                //    {
+                //        this._dockingManager.
+                //    }
+                //    this._dockingManager.ShowPage( window );
+                //}
+                //else
                 if (userInterface.DockingState == DockingState.Document)
                 {
                     /// BUG: Better way to do this with a notification?

@@ -31,7 +31,7 @@ namespace MajorHavocEditor.Controls.Menu
         /// <summary>
         /// Assign this value to an IMenuItem.ParentName to add to the Help Menu.
         /// </summary>
-        public static readonly string HelpMenuName = "Help";
+        public static readonly string AboutMenuName = "About";
 
         /// <summary>
         /// Assign this value to an IMenuItem.ParentName to add to the File Menu.
@@ -49,17 +49,19 @@ namespace MajorHavocEditor.Controls.Menu
 
 #region Overrides of Object
 
+        /// <inheritdoc />
         public override string ToString()
         {
             return string.IsNullOrEmpty( this._parentName )
-                       ? string.Format( "{0} [Top Level]", this.Name )
-                       : string.Format( "{0} [Parent:{1}]", this.Name, this.ParentName );
+                       ? $"{this.Name} [Top Level]"
+                       : $"{this.Name} [Parent: {this.ParentName}]";
         }
 
 #endregion
 
 #region Implementation of IMenuItem
 
+        /// <inheritdoc />
         public string Name
         {
             get { return this._name; }
@@ -80,6 +82,7 @@ namespace MajorHavocEditor.Controls.Menu
             }
         }
 
+        /// <inheritdoc />
         public string ParentName
         {
             get { return this._parentName; }
@@ -94,6 +97,7 @@ namespace MajorHavocEditor.Controls.Menu
             }
         }
 
+        /// <inheritdoc />
         public object Display
         {
             get { return this._display; }
@@ -101,18 +105,27 @@ namespace MajorHavocEditor.Controls.Menu
         }
 
         /// <inheritdoc />
-        public string ToolTipText { get; set; }
+        public object ToolTip { get; set; }
 
+        /// <inheritdoc />
         public object Icon { get; set; }
 
+        /// <inheritdoc />
         public bool IsChecked { get; set; }
 
+        /// <inheritdoc />
+        public object ShortcutKey { get; set; }
+
+        /// <inheritdoc />
         public object GroupKey { get; set; }
 
+        /// <inheritdoc />
         public int SortOrder { get; set; }
 
+        /// <inheritdoc />
         public ICommand Command { get; set; }
 
+        /// <inheritdoc />
         public object CommandParameter { get; set; }
 
 #endregion

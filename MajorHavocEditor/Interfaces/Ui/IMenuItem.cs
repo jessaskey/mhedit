@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 namespace MajorHavocEditor.Interfaces.Ui
 {
@@ -29,10 +24,11 @@ namespace MajorHavocEditor.Interfaces.Ui
         object Display { get; }
 
         /// <summary>
-        /// Text to be displayed in the tool Tip. This will default to
-        /// <see cref="Display"/> if this is null.
+        /// Text to be displayed in the tool Tip. Typically this is a string
+        /// but in WPF it can be any visual element. This will default to
+        /// <see cref="Display.ToString"/> if this is null.
         /// </summary>
-        string ToolTipText { get; }
+        object ToolTip { get; }
 
         /// <summary>
         /// Object that represents the Icon that is displayed with the menuItem.
@@ -51,6 +47,11 @@ namespace MajorHavocEditor.Interfaces.Ui
         /// True if the menuItem should be checked, false otherwise.
         /// </summary>
         bool IsChecked { get; }
+
+        /// <summary>
+        /// Shortcut Key definition object. 
+        /// </summary>
+        object ShortcutKey { get; }
 
         /// <summary>
         /// Used to group multiple MenuItems together within the menu structure. Typically

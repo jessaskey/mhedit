@@ -8,15 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Resources\Images\Buttons\rom_32.png" />
-      <None Remove="Resources\Images\maze_a.bmp" />
-      <None Remove="Resources\Images\maze_b.bmp" />
-      <None Remove="Resources\Images\maze_c.bmp" />
-      <None Remove="Resources\Images\maze_d.bmp" />
-      <None Remove="Resources\Images\ThumbnailViewHS.bmp" />
-    </ItemGroup>
-
-    <ItemGroup>
         <!--<PackageReference Include="Krypton.Docking" Version="6.2201.4" />-->
         <!--<PackageReference Include="Krypton.Docking" Version="5.550.2108.1" />-->
         <!--<PackageReference Include="Krypton.Docking.Canary" Version="65.22.4.103-beta" />-->
@@ -37,7 +28,17 @@
         <Compile Include="..\mhedit\Dialogs\DialogLoadROM.cs" Link="Views\DialogLoadROM.cs" />
         <Compile Include="..\mhedit\Dialogs\DialogLoadROM.Designer.cs" Link="Views\DialogLoadROM.Designer.cs" />
         <EmbeddedResource Include="..\mhedit\Dialogs\DialogLoadROM.resx" Link="Views\DialogLoadROM.resx" />
+        <EmbeddedResource Include="Resources\Images\Buttons\delete.ico" />
+        <EmbeddedResource Include="Resources\Images\Buttons\hbmame_32.png" />
+        <EmbeddedResource Include="Resources\Images\Buttons\NewCollection.bmp" />
+        <EmbeddedResource Include="Resources\Images\Buttons\NewFileCollection_16x_24.bmp" />
+        <EmbeddedResource Include="Resources\Images\Buttons\NewMaze.bmp" />
+        <EmbeddedResource Include="Resources\Images\Buttons\OpenFolder_16x_24.bmp" />
         <EmbeddedResource Include="Resources\Images\Buttons\rom_32.png" />
+        <EmbeddedResource Include="Resources\Images\Buttons\SaveAll_16x_24.bmp" />
+        <EmbeddedResource Include="Resources\Images\Buttons\SaveAs_16x_24.bmp" />
+        <EmbeddedResource Include="Resources\Images\Buttons\Save_16x_24.bmp" />
+        <EmbeddedResource Include="Resources\Images\Buttons\ValidateDocument_315.png" />
         <EmbeddedResource Include="Resources\Images\maze_a.bmp" />
         <EmbeddedResource Include="Resources\Images\maze_b.bmp" />
         <EmbeddedResource Include="Resources\Images\maze_c.bmp" />

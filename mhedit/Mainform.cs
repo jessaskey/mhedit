@@ -1004,7 +1004,7 @@ namespace mhedit
             try
             {
 
-                MazeController mazeController = new MazeController( new Maze( NameFactory.Create( "Maze" ) ) );
+                MazeController mazeController = new MazeController(  );
 
                 TreeNode node = mazeController.TreeRender( treeView, null, toolStripButtonGrid.Checked );
 
