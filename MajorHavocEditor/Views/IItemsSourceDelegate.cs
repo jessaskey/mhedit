@@ -31,7 +31,7 @@ namespace MajorHavocEditor.Views
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        IEnumerable GetEnumerable( object item );
+        IEnumerable GetEnumerable( TreeNode item );
     }
 
 }

@@ -31,13 +31,13 @@ namespace MajorHavocEditor.Views
                 /// <inheritdoc />
                 public bool Equals( TreeNode node, object item )
                 {
-                    return node.Tag.Equals( item );
+                    return ReferenceEquals( node.Tag, item );
                 }
 
                 /// <inheritdoc />
-                public IEnumerable GetEnumerable( object item )
+                public IEnumerable GetEnumerable( TreeNode item )
                 {
-                    return item is IEnumerable enumerable ? (IEnumerable) enumerable : null;
+                    return item.Tag is IEnumerable enumerable ? (IEnumerable) enumerable : null;
                 }
 
 #endregion
@@ -93,7 +93,9 @@ namespace MajorHavocEditor.Views
                             ReferenceEquals( sender, this._items ) ?
                                 this._treeView.Nodes :
                                 this._treeView.FindNodeOrDefault(
-                                    n => this._itemsDelegate.Equals( n, sender ) ).Nodes;
+                                        n => ReferenceEquals( sender,
+                                            this._itemsDelegate.GetEnumerable( n ) ) )
+                                    .Nodes;
 
                         root.Clear();
 
@@ -109,7 +111,9 @@ namespace MajorHavocEditor.Views
                             ReferenceEquals( sender, this._items ) ?
                                 this._treeView.Nodes :
                                 this._treeView.FindNodeOrDefault(
-                                    n => this._itemsDelegate.Equals( n, sender ) ).Nodes;
+                                        n => ReferenceEquals( sender,
+                                            this._itemsDelegate.GetEnumerable( n ) ) )
+                                    .Nodes;
 
                         foreach ( object newItem in e.NewItems )
                         {
@@ -119,7 +123,7 @@ namespace MajorHavocEditor.Views
 
                             nodeToAdd.Expand();
 
-                            root.Add( nodeToAdd );
+                            root.Insert( ( (IList) sender ).IndexOf( newItem ), nodeToAdd );
 
                             // scroll to last added?
                             if ( !nodeToAdd.IsVisible )
@@ -155,7 +159,7 @@ namespace MajorHavocEditor.Views
             {
                 TreeNode node = this._itemsDelegate.CreateNode( item );
 
-                if ( this.TryGetEnumerable( item, out IEnumerable enumerable ) )
+                if ( this.TryGetEnumerable( node, out IEnumerable enumerable ) )
                 {
                     foreach ( object child in enumerable )
                     {
@@ -179,7 +183,7 @@ namespace MajorHavocEditor.Views
                                     n => this._itemsDelegate.Equals( n, item ) );
 
                 // Unsubscribe events on enumerable first.
-                IEnumerable enumerable = this._itemsDelegate.GetEnumerable( node.Tag );
+                IEnumerable enumerable = this._itemsDelegate.GetEnumerable( node );
 
                 if ( enumerable is INotifyCollectionChanged incc )
                 {
@@ -196,7 +200,7 @@ namespace MajorHavocEditor.Views
                 return node;
             }
 
-            private bool TryGetEnumerable( object item, out IEnumerable enumerable )
+            private bool TryGetEnumerable( TreeNode item, out IEnumerable enumerable )
             {
                 return ( enumerable = this._itemsDelegate.GetEnumerable( item ) ) != null;
             }

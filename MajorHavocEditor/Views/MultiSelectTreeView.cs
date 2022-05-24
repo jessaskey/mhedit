@@ -258,6 +258,8 @@ namespace MajorHavocEditor.Views
 
             // Reset every Down/up cycle...
             this._cancelUnwantedLabelEdit = false;
+            this._mouseDownMultiSelectNode = null;
+            this._mouseDownSelectedNode = null;
 
             TreeNode clickedNode = this.GetNodeAt( e.X, e.Y );
 
@@ -300,11 +302,10 @@ namespace MajorHavocEditor.Views
 
             if ( this._mouseDownSelectedNode != null )
             {
+                // If No Control Key and MouseUp also occurs on TreeView.SelectedNode
                 if ( !ModifierKeys.HasFlag( Keys.Control ) &&
                      this._mouseDownSelectedNode.Bounds.Contains( e.X, e.Y ) )
                 {
-                    this._mouseDownSelectedNode = null;
-
                     this._selectedNodes.Clear();
 
                     this._cancelUnwantedLabelEdit = this.LabelEdit;

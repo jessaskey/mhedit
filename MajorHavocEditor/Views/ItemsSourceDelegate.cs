@@ -39,13 +39,13 @@ namespace MajorHavocEditor.Views
             /// <inheritdoc />
             public bool Equals( TreeNode node, object item )
             {
-                return node.Tag.Equals( item );
+                return ReferenceEquals( node.Tag, item );
             }
 
             /// <inheritdoc />
-            public IEnumerable GetEnumerable( object item )
+            public IEnumerable GetEnumerable( TreeNode item )
             {
-                return item is MazeCollection mazeCollection ?
+                return item.Tag is MazeCollection mazeCollection ?
                            mazeCollection.Mazes :
                            null;
             }
