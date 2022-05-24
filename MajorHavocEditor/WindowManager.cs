@@ -233,7 +233,21 @@ namespace MHavocEditor
 
         public bool Remove(IUserInterface userInterface)
         {
-            throw new NotImplementedException();
+            return userInterface != null && this.InternalRemove( userInterface );
+        }
+
+        private bool InternalRemove( IUserInterface userInterface )
+        {
+            if ( this._interfaces.TryGetValue( userInterface, out KryptonPage window ) )
+            {
+                KryptonPage[] toRemove = new[] { window };
+
+                this._dockingManager.RemovePages(toRemove, true);
+
+                this._dockingManager.ClearStoredPages(toRemove);
+            }
+
+            return true;
         }
 
         public void Show(IUserInterface userInterface)
