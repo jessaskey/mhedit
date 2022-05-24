@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -33,11 +34,31 @@ namespace mhedit.Containers
         {
             _collectionName = name;
 
-            ( (INotifyPropertyChanged)this._mazes ).PropertyChanged +=
+            if (this._mazes is INotifyCollectionChanged incc)
+            {
+                incc.CollectionChanged += this.OnItemsCollectionChanged;
+            }
+
+            ((INotifyPropertyChanged)this._mazes ).PropertyChanged +=
                 this.ForwardPropertyChanged;
         }
 
-        #endregion
+        private void OnItemsCollectionChanged( object sender, NotifyCollectionChangedEventArgs e )
+        {
+            if ( e.Action == NotifyCollectionChangedAction.Add )
+            {
+                /// Any Maze added that doesn't have a name... give it one.
+                foreach ( Maze newMaze in e.NewItems )
+                {
+                    if ( string.IsNullOrWhiteSpace( newMaze.Name ) )
+                    {
+                        newMaze.Name = NameFactory.Create( $"{this.Name}Maze" );
+                    }
+                }
+            }
+        }
+
+#endregion
 
         #region Properties
 
