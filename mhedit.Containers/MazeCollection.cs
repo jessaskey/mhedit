@@ -11,7 +11,7 @@ namespace mhedit.Containers
 {
     [DefaultPropertyAttribute("Name")]
     [Serializable]
-    public class MazeCollection : ChangeTrackingBase, IName
+    public class MazeCollection : ChangeTrackingBase, IFileProperties, IName
     {
         #region Declarations
 
@@ -21,8 +21,10 @@ namespace mhedit.Containers
         private string _collectionName;
         private string _authorName = string.Empty;
         private string _authorEmail = string.Empty;
+        private string _filename;
+        private string _path;
 
-        #endregion
+#endregion
 
         #region Constructor
 
@@ -56,6 +58,46 @@ namespace mhedit.Containers
                     }
                 }
             }
+        }
+
+        #endregion
+
+
+#region Implementation of IFileProperties
+
+        /// <inheritdoc />
+        string IFileProperties.Extension
+        {
+            get { return ".mhc"; }
+        }
+
+        /// <inheritdoc />
+        string IFileProperties.Name
+        {
+            get
+            {
+                string name = this._filename ?? this.Name;
+
+                return Path.HasExtension(name) ?
+                           name : $"{name}{((IFileProperties)this).Extension}";
+            }
+            set
+            {
+                if (Path.HasExtension(value) &&
+                    Path.GetExtension(value) != ((IFileProperties)this).Extension)
+                {
+                    throw new ArgumentException();
+                }
+
+                this._filename = value;
+            }
+        }
+
+        /// <inheritdoc />
+        string IFileProperties.Path
+        {
+            get { return this._path; }
+            set { this._path = value; }
         }
 
 #endregion
@@ -160,6 +202,5 @@ namespace mhedit.Containers
         }
 
 #endregion
-
     }
 }

@@ -17,8 +17,6 @@ namespace mhedit.Extensions
 
     public static class SerializationExtensions
     {
-        private static string _lastError = String.Empty;
-
         private static readonly XmlSerializerNamespaces XmlNamespace =
             new XmlSerializerNamespaces( new[]
                                          {
@@ -27,16 +25,6 @@ namespace mhedit.Extensions
                                          } );
 
         /// <summary>
-        /// Contains the last error thrown in the extension.
-        /// </summary>
-        public static string LastError
-        {
-            get
-            {
-                return _lastError;
-            }
-        }
-        /// <summary>
         /// Serialize the object into the file using XML serialization.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -44,7 +32,6 @@ namespace mhedit.Extensions
         /// <param name="fileName"></param>
         public static void Serialize<T>( this T obj, string fileName )
         {
-            _lastError = String.Empty;
             using ( FileStream fileStream = new FileStream( fileName, FileMode.Create ) )
             {
                 XmlSerializer serializer = new XmlSerializer( typeof( T ) );
@@ -60,33 +47,43 @@ namespace mhedit.Extensions
         /// <summary>
         /// Serialize the object using XML serialization, compress the XML output,
         /// and write the compressed XML to the provided file.
-        /// .
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <param name="fileName"></param>
-        public static void SerializeAndCompress<T>( this T obj, string fileName )
+        public static void SerializeAndCompress(this object obj, string fileName)
         {
-            _lastError = String.Empty;
-            using ( FileStream fileStream = new FileStream( fileName, FileMode.Create ) )
+            using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
             {
-                obj.SerializeAndCompress( fileStream );
+                obj.SerializeAndCompress(fileStream);
             }
         }
 
         /// <summary>
         /// Serialize the object using XML serialization, compress the XML output,
+        /// and write the compressed XML to the provided file.
+        /// </summary>
+        /// <param name="file"></param>
+        public static void SerializeAndCompress( this IFileProperties file )
+        {
+            using (FileStream fileStream = new FileStream(
+                Path.Combine( file.Path, file.Name ), FileMode.Create))
+            {
+                file.SerializeAndCompress(fileStream);
+            }
+        }
+
+
+        /// <summary>
+        /// Serialize the object using XML serialization, compress the XML output,
         /// and write the compressed XML to the provided stream.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <param name="stream"></param>
-        public static void SerializeAndCompress<T>( this T obj, Stream stream )
+        public static void SerializeAndCompress( this object obj, Stream stream )
         {
-            _lastError = String.Empty;
             using ( MemoryStream memoryStream = new MemoryStream() )
             {
-                XmlSerializer serializer = new XmlSerializer( typeof( T ) );
+                XmlSerializer serializer = new XmlSerializer( obj.GetType() );
 
                 using ( XmlWriter xmlWriter = XmlWriter.Create( memoryStream,
                     new XmlWriterSettings { Indent = true } ) )
@@ -99,16 +96,21 @@ namespace mhedit.Extensions
             }
         }
 
+        private static Action<string> NotificationHandler { get; set; }
+
         /// <summary>
         /// Open the file, expand the contents into memory and deserialize the expanded
         /// XML into the object specified by the type T. 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="fileName"></param>
+        /// <param name="resultType"></param>
+        /// <param name="onNotifications"></param>
         /// <returns></returns>
-        public static T ExpandAndDeserialize<T>( this string fileName )
+        public static object ExpandAndDeserialize(
+            this string fileName, Type resultType, Action<string> onNotifications = null )
         {
-            _lastError = String.Empty;
+            NotificationHandler = onNotifications;
+
             using ( FileStream fStream = new FileStream( fileName, FileMode.Open ) )
             {
                 using ( MemoryStream mStream = new MemoryStream() )
@@ -118,15 +120,17 @@ namespace mhedit.Extensions
 
                     using ( XmlReader xmlReader = XmlReader.Create( mStream ) )
                     {
-                        XmlSerializer serializer = new XmlSerializer( typeof( T ) );
+                        XmlSerializer serializer = new XmlSerializer( resultType );
                         serializer.UnknownElement += OnUnknownElement;
-                        return PerformPostDeserializeHacks<T>( serializer.Deserialize( xmlReader ) );
+                        return PerformPostDeserializeHacks( serializer.Deserialize( xmlReader ) );
                     }
                 }
             }
+
+            NotificationHandler = null;
         }
 
-        private static T PerformPostDeserializeHacks<T>( object deserialized )
+        private static object PerformPostDeserializeHacks( object deserialized )
         {
             if ( deserialized is MazeCollection collection )
             {
@@ -140,13 +144,18 @@ namespace mhedit.Extensions
                 PerformPostDeserializeHacksOn( maze );
             }
 
-            return (T)deserialized;
+            return deserialized;
         }
 
         private static void PerformPostDeserializeHacksOn( Maze maze )
         {
             FixParentChildOnTripPads( maze );
-            FixMaxMazeObjectViolations( maze );
+
+            if ( FixMaxMazeObjectViolations( maze, out string violationNotification ) )
+            {
+                NotificationHandler?.Invoke( violationNotification );
+            }
+
             //FixExcessiveCannonPauseValues( maze );
         }
 
@@ -155,8 +164,11 @@ namespace mhedit.Extensions
         /// exceed the limit
         /// </summary>
         /// <param name="maze"></param>
-        private static bool FixMaxMazeObjectViolations( Maze maze )
+        /// <param name="s"></param>
+        private static bool FixMaxMazeObjectViolations( Maze maze, out string violationNotification)
         {
+            violationNotification = null;
+
             StringBuilder message = new StringBuilder();
 
             List<List<MazeObject>> mazeObjectsByType =
@@ -191,11 +203,10 @@ namespace mhedit.Extensions
                        .Insert( 0,
                            $"There are more objects defined in the \"{maze.Name}\" Maze than are allowed. Note the following adjustments:" );
 
-                _lastError = message.ToString();
-                //MessageBox.Show( message.ToString(), "Maze Load Issues", MessageBoxButtons.OK,
-                //    MessageBoxIcon.Information );
+                violationNotification = message.ToString();
             }
-            return message.Length == 0;
+
+            return message.Length != 0;
         }
 
         /// <summary>

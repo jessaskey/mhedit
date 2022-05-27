@@ -61,7 +61,7 @@
     <Compile Include="Enums.cs" />
     <Compile Include="ExceptionSummary.cs" />
     <Compile Include="ExtendedObservableCollection.cs" />
-    <Compile Include="IFileInformation.cs" />
+    <Compile Include="IName.cs" />
     <Compile Include="Maze.cs" />
     <Compile Include="MazeCollection.cs" />
     <Compile Include="MazeEnemies\IonCannon\IonCannon.cs" />

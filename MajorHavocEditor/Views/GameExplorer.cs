@@ -3,15 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using mhedit;
 using mhedit.Containers;
+using mhedit.Extensions;
 using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Interfaces.Ui;
 using MajorHavocEditor.Services;
+using MHavocEditor;
 
 namespace MajorHavocEditor.Views
 {
@@ -19,10 +22,12 @@ namespace MajorHavocEditor.Views
     public partial class GameExplorer : UserControl, IUserInterface
     {
         private readonly IWindowManager _windowManager;
-        private readonly IFileManager _fileManager;
         private readonly IMenuManager _contextMenuManager = new ContextMenuManager();//ContextMenuManager();
-        private readonly ObservableCollection<IName> _mazes = new ObservableCollection<IName>();
-        private readonly ObservableCollection<IName> _selectedMazes = new ObservableCollection<IName>();
+
+        private readonly ObservableCollection<IFileProperties> _mazes =
+            new ObservableCollection<IFileProperties>();
+        private readonly ObservableCollection<IFileProperties> _selectedMazes =
+            new ObservableCollection<IFileProperties>();
 
         public GameExplorer()
             : this( null, null )
@@ -279,14 +284,43 @@ namespace MajorHavocEditor.Views
 
         private void SaveAsCommand( object obj )
         {
+            if (this._selectedMazes.Count == 1 )
+            {
+                this.Save( this._selectedMazes.First(), true );
+            }
         }
 
         private void SaveCommand( object obj )
         {
+            if (this._selectedMazes.Count == 1)
+            {
+                this.Save( this._selectedMazes.First() );
+            }
         }
 
         private void OpenFileCommand(object obj)
         {
+            OpenFileDialog ofd =
+                new OpenFileDialog
+                {
+                    Title = "Open Maze or Maze Collection",
+                    InitialDirectory = Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ),
+                    Filter = "Editor Files (*.mhz;*.mhc)|*.mhz;*.mhc|Mazes (*.mhz)|*.mhz|Maze Collections (*.mhc)|*.mhc",
+                    CheckFileExists = true,
+                };
+
+            if ( ofd.ShowDialog() == DialogResult.OK )
+            {
+                Type type = Path.GetExtension(ofd.FileName).ToLowerInvariant() switch
+                {
+                    ".mhz" => typeof(Maze),
+                    ".mhc" => typeof(MazeCollection),
+                    _ => throw new ArgumentOutOfRangeException(
+                             $"{Path.GetExtension(ofd.FileName)} is not a supported extension.")
+                };
+
+                this.treeView.ItemsSource.Add( this.Open( ofd.FileName, type ) );
+            }
         }
 
         private bool IsOneItemSelected( object unused )
@@ -372,17 +406,7 @@ namespace MajorHavocEditor.Views
                 if (topLevelItem is IChangeTracking changeTracking &&
                     changeTracking.IsChanged)
                 {
-                    this._fileManager.Save(topLevelItem);
                 }
-                //if ( topLevelItem is Maze maze && maze.IsChanged )
-                //{
-                //    this._fileManager.Save( maze );
-                //}
-                //else if ( topLevelItem is MazeCollection mazeCollection &&
-                //          mazeCollection.IsChanged )
-                //{
-                //    this._fileManager.Save( mazeCollection );
-                //}
             }
         }
 
@@ -407,6 +431,8 @@ namespace MajorHavocEditor.Views
                         .ToLookup(o => o.GetType())
                         .OrderBy(o => o.Key == typeof(MazeCollection))
                         .ToList();
+
+                /// BUG: Should warn of unsaved changes.
 
                 foreach (IGrouping<Type, object> grouping in deleteList)
                 {
@@ -456,35 +482,153 @@ namespace MajorHavocEditor.Views
         /// </summary>
         private void CloseCommand( object o )
         {
-            bool safeToRemove = this.treeView.SelectedItem is IChangeTracking changeTracking ?
-                !(changeTracking.IsChanged && this._fileManager.Save(this.treeView.SelectedItem)):
-                true;
+            if ( this._selectedMazes.Count != 1 )
+            {
+                return;
+            }
 
-            // Find maze to close.. this consistently seems messy now.
-            // Too much searching for the parent..
+            IFileProperties itemToClose = this._selectedMazes.First();
+
+            bool safeToRemove = itemToClose is IChangeTracking changeTracking ?
+                                    !changeTracking.IsChanged :
+                                    true;
 
             if ( !safeToRemove )
             {
-                if ( this.treeView.SelectedItem is MazeCollection ||
-                     this.treeView.ItemsSource.Contains( this.treeView.SelectedItem ))
-                {
-                    this.treeView.ItemsSource.Remove( this.treeView.SelectedItem);
-                }
-                else
-                {
-                    Maze maze = (Maze) this.treeView.SelectedItem;
+                // prompt user to save...
+                DialogResult result = MessageBox.Show(
+                    $"Save changes to {itemToClose.Name}?",
+                    "Close", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 
-                    foreach ( object item in this.treeView.ItemsSource )
-                    {
-                        
-                    }
+                if ( result == DialogResult.Yes )
+                {
+                    safeToRemove = this.Save( itemToClose );
                 }
+            }
+
+            if ( !safeToRemove )
+            {
+                this.TryFindLocation( itemToClose, out int _, out IList list );
+
+                list.Remove( itemToClose );
             }
         }
 
         private void RenameCommand(object unused)
         {
             this.treeView.SelectedNode?.BeginEdit();
+        }
+
+        private bool Save( IFileProperties file, bool saveAs = false )
+        {
+            DialogResult result = DialogResult.OK;
+
+            // if there isn't a file associated with this MazeCollection then ask
+            // for the fileName. 
+            if (string.IsNullOrWhiteSpace(file.Path) || saveAs )
+            {
+                SaveFileDialog sfd =
+                    new SaveFileDialog
+                    {
+                        InitialDirectory = file.Path ??
+                                           Environment.GetFolderPath(
+                                               Environment.SpecialFolder.MyDocuments ),
+                        FileName = file.Name,
+                        Filter = $"{file.GetType().Name} Files (*{file.Extension})|*{file.Extension}|All files (*.*)|*.*",
+                        AddExtension = true,
+                        OverwritePrompt = true
+                    };
+
+                // capture user choice for save operation below.
+                result = sfd.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    file.Name = Path.GetFileName(sfd.FileName);
+                    file.Path = Path.GetFullPath( sfd.FileName );
+                }
+            }
+
+            try
+            {
+                if (result == DialogResult.OK)
+                {
+                    Cursor.Current = Cursors.WaitCursor;
+
+                    Application.DoEvents();
+
+                    file.SerializeAndCompress();
+
+                    if ( file is IChangeTracking ict )
+                    {
+                        ict.AcceptChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = DialogResult.Cancel;
+
+                MessageBox.Show(
+                    $@"An error has occurred while trying to save: {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}",
+                    "An Error Occurred",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+
+            return result == DialogResult.OK;
+        }
+
+        private object Open(string fileName, Type type)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+            
+            Application.DoEvents();
+
+            object result = null;
+
+            try
+            {
+                result = fileName.ExpandAndDeserialize( type, HandleNotifications );
+
+                void HandleNotifications( string message )
+                {
+                    MessageBox.Show(message, "Maze Load Issues",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                };
+
+                if ( result is IFileProperties fileProperties )
+                {
+                    fileProperties.Name = Path.GetFileName( fileName );
+
+                    fileProperties.Path = Path.GetFullPath( fileName );
+                }
+
+                if ( result is IChangeTracking ict )
+                {
+                    ict.AcceptChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show($@"Maze could not be opened: {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}",
+                    "File Open Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                //Bryan, I put this here as an example of how to report Exceptions that are caught, but you still
+                //may want to log them. All un-handled exceptions will still log.
+                //Program.SendException("MazeOpen", ex);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+
+            return result;
         }
     }
 

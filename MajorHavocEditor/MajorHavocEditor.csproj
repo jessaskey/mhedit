@@ -49,6 +49,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\mhedit.Containers\mhedit.Containers.csproj" />
+        <ProjectReference Include="..\mhedit.Extensions\mhedit.Extensions.csproj" />
         <ProjectReference Include="..\mhedit.GameControllers\mhedit.GameControllers.csproj" />
         <ProjectReference Include="..\Silver.UI.ToolBox\Silver.UI.ToolBox.csproj" />
     </ItemGroup>

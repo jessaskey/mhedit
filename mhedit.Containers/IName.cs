@@ -1,24 +1,28 @@
-﻿namespace MajorHavocEditor.Services
+﻿using System.ComponentModel;
+
+namespace mhedit.Containers
 {
-
-    public interface IFileProperties
+    public interface IName
     {
-        //bool PromptToSave { get; } Just use changetracking
+        string Name { get; set; }
+    }
 
+    public interface IFileProperties : IName
+    {
         /// <summary>
         /// Description of file type
         /// </summary>
-        string Description { get; }
-
-        /// <summary>
-        /// The Filename for this object, or null if it doesn't have one. 
-        /// </summary>
-        string Filename { get; set; }
+        //string Description { get; }
 
         /// <summary>
         /// The file extension for this object.
         /// </summary>
-        string Extension { get; set; }
+        string Extension { get; }
+
+        /// <summary>
+        /// The Filename for this object, or null if it doesn't have one. 
+        /// </summary>
+        string Name { get; set; }
 
         /// <summary>
         /// The path on disk for this object, or null if it doesn't have one. If the

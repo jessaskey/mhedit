@@ -22,8 +22,6 @@ namespace mhedit
 	{
 #region Declarations
 
-		public const int MAXWALLS = 209;
-
 		/// This is the "padding" around the border of the entire maze.
 		//private const int STAMPS_TRIM_LEFT = 3;
 		//private Point objectOffset = new Point(-16, 16);
