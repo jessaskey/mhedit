@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -59,6 +60,11 @@ namespace MajorHavocEditor.Views
                             this._nodes.Add( node );
 
                             node.TreeView.SelectedNode = node;
+                        }
+                        else // Adding an item that isn't in the treeview?!
+                        {
+                            throw new InvalidOperationException(
+                                $"{newItem} isn't contained in ItemsSource.");
                         }
                     }
                 }
