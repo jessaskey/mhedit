@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using mhedit.Containers;
@@ -10,30 +11,60 @@ namespace MajorHavocEditor.Views
     {
         private class ItemsSourceDelegate : IItemsSourceDelegate
         {
+            /// <summary>
+            /// I hate WinForms... This class is needed to properly disconnect
+            /// the INotifyPropertyChanged.PropertyChanged event from the node
+            /// and prevent memory leaks.
+            /// </summary>
+            private class BoundTreeNode : TreeNode
+            {
+                public BoundTreeNode( string text )
+                    : base( text )
+                {
+                }
+
+                public TreeNode ConnectPropertyChanged( INotifyPropertyChanged inpc )
+                {
+                    inpc.PropertyChanged += this.OnPropertyChanged;
+
+                    return this;
+                }
+
+                public void DisconnectPropertyChanged( INotifyPropertyChanged inpc )
+                {
+                    inpc.PropertyChanged += this.OnPropertyChanged;
+                }
+
+                private void OnPropertyChanged( object sender, PropertyChangedEventArgs args )
+                {
+                    if ( args.PropertyName.Equals( nameof( IName.Name ) ) )
+                    {
+                        this.Text = ( (IName) sender ).Name;
+                    }
+                }
+            }
+
 #region Implementation of IItemsSourceDelegate
 
             /// <inheritdoc />
             public TreeNode CreateNode( object item )
             {
-                if ( item is Maze maze )
-                {
-                    return new TreeNode( maze.Name )
-                           {
-                               Tag = maze,
-                               ForeColor = Color.Black,
-                               ImageIndex = (int) maze.MazeType + 1,
-                               SelectedImageIndex = (int) maze.MazeType + 1
-                           };
-                }
+                int imageIndex = item is Maze maze ? (int) maze.MazeType + 1 : 0;
 
-                MazeCollection mazeCollection = (MazeCollection) item;
-
-                return new TreeNode( mazeCollection.Name )
+                return new BoundTreeNode(((IName)item).Name)
                        {
-                           Tag = mazeCollection,
-                           ImageIndex = 0,
-                           SelectedImageIndex = 0
-                       };
+                           Tag = item,
+                           ImageIndex = imageIndex,
+                           SelectedImageIndex = imageIndex,
+                       }
+                    .ConnectPropertyChanged( (INotifyPropertyChanged) item );
+            }
+
+            /// <inheritdoc />
+            public void OnRemoveNode( TreeNode node )
+            {
+                ( (BoundTreeNode) node ).DisconnectPropertyChanged(
+                    (INotifyPropertyChanged) node.Tag );
             }
 
             /// <inheritdoc />

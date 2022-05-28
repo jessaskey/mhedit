@@ -18,6 +18,12 @@ namespace MajorHavocEditor.Views
         TreeNode CreateNode( object item );
 
         /// <summary>
+        /// ree.
+        /// </summary>
+        /// <param name="node"></param>
+        void OnRemoveNode( TreeNode node );
+
+        /// <summary>
         /// Determines if the TreeNode is the node containing the Item.
         /// </summary>
         /// <param name="node"></param>

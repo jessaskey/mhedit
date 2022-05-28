@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
+using mhedit.Containers;
 
 namespace MajorHavocEditor.Views
 {
@@ -26,6 +28,11 @@ namespace MajorHavocEditor.Views
                            {
                                Tag = item,
                            };
+                }
+
+                /// <inheritdoc />
+                public void OnRemoveNode( TreeNode node )
+                {
                 }
 
                 /// <inheritdoc />
@@ -88,7 +95,7 @@ namespace MajorHavocEditor.Views
 
                     if ( e.Action == NotifyCollectionChangedAction.Reset )
                     {
-                        // Find root NodeCollection to add this leaf to.
+                        // Find root NodeCollection for this event.
                         TreeNodeCollection root =
                             ReferenceEquals( sender, this._items ) ?
                                 this._treeView.Nodes :
@@ -96,6 +103,11 @@ namespace MajorHavocEditor.Views
                                         n => ReferenceEquals( sender,
                                             this._itemsDelegate.GetEnumerable( n ) ) )
                                     .Nodes;
+
+                        foreach ( TreeNode node in root )
+                        {
+                            this.DisolveHierarchy( node );
+                        }
 
                         root.Clear();
 
@@ -190,12 +202,14 @@ namespace MajorHavocEditor.Views
                     incc.CollectionChanged -= this.OnItemsCollectionChanged;
                 }
 
-                this._treeView._selectedNodes.Remove( node );
-
                 foreach ( TreeNode childNode in node.Nodes )
                 {
                     this.DisolveHierarchy( childNode );
                 }
+
+                this._treeView._selectedNodes.Remove(node);
+
+                this._itemsDelegate.OnRemoveNode(node);
 
                 return node;
             }
