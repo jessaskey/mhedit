@@ -106,7 +106,7 @@ namespace MajorHavocEditor.Views
 
                         foreach ( TreeNode node in root )
                         {
-                            this.DisolveHierarchy( node );
+                            this.DissolveHierarchy( node );
                         }
 
                         root.Clear();
@@ -152,7 +152,7 @@ namespace MajorHavocEditor.Views
                         {
                             Debug.WriteLine( $"Removed {oldItem}" );
 
-                            this._treeView.Nodes.Remove( this.DisolveHierarchy( oldItem ) );
+                            this._treeView.Nodes.Remove( this.DissolveHierarchy( oldItem ) );
                         }
                     }
                     else
@@ -187,7 +187,7 @@ namespace MajorHavocEditor.Views
                 return node;
             }
 
-            private TreeNode DisolveHierarchy( object item )
+            private TreeNode DissolveHierarchy( object item )
             {
                 // On recursive calls the Child TreeNode is passed to avoid nested searching.
                 TreeNode node = item as TreeNode ??
@@ -204,7 +204,7 @@ namespace MajorHavocEditor.Views
 
                 foreach ( TreeNode childNode in node.Nodes )
                 {
-                    this.DisolveHierarchy( childNode );
+                    this.DissolveHierarchy( childNode );
                 }
 
                 this._treeView._selectedNodes.Remove(node);
