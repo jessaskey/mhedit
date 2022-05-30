@@ -8,13 +8,12 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Input;
 using mhedit;
 using mhedit.Containers;
 using mhedit.Extensions;
 using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Interfaces.Ui;
-using MajorHavocEditor.Services;
-using MHavocEditor;
 
 namespace MajorHavocEditor.Views
 {
@@ -172,7 +171,8 @@ namespace MajorHavocEditor.Views
             this._contextMenuManager.Add(
                 new MenuItem("Validate")
                 {
-                    Command = new MenuCommand(this.ValidateCommand),
+                    Command = new MenuCommand( o => this.ValidateCommand?.Execute( o ),
+                        o => this.ValidateCommand.CanExecute( o ) ),
                     Display = "Validate",
                     ShortcutKey = Keys.Control | Keys.V,
                     ToolTip = "Validate a Maze or Collection.",
@@ -211,6 +211,13 @@ namespace MajorHavocEditor.Views
                     Icon = @"Resources\Images\Buttons\hbmame_32.png".CreateResourceUri()
                 });
         }
+
+        public ICommand ValidateCommand { get; set; }
+
+        public IList SelectedItems
+        {
+            get { return this.treeView.SelectedItems; }
+        } 
 
         private void AddMazeCollectionCommand( object obj )
         {
@@ -285,10 +292,6 @@ namespace MajorHavocEditor.Views
         {
         }
 
-        private void ValidateCommand( object obj )
-        {
-        }
-
         private void SaveAsCommand( object obj )
         {
             if (this._selectedMazes.Count == 1 )
@@ -326,6 +329,7 @@ namespace MajorHavocEditor.Views
                              $"{Path.GetExtension(ofd.FileName)} is not a supported extension.")
                 };
 
+                //TODO: Insert after Parent.
                 this.treeView.ItemsSource.Add( this.Open( ofd.FileName, type ) );
             }
         }
@@ -377,6 +381,7 @@ namespace MajorHavocEditor.Views
             {
                 if ( !ModifierKeys.HasFlag( Keys.Control ) )
                 {
+                    Debug.WriteLine("OnTreeViewAfterSelect");
                     this._windowManager.Show( maze );
                 }
             }
@@ -387,6 +392,7 @@ namespace MajorHavocEditor.Views
             if (this.treeView.SelectedNode?.Tag is Maze maze &&
             this.treeView.SelectedNode.Bounds.Contains( e.X, e.Y ) )
             {
+                Debug.WriteLine("OnTreeViewMouseDoubleClick");
                 this._windowManager.Show( maze, true );
             }
         }

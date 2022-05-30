@@ -137,7 +137,6 @@
     <Compile Include="Validation\CollectionIndexRule.cs" />
     <Compile Include="Validation\ElementsRule.cs" />
     <Compile Include="Validation\FileNameRule.cs" />
-    <Compile Include="Validation\ISystemWindows.cs" />
     <Compile Include="Validation\MajorHavoc\HandReactorLocationRule.cs" />
     <Compile Include="Validation\MajorHavoc\HiddenLevelTokenMissingRule.cs" />
     <Compile Include="Validation\MajorHavoc\HiddenLevelTokensCountRule.cs" />
@@ -157,12 +156,6 @@
     <Compile Include="Validation\StringLengthRule.cs" />
     <Compile Include="Validation\StringExistsRule.cs" />
     <Compile Include="Validation\ValidationData.cs" />
-    <Compile Include="Validation\ValidationWindow.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Validation\ValidationWindow.Designer.cs">
-      <DependentUpon>ValidationWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="VersionInformation.cs" />
     <Compile Include="Validation\CollectionContentRule.cs" />
     <Compile Include="Validation\CollectionSizeRule.cs" />
@@ -186,9 +179,6 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Validation\ValidationWindow.resx">
-      <DependentUpon>ValidationWindow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -235,11 +225,6 @@
     <EmbeddedResource Include="Images\Objects\arrow_out_left_obj.png" />
     <EmbeddedResource Include="Images\Objects\arrow_out_right_obj.png" />
     <EmbeddedResource Include="Images\Objects\pyroidr_d_obj.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Error_red_16x16.png" />
-    <EmbeddedResource Include="Images\Information_blue_6227_16x16.png" />
-    <EmbeddedResource Include="Images\Warning_yellow_7231_16x16.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\Objects\keypouch_32.png" />

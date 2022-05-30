@@ -7,7 +7,7 @@ namespace mhedit.Containers
         string Name { get; set; }
     }
 
-    public interface IFileProperties : IName
+    public interface IFileProperties
     {
         /// <summary>
         /// Description of file type

@@ -1,6 +1,6 @@
-﻿namespace mhedit.Containers.Validation
+﻿namespace MajorHavocEditor.Views
 {
-    partial class ValidationWindow
+    partial class ValidationResultTab
     {
         /// <summary> 
         /// Required designer variable.
@@ -13,9 +13,9 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose( bool disposing )
         {
-            if ( disposing && ( components != null ) )
+            if ( disposing && ( this.components != null ) )
             {
-                components.Dispose();
+                this.components.Dispose();
             }
             base.Dispose( disposing );
         }
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ValidationWindow));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ValidationResultTab));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.SortingComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -138,7 +138,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.toolStrip1);
-            this.Name = "ValidationWindow";
+            this.Name = "ValidationResultTab";
             this.Size = new System.Drawing.Size(579, 237);
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();

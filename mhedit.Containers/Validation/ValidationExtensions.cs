@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -8,20 +7,14 @@ namespace mhedit.Containers.Validation
 
     public static class ValidationExtensions
     {
-        public static ISystemWindows SystemWindows;
-
-        public static void ValidateAndDisplayResults( this object subject, string windowTitle = "" )
-        {
-            SystemWindows.Add( new ValidationWindow( subject.Validate(), windowTitle ) );
-        }
-
-        public static void DisplayResults( this IValidationResult results, string windowTitle = "" )
-        {
-            SystemWindows.Add( new ValidationWindow( results, windowTitle ) );
-        }
 
         public static void ValidateToMessageBox( this object subject, string caption = "" )
         {
+            //if ( !subject.GetType().Namespace.Contains( "mhedit" ) )
+            //{
+            //    throw new ArgumentException("Validation subject not an EditorObject");
+            //}
+
             IValidationResult validationResult = subject.Validate();
 
             string resultsMessage = validationResult.ToString();

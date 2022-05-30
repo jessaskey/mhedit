@@ -8,6 +8,7 @@ using Krypton.Toolkit;
 using Krypton.Workspace;
 using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Interfaces.Ui;
+using MajorHavocEditor.Services;
 using MajorHavocEditor.Views;
 using MHavocEditor;
 
@@ -19,6 +20,7 @@ namespace MajorHavocEditor
         private IMenuManager _menuManager = new MenuStripManager(DockStyle.Top);
         private IWindowManager _windowManager;
         private GameExplorer _gameExplorer;
+        private IValidationService _validationService;
         private KryptonManager _kryptonManager = new KryptonManager();
 
         //private GameToolbox _gameToolbox = new GameToolbox();
@@ -31,17 +33,39 @@ namespace MajorHavocEditor
 
             this._windowManager = new WindowManager(this.kryptonDockableWorkspace,
                 this.kryptonDockingManager);
+
             this._gameExplorer = new GameExplorer(this._menuManager, this._windowManager);
+
+            this._validationService = new ValidationService( this._windowManager );
 
             this.Controls.Add((Control) this._menuManager.Menu);
 
             this.kryptonDockingManager.DefaultCloseRequest = DockingCloseRequest.RemovePage;
             //this.kryptonDockableWorkspace.WorkspaceCellAdding += this.kryptonDockableWorkspace_WorkspaceCellAdding;
+
+            this._gameExplorer.ValidateCommand = new MenuCommand(
+                this.ValidateCommand,
+                this.CanValidate );
         }
 
         private void kryptonDockableWorkspace_WorkspaceCellAdding( object sender, WorkspaceCellEventArgs e )
         {
 
+        }
+
+        private bool CanValidate(object notUsed )
+        {
+            // Should always be true since it just reflects over objects to
+            // look for validation attributes...
+            return this._gameExplorer.SelectedItems.Count > 0;
+        }
+
+        private void ValidateCommand(object notUsed )
+        {
+            foreach ( object subject in this._gameExplorer.SelectedItems)
+            {
+                this._validationService.ValidateAndDisplayResults(subject);
+            }
         }
 
         protected override void OnLoad(EventArgs e)
@@ -85,7 +109,7 @@ namespace MajorHavocEditor
             //else
             {
                 this._windowManager.Show(this._gameExplorer);
-                //this._windowManager.Show(this._gameToolbox);
+                this._windowManager.Show(new GameToolbox());
             }
         }
 

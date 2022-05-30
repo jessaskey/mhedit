@@ -2,47 +2,47 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using mhedit.Containers;
+using mhedit.Containers.Validation;
 
-namespace mhedit.Containers.Validation
+namespace MajorHavocEditor.Views
 {
-    public partial class ValidationWindow : UserControl
+    public partial class ValidationResultTab : UserControl
     {
         private static readonly ImageList IconList;
         private List<DataGridViewRow> _errorRows = new List<DataGridViewRow>();
         private List<DataGridViewRow> _warningRows = new List<DataGridViewRow>();
         private List<DataGridViewRow> _messageRows = new List<DataGridViewRow>();
 
-        static ValidationWindow()
+        static ValidationResultTab()
         {
-            IconList = new ImageList
-                             {
-                                 TransparentColor = Color.Fuchsia
-                             };
-
-            IconList.Images.Add( ValidationLevel.Error.ToString(),
-                ResourceFactory.GetResourceImage(
-                    "mhedit.Containers.Images.Error_red_16x16.png" ) );
-
-            IconList.Images.Add( ValidationLevel.Warning.ToString(),
-                ResourceFactory.GetResourceImage(
-                    "mhedit.Containers.Images.Warning_yellow_7231_16x16.png" ) );
-
-            IconList.Images.Add( ValidationLevel.Message.ToString(),
-                ResourceFactory.GetResourceImage(
-                    "mhedit.Containers.Images.Information_blue_6227_16x16.png" ) );
+            IconList =
+                new ImageList { TransparentColor = Color.Fuchsia }
+                    .AddImages( new[]
+                                {
+                                    "Error_red_16x16.png",
+                                    "Warning_yellow_7231_16x16.png",
+                                    "Information_blue_6227_16x16.png",
+                                } )
+                    .WithResourcePath( "Resources/Images" )
+                    .Load();
         }
 
-        public ValidationWindow()
+        public ValidationResultTab()
             : this( new ValidationResult() )
         { }
 
-        public ValidationWindow( IValidationResult result )
+        public ValidationResultTab( IValidationResult result )
             : this( result, string.Empty )
         { }
 
-        public ValidationWindow( IValidationResult result, string title )
+        public ValidationResultTab( IValidationResult result, string title )
         {
-            InitializeComponent();
+            this.InitializeComponent();
+
+            this.Dock = DockStyle.Fill;
+
+            this.Anchor = AnchorStyles.Top | AnchorStyles.Left;
 
             /// Avoid possible InvalidOperationException: This operation cannot be
             /// performed while an auto-filled column is being resized.
