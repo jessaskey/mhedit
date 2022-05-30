@@ -259,15 +259,45 @@ namespace MHavocEditor
         {
             if (this._interfaces.TryGetValue(userInterface, out KryptonPage window))
             {
-                //if ( this._dockingManager.Pages.Contains( window ) )
-                //{
-                //    if ( this._dockingManager.PagesWorkspace.Contains( window ) )
-                //    {
-                //        this._dockingManager.
-                //    }
-                //    this._dockingManager.ShowPage( window );
-                //}
-                //else
+                if (this._dockingManager.Pages.Contains(window))
+                {
+                    if ( this._dockingManager.PagesAutoHidden.Contains( window ) )
+                    {
+                        this._dockingManager.SwitchAutoHiddenGroupToDockedCellRequest(
+                            window.UniqueName);
+                    }
+                    else
+                    {
+                        foreach (KryptonWorkspaceCell cell in this._dockingManager.Cells)
+                        {
+                            if (cell.Pages.Contains(window))
+                            {
+                                IDockingElement x = this._dockingManager.FindPageElement(window);
+
+                                cell.SelectedPage = window;
+
+                                if (x is KryptonDockingFloatspace floatspace)
+                                {
+                                    // Have no idea why, but calling both at least brings the page
+                                    // to the top of the z-order
+                                    floatspace.FloatspaceControl.ParentForm.Activate();
+                                    floatspace.FloatspaceControl.ParentForm.Show();
+                                }
+                                else if (x is KryptonDockingWorkspace workspace)
+                                {
+                                    workspace.DockableWorkspaceControl.ActiveCell = cell;
+                                }
+                                else if (x is KryptonDockingDockspace dockspace)
+                                {
+                                    dockspace.DockspaceControl.ActiveCell = cell;
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
                 if (userInterface.DockingState == DockingState.Document)
                 {
                     /// BUG: Better way to do this with a notification?
