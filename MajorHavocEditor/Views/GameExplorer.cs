@@ -21,6 +21,8 @@ namespace MajorHavocEditor.Views
 
     public partial class GameExplorer : UserControl, IUserInterface
     {
+        private static readonly ImageList IconList;
+
         private readonly IWindowManager _windowManager;
         private readonly IMenuManager _contextMenuManager = new ContextMenuManager();//ContextMenuManager();
 
@@ -28,6 +30,22 @@ namespace MajorHavocEditor.Views
             new ObservableCollection<IFileProperties>();
         private readonly ObservableCollection<IFileProperties> _selectedMazes =
             new ObservableCollection<IFileProperties>();
+
+        static GameExplorer()
+        {
+            IconList =
+                new ImageList { TransparentColor = Color.Fuchsia }
+                    .AddImages( new[]
+                                {
+                                    "ThumbnailViewHS.bmp",
+                                    "maze_a.bmp",
+                                    "maze_b.bmp",
+                                    "maze_c.bmp",
+                                    "maze_d.bmp"
+                                } )
+                    .WithResourcePath( "Resources/Images" )
+                    .Load();
+        }
 
         public GameExplorer()
             : this( null, null )
@@ -51,18 +69,7 @@ namespace MajorHavocEditor.Views
 
             this.treeView.ContextMenuStrip = (ContextMenuStrip) this._contextMenuManager.Menu;
 
-            this.treeView.ImageList =
-                new ImageList { TransparentColor = Color.Fuchsia }
-                    .AddImages( new[]
-                                 {
-                                     "ThumbnailViewHS.bmp",
-                                     "maze_a.bmp",
-                                     "maze_b.bmp",
-                                     "maze_c.bmp",
-                                     "maze_d.bmp"
-                                 } )
-                    .WithResourcePath( "Resources/Images" )
-                    .Load();
+            this.treeView.ImageList = IconList;
 
             this.treeView.AfterSelect += this.OnTreeViewAfterSelect;
             this.treeView.MouseDoubleClick += this.OnTreeViewMouseDoubleClick;
