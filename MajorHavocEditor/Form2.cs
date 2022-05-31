@@ -22,6 +22,7 @@ namespace MajorHavocEditor
         private GameExplorer _gameExplorer;
         private IValidationService _validationService;
         private KryptonManager _kryptonManager = new KryptonManager();
+        private PropertyBrowser _propertyBrowser;
 
         //private GameToolbox _gameToolbox = new GameToolbox();
 
@@ -38,33 +39,29 @@ namespace MajorHavocEditor
 
             this._validationService = new ValidationService( this._windowManager );
 
+            this._propertyBrowser = new PropertyBrowser( this._gameExplorer.SelectedItems );
+
             this.Controls.Add((Control) this._menuManager.Menu);
 
             this.kryptonDockingManager.DefaultCloseRequest = DockingCloseRequest.RemovePage;
-            //this.kryptonDockableWorkspace.WorkspaceCellAdding += this.kryptonDockableWorkspace_WorkspaceCellAdding;
 
             this._gameExplorer.ValidateCommand = new MenuCommand(
                 this.ValidateCommand,
                 this.CanValidate );
         }
 
-        private void kryptonDockableWorkspace_WorkspaceCellAdding( object sender, WorkspaceCellEventArgs e )
-        {
-
-        }
-
-        private bool CanValidate(object notUsed )
+        private bool CanValidate( object notUsed )
         {
             // Should always be true since it just reflects over objects to
             // look for validation attributes...
             return this._gameExplorer.SelectedItems.Count > 0;
         }
 
-        private void ValidateCommand(object notUsed )
+        private void ValidateCommand( object notUsed )
         {
-            foreach ( object subject in this._gameExplorer.SelectedItems)
+            foreach ( object subject in this._gameExplorer.SelectedItems )
             {
-                this._validationService.ValidateAndDisplayResults(subject);
+                this._validationService.ValidateAndDisplayResults( subject );
             }
         }
 
@@ -109,7 +106,8 @@ namespace MajorHavocEditor
             //else
             {
                 this._windowManager.Show(this._gameExplorer);
-                this._windowManager.Show(new GameToolbox());
+                this._windowManager.Show(this._propertyBrowser);
+                //this._windowManager.Show(new GameToolbox());
             }
         }
 
