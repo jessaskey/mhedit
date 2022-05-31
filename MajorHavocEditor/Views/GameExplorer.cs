@@ -30,6 +30,8 @@ namespace MajorHavocEditor.Views
         private readonly ObservableCollection<IFileProperties> _selectedMazes =
             new ObservableCollection<IFileProperties>();
 
+        private ICommand _validateCommand;
+
         static GameExplorer()
         {
             IconList =
@@ -74,7 +76,7 @@ namespace MajorHavocEditor.Views
             this.treeView.MouseDoubleClick += this.OnTreeViewMouseDoubleClick;
 
             MenuItem addMenuItem =
-                new MenuItem("Add")
+                new MenuItem("GameExplorer_Add")
                 {
                     Display = "Add",
                     GroupKey = new Guid(),
@@ -82,7 +84,7 @@ namespace MajorHavocEditor.Views
                 };
 
             MenuItem addMazeMenuItem =
-                new MenuItem("Add Maze")
+                new MenuItem("GameExplorer_AddMaze")
                 {
                     ParentName = addMenuItem.Name,
                     Command = new MenuCommand(this.AddMazeCommand),
@@ -91,7 +93,7 @@ namespace MajorHavocEditor.Views
                 };
 
             MenuItem addMazeCollectionMenuItem =
-                new MenuItem("Add MazeCollection")
+                new MenuItem("GameExplorer_AddMazeCollection")
                 {
                     ParentName = addMenuItem.Name,
                     Command = new MenuCommand(this.AddMazeCollectionCommand),
@@ -108,7 +110,7 @@ namespace MajorHavocEditor.Views
             menuManager.Add(addMazeCollectionMenuItem);
 
             menuManager?.Add(
-                new MenuItem("LoadFromROM")
+                new MenuItem("GameExplorer_LoadFromROM")
                 {
                     Command = new MenuCommand(this.LoadFromRomCommand),
                     Display = "Load From ROM",
@@ -119,7 +121,7 @@ namespace MajorHavocEditor.Views
             this._contextMenuManager.Add( new Separator(addMenuItem, addMenuItem.GroupKey) );
 
             this._contextMenuManager.Add(
-                new MenuItem("Open")
+                new MenuItem("GameExplorer_Open")
                 {
                     Command = new MenuCommand(this.OpenFileCommand),
                     Display = "Open",
@@ -128,7 +130,7 @@ namespace MajorHavocEditor.Views
                     Icon = @"Resources\Images\Buttons\OpenFolder_16x_24.bmp".CreateResourceUri()
                 });
             this._contextMenuManager.Add(
-                new MenuItem("Close")
+                new MenuItem("GameExplorer_Close")
                 {
                     Command = new MenuCommand( this.CloseCommand ),
                     Display = "Close",
@@ -138,7 +140,7 @@ namespace MajorHavocEditor.Views
             this._contextMenuManager.Add(new Separator(addMenuItem, addMenuItem.GroupKey));
             
             this._contextMenuManager.Add(
-                new MenuItem("Save")
+                new MenuItem("GameExplorer_Save")
                 {
                     Command = new MenuCommand(this.SaveCommand),
                     Display = "Save",
@@ -148,7 +150,7 @@ namespace MajorHavocEditor.Views
                 });
 
             this._contextMenuManager.Add(
-                new MenuItem("Save As")
+                new MenuItem("GameExplorer_SaveAs")
                 {
                     Command = new MenuCommand(this.SaveAsCommand),
                     Display = "Save As...",
@@ -157,7 +159,7 @@ namespace MajorHavocEditor.Views
                 });
 
             this._contextMenuManager.Add(
-                new MenuItem("Save All")
+                new MenuItem("GameExplorer_SaveAll")
                 {
                     Command = new MenuCommand(this.SaveAllCommand),
                     Display = "Save All",
@@ -169,20 +171,7 @@ namespace MajorHavocEditor.Views
             this._contextMenuManager.Add(new Separator(addMenuItem, addMenuItem.GroupKey));
 
             this._contextMenuManager.Add(
-                new MenuItem("Validate")
-                {
-                    Command = new MenuCommand( o => this.ValidateCommand?.Execute( o ),
-                        o => this.ValidateCommand.CanExecute( o ) ),
-                    Display = "Validate",
-                    ShortcutKey = Keys.Control | Keys.V,
-                    ToolTip = "Validate a Maze or Collection.",
-                    Icon = @"Resources\Images\Buttons\ValidateDocument_315.png".CreateResourceUri()
-                });
-
-            this._contextMenuManager.Add(new Separator(addMenuItem, addMenuItem.GroupKey));
-
-            this._contextMenuManager.Add(
-                new MenuItem("Delete")
+                new MenuItem("GameExplorer_Delete")
                 {
                     Command = new MenuCommand(this.DeleteCommand),
                     Display = "Delete",
@@ -192,7 +181,7 @@ namespace MajorHavocEditor.Views
                 });
 
             this._contextMenuManager.Add(
-                new MenuItem( "Rename" )
+                new MenuItem("GameExplorer_Rename")
                 {
                     Command = new MenuCommand( this.RenameCommand, this.IsOneItemSelected ),
                     Display = "Rename",
@@ -202,7 +191,7 @@ namespace MajorHavocEditor.Views
             this._contextMenuManager.Add(new Separator(addMenuItem, addMenuItem.GroupKey));
 
             this._contextMenuManager.Add(
-                new MenuItem("Preview")
+                new MenuItem("GameExplorer_Preview")
                 {
                     Command = new MenuCommand(this.PreviewInHbMame),
                     Display = "Preview in HBMAME",
@@ -212,7 +201,33 @@ namespace MajorHavocEditor.Views
                 });
         }
 
-        public ICommand ValidateCommand { get; set; }
+        public ICommand ValidateCommand
+        {
+            get { return this._validateCommand; }
+            set
+            {
+                this._validateCommand = value;
+
+                IMenuItem validate =
+                    new MenuItem( "GameExplorer_Validate" )
+                    {
+                        Command = new MenuCommand( o => this.ValidateCommand.Execute( this.SelectedItems ),
+                            o => this.ValidateCommand.CanExecute( this.SelectedItems ) ),
+                        Display = "Validate",
+                        GroupKey = new Guid(),
+                        SortOrder = 10,
+                        ShortcutKey = Keys.Control | Keys.V,
+                        ToolTip = "Validate a Maze or Collection.",
+                        Icon = @"Resources\Images\Buttons\ValidateDocument_315.png"
+                            .CreateResourceUri()
+                    };
+
+                this._contextMenuManager.Add(
+                    new Separator( validate, validate.GroupKey ) { SortOrder = 9 } );
+
+                this._contextMenuManager.Add(validate);
+            }
+        }
 
         public IList SelectedItems
         {
