@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
 using mhedit.Containers;
 
@@ -40,6 +39,11 @@ namespace MajorHavocEditor.Views
                     if ( args.PropertyName.Equals( nameof( IName.Name ) ) )
                     {
                         this.Text = ( (IName) sender ).Name;
+                    }
+                    else if (args.PropertyName.Equals(nameof(Maze.MazeType)))
+                    {
+                        this.ImageIndex = this.Tag is Maze maze ? (int)maze.MazeType + 1 : 0;
+                        this.SelectedImageIndex = this.ImageIndex;
                     }
                 }
             }
