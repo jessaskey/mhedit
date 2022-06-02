@@ -80,7 +80,7 @@ namespace MajorHavocEditor.Views
                 {
                     Display = "Add",
                     GroupKey = new Guid(),
-                    Icon = @"Resources\Images\Buttons\NewFileCollection_16x_24.bmp".CreateResourceUri()
+                    Icon = @"Resources\Images\Menu\NewFileCollection_16x_24.bmp".CreateResourceUri()
                 };
 
             MenuItem addMazeMenuItem =
@@ -89,7 +89,7 @@ namespace MajorHavocEditor.Views
                     ParentName = addMenuItem.Name,
                     Command = new MenuCommand(this.AddMazeCommand),
                     Display = "Maze",
-                    Icon = @"Resources\Images\Buttons\NewMaze.bmp".CreateResourceUri()
+                    Icon = @"Resources\Images\Menu\NewMaze.bmp".CreateResourceUri()
                 };
 
             MenuItem addMazeCollectionMenuItem =
@@ -98,7 +98,7 @@ namespace MajorHavocEditor.Views
                     ParentName = addMenuItem.Name,
                     Command = new MenuCommand(this.AddMazeCollectionCommand),
                     Display = "Maze Collection",
-                    Icon = @"Resources\Images\Buttons\NewCollection.bmp".CreateResourceUri()
+                    Icon = @"Resources\Images\Menu\NewCollection.bmp".CreateResourceUri()
                 };
 
             this._contextMenuManager.Add(addMenuItem);
@@ -115,7 +115,7 @@ namespace MajorHavocEditor.Views
                     Command = new MenuCommand(this.LoadFromRomCommand),
                     Display = "Load From ROM",
                     ToolTip = "Load Maze Collection From ROM",
-                    Icon = @"Resources\Images\Buttons\rom_32.png".CreateResourceUri()
+                    Icon = @"Resources\Images\Menu\rom_32.png".CreateResourceUri()
                 });
 
             this._contextMenuManager.Add( new Separator(addMenuItem, addMenuItem.GroupKey) );
@@ -127,7 +127,7 @@ namespace MajorHavocEditor.Views
                     Display = "Open",
                     ShortcutKey = Keys.Control | Keys.O,
                     ToolTip = "Open a Maze or Collection from file.",
-                    Icon = @"Resources\Images\Buttons\OpenFolder_16x_24.bmp".CreateResourceUri()
+                    Icon = @"Resources\Images\Menu\OpenFolder_16x_24.bmp".CreateResourceUri()
                 });
             this._contextMenuManager.Add(
                 new MenuItem("GameExplorer_Close")
@@ -146,7 +146,7 @@ namespace MajorHavocEditor.Views
                     Display = "Save",
                     ShortcutKey = Keys.Control | Keys.S,
                     ToolTip = "Save a Maze or Collection to file.",
-                    Icon = @"Resources\Images\Buttons\Save_16x_24.bmp".CreateResourceUri()
+                    Icon = @"Resources\Images\Menu\Save_16x_24.bmp".CreateResourceUri()
                 });
 
             this._contextMenuManager.Add(
@@ -155,7 +155,7 @@ namespace MajorHavocEditor.Views
                     Command = new MenuCommand(this.SaveAsCommand),
                     Display = "Save As...",
                     ToolTip = "Save a Maze or Collection to file.",
-                    Icon = @"Resources\Images\Buttons\SaveAs_16x_24.bmp".CreateResourceUri()
+                    Icon = @"Resources\Images\Menu\SaveAs_16x_24.bmp".CreateResourceUri()
                 });
 
             this._contextMenuManager.Add(
@@ -165,7 +165,7 @@ namespace MajorHavocEditor.Views
                     Display = "Save All",
                     ShortcutKey = Keys.Control | Keys.Shift | Keys.S,
                     ToolTip = "Save All to file.",
-                    Icon = @"Resources\Images\Buttons\SaveAll_16x_24.bmp".CreateResourceUri()
+                    Icon = @"Resources\Images\Menu\SaveAll_16x_24.bmp".CreateResourceUri()
                 });
 
             this._contextMenuManager.Add(new Separator(addMenuItem, addMenuItem.GroupKey));
@@ -177,7 +177,7 @@ namespace MajorHavocEditor.Views
                     Display = "Delete",
                     ShortcutKey = Keys.Delete,
                     ToolTip = "Delete a Maze or Collection.",
-                    Icon = @"Resources\Images\Buttons\delete.ico".CreateResourceUri()
+                    Icon = @"Resources\Images\Menu\delete.ico".CreateResourceUri()
                 });
 
             this._contextMenuManager.Add(
@@ -197,7 +197,7 @@ namespace MajorHavocEditor.Views
                     Display = "Preview in HBMAME",
                     ShortcutKey = Keys.Control | Keys.P,
                     ToolTip = "Preview a maze in HBMAME",
-                    Icon = @"Resources\Images\Buttons\hbmame_32.png".CreateResourceUri()
+                    Icon = @"Resources\Images\Menu\hbmame_32.png".CreateResourceUri()
                 });
         }
 
@@ -218,7 +218,7 @@ namespace MajorHavocEditor.Views
                         SortOrder = 10,
                         ShortcutKey = Keys.Control | Keys.V,
                         ToolTip = "Validate a Maze or Collection.",
-                        Icon = @"Resources\Images\Buttons\ValidateDocument_315.png"
+                        Icon = @"Resources\Images\Menu\ValidateDocument_315.png"
                             .CreateResourceUri()
                     };
 
