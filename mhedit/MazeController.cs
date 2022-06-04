@@ -30,11 +30,7 @@ namespace mhedit
 		private decimal _zoom = 1;
         private Point _mouseDownLocation;
 		private bool _repainted = false;
-		private string _fileName = String.Empty;
-		private PropertyGrid _propertyGrid;
-		private ComboBox _comboBoxObjects;
 		private bool _gridLines = false;
-		private string _lastError = string.Empty;
 
         private ObservableCollection<MazeObject> _selectedObjects =
             new ObservableCollection<MazeObject>();
@@ -88,64 +84,40 @@ namespace mhedit
 
 			base.Height = ( DataConverter.CanvasGridSize * _maze.MazeStampsY ) + ( DataConverter.PADDING * 2 );
 			base.Width = ( DataConverter.CanvasGridSize * _maze.MazeStampsX ) + ( DataConverter.PADDING * 2 );
-
-			//event methods
-			//base.AllowDrop = true;
-			//base.TabStop = true;
-
-			//DragOver += new DragEventHandler(Maze_DragOver);
 		}
 
         private void OnSelectedObjectsChanged( object sender, NotifyCollectionChangedEventArgs e )
         {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
+            if ( e.Action == NotifyCollectionChangedAction.Reset )
             {
-                foreach (MazeObject mazeObject in this.Maze.MazeObjects)
+                foreach ( MazeObject mazeObject in this.Maze.MazeObjects )
                 {
                     mazeObject.Selected = false;
                 }
             }
-			else if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null)
+            else if ( e.Action == NotifyCollectionChangedAction.Add )
             {
-                foreach (MazeObject mazeObject in e.NewItems)
+                foreach ( MazeObject mazeObject in e.NewItems )
                 {
                     mazeObject.Selected = true;
                 }
             }
-			else if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null)
+            else if ( e.Action == NotifyCollectionChangedAction.Remove )
             {
-                foreach (MazeObject mazeObject in e.OldItems)
+                foreach ( MazeObject mazeObject in e.OldItems )
                 {
                     mazeObject.Selected = false;
                 }
             }
-			else if (e.Action != NotifyCollectionChangedAction.Move)
+            else if ( e.Action != NotifyCollectionChangedAction.Move )
             {
-                throw new NotSupportedException(e.Action.ToString());
+                throw new NotSupportedException( e.Action.ToString() );
             }
 
-			this.Invalidate();
-		}
+            this.Invalidate();
+        }
 
 #endregion
-
-		/// <summary>
-		/// Because the base class control also has a Name property its easy to
-		/// mistakenly call the wrong property... Return the Maze name during
-		/// runtime but throw during debug.
-		/// </summary>
-		public new string Name
-		{
-			get
-			{
-#if DEBUG
-				throw new NotSupportedException(
-					"MazeController.Maze.Name is what you are looking for!" );
-#else
-				return this._maze.Name;
-#endif
-			}
-		}
 
 #region Public Properties
 
@@ -155,47 +127,20 @@ namespace mhedit
 			get { return _maze; }
 		}
 
+        [BrowsableAttribute(false)]
+        public IList<MazeObject> SelectedMazeObjects
+        {
+            get { return this._selectedObjects; }
+        }
+
 		[BrowsableAttribute(false)]
 		public bool ShowGridReferences { get; set; }
-
-		[ReadOnly(true)]
-		[DescriptionAttribute("The filename of this maze on disk.")]
-		public string FileName
-		{
-			get { return _fileName; }
-			set { _fileName = value; }
-		}
 
 		[BrowsableAttribute(false)]
 		public bool GridLines
 		{
 			get { return _gridLines; }
 			set { _gridLines = value; }
-		}
-
-		[BrowsableAttribute(false)]
-		public PropertyGrid PropertyGrid
-		{
-			get { return _propertyGrid; }
-			set { _propertyGrid = value; }
-		}
-
-		[BrowsableAttribute( false )]
-		public ComboBox ComboBoxObjects
-		{
-			get { return _comboBoxObjects; }
-			set
-			{
-				if ( _comboBoxObjects != null )
-					_comboBoxObjects.SelectedIndexChanged -= comboBoxObjects_SelectedIndexChanged;
-
-				_comboBoxObjects = value;
-
-				BindComboBoxObjects( null );
-
-				if ( _comboBoxObjects != null )
-					_comboBoxObjects.SelectedIndexChanged += comboBoxObjects_SelectedIndexChanged;
-			}
 		}
 
 		[BrowsableAttribute(false)]
@@ -206,95 +151,6 @@ namespace mhedit
 		}
 
 #endregion
-
-#region ITreeObject
-
-		public void SetGridlines(bool grid)
-		{
-			_gridLines = grid;
-		}
-
-#endregion
-
-//#region ICustomTypeDescriptor
-
-//		private PropertyDescriptorCollection FilterProperties(PropertyDescriptorCollection pdc)
-//		{
-//			ArrayList toInclude = new ArrayList();
-//			foreach (string s in NamesToInclude)
-//				toInclude.Add(s); 
-
-//			PropertyDescriptorCollection adjustedProps = new PropertyDescriptorCollection(new PropertyDescriptor[] { });
-//			foreach (PropertyDescriptor pd in pdc)
-//				if (toInclude.Contains(pd.Name))
-//					adjustedProps.Add(pd);
-
-//			return adjustedProps;
-//		} 
-
-//		public TypeConverter GetConverter()
-//		{
-//			return TypeDescriptor.GetConverter(this, true);
-//		}
-
-//		public EventDescriptorCollection GetEvents(Attribute[] attributes)
-//		{
-//			return TypeDescriptor.GetEvents(this, attributes, true);
-//		}
-
-//		EventDescriptorCollection System.ComponentModel.ICustomTypeDescriptor.GetEvents()
-//		{
-//			return TypeDescriptor.GetEvents(this, true);
-//		}
-
-//		public string GetComponentName()
-//		{
-//			return TypeDescriptor.GetComponentName(this, true);
-//		}
-
-//		public object GetPropertyOwner(PropertyDescriptor pd)
-//		{
-//			return this;
-//		}
-
-//		public AttributeCollection GetAttributes()
-//		{
-//			return TypeDescriptor.GetAttributes(this, true);
-//		}
-
-//		public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
-//		{
-//			PropertyDescriptorCollection pdc = TypeDescriptor.GetProperties(this, attributes, true);
-//			return FilterProperties(pdc);
-//		}
-
-//		PropertyDescriptorCollection System.ComponentModel.ICustomTypeDescriptor.GetProperties()
-//		{
-//			PropertyDescriptorCollection pdc = TypeDescriptor.GetProperties(this,true);
-//			return FilterProperties(pdc);
-//		}
-
-//		public object GetEditor(Type editorBaseType)
-//		{
-//			return TypeDescriptor.GetEditor(this, editorBaseType, true);
-//		}
-
-//		public PropertyDescriptor GetDefaultProperty()
-//		{
-//			return TypeDescriptor.GetDefaultProperty(this, true);
-//		}
-
-//		public EventDescriptor GetDefaultEvent()
-//		{
-//			return TypeDescriptor.GetDefaultEvent(this, true);
-//		}
-
-//		public string GetClassName()
-//		{
-//			return TypeDescriptor.GetClassName(this, true);
-//		}
-
-//        #endregion
 
 #region Implementation of IChangeTracking
 
@@ -917,7 +773,6 @@ namespace mhedit
 					}
 
 					_maze.MazeObjects.Add( mazeObject );
-					BindComboBoxObjects( mazeObject );
 
 					wasAdded = true;
 				}
@@ -971,8 +826,6 @@ namespace mhedit
 					clonedObject.Position = clonedObject.GetAdjustedPosition( point );
 					clonedObject.Selected = true;
 					_maze.MazeObjects.Add( clonedObject );
-
-					BindComboBoxObjects( clonedObject );
 				}
 				else
 				{
@@ -982,28 +835,6 @@ namespace mhedit
 			}
 
 			return clonedObject;
-		}
-
-		private void BindComboBoxObjects(MazeObject obj)
-		{
-			if (_comboBoxObjects != null)
-			{
-                BindingList<IName> dataSource = new BindingList<IName>(
-					_maze.MazeObjects.OrderBy( o => o.GetType() == typeof(MazeWall) ).
-                          ThenBy( o => o.GetType().Name ).ToList().ConvertAll( m => (IName)m ) );
-
-				/// Add the maze so user can select and edit elements.
-				dataSource.Insert( 0, this._maze );
-
-				_comboBoxObjects.DataSource = dataSource;
-				_comboBoxObjects.DisplayMember = "Name";
-				_comboBoxObjects.ValueMember = "Name";
-
-				if (obj != null)
-				{
-					_comboBoxObjects.SelectedItem = obj;
-				}
-			}
 		}
 
 		//private void MoveSelectedObject(Point newpos)
@@ -1156,26 +987,6 @@ namespace mhedit
 		//	}
 		//}
 
-		private void comboBoxObjects_SelectedIndexChanged(object sender, EventArgs e)
-		{
-            //ClearSelectedObjects();
-
-			if ( _comboBoxObjects.SelectedItem is MazeObject mazeObject )
-			{
-
-                //this.SelectObjects( new List<MazeObject>() {mazeObject} );
-
-                //mazeObject.Selected = true;
-			}
-
-            //if ( _comboBoxObjects.SelectedItem != null )
-            //         {
-            //             this._propertyGrid.SelectedObjects = new object[] { _comboBoxObjects.SelectedItem };
-            //         }
-
-            //Invalidate();
-		}
-
 		#endregion
 
 		private void OnMazePropertyChanged( object sender, PropertyChangedEventArgs e )
@@ -1190,11 +1001,6 @@ namespace mhedit
 
             /// Force redraw of maze on change..
             this.Invalidate();
-
-			if ( this._propertyGrid != null )
-			{
-				this._propertyGrid.Refresh();
-			}
 		}
 
         private void mazeControllerContextMenu_Opening( object sender, CancelEventArgs e )
