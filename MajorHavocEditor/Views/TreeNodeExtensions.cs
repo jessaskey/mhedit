@@ -16,9 +16,20 @@ namespace MajorHavocEditor.Views
         /// <returns></returns>
         public static TreeNode FindNodeOrDefault(this TreeView tree, object itemId)
         {
+            return tree.FindNodeOrDefault(n => n.Tag.Equals(itemId));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tree"></param>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
+        public static TreeNode FindNodeOrDefault(this TreeView tree, Func<TreeNode, bool> predicate)
+        {
             return tree.Nodes
                        .Descendants()
-                       .FirstOrDefault(n => n.Tag.Equals(itemId));
+                       .FirstOrDefault( predicate );
         }
 
         /// <summary>
