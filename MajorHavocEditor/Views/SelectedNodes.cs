@@ -95,7 +95,10 @@ namespace MajorHavocEditor.Views
             /// <inheritdoc />
             void ISelectedNodes.Add( TreeNode node )
             {
-                this._items.Add( node.Tag );
+                if ( !this._items.Contains( node.Tag ) )
+                {
+                    this._items.Add(node.Tag);
+                }
             }
 
             /// <inheritdoc />
