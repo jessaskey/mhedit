@@ -1,12 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MajorHavocEditor;
 
 namespace mhedit
 {
+    /// <summary>
+    /// Temporary, hides Interface that is being removed.
+    /// </summary>
     public interface ITreeObject { }
 }
 

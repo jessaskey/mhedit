@@ -23,7 +23,7 @@ namespace MajorHavocEditor.Views
         private static readonly ImageList IconList;
 
         private readonly IWindowManager _windowManager;
-        private readonly IMenuManager _contextMenuManager = new ContextMenuManager();//ContextMenuManager();
+        private readonly IMenuManager _contextMenuManager = new ContextMenuManager();
 
         private readonly ObservableCollection<IFileProperties> _mazes =
             new ObservableCollection<IFileProperties>();
