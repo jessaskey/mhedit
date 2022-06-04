@@ -5,7 +5,6 @@ using mhedit;
 using mhedit.Containers;
 using MajorHavocEditor.Interfaces.Ui;
 using MHavocEditor;
-using MHavocEditor.Views;
 
 namespace MajorHavocEditor.Views
 {
@@ -15,13 +14,12 @@ namespace MajorHavocEditor.Views
         private GameToolbox _gameToolbox = new GameToolbox();
         private MazeExplorer _mazeExplorer;
         private WindowManager _windowManager;
+        private PropertyBrowser _propertyBrowser;
         private Maze _maze;
 
         public MazeUi( Maze maze )
         {
             this._maze = maze;
-
-            this._mazeExplorer = new MazeExplorer( maze.MazeObjects, maze.MazeObjects );
 
             InitializeComponent();
 
@@ -36,14 +34,19 @@ namespace MajorHavocEditor.Views
                                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
                             };
 
-            wrapper.Controls.Add( new MazeController( maze )
-                                  {
-                                      AutoSize = true,
-                                      Anchor = AnchorStyles.Top | AnchorStyles.Left,
-                                      Dock = DockStyle.None,
-                                  } );
+            MazeController mc =
+                new MazeController( maze )
+                {
+                    AutoSize = true,
+                    Anchor = AnchorStyles.Top | AnchorStyles.Left,
+                    Dock = DockStyle.None,
+                };
+
+            wrapper.Controls.Add( mc );
 
             this.kryptonPanel.Controls.Add( wrapper );
+
+            this._mazeExplorer = new MazeExplorer( maze, mc.SelectedMazeObjects );
 
             this._windowManager = new WindowManager( this.kryptonDockingManager );
 
@@ -91,10 +94,6 @@ namespace MajorHavocEditor.Views
             base.OnLoad( e );
 
             // Setup docking functionality. No floating!
-            //KryptonDockingWorkspace w =
-            //    this.kryptonDockingManager.ManageWorkspace(this.kryptonDockableWorkspace);
-
-            //this.kryptonDockingManager.ManageControl(this.kryptonPanel, w);
             this.kryptonDockingManager.ManageControl( this.kryptonPanel );
             this.kryptonDockingManager.ManageFloating( Application.OpenForms[ 0 ] );
 

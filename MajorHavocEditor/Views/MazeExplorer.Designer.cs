@@ -1,7 +1,5 @@
 ﻿
-using Krypton.Toolkit;
-
-namespace MHavocEditor.Views
+namespace MajorHavocEditor.Views
 {
     partial class MazeExplorer
     {
@@ -16,9 +14,9 @@ namespace MHavocEditor.Views
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && (this.components != null))
             {
-                components.Dispose();
+                this.components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -31,17 +29,13 @@ namespace MHavocEditor.Views
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.treeView = new KryptonTreeView();
-            //this.treeView = new mhedit.Containers.AugmentedTreeview();
+            this.components = new System.ComponentModel.Container();
+            this.treeView = new MultiSelectTreeView();
             this.SuspendLayout();
             // 
             // treeView
             // 
             this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
-            //this.treeView.DrawMode = System.Windows.Forms.TreeViewDrawMode.OwnerDrawText;
-            this.treeView.FullRowSelect = true;
-            this.treeView.HideSelection = false;
             this.treeView.Location = new System.Drawing.Point(0, 0);
             this.treeView.Name = "treeView";
             this.treeView.Size = new System.Drawing.Size(226, 424);
@@ -52,7 +46,7 @@ namespace MHavocEditor.Views
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.treeView);
-            this.Name = "GameExplorer";
+            this.Name = "MazeExplorer";
             this.Size = new System.Drawing.Size(226, 424);
             this.ResumeLayout(false);
 
@@ -60,7 +54,6 @@ namespace MHavocEditor.Views
 
 #endregion
 
-        private KryptonTreeView treeView;
-        //private mhedit.Containers.AugmentedTreeview treeView;
+        private MultiSelectTreeView treeView;
     }
 }
