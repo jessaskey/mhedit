@@ -39,7 +39,11 @@ namespace MajorHavocEditor.Views
             {
                 this._nodeManager.Items.Clear();
 
-                this._nodeManager = new NodeManager(value, this);
+                /// Forward the ItemsDelegate, as it would typically be set before
+                /// the ItemsSource so that existing items in the collection get
+                /// added properly.
+                this._nodeManager =
+                    new NodeManager( value, this._nodeManager.ItemsDelegate, this );
             }
         }
 

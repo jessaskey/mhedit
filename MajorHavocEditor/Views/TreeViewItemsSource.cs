@@ -2,10 +2,8 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Forms;
-using mhedit.Containers;
 
 namespace MajorHavocEditor.Views
 {
@@ -52,18 +50,30 @@ namespace MajorHavocEditor.Views
 
             private readonly MultiSelectTreeView _treeView;
             private readonly IList _items;
-            private IItemsSourceDelegate _itemsDelegate = DefaultDelegate.Instance;
+            private IItemsSourceDelegate _itemsDelegate;
 
             public NodeManager( MultiSelectTreeView treeView )
                 : this( new ObservableCollection<object>(), treeView )
             {
             }
 
-            public NodeManager( IList items, MultiSelectTreeView treeView )
+            public NodeManager(IList items, MultiSelectTreeView treeView)
+                : this( items, DefaultDelegate.Instance, treeView )
+            {
+            }
+
+            public NodeManager(
+                IList items, IItemsSourceDelegate itemsDelegate, MultiSelectTreeView treeView )
             {
                 this._items = items;
 
+                this.ItemsDelegate = itemsDelegate;
+
                 this._treeView = treeView;
+
+                // Force update to the existing values in the maze
+                this.OnItemsCollectionChanged( items,
+                    new NotifyCollectionChangedEventArgs( NotifyCollectionChangedAction.Reset ) );
 
                 if ( items is INotifyCollectionChanged incc )
                 {
