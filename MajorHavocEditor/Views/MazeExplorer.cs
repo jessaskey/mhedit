@@ -16,136 +16,70 @@ namespace MajorHavocEditor.Views
 {
     public partial class MazeExplorer : UserControl, IUserInterface
     {
-        private class ItemsSourceDelegate : IItemsSourceDelegate
+        /// <summary>
+        /// I hate WinForms... This class is needed to properly disconnect
+        /// the INotifyPropertyChanged.PropertyChanged event from the node
+        /// and prevent memory leaks.
+        /// </summary>
+        private class BoundTreeNode : TreeNode
         {
-            /// <summary>
-            /// I hate WinForms... This class is needed to properly disconnect
-            /// the INotifyPropertyChanged.PropertyChanged event from the node
-            /// and prevent memory leaks.
-            /// </summary>
-            private class BoundTreeNode : TreeNode
+            public BoundTreeNode(string text)
+                : base(text)
             {
-                public BoundTreeNode( string text )
-                    : base( text )
-                {
-                }
+            }
 
-                public TreeNode ConnectPropertyChanged( INotifyPropertyChanged inpc )
-                {
-                    if ( inpc != null )
-                    {
-                        inpc.PropertyChanged += this.OnPropertyChanged;
-                    }
-
-                    return this;
-                }
-
-                public void DisconnectPropertyChanged( INotifyPropertyChanged inpc )
+            public TreeNode ConnectPropertyChanged(INotifyPropertyChanged inpc)
+            {
+                if (inpc != null)
                 {
                     inpc.PropertyChanged += this.OnPropertyChanged;
                 }
 
-                private void OnPropertyChanged( object sender, PropertyChangedEventArgs args )
+                return this;
+            }
+
+            public void DisconnectPropertyChanged(INotifyPropertyChanged inpc)
+            {
+                if (inpc != null)
                 {
-                    if ( args.PropertyName.Equals( nameof( IName.Name ) ) )
-                    {
-                        this.Text = ( (IName) sender ).Name;
-                    }
-                    //else if ( args.PropertyName.Equals( nameof( Maze.MazeType ) ) )
-                    //{
-                    //    this.ImageIndex = this.Tag is Maze maze ? (int) maze.MazeType + 1 : 0;
-                    //    this.SelectedImageIndex = this.ImageIndex;
-                    //}
-                    else if (args.PropertyName.Equals(nameof(MazeObject.Selected)))
-                    {
-                        this.Checked = ((MazeObject)this.Tag).Selected;
-                    }
+                    inpc.PropertyChanged -= this.OnPropertyChanged;
                 }
             }
 
-#region Implementation of IItemsSourceDelegate
-
-            /// <inheritdoc />
-            public TreeNode CreateNode( object item )
+            private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
             {
-                int imageIndex = 5;
-
-                return new BoundTreeNode( ( (IName) item ).Name )
-                       {
-                           Tag = item,
-                           ImageIndex = imageIndex,
-                           SelectedImageIndex = imageIndex,
-                       }
-                    .ConnectPropertyChanged( item as INotifyPropertyChanged) ;
-            }
-
-            /// <inheritdoc />
-            public void OnRemoveNode( TreeNode node )
-            {
-                ( (BoundTreeNode) node ).DisconnectPropertyChanged(
-                    (INotifyPropertyChanged) node.Tag );
-            }
-
-            /// <inheritdoc />
-            public bool Equals( TreeNode node, object item )
-            {
-                return ReferenceEquals( node.Tag, item );
-            }
-
-            /// <inheritdoc />
-            public IEnumerable GetEnumerable( TreeNode item )
-            {
-                if ( item.Tag is Maze maze )
+                if (args.PropertyName.Equals(nameof(IName.Name)))
                 {
-                    return maze.MazeObjects
-                               .ToLookup( o => o.GetType() )
-                               .OrderBy( o => o.Key == typeof( MazeWall ) )
-                               .ThenBy( o => o.Key.Name )
-                               .Select( g => new NamedGrouping(g) )
-                               .ToList();
+                    this.Text = ((IName)sender).Name;
                 }
-                else if ( item.Tag is IEnumerable enumerable )
+                //else if ( args.PropertyName.Equals( nameof( Maze.MazeType ) ) )
+                //{
+                //    this.ImageIndex = this.Tag is Maze maze ? (int) maze.MazeType + 1 : 0;
+                //    this.SelectedImageIndex = this.ImageIndex;
+                //}
+                else if (args.PropertyName.Equals(nameof(MazeObject.Selected)))
                 {
-                    return enumerable;
+                    this.Checked = ((MazeObject)this.Tag).Selected;
                 }
-
-                return null;
             }
-
-#endregion
         }
 
-        private class NamedGrouping : IGrouping<Type, MazeObject>, IName
+        private class NamedGrouping : ObservableCollection<MazeObject>, IGrouping<Type, MazeObject>, IName
         {
-            private readonly IGrouping<Type, MazeObject> _wrapped;
+            private readonly Type _key;
 
-            public NamedGrouping( IGrouping<Type, MazeObject> wrapped )
+            public NamedGrouping( IGrouping<Type, MazeObject> source )
+                :base(source)
             {
-                this._wrapped = wrapped;
+                this._key = source.Key;
             }
-
-#region Implementation of IEnumerable
-
-            /// <inheritdoc />
-            public IEnumerator<MazeObject> GetEnumerator()
-            {
-                return this._wrapped.GetEnumerator();
-            }
-
-            /// <inheritdoc />
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return this.GetEnumerator();
-            }
-
-#endregion
 
 #region Implementation of IGrouping<out Type,out MazeObject>
 
             /// <inheritdoc />
             public Type Key
             {
-                get { return this._wrapped.Key; }
+                get { return this._key; }
             }
 
 #endregion
@@ -224,9 +158,9 @@ namespace MajorHavocEditor.Views
 
             this.MinimumSize = new Size( 200, 200 );
 
-
-            this.treeView.ItemsDelegate = new ItemsSourceDelegate();
-            this.treeView.ItemsSource.Add(maze);
+            MazeExplorerItemsSource source = new MazeExplorerItemsSource( maze );
+            this.treeView.ItemsDelegate = source;
+            this.treeView.ItemsSource = source;
             this.treeView.SelectedItems = new SelectedItemsModerator( selectedItems );
 
             this.treeView.ContextMenuStrip = (ContextMenuStrip)this._contextMenuManager.Menu;
@@ -342,118 +276,6 @@ namespace MajorHavocEditor.Views
         //    {
         //    }
         //}
-
-        private void OnMazeObjectsCollectionChanged( object sender, NotifyCollectionChangedEventArgs e )
-        {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                // Rebuild the tree view
-                this.treeView.Nodes.Clear();
-
-                this.ConstructObjectView( this._mazeObjects );
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Add )
-            {
-                var sorted = e.NewItems
-                              .Cast<MazeObject>()
-                              .ToLookup( o => o.GetType() )
-                              .OrderBy(o => o.Key.Name)
-                              .ToList();
-
-                int startingGroupCount = this.treeView.Nodes.Count;
-
-                try
-                {
-                    this.treeView.BeginUpdate();
-                    
-                    foreach (IGrouping<Type, MazeObject> grouping in sorted)
-                    {
-                        TreeNode groupNode = this.treeView.Nodes[ grouping.Key.Name ] ??
-                                          new KryptonTreeNode( grouping.Key.Name )
-                                          {
-                                              //Name = grouping.Key.Name,
-                                              ImageKey = grouping.Key.Name,
-                                              SelectedImageKey = grouping.Key.Name
-                                          };
-
-                        groupNode.Nodes.AddRange( 
-                            grouping.Select(o => new KryptonTreeNode( o.Name ){ Tag = o, Name = o.Name } )
-                                    .Cast<TreeNode>()
-                                    .ToArray() );
-
-                        if (string.IsNullOrEmpty( groupNode.Name ))
-                        {
-                            groupNode.Name = grouping.Key.Name;
-
-                            this.treeView.Nodes.Add(groupNode);
-                        }
-                    }
-
-                    if ( this.treeView.Nodes.Count != startingGroupCount )
-                    {
-                        TreeNode[] nodes = this.treeView.Nodes
-                                               .Cast<TreeNode>()
-                                               .OrderBy(n => n.Name == typeof(MazeWall).Name)
-                                               .ThenBy(n => n.Name)
-                                               .ToArray();
-
-                        this.treeView.Nodes.Clear();
-                        this.treeView.Nodes.AddRange(nodes);
-                    }
-
-                    // scroll to last added?
-                    TreeNode lastNode = this.treeView.Nodes[sorted.Last().Key.Name].LastNode;
-                    if (!lastNode.IsVisible)
-                    {
-                        // must end update before EnsureVisible 
-                        this.treeView.EndUpdate();
-                        lastNode.EnsureVisible();
-                    }
-                }
-                finally
-                {
-                    this.treeView.EndUpdate();
-                }
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove )
-            {
-                var sorted = e.OldItems
-                              .Cast<MazeObject>()
-                              .ToLookup(o => o.GetType())
-                              .OrderBy(o => o.Key.Name)
-                              .ToList();
-
-                try
-                {
-                    this.treeView.BeginUpdate();
-
-                    foreach (IGrouping<Type, MazeObject> grouping in sorted)
-                    {
-                        TreeNode groupNode = this.treeView.Nodes[ grouping.Key.Name ];
-
-                        // This should never be null!!
-                        if ( groupNode != null )
-                        {
-                            foreach ( MazeObject toRemove in grouping )
-                            {
-                                groupNode.Nodes.RemoveByKey( toRemove.Name );
-                            }
-
-                            if ( groupNode.Nodes.Count == 0 )
-                            {
-                                groupNode.Remove();
-                            }
-                        }
-                    }
-                }
-                finally
-                {
-                    this.treeView.EndUpdate();
-                }
-            }
-
-            this.Invalidate();
-        }
 
 #region Implementation of IUserInterface
 
