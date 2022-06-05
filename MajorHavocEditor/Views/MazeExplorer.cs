@@ -2,12 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Krypton.Toolkit;
 using mhedit.Containers;
 using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Interfaces.Ui;
@@ -143,11 +141,6 @@ namespace MajorHavocEditor.Views
                     .Load();
         }
 
-        //public MazeExplorer()
-        //    : this(new ObservableCollection<MazeObject>(),
-        //        new ObservableCollection<MazeObject>())
-        //{ }
-
         public MazeExplorer( Maze maze, IList<MazeObject> selectedItems )
         {
             this.InitializeComponent();
@@ -167,115 +160,16 @@ namespace MajorHavocEditor.Views
 
             this.treeView.ImageList = IconList;
 
-            //this.treeView.AfterSelect += this.OnTreeViewAfterSelect;
-            //this.treeView.BeforeSelect += this.OnTreeViewBeforeSelect;
-
             this._mazeObjects = maze.MazeObjects;
 
             this._selectedObjects = selectedItems;
-
-            //this.ConstructObjectView(mazeObjects);
-
-            // Force the TreeView to update to the existing values in the maze
-            //this.OnMazeObjectsCollectionChanged( this._mazeObjects,
-            //    new NotifyCollectionChangedEventArgs( NotifyCollectionChangedAction.Reset ));
-
-            //if (maze.MazeObjects is INotifyCollectionChanged incc)
-            //{
-            //    incc.CollectionChanged += this.OnMazeObjectsCollectionChanged;
-            //}
-
-            //if (selectedItems is INotifyCollectionChanged incc2)
-            //{
-            //    incc2.CollectionChanged += this.OnSelectedObjectsCollectionChanged;
-            //}
         }
 
-        //private void OnTreeViewBeforeSelect(object sender, TreeViewCancelEventArgs e)
-        //{
-        //    if (this.treeView.SelectedNode?.Tag is MazeObject mazeObject)
-        //    {
-        //        mazeObject.Selected = false;
-        //    }
-
-        //    if (!ModifierKeys.HasFlag(Keys.Control))
-        //    {
-        //        foreach (TreeNode selectedNode in this._selectedNodes)
-        //        {
-        //            selectedNode.Checked = false;
-        //            e.Node.BackColor = Color.Empty;
-        //        }
-        //    }
-        //}
-
-        //private void OnTreeViewAfterSelect(object sender, TreeViewEventArgs e)
-        //{
-        //    if (this.treeView.SelectedNode?.Tag is MazeObject mazeObject)
-        //    {
-        //        mazeObject.Selected = true;
-
-        //        e.Node.Checked = true;
-        //        this._selectedNodes.Add(e.Node);
-
-        //        if (ModifierKeys.HasFlag(Keys.Control))
-        //        {
-        //            e.Node.BackColor = Color.Aqua;
-        //        }
-        //    }
-        //}
-
-        private void ConstructObjectView( ICollection<MazeObject> mazeObjects )
         {
-            try
-            {
-                // Sort all objects and put them under a parent...
-                if ( mazeObjects != null )
-                {
-                    var sorted = mazeObjects
-                                 .ToLookup( o => o.GetType() )
-                                 .OrderBy( o => o.Key == typeof( MazeWall ) )
-                                 .ThenBy( o => o.Key.Name )
-                                 .ToList();
-
-                    this.treeView.BeginUpdate();
-
-                    foreach ( IGrouping<Type, MazeObject> grouping in sorted )
-                    {
-                        TreeNode groupNode = new KryptonTreeNode(
-                            grouping.Key.Name,
-                            grouping.Select(o => new KryptonTreeNode( o.Name ) { Tag = o, Name = o.Name} )
-                                    .Cast<TreeNode>()
-                                    .ToArray() )
-                            {
-                                Name = grouping.Key.Name,
-                                ImageKey = grouping.Key.Name,
-                                SelectedImageKey = grouping.Key.Name
-                            };
-
-                        this.treeView.Nodes.Add( groupNode );
-                    }
-
-                    this.treeView.CollapseAll();
-                }
-            }
-            finally
-            {
-                this.treeView.EndUpdate();
-            }
         }
 
-        //private void OnSelectedObjectsCollectionChanged( object sender, NotifyCollectionChangedEventArgs e )
-        //{
-        //    if (e.Action == NotifyCollectionChangedAction.Reset)
-        //    {
-        //    }
-        //    else if ( e.Action == NotifyCollectionChangedAction.Add )
-        //    {
-        //    }
-        //    else if ( e.Action == NotifyCollectionChangedAction.Remove )
-        //    {
-        //    }
-        //}
+        {
+        }
 
 #region Implementation of IUserInterface
 
