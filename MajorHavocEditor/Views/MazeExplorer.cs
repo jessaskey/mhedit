@@ -156,6 +156,8 @@ namespace MajorHavocEditor.Views
             this.treeView.ItemsSource = source;
             this.treeView.SelectedItems = new SelectedItemsModerator( selectedItems );
 
+            this.treeView.BeforeLabelEdit += this.OnBeforeLabelEdit;
+
             this.treeView.ContextMenuStrip = (ContextMenuStrip)this._contextMenuManager.Menu;
 
             this.treeView.ImageList = IconList;
@@ -165,7 +167,10 @@ namespace MajorHavocEditor.Views
             this._selectedObjects = selectedItems;
         }
 
+        private void OnBeforeLabelEdit( object sender, NodeLabelEditEventArgs e )
         {
+            // Don't allow edits of the Group nodes..
+            e.CancelEdit = e.Node.Tag is IGrouping<Type, MazeObject>;
         }
 
         {
