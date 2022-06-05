@@ -824,8 +824,8 @@ namespace mhedit
 
 					clonedObject.Name = NameFactory.Create( clonedObject.GetType().Name );
 					clonedObject.Position = clonedObject.GetAdjustedPosition( point );
-					clonedObject.Selected = true;
 					_maze.MazeObjects.Add( clonedObject );
+                    this._selectedObjects.Add( clonedObject );
 				}
 				else
 				{
