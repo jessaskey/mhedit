@@ -6,7 +6,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using Krypton.Toolkit;
 using mhedit.Containers;
 
 namespace MajorHavocEditor.Views
@@ -21,31 +20,12 @@ namespace MajorHavocEditor.Views
         private class SelectedItemsModerator : NotifyPropertyChangedBase, IList, INotifyCollectionChanged
         {
             private readonly IList<MazeObject> _mazeSelections;
-            private readonly List<object> _treeSelections = new List<object>();
+            private readonly ObservableCollection<object> _treeSelections = 
+                new ObservableCollection<object>();
 
             public SelectedItemsModerator( IList<MazeObject> mazeSelections )
             {
                 this._mazeSelections = mazeSelections;
-
-                if (mazeSelections is INotifyCollectionChanged incc)
-                {
-                    incc.CollectionChanged += this.OnItemsCollectionChanged;
-                }
-            }
-
-            private void OnItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-            {
-                this.OnPropertyChanged(nameof(this.SelectedObjects));
-            }
-
-            public object[] SelectedObjects
-            {
-                get
-                {
-                    return this._treeSelections
-                               .Concat( this._mazeSelections )
-                               .ToArray();
-                }
             }
 
 #region Implementation of IEnumerable
@@ -53,7 +33,11 @@ namespace MajorHavocEditor.Views
             /// <inheritdoc />
             public IEnumerator GetEnumerator()
             {
+                /// Right now this object manages only a Maze, all it's MazeObjects,
+                /// and the groups that organize the MazObjects. However, should never
+                /// include the Group objects in the SelectedItems collection!
                 return this._treeSelections
+                           .Where( o => o is not IGrouping<Type, MazeObject> )
                            .Concat( this._mazeSelections )
                            .GetEnumerator();
             }
@@ -99,13 +83,16 @@ namespace MajorHavocEditor.Views
                 }
                 else
                 {
-                    this._treeSelections.Add( value );
+                    this._treeSelections.Add(value);
 
-                    if ( value is IGrouping<Type, MazeObject> grouping )
+                    if ( ModifierKeys.HasFlag( Keys.Control ) )
                     {
-                        foreach (MazeObject o in grouping)
+                        if (value is IGrouping<Type, MazeObject> grouping)
                         {
-                            this._mazeSelections.Add(o);
+                            foreach (MazeObject o in grouping)
+                            {
+                                this._mazeSelections.Add(o);
+                            }
                         }
                     }
                 }
@@ -195,8 +182,16 @@ namespace MajorHavocEditor.Views
             event NotifyCollectionChangedEventHandler INotifyCollectionChanged.CollectionChanged
             {
                 // Forward directly into the MazeObjects collection.
-                add { ((INotifyCollectionChanged)this._mazeSelections).CollectionChanged += value; }
-                remove { ((INotifyCollectionChanged)this._mazeSelections).CollectionChanged -= value; }
+                add
+                {
+                    ((INotifyCollectionChanged)this._mazeSelections).CollectionChanged += value;
+                    ((INotifyCollectionChanged)this._treeSelections).CollectionChanged += value;
+                }
+                remove
+                {
+                    ((INotifyCollectionChanged)this._mazeSelections).CollectionChanged -= value;
+                    ((INotifyCollectionChanged)this._treeSelections).CollectionChanged -= value;
+                }
             }
 
  #endregion
@@ -267,13 +262,6 @@ namespace MajorHavocEditor.Views
                         /// adding a new group.
                         if ( found == null )
                         {
-                            //NamedGrouping[] groups
-                            //    = this._groupedMazeObjects
-                            //          .Concat( new[] { new NamedGrouping(grouping) }  )
-                            //          .OrderBy( n => n.Name == typeof( MazeWall ).Name )
-                            //          .ThenBy( n => n.Name )
-                            //          .ToArray();
-
                             NamedGrouping before =
                                 this._groupedMazeObjects.FirstOrDefault(
                                     g => g.Name.CompareTo( grouping.Key.Name ) > 0 );
