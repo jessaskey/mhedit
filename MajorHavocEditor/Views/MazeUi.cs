@@ -25,14 +25,14 @@ namespace MajorHavocEditor.Views
 
             // I need to wrap the maze controller to get scrollbars and fix a focus bug.
             CustomPanel wrapper = new CustomPanel()
-                            {
-                                Anchor = AnchorStyles.Top | AnchorStyles.Left,
-                                Dock = DockStyle.Fill,
-                                BackColor = Color.Black,
-                                AutoSize = true,
-                                AutoScroll = true,
-                                AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                            };
+                                  {
+                                      Anchor = AnchorStyles.Top | AnchorStyles.Left,
+                                      Dock = DockStyle.Fill,
+                                      BackColor = Color.Black,
+                                      AutoSize = true,
+                                      AutoScroll = true,
+                                      AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                                  };
 
             MazeController mc =
                 new MazeController( maze )
@@ -49,6 +49,8 @@ namespace MajorHavocEditor.Views
             this._mazeExplorer = new MazeExplorer( maze, mc.SelectedMazeObjects );
 
             this._windowManager = new WindowManager( this.kryptonDockingManager );
+
+            this._propertyBrowser = new PropertyBrowser( this._mazeExplorer.SelectedObjects );
 
             this.Dock = DockStyle.Fill;
         }
@@ -99,6 +101,7 @@ namespace MajorHavocEditor.Views
 
             this._windowManager.Hide( this._gameToolbox );
             this._windowManager.Show( this._mazeExplorer );
+            this._windowManager.Show( this._propertyBrowser );
         }
 
 #endregion

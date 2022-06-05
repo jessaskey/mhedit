@@ -173,7 +173,9 @@ namespace MajorHavocEditor.Views
             e.CancelEdit = e.Node.Tag is IGrouping<Type, MazeObject>;
         }
 
+        public IList SelectedObjects
         {
+            get { return this.treeView.SelectedItems; }
         }
 
 #region Implementation of IUserInterface
