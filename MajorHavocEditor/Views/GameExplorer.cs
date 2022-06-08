@@ -110,9 +110,42 @@ namespace MajorHavocEditor.Views
             this._contextMenuManager.Add(addMazeMenuItem);
             this._contextMenuManager.Add(addMazeCollectionMenuItem);
 
+            IMenuItem open =
+                new MenuItem("GameExplorer_Open")
+                {
+                    Command = new MenuCommand(this.OpenFileCommand),
+                    Display = "Open",
+                    ShortcutKey = Keys.Control | Keys.O,
+                    ToolTip = "Open a Maze or Collection from file.",
+                    Icon = @"Resources\Images\Menu\OpenFolder_16x_24.bmp".CreateResourceUri()
+                };
+
+            IMenuItem save =
+                new MenuItem( "GameExplorer_Save" )
+                {
+                    Command = new MenuCommand( this.SaveCommand ),
+                    Display = "Save",
+                    ShortcutKey = Keys.Control | Keys.S,
+                    ToolTip = "Save a Maze or Collection to file.",
+                    Icon = @"Resources\Images\Menu\Save_16x_24.bmp".CreateResourceUri()
+                };
+
+            IMenuItem saveAll =
+                new MenuItem( "GameExplorer_SaveAll" )
+                {
+                    Command = new MenuCommand( this.SaveAllCommand ),
+                    Display = "Save All",
+                    ShortcutKey = Keys.Control | Keys.Shift | Keys.S,
+                    ToolTip = "Save All to file.",
+                    Icon = @"Resources\Images\Menu\SaveAll_16x_24.bmp".CreateResourceUri()
+                };
+
             menuManager.Add(addMenuItem);
             menuManager.Add(addMazeMenuItem);
             menuManager.Add(addMazeCollectionMenuItem);
+            menuManager.Add(open);
+            menuManager.Add(save);
+            menuManager.Add(saveAll);
 
             menuManager?.Add(
                 new MenuItem("GameExplorer_LoadFromROM")
@@ -125,15 +158,8 @@ namespace MajorHavocEditor.Views
 
             this._contextMenuManager.Add( new Separator(addMenuItem, addMenuItem.GroupKey) );
 
-            this._contextMenuManager.Add(
-                new MenuItem("GameExplorer_Open")
-                {
-                    Command = new MenuCommand(this.OpenFileCommand),
-                    Display = "Open",
-                    ShortcutKey = Keys.Control | Keys.O,
-                    ToolTip = "Open a Maze or Collection from file.",
-                    Icon = @"Resources\Images\Menu\OpenFolder_16x_24.bmp".CreateResourceUri()
-                });
+            this._contextMenuManager.Add( open );
+
             this._contextMenuManager.Add(
                 new MenuItem("GameExplorer_Close")
                 {
@@ -143,16 +169,8 @@ namespace MajorHavocEditor.Views
                 });
 
             this._contextMenuManager.Add(new Separator(addMenuItem, addMenuItem.GroupKey));
-            
-            this._contextMenuManager.Add(
-                new MenuItem("GameExplorer_Save")
-                {
-                    Command = new MenuCommand(this.SaveCommand),
-                    Display = "Save",
-                    ShortcutKey = Keys.Control | Keys.S,
-                    ToolTip = "Save a Maze or Collection to file.",
-                    Icon = @"Resources\Images\Menu\Save_16x_24.bmp".CreateResourceUri()
-                });
+
+            this._contextMenuManager.Add( save );
 
             this._contextMenuManager.Add(
                 new MenuItem("GameExplorer_SaveAs")
@@ -163,15 +181,7 @@ namespace MajorHavocEditor.Views
                     Icon = @"Resources\Images\Menu\SaveAs_16x_24.bmp".CreateResourceUri()
                 });
 
-            this._contextMenuManager.Add(
-                new MenuItem("GameExplorer_SaveAll")
-                {
-                    Command = new MenuCommand(this.SaveAllCommand),
-                    Display = "Save All",
-                    ShortcutKey = Keys.Control | Keys.Shift | Keys.S,
-                    ToolTip = "Save All to file.",
-                    Icon = @"Resources\Images\Menu\SaveAll_16x_24.bmp".CreateResourceUri()
-                });
+            this._contextMenuManager.Add( saveAll );
 
             this._contextMenuManager.Add(new Separator(addMenuItem, addMenuItem.GroupKey));
 
