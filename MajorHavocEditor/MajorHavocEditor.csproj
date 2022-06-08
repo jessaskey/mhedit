@@ -24,6 +24,8 @@
         <EmbeddedResource Include="Resources\Images\Menu\Configuration.png" />
         <EmbeddedResource Include="Resources\Images\Menu\delete.ico" />
         <EmbeddedResource Include="Resources\Images\Menu\hbmame_32.png" />
+        <EmbeddedResource Include="Resources\Images\Menu\HomeHS.png" />
+        <EmbeddedResource Include="Resources\Images\Menu\Information.bmp" />
         <EmbeddedResource Include="Resources\Images\Menu\NewCollection.bmp" />
         <EmbeddedResource Include="Resources\Images\Menu\NewFileCollection_16x_24.bmp" />
         <EmbeddedResource Include="Resources\Images\Menu\NewMaze.bmp" />

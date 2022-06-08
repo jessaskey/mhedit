@@ -19,6 +19,8 @@ namespace MajorHavocEditor
 
     public partial class Form2 : KryptonForm
     {
+        public static string MHPHomepage = "http://mhedit.askey.org";
+
         private IMenuManager _menuManager = new MenuStripManager(DockStyle.Top);
         private IWindowManager _windowManager;
         private GameExplorer _gameExplorer;
@@ -61,6 +63,41 @@ namespace MajorHavocEditor
                     ToolTip = "Displays the Configuration dialog.",
                     GroupKey = new Guid(),
                     Icon = @"Resources\Images\Menu\Configuration.png".CreateResourceUri()
+                } );
+
+            this._menuManager.Add(
+                new MenuItem( "MainForm_About" )
+                {
+                    Command = new MenuCommand( _ => new DialogAbout().ShowDialog() ),
+                    Display = "About",
+                    ToolTip = "Displays the AboutBox.",
+                    GroupKey = new Guid(),
+                    Icon = @"Resources\Images\Menu\Information.bmp".CreateResourceUri()
+                } );
+
+            this._menuManager.Add(
+                new MenuItem( "MainForm_HomePage" )
+                {
+                    /// <see cref="https://docs.microsoft.com/en-us/troubleshoot/developer/visualstudio/csharp/language-compilers/start-internet-browser#provide-exception-handling"/>
+                    Command = new MenuCommand(
+                        _ =>
+                        {
+                            try
+                            {
+                                System.Diagnostics.Process.Start( MHPHomepage );
+                            }
+                            catch ( Win32Exception noBrowser )
+                            {
+                                if ( noBrowser.ErrorCode != -2147467259 )
+                                {
+                                    throw;
+                                }
+                            }
+                        } ),
+                    Display = "Homepage",
+                    ToolTip = "Displays the MHPe homepage.",
+                    GroupKey = new Guid(),
+                    Icon = @"Resources\Images\Menu\HomeHS.png".CreateResourceUri()
                 } );
         }
 
