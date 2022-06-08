@@ -6,10 +6,12 @@ using System.Windows.Forms;
 using Krypton.Docking;
 using Krypton.Toolkit;
 using Krypton.Workspace;
+using mhedit.Containers;
 using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Interfaces.Ui;
 using MajorHavocEditor.Services;
 using MajorHavocEditor.Views;
+using MajorHavocEditor.Views.Dialogs;
 using MHavocEditor;
 
 namespace MajorHavocEditor
@@ -23,6 +25,7 @@ namespace MajorHavocEditor
         private IValidationService _validationService;
         private KryptonManager _kryptonManager = new KryptonManager();
         private PropertyBrowser _propertyBrowser;
+        private IMameManager _mameManager = new MameManager();
 
         //private GameToolbox _gameToolbox = new GameToolbox();
 
@@ -35,7 +38,8 @@ namespace MajorHavocEditor
             this._windowManager = new WindowManager(this.kryptonDockableWorkspace,
                 this.kryptonDockingManager);
 
-            this._gameExplorer = new GameExplorer(this._menuManager, this._windowManager);
+            this._gameExplorer = new GameExplorer(this._menuManager, this._windowManager,
+                this._mameManager);
 
             this._validationService = new ValidationService( this._windowManager );
 
@@ -47,13 +51,21 @@ namespace MajorHavocEditor
 
             this._gameExplorer.ValidateCommand = new MenuCommand(
                 this.ValidateCommand,
-                this.CanValidate );
+                this.OneOrMoreSelected );
+
+            this._menuManager.Add(
+                new MenuItem( "MainForm_Configuration" )
+                {
+                    Command = new MenuCommand( _ => new DialogConfiguration().ShowDialog() ),
+                    Display = "Configuration",
+                    ToolTip = "Displays the Configuration dialog.",
+                    GroupKey = new Guid(),
+                    Icon = @"Resources\Images\Menu\Configuration.png".CreateResourceUri()
+                } );
         }
 
-        private bool CanValidate( object notUsed )
+        private bool OneOrMoreSelected( object notUsed )
         {
-            // Should always be true since it just reflects over objects to
-            // look for validation attributes...
             return this._gameExplorer.SelectedItems.Count > 0;
         }
 

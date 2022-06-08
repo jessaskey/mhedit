@@ -1,8 +1,8 @@
 using System;
-using System.Deployment.Application;
 using System.Windows.Forms;
+using mhedit;
 
-namespace mhedit
+namespace MajorHavocEditor.Views.Dialogs
 {
 
     public partial class DialogAbout : Form
@@ -27,8 +27,9 @@ namespace mhedit
             try
             {
                 //Show the ClickOnce assembly version if possible, if this is not a ClickOnce deployment, then show the Assembly version still 
-                this.labelVersion.Text = $"{Containers.VersionInformation.ApplicationVersion} " +
-                                         $"{( ApplicationDeployment.IsNetworkDeployed ? "(ClickOnce)" : "(Assembly)" )}";
+                this.labelVersion.Text =
+                    $"{mhedit.Containers.VersionInformation.ApplicationVersion} ";//+
+                                         //$"{( ApplicationDeployment.IsNetworkDeployed ? "(ClickOnce)" : "(Assembly)" )}";
 
                 this.labelROMVersion.Text =
                     $"{VersionInformation.RomVersion.Major.ToString( "X2" )}." +

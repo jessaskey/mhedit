@@ -1,4 +1,4 @@
-﻿namespace mhedit
+﻿namespace MajorHavocEditor.Views.Dialogs
 {
     partial class DialogConfiguration
     {
@@ -13,9 +13,9 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && (this.components != null))
             {
-                components.Dispose();
+                this.components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -164,7 +164,7 @@
             // 
             // buttonBrowseMameExecutable
             // 
-            this.buttonBrowseMameExecutable.Image = global::mhedit.Properties.Resources.OpenSelectedItemHS;
+            //this.buttonBrowseMameExecutable.Image = global::mhedit.Properties.Resources.OpenSelectedItemHS;
             this.buttonBrowseMameExecutable.Location = new System.Drawing.Point(492, 19);
             this.buttonBrowseMameExecutable.Name = "buttonBrowseMameExecutable";
             this.buttonBrowseMameExecutable.Size = new System.Drawing.Size(29, 23);

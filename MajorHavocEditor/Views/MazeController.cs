@@ -1,22 +1,21 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
-using Silver.UI;
-using mhedit.Containers.MazeObjects;
-using mhedit.Containers.MazeEnemies;
+using mhedit;
 using mhedit.Containers;
+using mhedit.Containers.MazeEnemies;
+using mhedit.Containers.MazeObjects;
+using Silver.UI;
 
-namespace mhedit
+namespace MajorHavocEditor.Views
 {
-	[DefaultPropertyAttribute("Name")]
+	[DefaultProperty("Name")]
 	[Serializable]
 	public partial class MazeController : UserControl, ITreeObject, IChangeTracking//, ICustomTypeDescriptor
 	{
@@ -78,12 +77,12 @@ namespace mhedit
 
             this._selectedObjects.CollectionChanged += this.OnSelectedObjectsChanged;
 
-			DoubleBuffered = true;
-			SetStyle( ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true );
-			UpdateStyles();
+			this.DoubleBuffered = true;
+			this.SetStyle( ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true );
+			this.UpdateStyles();
 
-			base.Height = ( DataConverter.CanvasGridSize * _maze.MazeStampsY ) + ( DataConverter.PADDING * 2 );
-			base.Width = ( DataConverter.CanvasGridSize * _maze.MazeStampsX ) + ( DataConverter.PADDING * 2 );
+			base.Height = ( DataConverter.CanvasGridSize * this._maze.MazeStampsY ) + ( DataConverter.PADDING * 2 );
+			base.Width = ( DataConverter.CanvasGridSize * this._maze.MazeStampsX ) + ( DataConverter.PADDING * 2 );
 		}
 
         private void OnSelectedObjectsChanged( object sender, NotifyCollectionChangedEventArgs e )
@@ -121,33 +120,33 @@ namespace mhedit
 
 #region Public Properties
 
-		[BrowsableAttribute(false)]
+		[Browsable(false)]
 		public Maze Maze
 		{
-			get { return _maze; }
+			get { return this._maze; }
 		}
 
-        [BrowsableAttribute(false)]
+        [Browsable(false)]
         public IList<MazeObject> SelectedMazeObjects
         {
             get { return this._selectedObjects; }
         }
 
-		[BrowsableAttribute(false)]
+		[Browsable(false)]
 		public bool ShowGridReferences { get; set; }
 
-		[BrowsableAttribute(false)]
+		[Browsable(false)]
 		public bool GridLines
 		{
-			get { return _gridLines; }
-			set { _gridLines = value; }
+			get { return this._gridLines; }
+			set { this._gridLines = value; }
 		}
 
-		[BrowsableAttribute(false)]
+		[Browsable(false)]
 		public decimal Zoom
 		{
-			get { return _zoom; }
-			set { _zoom = value; }
+			get { return this._zoom; }
+			set { this._zoom = value; }
 		}
 
 #endregion
@@ -183,8 +182,8 @@ namespace mhedit
 			int currentStamp;
 
 			//base.DisplayRectangle = new Rectangle(base.Left, base.Top,(int)(base.Width * zoom),(int)(base.Height * zoom));
-			base.Height = (int)( DataConverter.CanvasGridSize * _maze.MazeStampsY * _zoom) + (DataConverter.PADDING *2);
-			base.Width = (int)(( DataConverter.CanvasGridSize * _maze.MazeStampsX * _zoom) + (DataConverter.PADDING * 2)); // - (GRIDUNITS * STAMPS_TRIM_LEFT * GRIDUNITSTAMPS * _zoom));
+			base.Height = (int)( DataConverter.CanvasGridSize * this._maze.MazeStampsY * this._zoom) + (DataConverter.PADDING *2);
+			base.Width = (int)(( DataConverter.CanvasGridSize * this._maze.MazeStampsX * this._zoom) + (DataConverter.PADDING * 2)); // - (GRIDUNITS * STAMPS_TRIM_LEFT * GRIDUNITSTAMPS * _zoom));
 
 			mazeHeight = (int)(base.Height);
 			mazeWidth = (int)(base.Width);
@@ -197,36 +196,36 @@ namespace mhedit
 			//g.RenderingOrigin = objectOffset;
 			g.Clear(Color.Black);
 
-			if (GridLines)
+			if (this.GridLines)
 			{
 				//now draw the major grid lines
 				//vertical
-				for (int i = 0; i <= mazeWidth; i += (int)( DataConverter.CanvasGridSize * _zoom))
+				for (int i = 0; i <= mazeWidth; i += (int)( DataConverter.CanvasGridSize * this._zoom))
 				{
 					g.DrawLine(bigGridPen, (int)(i+DataConverter.PADDING), 0, (int)(i+DataConverter.PADDING), mazeHeight);
 				}
 				//horizontal, start at zero 
-				for (int i = 0; i <= mazeHeight; i += (int)( DataConverter.CanvasGridSize * _zoom))
+				for (int i = 0; i <= mazeHeight; i += (int)( DataConverter.CanvasGridSize * this._zoom))
 				{
 					g.DrawLine(bigGridPen, 0, (int)(i+ DataConverter.PADDING), mazeWidth, (int)(i+DataConverter.PADDING));
 				}
 			}
 
-			if (ShowGridReferences)
+			if (this.ShowGridReferences)
 			{
 				//now draw the major grid lines
 				//X
 				int xOffset = -3;
-				for (int i = Math.Abs(xOffset); i <= _maze.MazeStampsX; i++)
+				for (int i = Math.Abs(xOffset); i <= this._maze.MazeStampsX; i++)
 				{
 					int gridValue = i + xOffset;
-					g.DrawString(gridValue.ToString("X"), Font, referenceBrush, new Point((i * (int)( DataConverter.CanvasGridSize * _zoom)) + DataConverter.PADDING, 1));
+					g.DrawString(gridValue.ToString("X"), this.Font, referenceBrush, new Point((i * (int)( DataConverter.CanvasGridSize * this._zoom)) + DataConverter.PADDING, 1));
 				}
 				//Y
-				for (int i = 0; i <= _maze.MazeStampsY; i ++)
+				for (int i = 0; i <= this._maze.MazeStampsY; i ++)
 				{
 					int gridValue = ((-i) + 12);
-					g.DrawString(gridValue.ToString("X"), Font, referenceBrush, new Point(1, (i * (int)( DataConverter.CanvasGridSize * _zoom)) + DataConverter.PADDING));
+					g.DrawString(gridValue.ToString("X"), this.Font, referenceBrush, new Point(1, (i * (int)( DataConverter.CanvasGridSize * this._zoom)) + DataConverter.PADDING));
 				}
 			}
 
@@ -239,50 +238,50 @@ namespace mhedit
 			//we will use the base wall 'selected' property to denote
 			//if there is not a wall in that stamp location
 			//first reset all 'selected properties to 0
-			for (int i = 0; i < _maze.MazeWallBase.Count ; i++)
+			for (int i = 0; i < this._maze.MazeWallBase.Count ; i++)
 			{
-				if (_maze.MazeWallBase[i] != null)
+				if (this._maze.MazeWallBase[i] != null)
 				{
-					_maze.MazeWallBase[i].Selected = false;
+					this._maze.MazeWallBase[i].Selected = false;
 				}
 			}
 			//set wall to 'selected' of there is a user defined wall at that location
-			for (int i = 0; i < _maze.MazeObjects.Count; i++)
+			for (int i = 0; i < this._maze.MazeObjects.Count; i++)
 			{
-				MazeObject mazeObject = (MazeObject)_maze.MazeObjects[i];
+				MazeObject mazeObject = (MazeObject)this._maze.MazeObjects[i];
 				if (mazeObject.GetType() == typeof(MazeWall))
 				{
 					currentStamp = this._maze.PointToStamp(mazeObject.Position);
-					if (currentStamp >= 0 && currentStamp < _maze.MazeWallBase.Count)
+					if (currentStamp >= 0 && currentStamp < this._maze.MazeWallBase.Count)
 					{
-						if (_maze.MazeWallBase[currentStamp] != null)
+						if (this._maze.MazeWallBase[currentStamp] != null)
 						{
-							_maze.MazeWallBase[currentStamp].Selected = true;
+							this._maze.MazeWallBase[currentStamp].Selected = true;
 						}
 					}
 				}
 			}
 			//now draw all walls that don't have a user defined wall at that location
-			for (int rows = 0; rows < _maze.MazeStampsY; rows++)
+			for (int rows = 0; rows < this._maze.MazeStampsY; rows++)
 			{
-				for (int cols = 0; cols < _maze.MazeStampsX; cols++)
+				for (int cols = 0; cols < this._maze.MazeStampsX; cols++)
 				{
-					currentStamp = (rows * _maze.MazeStampsX) + cols;
-					if (currentStamp < _maze.MazeWallBase.Count)
+					currentStamp = (rows * this._maze.MazeStampsX) + cols;
+					if (currentStamp < this._maze.MazeWallBase.Count)
 					{
-						if (_maze.MazeWallBase[currentStamp] != null)
+						if (this._maze.MazeWallBase[currentStamp] != null)
 						{
-							if (_maze.MazeWallBase[currentStamp].Selected == false)
+							if (this._maze.MazeWallBase[currentStamp].Selected == false)
 							{
-								if (_maze.MazeWallBase[currentStamp].WallType != MazeWallType.Empty)
+								if (this._maze.MazeWallBase[currentStamp].WallType != MazeWallType.Empty)
 								{
-									Image currentImage = _maze.MazeWallBase[currentStamp].Image;
+									Image currentImage = this._maze.MazeWallBase[currentStamp].Image;
 									if (currentImage != null)
 									{
-										Image scaledImage = currentImage.GetThumbnailImage((int)(currentImage.Width * _zoom), (int)(currentImage.Height * _zoom), null, System.IntPtr.Zero);
+										Image scaledImage = currentImage.GetThumbnailImage((int)(currentImage.Width * this._zoom), (int)(currentImage.Height * this._zoom), null, System.IntPtr.Zero);
 										if (scaledImage != null)
 										{
-											g.DrawImage(scaledImage, new Point((int)((cols * DataConverter.CanvasGridSize * _zoom)+ DataConverter.PADDING), (int)((rows * DataConverter.CanvasGridSize * _zoom)+ DataConverter.PADDING)));
+											g.DrawImage(scaledImage, new Point((int)((cols * DataConverter.CanvasGridSize * this._zoom)+ DataConverter.PADDING), (int)((rows * DataConverter.CanvasGridSize * this._zoom)+ DataConverter.PADDING)));
 										}
 									}
 								}
@@ -299,13 +298,13 @@ namespace mhedit
 			//stopwatch.Start();
 
 			//draw all wall objects
-			for (int i = 0; i < _maze.MazeObjects.Count; i++)
+			for (int i = 0; i < this._maze.MazeObjects.Count; i++)
 			{
-				MazeObject mazeObject = (MazeObject)_maze.MazeObjects[i];
+				MazeObject mazeObject = (MazeObject)this._maze.MazeObjects[i];
 				if (mazeObject.GetType() == typeof(MazeWall))
 				{
-					Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * _zoom), (int)(mazeObject.Image.Height * _zoom), null, System.IntPtr.Zero);
-					g.DrawImage(scaledImage, new Point((int)((mazeObject.Position.X * _zoom)+ DataConverter.PADDING), (int)((mazeObject.Position.Y * _zoom)+ DataConverter.PADDING)));
+					Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * this._zoom), (int)(mazeObject.Image.Height * this._zoom), null, System.IntPtr.Zero);
+					g.DrawImage(scaledImage, new Point((int)((mazeObject.Position.X * this._zoom)+ DataConverter.PADDING), (int)((mazeObject.Position.Y * this._zoom)+ DataConverter.PADDING)));
 				}
 			}
 
@@ -314,17 +313,17 @@ namespace mhedit
 			//stopwatch.Start();
 
 			//draw all non-wall objects
-			for (int i = 0; i < _maze.MazeObjects.Count; i++)
+			for (int i = 0; i < this._maze.MazeObjects.Count; i++)
 			{
-				MazeObject mazeObject = (MazeObject)_maze.MazeObjects[i];
+				MazeObject mazeObject = (MazeObject)this._maze.MazeObjects[i];
 				if (mazeObject.GetType() != typeof(MazeWall))
 				{
-					Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * _zoom), (int)(mazeObject.Image.Height * _zoom), null, System.IntPtr.Zero);
-					g.DrawImage( scaledImage, new Point( (int)( ( mazeObject.RenderPosition.X * _zoom ) + DataConverter.PADDING ), (int)( mazeObject.RenderPosition.Y * _zoom ) + DataConverter.PADDING ) );
+					Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * this._zoom), (int)(mazeObject.Image.Height * this._zoom), null, System.IntPtr.Zero);
+					g.DrawImage( scaledImage, new Point( (int)( ( mazeObject.RenderPosition.X * this._zoom ) + DataConverter.PADDING ), (int)( mazeObject.RenderPosition.Y * this._zoom ) + DataConverter.PADDING ) );
 				}
 			}
 
-			_repainted = true;
+			this._repainted = true;
 			//Console.Write("Objects Complete - " + stopwatch.ElapsedMilliseconds.ToString() + "\n");
 			//stopwatch.Stop();
 
@@ -370,19 +369,19 @@ namespace mhedit
                     break;
 				case Keys.Up:
                     this.TranslateObject(this._selectedObjects.FirstOrDefault(), 0, -1);
-					Invalidate();
+					this.Invalidate();
 					break;
 				case Keys.Down:
                     this.TranslateObject(this._selectedObjects.FirstOrDefault(), 0, 1);
-					Invalidate();
+					this.Invalidate();
 					break;
 				case Keys.Left:
                     this.TranslateObject(this._selectedObjects.FirstOrDefault(), -1, 0);
-					Invalidate();
+					this.Invalidate();
 					break;
 				case Keys.Right:
                     this.TranslateObject(this._selectedObjects.FirstOrDefault(), 1, 0);
-					Invalidate();
+					this.Invalidate();
 					break;
 
 			}
@@ -482,7 +481,7 @@ namespace mhedit
                 MazeObject obj = this._selectedObjects.FirstOrDefault();
                 if ( obj != null )
                 {
-                    DoDragDrop( obj,
+                    this.DoDragDrop( obj,
                         obj is EscapePod ? DragDropEffects.None : DragDropEffects.Copy );
                 }
             }
@@ -518,7 +517,7 @@ namespace mhedit
 			{
 				drgevent.Effect = DragDropEffects.None;
 
-				Point panelXY = PointToClient( new Point( drgevent.X, drgevent.Y ) );
+				Point panelXY = this.PointToClient( new Point( drgevent.X, drgevent.Y ) );
 
 				if ( !( panelXY.X < DataConverter.PADDING ||
 						panelXY.Y < DataConverter.PADDING ||
@@ -556,7 +555,7 @@ namespace mhedit
 		{
 			//this.Select();
 			ToolBoxItem dragItem = null;
-			Point panelXY = PointToClient(new Point(drgevent.X, drgevent.Y));
+			Point panelXY = this.PointToClient(new Point(drgevent.X, drgevent.Y));
 
 			if (drgevent.Data.GetDataPresent(typeof(Silver.UI.ToolBoxItem)))
 			{
@@ -564,16 +563,16 @@ namespace mhedit
 
 				if (null != dragItem && null != dragItem.Object)
 				{
-					if (_maze.MazeType != MazeType.TypeB && dragItem.Object.GetType() == typeof(EscapePod))
+					if (this._maze.MazeType != MazeType.TypeB && dragItem.Object.GetType() == typeof(EscapePod))
 					{
 						MessageBox.Show("The Escape pod can only be added to 'B' Type mazes.");
 					}
 					else
 					{
-						MazeObject clonedObject = AddObjectClone(dragItem.Object, panelXY);
+						MazeObject clonedObject = this.AddObjectClone(dragItem.Object, panelXY);
 						if (clonedObject != null)
 						{
-							Invalidate();
+							this.Invalidate();
 						}
 					}
 				}
@@ -581,7 +580,7 @@ namespace mhedit
 			else
 			{
 				this.MoveObject( this._selectedObjects.FirstOrDefault(), panelXY );
-				Invalidate();
+				this.Invalidate();
 			}
 			this.Focus();   //this is required so that when dropping an object, the maze panel gets focus so keys work immediately with out clicking on the maze first.
 			base.OnDragDrop(drgevent);
@@ -594,19 +593,19 @@ namespace mhedit
 
 		public Image GetImage()
 		{
-			bool gridLineState = GridLines;
-			GridLines = false;
-			_repainted = false;
-			Invalidate(true);
+			bool gridLineState = this.GridLines;
+			this.GridLines = false;
+			this._repainted = false;
+			this.Invalidate(true);
 
-			while(!_repainted)
+			while(!this._repainted)
 			{
 				Application.DoEvents();
 			}
 
-			SuspendLayout();
+			this.SuspendLayout();
 			// reverse control z-index
-			ReverseControlZIndex(this);
+			this.ReverseControlZIndex(this);
 
 			int xTrim = 200;
 			Bitmap bitmap = new Bitmap(this.Width, this.Height);
@@ -621,11 +620,11 @@ namespace mhedit
 			}
 
 			// reverse control z-index back
-			ReverseControlZIndex(this);
-			ResumeLayout(true);
+			this.ReverseControlZIndex(this);
+			this.ResumeLayout(true);
 
-			GridLines = gridLineState;
-			Invalidate(true);
+			this.GridLines = gridLineState;
+			this.Invalidate(true);
 
 			return AdjustContrast(trimmedBitmap, (ushort) 100);
 		}
@@ -761,7 +760,7 @@ namespace mhedit
 
 			if ( obj is MazeObject mazeObject )
 			{
-				if ( mazeObject.MaxObjects > _maze.GetObjectTypeCount( obj.GetType() ) )
+				if ( mazeObject.MaxObjects > this._maze.GetObjectTypeCount( obj.GetType() ) )
 				{
 					this._selectedObjects.Clear();
 
@@ -772,7 +771,7 @@ namespace mhedit
 						wall.Position = wall.GetAdjustedPosition(wall.Position);
 					}
 
-					_maze.MazeObjects.Add( mazeObject );
+					this._maze.MazeObjects.Add( mazeObject );
 
 					wasAdded = true;
 				}
@@ -792,7 +791,7 @@ namespace mhedit
 
 			if ( obj is MazeObject mazeObject )
 			{
-				if ( mazeObject.MaxObjects > _maze.GetObjectTypeCount( obj.GetType() ) )
+				if ( mazeObject.MaxObjects > this._maze.GetObjectTypeCount( obj.GetType() ) )
 				{
 					this._selectedObjects.Clear();
 
@@ -818,13 +817,13 @@ namespace mhedit
 
 							tripPyroid.Position = tripPyroid.GetAdjustedPosition( tripPad.Position );
 							tripPad.Pyroid = tripPyroid;
-							_maze.MazeObjects.Add( tripPyroid );
+							this._maze.MazeObjects.Add( tripPyroid );
 						}
 					}
 
 					clonedObject.Name = NameFactory.Create( clonedObject.GetType().Name );
 					clonedObject.Position = clonedObject.GetAdjustedPosition( point );
-					_maze.MazeObjects.Add( clonedObject );
+					this._maze.MazeObjects.Add( clonedObject );
                     this._selectedObjects.Add( clonedObject );
 				}
 				else
@@ -915,7 +914,7 @@ namespace mhedit
 
             /// Get all maze objects hit..
             List<MazeObject> hitList =
-				this._maze.MazeObjects.Where( mo => PointInObject( mo, adjustedLocation ) ).
+				this._maze.MazeObjects.Where( mo => this.PointInObject( mo, adjustedLocation ) ).
                      OrderBy( o => o.GetType() == typeof( MazeWall ) ).ToList();
 
 			/// look for an already selected object
@@ -996,7 +995,7 @@ namespace mhedit
             /// modification time stamp.
             if ( e.PropertyName != ChangeTrackingBase.PropertyNameString )
             {
-                this._maze.Modified = new EditInfo( DateTime.Now, Containers.VersionInformation.ApplicationVersion );
+                this._maze.Modified = new EditInfo( DateTime.Now, mhedit.Containers.VersionInformation.ApplicationVersion );
             }
 
             /// Force redraw of maze on change..

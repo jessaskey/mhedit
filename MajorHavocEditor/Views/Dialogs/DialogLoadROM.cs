@@ -1,11 +1,12 @@
-﻿using mhedit.Containers;
-using mhedit.GameControllers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using mhedit.Containers;
+using mhedit.GameControllers;
+using VersionInformation = mhedit.VersionInformation;
 
-namespace mhedit
+namespace MajorHavocEditor.Views.Dialogs
 {
 
     public partial class DialogLoadROM : Form
@@ -16,22 +17,22 @@ namespace mhedit
         public DialogLoadROM()
             : this( string.Empty )
         {
-            comboBoxGameDriver.SelectedIndex = 0;
+            this.comboBoxGameDriver.SelectedIndex = 0;
         }
 
         public DialogLoadROM( string templatePath )
         {
-            InitializeComponent();
-            comboBoxGameDriver.SelectedIndex = 0;
+            this.InitializeComponent();
+            this.comboBoxGameDriver.SelectedIndex = 0;
             //textBoxROMPath.Text = templatePath;
-            textBoxROMPath.Text = @"C:\Users\Public\Local Storage\Repos\MajorHavocEditTesting\mhedit\template";
+            this.textBoxROMPath.Text = @"C:\Users\Public\Local Storage\Repos\MajorHavocEditTesting\MajorHavocEditor\Template";
         }
 
         public MazeCollection MazeCollection
         {
             get
             {
-                return _mazeCollection;
+                return this._mazeCollection;
             }
         }
 
@@ -45,7 +46,7 @@ namespace mhedit
             {
                 IGameController controller = null;
 
-                switch (comboBoxGameDriver.SelectedIndex)
+                switch (this.comboBoxGameDriver.SelectedIndex)
                 {
                     case 0:
                         //Major Havoc - The Promised End
@@ -67,39 +68,39 @@ namespace mhedit
                     return;
                 }
 
-                if (controller.LoadTemplate(textBoxROMPath.Text))
+                if (controller.LoadTemplate(this.textBoxROMPath.Text))
                 {
                     Cursor.Current = Cursors.WaitCursor;
                     Application.DoEvents();
 
                     List<string> loadMessages = new List<string>();
-                    _mazeCollection = controller.LoadMazes(loadMessages);
+                    this._mazeCollection = controller.LoadMazes(loadMessages);
 
                     // Change the Created info to show that we loaded the maze From ROMs.
-                    foreach (Maze maze in _mazeCollection.Mazes)
+                    foreach (Maze maze in this._mazeCollection.Mazes)
                     {
-                        maze.Created = new Containers.EditInfo(maze.Created.TimeStamp,
-                                       Containers.VersionInformation.ApplicationVersion)
+                        maze.Created = new mhedit.Containers.EditInfo(maze.Created.TimeStamp,
+                                       mhedit.Containers.VersionInformation.ApplicationVersion)
                         {
                             Rom = new RomInfo(controller.Name,
                                                VersionInformation.RomVersion)
                         };
                     }
 
-                    _mazeCollection.AcceptChanges();
+                    this._mazeCollection.AcceptChanges();
                     if (loadMessages.Count > 0)
                     {
                         //DialogMessages dm = new DialogMessages();
                         //dm.SetMessages(loadMessages);
                         //dm.ShowDialog();
                     }
-                    DialogResult = DialogResult.OK;
-                    Close();
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
                 }
                 else
                 {
                     MessageBox.Show("There was an issue loading the maze objects: " + controller.LastError, "ROM Load Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    DialogResult = DialogResult.Abort;
+                    this.DialogResult = DialogResult.Abort;
                 }
             }
 //#if DEBUG
@@ -117,8 +118,8 @@ namespace mhedit
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.Cancel;
-            Close();
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
         }
 
         private void buttonBrowseFolder_Click(object sender, EventArgs e)
@@ -127,13 +128,13 @@ namespace mhedit
             {
                 fbd.Description = "Take me to your production ROMs";
 
-                fbd.SelectedPath = Path.GetFullPath( textBoxROMPath.Text );
+                fbd.SelectedPath = Path.GetFullPath( this.textBoxROMPath.Text );
 
                 DialogResult result = fbd.ShowDialog();
 
                 if ( result == DialogResult.OK && !string.IsNullOrWhiteSpace( fbd.SelectedPath ) )
                 {
-                    textBoxROMPath.Text = fbd.SelectedPath + "\\";
+                    this.textBoxROMPath.Text = fbd.SelectedPath + "\\";
                 }
             }
         }
@@ -144,27 +145,27 @@ namespace mhedit
 
         private void Textbox_TextChanged( object sender, EventArgs e )
         {
-            buttonOK.Enabled = !string.IsNullOrWhiteSpace( textBoxROMPath.Text );
+            this.buttonOK.Enabled = !string.IsNullOrWhiteSpace( this.textBoxROMPath.Text );
         }
 
         private void textBoxTT_MouseHover( object sender, EventArgs e )
         {
             TextBox textBox = (TextBox)sender;
 
-            tt = new ToolTip();
-            tt.InitialDelay = 0;
+            this.tt = new ToolTip();
+            this.tt.InitialDelay = 0;
 
             if ( !string.IsNullOrWhiteSpace( textBox.Text ) )
             {
-                tt.Show( textBox.Text, textBox );
+                this.tt.Show( textBox.Text, textBox );
             }
         }
 
         private void textBoxTT_MouseLeave( object sender, EventArgs e )
         {
-            tt?.Dispose();
+            this.tt?.Dispose();
 
-            tt = null;
+            this.tt = null;
         }
     }
 }

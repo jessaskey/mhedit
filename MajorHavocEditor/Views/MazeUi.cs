@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using mhedit;
 using mhedit.Containers;
 using MajorHavocEditor.Interfaces.Ui;
 using MHavocEditor;

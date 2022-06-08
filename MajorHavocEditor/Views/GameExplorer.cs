@@ -9,11 +9,12 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
-using mhedit;
 using mhedit.Containers;
 using mhedit.Extensions;
 using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Interfaces.Ui;
+using MajorHavocEditor.Services;
+using MajorHavocEditor.Views.Dialogs;
 
 namespace MajorHavocEditor.Views
 {
@@ -24,6 +25,7 @@ namespace MajorHavocEditor.Views
 
         private readonly IWindowManager _windowManager;
         private readonly IMenuManager _contextMenuManager = new ContextMenuManager();
+        private readonly IMameManager _mameManager;
 
         private readonly ObservableCollection<IFileProperties> _mazes =
             new ObservableCollection<IFileProperties>();
@@ -48,11 +50,12 @@ namespace MajorHavocEditor.Views
                     .Load();
         }
 
-        public GameExplorer()
-            : this( null, null )
-        {}
+        //public GameExplorer()
+        //    : this( null, null )
+        //{}
 
-        public GameExplorer( IMenuManager menuManager, IWindowManager windowManager )
+        public GameExplorer( IMenuManager menuManager, IWindowManager windowManager,
+            IMameManager mameManager )
         {
             InitializeComponent();
 
@@ -63,6 +66,8 @@ namespace MajorHavocEditor.Views
             this.MinimumSize = new Size( 200, 200 );
 
             this._windowManager = windowManager;
+
+            this._mameManager = mameManager;
 
             this.treeView.ItemsSource = this._mazes;
             this.treeView.ItemsDelegate = new ItemsSourceDelegate();
@@ -191,14 +196,14 @@ namespace MajorHavocEditor.Views
             this._contextMenuManager.Add(new Separator(addMenuItem, addMenuItem.GroupKey));
 
             this._contextMenuManager.Add(
-                new MenuItem("GameExplorer_Preview")
+                new MenuItem( "GameExplorer_Preview" )
                 {
-                    Command = new MenuCommand(this.PreviewInHbMame),
+                    Command = new MenuCommand( this.PreviewInHbMame, this.SingleMazeSelected ),
                     Display = "Preview in HBMAME",
                     ShortcutKey = Keys.Control | Keys.P,
                     ToolTip = "Preview a maze in HBMAME",
                     Icon = @"Resources\Images\Menu\hbmame_32.png".CreateResourceUri()
-                });
+                } );
         }
 
         public ICommand ValidateCommand
@@ -303,8 +308,26 @@ namespace MajorHavocEditor.Views
             return index > -1;
         }
 
+        private bool SingleMazeSelected(object notUsed)
+        {
+            return this._selectedMazes.Count == 1 &&
+                   this._selectedMazes[0] is Maze;
+        }
+
         private void PreviewInHbMame( object obj )
         {
+            if ( this._selectedMazes.Count == 1 &&
+                 this._selectedMazes[0] is Maze maze )
+            {
+                MazeCollection collection =
+                this._mazes.OfType<MazeCollection>()
+                    .FirstOrDefault( mc => mc.Mazes.Contains( maze ) );
+
+                if ( collection != null )
+                {
+                    this._mameManager.Preview( collection, maze );
+                }
+            }
         }
 
         private void SaveAsCommand( object obj )

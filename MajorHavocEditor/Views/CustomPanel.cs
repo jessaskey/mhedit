@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace mhedit
+namespace MajorHavocEditor.Views
 {
     /// <summary>
     /// Fixes that annoying scroll when you first click in a maze.
@@ -10,7 +10,7 @@ namespace mhedit
     {
         public CustomPanel()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         protected override System.Drawing.Point ScrollToControl(System.Windows.Forms.Control activeControl)
