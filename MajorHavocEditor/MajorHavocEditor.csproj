@@ -18,6 +18,10 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
     <ItemGroup>
         <Compile Include="..\mhedit\MazeObjectImages.cs" Link="MazeObjectImages.cs" />
         <EmbeddedResource Include="Resources\Images\Menu\Close.png" />
