@@ -437,7 +437,7 @@ namespace MajorHavocEditor.Views
 
         private void LoadFromRomCommand( object obj )
         {
-            DialogLoadROM dlr = new DialogLoadROM( Path.GetFullPath( "../" ) );
+            DialogLoadROM dlr = new DialogLoadROM();
 
             DialogResult dr = dlr.ShowDialog();
 

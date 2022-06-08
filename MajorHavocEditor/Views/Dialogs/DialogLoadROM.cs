@@ -16,16 +16,17 @@ namespace MajorHavocEditor.Views.Dialogs
 
         public DialogLoadROM()
             : this( string.Empty )
-        {
-            this.comboBoxGameDriver.SelectedIndex = 0;
-        }
+        { }
 
         public DialogLoadROM( string templatePath )
         {
             this.InitializeComponent();
+
             this.comboBoxGameDriver.SelectedIndex = 0;
-            //textBoxROMPath.Text = templatePath;
-            this.textBoxROMPath.Text = @"C:\Users\Public\Local Storage\Repos\MajorHavocEditTesting\MajorHavocEditor\Template";
+
+            this.textBoxROMPath.Text = string.IsNullOrWhiteSpace( templatePath ) ?
+                                           Properties.Settings.Default.TemplatesLocation :
+                                           templatePath;
         }
 
         public MazeCollection MazeCollection
