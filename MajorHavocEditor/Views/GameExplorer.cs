@@ -606,7 +606,7 @@ namespace MajorHavocEditor.Views
                 if (result == DialogResult.OK)
                 {
                     file.Name = Path.GetFileName(sfd.FileName);
-                    file.Path = Path.GetFullPath( sfd.FileName );
+                    file.Path = Path.GetDirectoryName( sfd.FileName );
                 }
             }
 
