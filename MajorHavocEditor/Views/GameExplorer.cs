@@ -369,16 +369,19 @@ namespace MajorHavocEditor.Views
 
             if ( ofd.ShowDialog() == DialogResult.OK )
             {
-                Type type = Path.GetExtension(ofd.FileName).ToLowerInvariant() switch
+                object opened = Path.GetExtension(ofd.FileName).ToLowerInvariant() switch
                 {
-                    ".mhz" => typeof(Maze),
-                    ".mhc" => typeof(MazeCollection),
+                    ".mhz" => this.Open<Maze>(ofd.FileName),
+                    ".mhc" => this.Open<MazeCollection>(ofd.FileName),
                     _ => throw new ArgumentOutOfRangeException(
                              $"{Path.GetExtension(ofd.FileName)} is not a supported extension.")
                 };
 
                 //TODO: Insert after Parent.
-                this.treeView.ItemsSource.Add( this.Open( ofd.FileName, type ) );
+                if ( opened != null )
+                {
+                    this.treeView.ItemsSource.Add( opened );
+                }
             }
         }
 
@@ -644,7 +647,7 @@ namespace MajorHavocEditor.Views
             return result == DialogResult.OK;
         }
 
-        private object Open(string fileName, Type type)
+        private T Open<T>( string fileName ) where T : class
         {
             Cursor.Current = Cursors.WaitCursor;
             
@@ -654,7 +657,7 @@ namespace MajorHavocEditor.Views
 
             try
             {
-                result = fileName.ExpandAndDeserialize( type, HandleNotifications );
+                result = fileName.ExpandAndDeserialize<T>( HandleNotifications );
 
                 void HandleNotifications( string message )
                 {
@@ -689,7 +692,7 @@ namespace MajorHavocEditor.Views
                 Cursor.Current = Cursors.Default;
             }
 
-            return result;
+            return result as T;
         }
     }
 

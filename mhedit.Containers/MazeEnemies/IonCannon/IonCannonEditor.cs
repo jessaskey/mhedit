@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Windows.Forms;
 using mhedit.Containers.MazeEnemies.IonCannon;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace mhedit.Containers
 {
@@ -26,7 +26,7 @@ namespace mhedit.Containers
             /// Make a complete copy of the passed program to edit..
             IonCannonProgram original = (IonCannonProgram)value;
 
-            using ( CannonProgramEditor editor = new CannonProgramEditor( DeepClone( original ) ) )
+            using ( CannonProgramEditor editor = new CannonProgramEditor(MakeCopy( original ) ) )
             {
                 DialogResult result = editor.ShowDialog();
 
@@ -40,17 +40,39 @@ namespace mhedit.Containers
             }
         }
 
-        public static T DeepClone<T>( T obj )
+        private static IonCannonProgram MakeCopy( IonCannonProgram source )
         {
-            using ( var ms = new MemoryStream() )
+            IonCannonProgram copy = DeepClone( source );
+
+            for ( int index = 0; index < source.Count; index++ )
             {
-                var formatter = new BinaryFormatter();
+                if ( !source[index].IsChanged )
+                {
+                    copy[index].AcceptChanges();
+                }
+            }
 
-                formatter.Serialize( ms, obj );
+            return copy;
+        }
 
-                ms.Position = 0;
+        private static T DeepClone<T>( T obj )
+        {
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                XmlSerializer serializer = new XmlSerializer(obj.GetType());
 
-                return (T)formatter.Deserialize( ms );
+                using (XmlWriter xmlWriter = XmlWriter.Create(memoryStream,
+                    new XmlWriterSettings { Indent = true }))
+                {
+                    serializer.Serialize( xmlWriter, obj );
+                }
+
+                memoryStream.Position = 0;
+
+                using (XmlReader xmlReader = XmlReader.Create(memoryStream))
+                {
+                    return (T)serializer.Deserialize(xmlReader);
+                }
             }
         }
     }

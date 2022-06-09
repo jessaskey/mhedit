@@ -9,7 +9,6 @@ using System.Xml.Serialization;
 using ICSharpCode.SharpZipLib.BZip2;
 using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
-using mhedit.Containers.MazeEnemies.IonCannon;
 using mhedit.Containers.MazeObjects;
 
 namespace mhedit.Extensions
@@ -25,22 +24,68 @@ namespace mhedit.Extensions
                                          } );
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <param name="intoStream"></param>
+        public static void Serialize<T>( this T obj, Stream intoStream )
+        {
+            obj.Serialize( typeof( T ), intoStream );
+        }
+
+        public static void Serialize( this object obj, Type type, Stream intoStream )
+        {
+            XmlSerializer serializer = new XmlSerializer( type );
+
+            using ( XmlWriter xmlWriter = XmlWriter.Create( intoStream,
+                new XmlWriterSettings { Indent = true } ) )
+            {
+                serializer.Serialize( xmlWriter, obj, XmlNamespace );
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="fromStream"></param>
+        /// <param name="onUnknownElement"></param>
+        /// <returns></returns>
+        public static T Deserialize<T>( Stream fromStream,
+            XmlElementEventHandler onUnknownElement = null )
+        {
+            return (T) Deserialize( typeof( T ), fromStream, onUnknownElement );
+        }
+
+        public static object Deserialize( Type type, Stream fromStream,
+            XmlElementEventHandler onUnknownElement = null )
+        {
+            XmlSerializer serializer = new XmlSerializer( type );
+
+            if ( onUnknownElement != null )
+            {
+                serializer.UnknownElement += onUnknownElement;
+            }
+
+            using ( XmlReader xmlReader = XmlReader.Create( fromStream ) )
+            {
+                return serializer.Deserialize( xmlReader );
+            }
+        }
+
+
+        /// <summary>
         /// Serialize the object into the file using XML serialization.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <param name="fileName"></param>
-        public static void Serialize<T>( this T obj, string fileName )
+        public static void Serialize( this object obj, string fileName )
         {
             using ( FileStream fileStream = new FileStream( fileName, FileMode.Create ) )
             {
-                XmlSerializer serializer = new XmlSerializer( typeof( T ) );
-
-                using ( XmlWriter xmlWriter = XmlWriter.Create( fileStream,
-                    new XmlWriterSettings { Indent = true } ) )
-                {
-                    serializer.Serialize( xmlWriter, obj, XmlNamespace );
-                }
+                obj.Serialize( obj.GetType(), fileStream );
             }
         }
 
@@ -50,11 +95,11 @@ namespace mhedit.Extensions
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="fileName"></param>
-        public static void SerializeAndCompress(this object obj, string fileName)
+        public static void SerializeAndCompress( this object obj, string fileName )
         {
-            using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
+            using ( FileStream fileStream = new FileStream( fileName, FileMode.Create ) )
             {
-                obj.SerializeAndCompress(fileStream);
+                obj.SerializeAndCompress( fileStream );
             }
         }
 
@@ -65,10 +110,10 @@ namespace mhedit.Extensions
         /// <param name="file"></param>
         public static void SerializeAndCompress( this IFileProperties file )
         {
-            using (FileStream fileStream = new FileStream(
-                Path.Combine( file.Path, file.Name ), FileMode.Create))
+            using ( FileStream fileStream = new FileStream(
+                Path.Combine( file.Path, file.Name ), FileMode.Create ) )
             {
-                file.SerializeAndCompress(fileStream);
+                file.SerializeAndCompress( fileStream );
             }
         }
 
@@ -83,15 +128,10 @@ namespace mhedit.Extensions
         {
             using ( MemoryStream memoryStream = new MemoryStream() )
             {
-                XmlSerializer serializer = new XmlSerializer( obj.GetType() );
-
-                using ( XmlWriter xmlWriter = XmlWriter.Create( memoryStream,
-                    new XmlWriterSettings { Indent = true } ) )
-                {
-                    serializer.Serialize( xmlWriter, obj, XmlNamespace );
-                }
+                obj.Serialize( obj.GetType(), memoryStream );
 
                 memoryStream.Position = 0;
+
                 BZip2.Compress( memoryStream, stream, false, 4096 );
             }
         }
@@ -106,8 +146,8 @@ namespace mhedit.Extensions
         /// <param name="resultType"></param>
         /// <param name="onNotifications"></param>
         /// <returns></returns>
-        public static object ExpandAndDeserialize(
-            this string fileName, Type resultType, Action<string> onNotifications = null )
+        public static T ExpandAndDeserialize<T>( this string fileName,
+            Action<string> onNotifications = null )
         {
             NotificationHandler = onNotifications;
 
@@ -116,18 +156,13 @@ namespace mhedit.Extensions
                 using ( MemoryStream mStream = new MemoryStream() )
                 {
                     BZip2.Decompress( fStream, mStream, false );
+
                     mStream.Position = 0;
 
-                    using ( XmlReader xmlReader = XmlReader.Create( mStream ) )
-                    {
-                        XmlSerializer serializer = new XmlSerializer( resultType );
-                        serializer.UnknownElement += OnUnknownElement;
-                        return PerformPostDeserializeHacks( serializer.Deserialize( xmlReader ) );
-                    }
+                    return (T) PerformPostDeserializeHacks(
+                        Deserialize( typeof( T ), mStream, OnUnknownElement ) );
                 }
             }
-
-            NotificationHandler = null;
         }
 
         private static object PerformPostDeserializeHacks( object deserialized )
@@ -165,7 +200,8 @@ namespace mhedit.Extensions
         /// </summary>
         /// <param name="maze"></param>
         /// <param name="s"></param>
-        private static bool FixMaxMazeObjectViolations( Maze maze, out string violationNotification)
+        private static bool FixMaxMazeObjectViolations( Maze maze,
+            out string violationNotification )
         {
             violationNotification = null;
 
@@ -188,7 +224,8 @@ namespace mhedit.Extensions
                         $"{mazeObjects.First().GetType().Name}: " +
                         $"{mazeObjects.Count} found, {maxObjectsAllowed} supported. Excess trimmed." );
 
-                    foreach ( MazeObject toDelete in mazeObjects.Where( ( x, i ) => i >= maxObjectsAllowed ) )
+                    foreach ( MazeObject toDelete in mazeObjects.Where(
+                        ( x, i ) => i >= maxObjectsAllowed ) )
                     {
                         maze.MazeObjects.Remove( toDelete );
                     }
@@ -289,7 +326,7 @@ namespace mhedit.Extensions
 
                         tripPadPyroid.SpeedIndex = val > 7 ?
                                                        TripPyroidSpeedIndex.SupaFast :
-                                                       (TripPyroidSpeedIndex)val;
+                                                       (TripPyroidSpeedIndex) val;
                     }
                     else
                     {
