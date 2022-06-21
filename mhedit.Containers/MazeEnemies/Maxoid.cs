@@ -15,6 +15,7 @@ namespace mhedit.Containers.MazeEnemies
         private static readonly Point _snapSize = new Point( 1, 1 );
 
         private int _triggerDistance;
+        private int _hitsToKill = 3;
         private MaxSpeed _speed;
 
         public Maxoid()
@@ -39,6 +40,16 @@ namespace mhedit.Containers.MazeEnemies
         }
 
         [CategoryAttribute("Location")]
+        [DescriptionAttribute("How many hits does it take to kill a Maxoid.")]
+        [Validation(typeof(RangeRule<int>),
+            Options = "Minimum=0;Maximum=4")]
+        public int HitsToKill
+        {
+            get { return _hitsToKill; }
+            set { this.SetField(ref this._hitsToKill, value); }
+        }
+
+        [CategoryAttribute("Location")]
         [DescriptionAttribute("Defines how many maze squares between Max and Rex before Max" +
                               " will start pursuit. Zero indicates active on maze start.")]
         [Validation( typeof( RangeRule<int> ),
@@ -53,8 +64,8 @@ namespace mhedit.Containers.MazeEnemies
         {
             List<byte> bytes = new List<byte>();
             bytes.AddRange(DataConverter.PointToByteArrayLong(DataConverter.ConvertPixelsToVector(this.Position)));
-            int speedDistance =  ((byte)(((int)_speed)<<4)&0x30) +((byte)(_triggerDistance&0x0F));
-            bytes.Add((byte)speedDistance);
+            int hitsSpeedDistance = (~((byte)(((int)_hitsToKill-1)) << 6) & 0xC0) + ((byte)(((int)_speed)<<4)&0x30) +((byte)(_triggerDistance&0x0F));
+            bytes.Add((byte)hitsSpeedDistance);
             return bytes.ToArray();
         }
 

@@ -137,6 +137,12 @@
     <Compile Include="Dialogs\DialogConfiguration.Designer.cs">
       <DependentUpon>DialogConfiguration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\DialogExport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DialogExport.Designer.cs">
+      <DependentUpon>DialogExport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Extensions\TreeView.cs" />
     <Compile Include="GameProfile.cs" />
     <Compile Include="GameProfileFactory.cs" />
@@ -175,6 +181,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\DialogMHPLogin.resx">
       <DependentUpon>DialogMHPLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\DialogExport.resx">
+      <DependentUpon>DialogExport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Mainform.resx">
       <SubType>Designer</SubType>

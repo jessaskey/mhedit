@@ -1353,17 +1353,56 @@ namespace mhedit
                     List<Tuple<Maze, int>> mazeInfo = new List<Tuple<Maze, int>>();
                     foreach (TreeNode node in treeView.Descendants().Cast<TreeNode>().Where(n => n.Checked))
                     {
-                        if (node.Tag is MazeController mazeController)
+                        if (node.Tag is MazeCollectionController mazeCollectionController)
                         {
-                            if (node.Parent?.Tag is MazeCollectionController mazeCollectionController)
+                            DialogExport exportDialog = new DialogExport();
+                            if (System.IO.Directory.Exists(Properties.Settings.Default.LastExportLocation))
                             {
-                                int level = mazeCollectionController.MazeCollection.Mazes.IndexOf(mazeController.Maze);
-                                mazeInfo.Add(new Tuple<Maze, int>(mazeController.Maze, level + 1));
+                                exportDialog.ExportDirectory = Properties.Settings.Default.LastExportLocation;
                             }
+
+                            DialogResult dr = exportDialog.ShowDialog();
+                            if (dr == DialogResult.OK)
+                            {
+                                foreach (var maze in mazeCollectionController.MazeCollection.Mazes)
+                                {
+                                    int level = mazeCollectionController.MazeCollection.Mazes.IndexOf(maze);
+                                    mazeInfo.Add(new Tuple<Maze, int>(maze, level + 1));
+                                }
+
+                                string sourcePage6 = mhpe.ExtractSource(mazeInfo, GameController.SourceFile.Page6);
+                                string sourcePage7 = mhpe.ExtractSource(mazeInfo, GameController.SourceFile.Page7);
+                                string sourcePageToken = mhpe.ExtractSource(mazeInfo, GameController.SourceFile.Token);
+                                string sourcePageCannon = mhpe.ExtractSource(mazeInfo, GameController.SourceFile.Cannon);
+                                string sourceMazeMessages = mhpe.ExtractSource(mazeInfo, GameController.SourceFile.MazeMessages);
+
+                                string suffix = "pe";
+                                if (mazeCollectionController.FileName.ToLower().Contains("tournament"))
+                                {
+                                    suffix = "te";
+                                }
+
+                                Properties.Settings.Default.LastExportLocation = exportDialog.ExportDirectory;
+                                Properties.Settings.Default.Save();
+                                File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, "tw_mazedcan_" + suffix + ".asm"), sourcePageCannon);
+                                File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, "tw_mazedtok_" + suffix + ".asm"), sourcePageToken);
+                                File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, "tw_mazed_" + suffix + ".asm"), sourcePage6);
+                                File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, "tw_mazed2_" + suffix + ".asm"), sourcePage7);
+                                File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, "tw_mazedstr_en_" + suffix + ".asm"), sourceMazeMessages);
+                                //Clipboard.SetText(source);
+                                MessageBox.Show("Source files overwritten for " + mazeCollectionController.MazeCollection.Name);
+                            }
+
                         }
+                        //if (node.Tag is MazeController mazeController)
+                        //{
+                        //    if (node.Parent?.Tag is MazeCollectionController mazeCollectionController)
+                        //    {
+                        //        int level = mazeCollectionController.MazeCollection.Mazes.IndexOf(mazeController.Maze);
+                        //        mazeInfo.Add(new Tuple<Maze, int>(mazeController.Maze, level + 1));
+                        //    }
+                        //}
                     }
-                    string source = mhpe.ExtractSource(mazeInfo);
-                    Clipboard.SetText(source);
                 }
                 else
                 {
