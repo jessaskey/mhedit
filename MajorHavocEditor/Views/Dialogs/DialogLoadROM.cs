@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using Krypton.Toolkit;
 using mhedit.Containers;
 using mhedit.GameControllers;
 using VersionInformation = mhedit.VersionInformation;
@@ -9,7 +10,7 @@ using VersionInformation = mhedit.VersionInformation;
 namespace MajorHavocEditor.Views.Dialogs
 {
 
-    public partial class DialogLoadROM : Form
+    public partial class DialogLoadROM : KryptonForm
     {
         private ToolTip tt;
         private MazeCollection _mazeCollection = null;

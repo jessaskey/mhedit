@@ -1,11 +1,12 @@
 using System;
 using System.Windows.Forms;
+using Krypton.Toolkit;
 using mhedit;
 
 namespace MajorHavocEditor.Views.Dialogs
 {
 
-    public partial class DialogAbout : Form
+    public partial class DialogAbout : KryptonForm
     {
         /// <summary>
         ///     Our default constructor for the About dialog.

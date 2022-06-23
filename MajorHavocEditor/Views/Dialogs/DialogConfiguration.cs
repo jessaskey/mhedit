@@ -1,10 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using Krypton.Toolkit;
 
 namespace MajorHavocEditor.Views.Dialogs
 {
-    public partial class DialogConfiguration : Form
+    public partial class DialogConfiguration : KryptonForm
     {
         private ToolTip tt;
 
