@@ -10,11 +10,6 @@ namespace mhedit.Containers
     public abstract class ChangeTrackingBase : NotifyPropertyChangedBase, IChangeTracking
     {
         /// <summary>
-        /// PropertyName string for the modified property.
-        /// </summary>
-        public static readonly string PropertyNameString = "IsChanged";
-
-        /// <summary>
         /// Used to mark a TreeView Node as Modified.
         /// </summary>
         public static readonly string ModifiedBullet =

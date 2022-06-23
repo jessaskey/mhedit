@@ -993,7 +993,7 @@ namespace MajorHavocEditor.Views
             /// Update modified time here. We do it outside the Maze Class itself because serialization
             /// operations on the Maze cause updates which corrupt the idea of this being user
             /// modification time stamp.
-            if ( e.PropertyName != ChangeTrackingBase.PropertyNameString )
+            if ( e.PropertyName != nameof(ChangeTrackingBase.IsChanged) )
             {
                 this._maze.Modified = new EditInfo( DateTime.Now, mhedit.Containers.VersionInformation.ApplicationVersion );
             }

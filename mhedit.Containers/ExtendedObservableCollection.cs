@@ -32,7 +32,7 @@ namespace mhedit.Containers
 
                     /// Call into base method to avoid setting IsChanged.
                     this.OnPropertyChanged(
-                        new PropertyChangedEventArgs( ChangeTrackingBase.PropertyNameString ) );
+                        new PropertyChangedEventArgs( nameof(ChangeTrackingBase.IsChanged) ) );
                 }
             }
         }
