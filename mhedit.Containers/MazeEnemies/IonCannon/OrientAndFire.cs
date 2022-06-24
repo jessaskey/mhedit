@@ -19,21 +19,6 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             : base( Commands.OrientAndFire )
         { }
 
-        //private OrientAndFire( RomSerializationInfo si, StreamingContext context )
-        //    : this()
-        //{
-        //    byte value = si.GetByte( "PackedInfo" );
-
-        //    this._orientation = (Orientation)( ( value & 0x38 ) >> 3 );
-
-        //    this._rotateSpeed = (RotateSpeed)( ( value & 0x06 ) >> 1 );
-
-        //    if ( (value & 0x01) != 0 )
-        //    {
-        //        this._shotSpeed = si.GetByte( "ShotSpeed" );
-        //    }
-        //}
-
         public Orientation Orientation
         {
             get
@@ -86,6 +71,17 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             {
                 bytes.Add( (byte)this._shotSpeed );
             }
+        }
+
+        /// <inheritdoc />
+        protected override IonCannonInstruction InternalClone()
+        {
+            return new OrientAndFire()
+                   {
+                       _orientation = this._orientation,
+                       _rotateSpeed = this._rotateSpeed,
+                       _shotSpeed = this._shotSpeed
+                   };
         }
 
         //public override string ToString()

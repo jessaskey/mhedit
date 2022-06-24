@@ -12,11 +12,11 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
     [XmlInclude( typeof( OrientAndFire ) )]
     [XmlInclude( typeof( Move ) )]
     [XmlInclude( typeof( Pause ) )]
-    public abstract class IonCannonInstruction : ChangeTrackingBase
+    public abstract class IonCannonInstruction : ChangeTrackingBase, ICloneable
     {
         private readonly Commands _command;
 
-        public IonCannonInstruction( Commands command )
+        protected IonCannonInstruction( Commands command )
         {
             this._command = command;
         }
@@ -41,5 +41,16 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         {
             return this.GetType().Name;
         }
+
+        public object Clone()
+        {
+            IonCannonInstruction copy = this.InternalClone();
+
+            copy.IsChanged = this.IsChanged;
+
+            return copy;
+        }
+
+        protected abstract IonCannonInstruction InternalClone();
     }
 }

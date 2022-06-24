@@ -3,7 +3,7 @@
 namespace mhedit.Containers.MazeEnemies.IonCannon
 {
     [Serializable]
-    public class SimpleVelocity : ChangeTrackingBase
+    public class SimpleVelocity : ChangeTrackingBase, ICloneable
     {
         private int _x;
         private int _y;
@@ -36,5 +36,20 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
         //{
         //    return $"Velocity  X:{this.X}, Y:{this.Y}";
         //}
+
+#region Implementation of ICloneable
+
+        /// <inheritdoc />
+        public object Clone()
+        {
+            return new SimpleVelocity
+                   {
+                       _x = this._x,
+                       _y = this._y,
+                       IsChanged = this.IsChanged
+                   };
+        }
+
+#endregion
     }
 }

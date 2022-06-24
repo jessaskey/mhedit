@@ -13,14 +13,16 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             : base( Commands.ReturnToStart )
         {}
 
-        //private ReturnToStart( RomSerializationInfo si, StreamingContext context )
-        //    : this()
-        //{}
-
         public override void GetObjectData( List<byte> bytes )
         {
             /// Return To Start is a single null byte. just write out 0
             bytes.Add( this.SerializeCommand( 0 ) );
+        }
+
+        /// <inheritdoc />
+        protected override IonCannonInstruction InternalClone()
+        {
+            return new ReturnToStart();
         }
 
         //public override string ToString()

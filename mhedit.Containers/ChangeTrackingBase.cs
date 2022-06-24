@@ -6,25 +6,26 @@ using System.Xml.Serialization;
 
 namespace mhedit.Containers
 {
-    [Serializable]
+
+    [ Serializable ]
     public abstract class ChangeTrackingBase : NotifyPropertyChangedBase, IChangeTracking
     {
         /// <summary>
         /// Used to mark a TreeView Node as Modified.
         /// </summary>
         public static readonly string ModifiedBullet =
-            Encoding.UTF8.GetString( new byte[] { (byte)149 } );
+            Encoding.UTF8.GetString( new byte[] { (byte) 149 } );
 
-        private bool _isChanged = false;
+        private bool _isChanged;
 
-        #region Implementation of IChangeTracking
+#region Implementation of IChangeTracking
 
-        [BrowsableAttribute( false )]
-        [XmlIgnore]
+        [ BrowsableAttribute( false ) ]
+        [ XmlIgnore ]
         public virtual bool IsChanged
         {
             get { return this._isChanged; }
-            private set
+            protected set
             {
                 /// To avoid feedback on clear don't use SetField.
                 if ( this._isChanged != value )
@@ -42,7 +43,7 @@ namespace mhedit.Containers
             this.IsChanged = false;
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Use this method to forward the PropertyChanged event from composite members
@@ -59,11 +60,12 @@ namespace mhedit.Containers
             base.OnPropertyChanged( e.PropertyName );
         }
 
-        protected override void OnPropertyChanged( [CallerMemberName] string propertyName = null )
+        protected override void OnPropertyChanged( [ CallerMemberName ] string propertyName = null )
         {
             base.OnPropertyChanged( propertyName );
 
             this.IsChanged = true;
         }
     }
+
 }

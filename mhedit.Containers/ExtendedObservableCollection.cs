@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -7,24 +8,36 @@ using System.Xml.Serialization;
 
 namespace mhedit.Containers
 {
-    [Serializable]
+
+    [ Serializable ]
     public class ExtendedObservableCollection<T> : ObservableCollection<T>, IChangeTracking
         where T : INotifyPropertyChanged, IChangeTracking
     {
-        #region Implementation of IChangeTracking
+#region Implementation of IChangeTracking
 
-        private bool _isChanged = false;
+        private bool _isChanged;
 
-        [BrowsableAttribute( false )]
-        [XmlIgnore]
+        public ExtendedObservableCollection()
+        {
+        }
+
+        public ExtendedObservableCollection( IEnumerable<T> enumerable )
+            : base( enumerable )
+        {
+            foreach (var item in this)
+                item.PropertyChanged += this.ItemPropertyChanged;
+        }
+
+        [ BrowsableAttribute( false ) ]
+        [ XmlIgnore ]
         public bool IsChanged
         {
             get
             {
                 return this._isChanged |
-                    this.Any( item => item.IsChanged );
+                       this.Any( item => item.IsChanged );
             }
-            private set
+            protected set
             {
                 if ( this._isChanged != value )
                 {
@@ -32,7 +45,7 @@ namespace mhedit.Containers
 
                     /// Call into base method to avoid setting IsChanged.
                     this.OnPropertyChanged(
-                        new PropertyChangedEventArgs( nameof(ChangeTrackingBase.IsChanged) ) );
+                        new PropertyChangedEventArgs( nameof( ChangeTrackingBase.IsChanged ) ) );
                 }
             }
         }
@@ -44,7 +57,7 @@ namespace mhedit.Containers
             this._isChanged = false;
         }
 
-        #endregion
+#endregion
 
         protected override void ClearItems()
         {
@@ -90,4 +103,5 @@ namespace mhedit.Containers
             this.OnPropertyChanged( e );
         }
     }
+
 }

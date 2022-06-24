@@ -24,19 +24,6 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             this.AcceptChanges();
         }
 
-        //private Move( RomSerializationInfo si, StreamingContext context )
-        //    : this()
-        //{
-        //    this._waitFrames = ( si.GetByte( "PackedInfo" ) & 0x3F ) << 2;
-
-        //    if ( this._waitFrames > 0 )
-        //    {
-        //        this._velocity.X = si.GetSByte( "X" );
-
-        //        this._velocity.Y = si.GetSByte( "Y" );
-        //    }
-        //}
-
         [Validation( typeof( RangeRule<int> ),
             Options = "Minimum=0;Maximum=63" )]
         public int WaitFrames
@@ -101,6 +88,16 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
 
                 bytes.Add( (byte)this._velocity.Y );
             }
+        }
+
+        /// <inheritdoc />
+        protected override IonCannonInstruction InternalClone()
+        {
+            return new Move
+                   {
+                       _waitFrames = this._waitFrames,
+                       _velocity = (SimpleVelocity) this._velocity.Clone()
+                   };
         }
 
         //public override string ToString()
