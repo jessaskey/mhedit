@@ -45,7 +45,9 @@ namespace MajorHavocEditor
 
             this._validationService = new ValidationService( this._windowManager );
 
-            this._propertyBrowser = new PropertyBrowser( this._gameExplorer.SelectedItems );
+            this._propertyBrowser =
+                new PropertyBrowser( this._gameExplorer.SelectedItems,
+                    DockingState.DockRightAutoHide );
 
             this.Controls.Add((Control) this._menuManager.Menu);
 

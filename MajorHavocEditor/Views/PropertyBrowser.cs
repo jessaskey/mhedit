@@ -11,10 +11,13 @@ namespace MajorHavocEditor.Views
     public class PropertyBrowser : KryptonPropertyGrid, IUserInterface
     {
         private readonly IList _selectedItems;
+        private DockingState _dockingState;
 
-        public PropertyBrowser(IList selectedItems)
+        public PropertyBrowser(IList selectedItems, DockingState dockingState = DockingState.DockRight)
         {
             this._selectedItems = selectedItems;
+
+            this._dockingState = dockingState;
 
             this.Dock = DockStyle.Fill;
 
@@ -37,7 +40,7 @@ namespace MajorHavocEditor.Views
 
         public DockingState DockingState
         {
-            get { return DockingState.DockRight; }
+            get { return this._dockingState; }
         }
 
         public DockingPosition DockingPositions

@@ -7,7 +7,7 @@ using Krypton.Navigator;
 using Krypton.Workspace;
 using MajorHavocEditor.Interfaces.Ui;
 
-namespace MHavocEditor
+namespace MajorHavocEditor
 {
     public class WindowManager : IWindowManager
     {
@@ -252,7 +252,8 @@ namespace MHavocEditor
 
         public void Show(IUserInterface userInterface)
         {
-            this.InternalShow(userInterface, false);
+            this.InternalShow( userInterface, 
+                (userInterface.DockingState & DockingState.AutoHide) != 0 );
         }
          
         private void InternalShow(IUserInterface userInterface, bool hidden)
@@ -329,11 +330,13 @@ namespace MHavocEditor
                 }
                 else
                 {
-                    DockingEdge dockingEdge = userInterface.DockingState == DockingState.DockLeft ?
+                    DockingState sansAutoHide = userInterface.DockingState & ~DockingState.AutoHide;
+
+                    DockingEdge dockingEdge = sansAutoHide == DockingState.DockLeft ?
                                 DockingEdge.Left :
-                                userInterface.DockingState == DockingState.DockRight ?
+                                sansAutoHide == DockingState.DockRight ?
                                     DockingEdge.Right :
-                                    userInterface.DockingState == DockingState.DockBottom ?
+                                    sansAutoHide == DockingState.DockBottom ?
                                         DockingEdge.Bottom :
                                         DockingEdge.Top;
                     if (hidden)

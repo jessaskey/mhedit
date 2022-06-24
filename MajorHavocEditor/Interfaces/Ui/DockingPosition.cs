@@ -2,20 +2,22 @@
 
 namespace MajorHavocEditor.Interfaces.Ui
 {
-    public enum DockingState
+    [Flags]
+    public enum DockingState : uint
     {
         Unknown,
         Float,
-        DockTopAutoHide,
-        DockLeftAutoHide,
-        DockBottomAutoHide,
-        DockRightAutoHide,
         Document,
+        Hidden,
         DockTop,
         DockLeft,
         DockBottom,
         DockRight,
-        Hidden,
+        DockTopAutoHide = DockTop | AutoHide,
+        DockLeftAutoHide = DockLeft | AutoHide,
+        DockBottomAutoHide = DockBottom | AutoHide,
+        DockRightAutoHide = DockRight | AutoHide,
+        AutoHide = 0x80000000
     }
 
     [Flags]
