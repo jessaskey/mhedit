@@ -76,6 +76,14 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
             get { return _program; }
             set
             {
+                /// NOTE: Don't track changes on a program as a copy is made for editing
+                /// and then the original is replaced if the edits are accepted.
+                //if ( this._program != null )
+                //{
+                //    ((INotifyPropertyChanged)this._program).PropertyChanged -=
+                //        this.ForwardPropertyChanged;
+                //}
+
                 /// Note, this set field serves a special purpose. When an IonCannon program is edited
                 /// it will replace the previous version here. This will result in the IonCannon.IsChanged
                 /// property being set to True and allows the Maze to track edits to the Program seperately
@@ -85,8 +93,8 @@ namespace mhedit.Containers.MazeEnemies.IonCannon
                 /// the Maze to know it was edited at some point.
                 this.SetField( ref this._program, value );
 
-                ( (INotifyPropertyChanged)this._program ).PropertyChanged +=
-                    this.ForwardPropertyChanged;
+                //( (INotifyPropertyChanged)this._program ).PropertyChanged +=
+                //    this.ForwardPropertyChanged;
             }
         }
 
