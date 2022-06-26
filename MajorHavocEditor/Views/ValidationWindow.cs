@@ -12,7 +12,7 @@ namespace MajorHavocEditor.Views
         public ValidationWindow()
         {
             this._closeImage = ResourceLoader.GetEmbeddedImage(
-                @"Resources\Images\Buttons\Close.png".CreateResourceUri() );
+                @"Resources\Images\Menu\Close.png".CreateResourceUri() );
 
             this.Padding = new Point( 12, 4 );
             this.DrawMode = TabDrawMode.OwnerDrawFixed;
