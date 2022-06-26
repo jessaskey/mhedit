@@ -5,14 +5,11 @@ using System.Linq;
 using System.Windows.Forms;
 using Krypton.Docking;
 using Krypton.Toolkit;
-using Krypton.Workspace;
-using mhedit.Containers;
 using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Interfaces.Ui;
 using MajorHavocEditor.Services;
 using MajorHavocEditor.Views;
 using MajorHavocEditor.Views.Dialogs;
-using MHavocEditor;
 
 namespace MajorHavocEditor
 {
@@ -21,6 +18,7 @@ namespace MajorHavocEditor
     {
         public static string MHPHomepage = "http://mhedit.askey.org";
 
+        private GameManager _gameManager;
         private IMenuManager _menuManager = new MenuStripManager(DockStyle.Top);
         private IWindowManager _windowManager;
         private GameExplorer _gameExplorer;
@@ -28,6 +26,8 @@ namespace MajorHavocEditor
         private KryptonManager _kryptonManager = new KryptonManager();
         private PropertyBrowser _propertyBrowser;
         private IMameManager _mameManager = new MameManager();
+        private IFileManager _fileManager = new FileManager();
+        private IRomManager _romManager = new RomManager();
 
         //private GameToolbox _gameToolbox = new GameToolbox();
 
@@ -40,22 +40,25 @@ namespace MajorHavocEditor
             this._windowManager = new WindowManager(this.kryptonDockableWorkspace,
                 this.kryptonDockingManager);
 
-            this._gameExplorer = new GameExplorer(this._menuManager, this._windowManager,
-                this._mameManager);
+            this._validationService = new ValidationService(this._windowManager);
 
-            this._validationService = new ValidationService( this._windowManager );
+            this._gameManager = new GameManager( this._fileManager, this._romManager,
+                this._mameManager, this._windowManager, this._validationService );
+
+            this._gameExplorer = new GameExplorer(this._menuManager, this._windowManager,
+                this._gameManager);
 
             this._propertyBrowser =
-                new PropertyBrowser( this._gameExplorer.SelectedItems,
+                new PropertyBrowser( this._gameManager.SelectedObjects,
                     DockingState.DockRightAutoHide );
 
             this.Controls.Add((Control) this._menuManager.Menu);
 
             this.kryptonDockingManager.DefaultCloseRequest = DockingCloseRequest.RemovePage;
 
-            this._gameExplorer.ValidateCommand = new MenuCommand(
-                this.ValidateCommand,
-                this.OneOrMoreSelected );
+            //this._gameExplorer.ValidateCommand = new MenuCommand(
+            //    this.ValidateCommand,
+            //    this.OneOrMoreSelected );
 
             this._menuManager.Add(
                 new MenuItem( "MainForm_Configuration" )
@@ -103,18 +106,18 @@ namespace MajorHavocEditor
                 } );
         }
 
-        private bool OneOrMoreSelected( object notUsed )
-        {
-            return this._gameExplorer.SelectedItems.Count > 0;
-        }
+        //private bool OneOrMoreSelected( object notUsed )
+        //{
+        //    return this._gameExplorer.SelectedItems.Count > 0;
+        //}
 
-        private void ValidateCommand( object notUsed )
-        {
-            foreach ( object subject in this._gameExplorer.SelectedItems )
-            {
-                this._validationService.ValidateAndDisplayResults( subject );
-            }
-        }
+        //private void ValidateCommand( object notUsed )
+        //{
+        //    foreach ( object subject in this._gameExplorer.SelectedItems )
+        //    {
+        //        this._validationService.ValidateAndDisplayResults( subject );
+        //    }
+        //}
 
         protected override void OnLoad(EventArgs e)
         {

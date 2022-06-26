@@ -1,19 +1,23 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 using mhedit.Containers;
+using mhedit.Extensions;
 
 namespace MajorHavocEditor.Services
 {
-
-    internal interface IFileManager
+    public interface IFileManager
     {
         /// <summary>
-        /// Attempt to save the object to file.
+        /// Attempt to save the object to file. Save As will be performed
+        /// if the IFileProperties don't point to a file. Save As can be
+        /// forced by setting the parameter to true.
         /// </summary>
-        /// <param name="toBeSaved"></param>
+        /// <param name="file"></param>
+        /// <param name="saveAs"></param>
         /// <returns>True if save succeeded. False otherwise</returns>
-        bool Save( IFileProperties toBeSaved );
+        bool Save(IFileProperties file, bool saveAs = false);
 
         /// <summary>
         /// 
@@ -22,44 +26,127 @@ namespace MajorHavocEditor.Services
         /// <param name="toBeLoaded"></param>
         /// <param name="postProcessing"></param>
         /// <returns></returns>
-        T Open<T>( IFileProperties toBeLoaded, Func<FileStream, T> postProcessing );
+        T Open<T>( string fileName ) where T : class;
     }
 
-//    public class FileManager : IFileManager
-//    {
-//#region Implementation of IFileManager
+    public class FileManager : IFileManager
+    {
+#region Implementation of IFileManager
 
-//        /// <inheritdoc />
-//        public bool Save( IFileProperties toBeSaved )
-//        {
-//        }
+        /// <inheritdoc />
+        public bool Save(IFileProperties file, bool saveAs = false)
+        {
+            DialogResult result = DialogResult.OK;
 
-//        /// <inheritdoc />
-//        public T Open<T>( IFileProperties toBeLoaded, Func<FileStream, T> postProcessing )
-//        {
-//            OpenFileDialog ofd = new OpenFileDialog
-//                                 {
-//                                     Title = "Open Maze or Maze Collection",
-//                                     InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-//                                     Filter = "Editor Files (*.mhz;*.mhc)|*.mhz;*.mhc|Mazes (*.mhz)|*.mhz|Maze Collections (*.mhc)|*.mhc",
-//                                     CheckFileExists = true,
-//                                 };
+            // if there isn't a file associated with this MazeCollection then ask
+            // for the fileName. 
+            if (string.IsNullOrWhiteSpace(file.Path) || saveAs)
+            {
+                SaveFileDialog sfd =
+                    new SaveFileDialog
+                    {
+                        InitialDirectory = file.Path ??
+                                           Environment.GetFolderPath(
+                                               Environment.SpecialFolder.MyDocuments),
+                        FileName = file.Name,
+                        Filter = $"{file.GetType().Name} Files (*{file.Extension})|*{file.Extension}|All files (*.*)|*.*",
+                        AddExtension = true,
+                        OverwritePrompt = true
+                    };
 
-//            if (ofd.ShowDialog() == DialogResult.OK)
-//            {
-//                string fileExtension = Path.GetExtension(ofd.FileName);
+                // capture user choice for save operation below.
+                result = sfd.ShowDialog();
 
-//                if (fileExtension.Equals(".mhz", StringComparison.CurrentCultureIgnoreCase))
-//                {
-//                    this.OpenMaze(ofd.FileName);
-//                }
-//                else if (fileExtension.Equals(".mhc", StringComparison.CurrentCultureIgnoreCase))
-//                {
-//                    this.OpenCollection(ofd.FileName);
-//                }
-//            }
-//        }
+                if (result == DialogResult.OK)
+                {
+                    file.Name = Path.GetFileName(sfd.FileName);
+                    file.Path = Path.GetDirectoryName(sfd.FileName);
+                }
+            }
 
-//        #endregion
-//    }
+            try
+            {
+                if (result == DialogResult.OK)
+                {
+                    Cursor.Current = Cursors.WaitCursor;
+
+                    Application.DoEvents();
+
+                    file.SerializeAndCompress();
+
+                    if (file is IChangeTracking ict)
+                    {
+                        ict.AcceptChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result = DialogResult.Cancel;
+
+                MessageBox.Show(
+                    $@"An error has occurred while trying to save: {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}",
+                    "An Error Occurred",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+
+            return result == DialogResult.OK;
+        }
+
+        /// <inheritdoc />
+        public T Open<T>( string fileName ) where T : class
+        {
+            Cursor.Current = Cursors.WaitCursor;
+
+            Application.DoEvents();
+
+            object result = null;
+
+            try
+            {
+                result = fileName.ExpandAndDeserialize<T>(HandleNotifications);
+
+                void HandleNotifications(string message)
+                {
+                    MessageBox.Show(message, "Maze Load Issues",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                };
+
+                if (result is IFileProperties fileProperties)
+                {
+                    fileProperties.Name = Path.GetFileName(fileName);
+
+                    fileProperties.Path = Path.GetDirectoryName(fileName);
+                }
+
+                if (result is IChangeTracking ict)
+                {
+                    ict.AcceptChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show($@"Maze could not be opened: {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}",
+                    "File Open Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                //Bryan, I put this here as an example of how to report Exceptions that are caught, but you still
+                //may want to log them. All un-handled exceptions will still log.
+                //Program.SendException("MazeOpen", ex);
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+
+            return result as T;
+        }
+
+        #endregion
+    }
 }
