@@ -267,7 +267,7 @@ namespace MajorHavocEditor.Views
 
             TreeNode clickedNode = this.GetNodeAt( e.X, e.Y );
 
-            if ( clickedNode != null )
+            if ( clickedNode != null && e.Button == MouseButtons.Left )
             {
                 // This captures clicking on an already selected node to unselect.
                 this._mouseDownMultiSelectNode =
