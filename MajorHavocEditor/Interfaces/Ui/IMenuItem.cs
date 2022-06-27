@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.Generic;
+using System.Windows.Input;
 
 namespace MajorHavocEditor.Interfaces.Ui
 {
@@ -63,6 +64,11 @@ namespace MajorHavocEditor.Interfaces.Ui
         /// Provides a sort order for items within a group.
         /// </summary>
         int SortOrder { get; }
+
+        /// <summary>
+        /// Implementation specific options can be passed though key value pairs.
+        /// </summary>
+        IDictionary<string, object> Options { get; }
 
         // Mimic the ICommandSource interface of WPF here because
         // its very useful. Can't use it directly because it wouldn't

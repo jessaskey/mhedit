@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Input;
 using mhedit.Containers;
 using MajorHavocEditor.Interfaces.Ui;
@@ -121,6 +122,9 @@ namespace MajorHavocEditor.Controls.Menu
 
         /// <inheritdoc />
         public int SortOrder { get; set; }
+
+        /// <inheritdoc />
+        public IDictionary<string, object> Options { get; set; }
 
         /// <inheritdoc />
         public ICommand Command { get; set; }

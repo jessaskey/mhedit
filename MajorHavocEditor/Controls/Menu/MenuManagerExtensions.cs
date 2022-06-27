@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using mhedit.Containers;
@@ -22,6 +23,7 @@ namespace MajorHavocEditor.Controls.Menu
                        ToolTipText = menuItem.ToolTip as string,
                        Image = image,
                        ImageTransparentColor = Color.Fuchsia,
+                       Alignment = menuItem.Options.GetAlignment(), 
                        DisplayStyle = image == null ?
                                           ToolStripItemDisplayStyle.Text :
                                           typeof(T) == typeof(ToolStripMenuItem) ?
@@ -41,6 +43,13 @@ namespace MajorHavocEditor.Controls.Menu
             };
         }
 
+        private static ToolStripItemAlignment GetAlignment( this IDictionary<string, object> options )
+        {
+            return options != null &&
+                   options.TryGetValue( nameof( ToolStripItem.Alignment ), out object value ) ?
+                       (ToolStripItemAlignment) value :
+                       ToolStripItemAlignment.Left;
+        }
     }
 
 }

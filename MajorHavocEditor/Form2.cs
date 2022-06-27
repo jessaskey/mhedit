@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -77,6 +78,7 @@ namespace MajorHavocEditor
                     Display = "About",
                     ToolTip = "Displays the AboutBox.",
                     GroupKey = new Guid(),
+                    Options = new Dictionary<string, object>() { { "Alignment", ToolStripItemAlignment.Right } },
                     Icon = @"Resources\Images\Menu\Information.bmp".CreateResourceUri()
                 } );
 
@@ -102,6 +104,7 @@ namespace MajorHavocEditor
                     Display = "Homepage",
                     ToolTip = "Displays the MHPe homepage.",
                     GroupKey = new Guid(),
+                    Options = new Dictionary<string,object>() { { "Alignment", ToolStripItemAlignment.Right } },
                     Icon = @"Resources\Images\Menu\HomeHS.png".CreateResourceUri()
                 } );
         }
