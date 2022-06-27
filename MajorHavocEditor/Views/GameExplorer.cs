@@ -16,7 +16,7 @@ namespace MajorHavocEditor.Views
 
         private readonly IWindowManager _windowManager;
         private readonly IMenuManager _contextMenuManager = new ContextMenuManager();
-
+        private IMenuItem Open;
         static GameExplorer()
         {
             IconList =
@@ -54,7 +54,6 @@ namespace MajorHavocEditor.Views
 
             this.treeView.ImageList = IconList;
 
-            this.treeView.AfterSelect += this.OnTreeViewAfterSelect;
             this.treeView.MouseDoubleClick += this.OnTreeViewMouseDoubleClick;
 
             MenuItem addMenuItem =
@@ -87,13 +86,23 @@ namespace MajorHavocEditor.Views
             this._contextMenuManager.Add(addMazeMenuItem);
             this._contextMenuManager.Add(addMazeCollectionMenuItem);
 
-            IMenuItem open =
-                new MenuItem("GameExplorer_Open")
+            this.Open =
+                new MenuItem("GameExplorer_OpenMaze")
                 {
-                    Command = gameManager.OpenCommand,
+                    Command = gameManager.OpenMazeCommand,
                     Display = "Open",
                     ShortcutKey = Keys.Control | Keys.O,
-                    ToolTip = "Open a Maze or Collection from file.",
+                    ToolTip = "Open Maze for editing.",
+                    Icon = @"Resources\Images\Menu\Open_16x.png".CreateResourceUri()
+                };
+
+            IMenuItem load =
+                new MenuItem("GameExplorer_LoadFromFile")
+                {
+                    Command = gameManager.LoadFromFileCommand,
+                    Display = "Load from File",
+                    ShortcutKey = Keys.Control | Keys.O,
+                    ToolTip = "Load a Maze or Collection from file.",
                     Icon = @"Resources\Images\Menu\OpenFolder_16x_24.bmp".CreateResourceUri()
                 };
 
@@ -120,7 +129,7 @@ namespace MajorHavocEditor.Views
             menuManager.Add(addMenuItem);
             menuManager.Add(addMazeMenuItem);
             menuManager.Add(addMazeCollectionMenuItem);
-            menuManager.Add(open);
+            menuManager.Add(load);
             menuManager.Add(save);
             menuManager.Add(saveAll);
 
@@ -133,9 +142,11 @@ namespace MajorHavocEditor.Views
                     Icon = @"Resources\Images\Menu\rom_32.png".CreateResourceUri()
                 });
 
+            this._contextMenuManager.Add(this.Open);
+
             this._contextMenuManager.Add( new Separator(addMenuItem, addMenuItem.GroupKey) );
 
-            this._contextMenuManager.Add( open );
+            this._contextMenuManager.Add( load );
 
             this._contextMenuManager.Add(
                 new MenuItem("GameExplorer_Close")
@@ -252,25 +263,13 @@ namespace MajorHavocEditor.Views
 
 #endregion
 
-        private void OnTreeViewAfterSelect( object sender, TreeViewEventArgs e )
-        {
-            if ( this.treeView.SelectedNode?.Tag is Maze maze )
-            {
-                if ( !ModifierKeys.HasFlag( Keys.Control ) )
-                {
-                    Debug.WriteLine("OnTreeViewAfterSelect");
-                    this._windowManager.Show( maze );
-                }
-            }
-        }
-
         private void OnTreeViewMouseDoubleClick( object sender, MouseEventArgs e )
         {
             if (this.treeView.SelectedNode?.Tag is Maze maze &&
             this.treeView.SelectedNode.Bounds.Contains( e.X, e.Y ) )
             {
                 Debug.WriteLine("OnTreeViewMouseDoubleClick");
-                this._windowManager.Show( maze, true );
+                this._windowManager.Show(maze, true);
             }
         }
 

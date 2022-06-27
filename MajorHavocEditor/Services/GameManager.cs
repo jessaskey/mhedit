@@ -11,6 +11,8 @@ using mhedit.Containers;
 using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Views;
 using MajorHavocEditor.Interfaces.Ui;
+using System.Collections.Specialized;
+using System.Diagnostics;
 
 namespace MajorHavocEditor.Services
 {
@@ -35,6 +37,8 @@ namespace MajorHavocEditor.Services
             this._windowManager = windowManager;
             this._validationService = validationService;
 
+            this._selected.CollectionChanged += this.OnSelectedChanged;
+
             this.AddMazeCommand = new MenuCommand(
                 this.AddMaze,
                 this.OneOrLessObjectsSelected );
@@ -42,6 +46,10 @@ namespace MajorHavocEditor.Services
             this.AddMazeCollectionCommand = new MenuCommand(
                 this.AddMazeCollection,
                 this.OneOrLessObjectsSelected );
+
+            this.OpenMazeCommand = new MenuCommand(
+                _ => this._windowManager.Show((Maze)this._selected[0], true),
+                this.OneMazeSelected);
 
             this.SaveCommand = new MenuCommand(
                 _ => this._fileManager.Save( (IFileProperties) this._selected[ 0 ] ),
@@ -55,14 +63,14 @@ namespace MajorHavocEditor.Services
                 this.SaveAll,
                 this.OneOrMoreObjectsSelected );
 
-            this.OpenCommand = new MenuCommand( this.OpenFile );
+            this.LoadFromFileCommand = new MenuCommand( this.LoadFromFile );
 
             this.CloseCommand = new MenuCommand(
                 this.Close,
                 this.OneObjectSelected );
 
             this.LoadFromRomCommand = new MenuCommand(
-                _ => this._romManager.LoadFrom() );
+                _ => { this._gameObjects.Add( this._romManager.LoadFrom() ); } );
 
             this.DeleteCommand = new MenuCommand(
                 this.Delete,
@@ -75,6 +83,16 @@ namespace MajorHavocEditor.Services
             this.ValidateCommand = new MenuCommand(
                 this.Validate,
                 this.OneOrMoreObjectsSelected );
+        }
+
+        private void OnSelectedChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.Action == NotifyCollectionChangedAction.Add &&
+                 e.NewItems.Cast<object>().First() is Maze maze &&
+                 !Control.ModifierKeys.HasFlag(Keys.Control))
+            {
+                this._windowManager.Show(maze);
+            }
         }
 
         public IList GameObjects
@@ -91,13 +109,15 @@ namespace MajorHavocEditor.Services
 
         public ICommand AddMazeCollectionCommand { get; }
 
+        public ICommand OpenMazeCommand { get; }
+
         public ICommand SaveCommand { get; }
 
         public ICommand SaveAsCommand { get; }
 
         public ICommand SaveAllCommand { get; }
 
-        public ICommand OpenCommand { get; }
+        public ICommand LoadFromFileCommand { get; }
 
         public ICommand CloseCommand { get; }
 
@@ -108,11 +128,6 @@ namespace MajorHavocEditor.Services
         public ICommand PreviewInHbMameCommand { get; }
 
         public ICommand ValidateCommand { get; }
-
-        /// <summary>
-        /// Opens MazeUI to edit maze.
-        /// </summary>
-        public ICommand EditMazeCommand { get; }
 
         private bool OneOrLessObjectsSelected( object arg )
         {
@@ -208,7 +223,7 @@ namespace MajorHavocEditor.Services
             }
         }
 
-        private void OpenFile( object notUsed )
+        private void LoadFromFile( object notUsed )
         {
             OpenFileDialog ofd =
                 new OpenFileDialog
@@ -225,8 +240,8 @@ namespace MajorHavocEditor.Services
             {
                 object opened = Path.GetExtension( ofd.FileName ).ToLowerInvariant() switch
                 {
-                    ".mhz" => this._fileManager.Open<Maze>( ofd.FileName ),
-                    ".mhc" => this._fileManager.Open<MazeCollection>( ofd.FileName ),
+                    ".mhz" => this._fileManager.Load<Maze>( ofd.FileName ),
+                    ".mhc" => this._fileManager.Load<MazeCollection>( ofd.FileName ),
                     _ => throw new ArgumentOutOfRangeException(
                              $"{Path.GetExtension( ofd.FileName )} is not a supported extension." )
                 };

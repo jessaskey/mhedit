@@ -20,13 +20,13 @@ namespace MajorHavocEditor.Services
         bool Save(IFileProperties file, bool saveAs = false);
 
         /// <summary>
-        /// 
+        /// Load File into the editor.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="toBeLoaded"></param>
         /// <param name="postProcessing"></param>
         /// <returns></returns>
-        T Open<T>( string fileName ) where T : class;
+        T Load<T>( string fileName ) where T : class;
     }
 
     public class FileManager : IFileManager
@@ -99,7 +99,7 @@ namespace MajorHavocEditor.Services
         }
 
         /// <inheritdoc />
-        public T Open<T>( string fileName ) where T : class
+        public T Load<T>( string fileName ) where T : class
         {
             Cursor.Current = Cursors.WaitCursor;
 

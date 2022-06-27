@@ -8,6 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Resources\Images\Menu\Open_16x.png" />
+    </ItemGroup>
+
+    <ItemGroup>
         <!--<PackageReference Include="Krypton.Docking" Version="6.2201.4" />-->
         <!--<PackageReference Include="Krypton.Docking" Version="5.550.2108.1" />-->
         <!--<PackageReference Include="Krypton.Docking.Canary" Version="65.22.4.103-beta" />-->
@@ -34,6 +38,7 @@
         <EmbeddedResource Include="Resources\Images\Menu\NewFileCollection_16x_24.bmp" />
         <EmbeddedResource Include="Resources\Images\Menu\NewMaze.bmp" />
         <EmbeddedResource Include="Resources\Images\Menu\OpenFolder_16x_24.bmp" />
+        <EmbeddedResource Include="Resources\Images\Menu\Open_16x.png" />
         <EmbeddedResource Include="Resources\Images\Menu\rom_32.png" />
         <EmbeddedResource Include="Resources\Images\Menu\SaveAll_16x_24.bmp" />
         <EmbeddedResource Include="Resources\Images\Menu\SaveAs_16x_24.bmp" />
