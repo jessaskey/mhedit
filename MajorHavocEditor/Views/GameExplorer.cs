@@ -48,14 +48,15 @@ namespace MajorHavocEditor.Views
             this.MinimumSize = new Size( 200, 200 );
 
             this._windowManager = windowManager;
+            
+            // Must occur before setting up ItemSource!
+            this.treeView.ImageList = IconList;
 
             this.treeView.ItemsSource = gameManager.GameObjects;
             this.treeView.ItemsDelegate = new GameExplorerItemsSourceDelegate();
             this.treeView.SelectedItems = gameManager.SelectedObjects;
             
             this.treeView.ContextMenuStrip = (ContextMenuStrip) this._contextMenuManager.Menu;
-
-            this.treeView.ImageList = IconList;
 
             this.treeView.MouseDoubleClick += this.OnTreeViewMouseDoubleClick;
 

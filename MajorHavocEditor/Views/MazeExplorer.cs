@@ -150,6 +150,13 @@ namespace MajorHavocEditor.Views
 
             this.MinimumSize = new Size( 200, 200 );
 
+            // Must occur before setting up ItemSource!
+            this.treeView.ImageList = IconList;
+
+            this._mazeObjects = maze.MazeObjects;
+
+            this._selectedObjects = selectedItems;
+
             MazeExplorerItemsSource source = new MazeExplorerItemsSource( maze );
             this.treeView.ItemsDelegate = source;
             this.treeView.ItemsSource = source;
@@ -158,12 +165,6 @@ namespace MajorHavocEditor.Views
             this.treeView.BeforeLabelEdit += this.OnBeforeLabelEdit;
 
             this.treeView.ContextMenuStrip = (ContextMenuStrip)this._contextMenuManager.Menu;
-
-            this.treeView.ImageList = IconList;
-
-            this._mazeObjects = maze.MazeObjects;
-
-            this._selectedObjects = selectedItems;
         }
 
         private void OnBeforeLabelEdit( object sender, NodeLabelEditEventArgs e )
