@@ -7,6 +7,9 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using mhedit.Containers;
+using mhedit.Containers.MazeEnemies;
+using mhedit.Containers.MazeEnemies.IonCannon;
+using mhedit.Containers.MazeObjects;
 using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Interfaces.Ui;
 
@@ -60,6 +63,17 @@ namespace MajorHavocEditor.Views
                     this.Checked = ((MazeObject)this.Tag).Selected;
                 }
             }
+
+            public static string GetImageKey(object item)
+            {
+                return item switch
+                {
+                    MazeWall wall => wall.WallType.ToString(),
+                    NamedGrouping ng => GetImageKey( ng.First() ),
+                    Maze maze => maze.MazeType.ToString(),
+                    _ => item.GetType().Name
+                };
+            }
         }
 
         private class NamedGrouping : ObservableCollection<MazeObject>, IGrouping<Type, MazeObject>, IName
@@ -100,39 +114,39 @@ namespace MajorHavocEditor.Views
         {
             IconList =
                 new ImageList { TransparentColor = Color.Fuchsia }
-                    .AddImages(new[]
-                               {
-                                   "arrow_32.png",
-                                   "arrow_out_32.png",
-                                   "booties_32.png",
-                                   "cannon_32.png",
-                                   "clock_32.png",
-                                   "hand_32.png",
-                                   "keypouch_32.png",
-                                   "key_32.png",
-                                   "lightning_32.png",
-                                   "lightning_v_32.png",
-                                   "lock_32.png",
-                                   "oneway_32.png",
-                                   "oxoid_32.png",
-                                   "perkoid_32.png",
-                                   "pod_32.png",
-                                   "pyroid_32.png",
-                                   "reactoid_32.png",
-                                   "roboid_32.png",
-                                   "spikes_32.png",
-                                   "token_32.png",
-                                   "transporter_32.png",
-                                   "trippad_32.png",
-                                   "wall_empty_32.png",
-                                   "wall_horizontal_32.png",
-                                   "wall_leftdown_32.png",
-                                   "wall_leftup_32.png",
-                                   "wall_rightdown_32.png",
-                                   "wall_rightup_32.png",
-                                   "wall_vertical_32.png",
-                               })
-                    .WithResourcePath("Resources/Images/Toolbox")
+                    .AddImages( new[]
+                                {
+                                    ( nameof(Arrow), "arrow_32.png" ),
+                                    ( nameof(ArrowOut), "arrow_out_32.png" ),
+                                    ( nameof(Boots), "booties_32.png" ),
+                                    ( nameof(IonCannon), "cannon_32.png" ),
+                                    ( nameof(Clock), "clock_32.png" ),
+                                    ( nameof(Hand), "hand_32.png" ),
+                                    ( nameof(KeyPouch), "keypouch_32.png" ),
+                                    ( nameof(Key), "key_32.png" ),
+                                    ( nameof(LightningH), "lightning_32.png" ),
+                                    ( nameof(LightningV), "lightning_v_32.png" ),
+                                    ( nameof(Lock), "lock_32.png" ),
+                                    ( nameof(OneWay), "oneway_32.png" ),
+                                    ( nameof(Oxoid), "oxoid_32.png" ),
+                                    ( nameof(Perkoid), "perkoid_32.png" ),
+                                    ( nameof(EscapePod), "pod_32.png" ),
+                                    ( nameof(Pyroid), "pyroid_32.png" ),
+                                    ( nameof(Reactoid), "reactoid_32.png" ),
+                                    ( nameof(Maxoid), "roboid_32.png" ),
+                                    ( nameof(Spikes), "spikes_32.png" ),
+                                    ( nameof(HiddenLevelToken), "token_32.png" ),
+                                    ( nameof(Transporter), "transporter_32.png" ),
+                                    ( nameof(TripPad), "trippad_32.png" ),
+                                    ( nameof(MazeWallType.Empty), "wall_empty_32.png" ),
+                                    ( nameof(MazeWallType.Horizontal), "wall_horizontal_32.png" ),
+                                    ( nameof(MazeWallType.LeftDown), "wall_leftdown_32.png" ),
+                                    ( nameof(MazeWallType.LeftUp), "wall_leftup_32.png" ),
+                                    ( nameof(MazeWallType.RightDown), "wall_rightdown_32.png" ),
+                                    ( nameof(MazeWallType.RightUp), "wall_rightup_32.png" ),
+                                    ( nameof(MazeWallType.Vertical), "wall_vertical_32.png" ),
+                                } )
+                    .WithResourcePath( "Resources/Images/Toolbox" )
                     .Load();
         }
 

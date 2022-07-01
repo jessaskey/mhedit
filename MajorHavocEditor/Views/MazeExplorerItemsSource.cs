@@ -138,13 +138,13 @@ namespace MajorHavocEditor.Views
             /// <inheritdoc />
             public TreeNode CreateNode( object item )
             {
-                int imageIndex = 0;
+                string imageKey = BoundTreeNode.GetImageKey(item);
 
                 return new BoundTreeNode( ( (IName) item ).Name )
                        {
                            Tag = item,
-                           ImageIndex = imageIndex,
-                           SelectedImageIndex = imageIndex,
+                           ImageKey = imageKey,
+                           SelectedImageKey = imageKey,
                        }
                     .ConnectPropertyChanged( item as INotifyPropertyChanged );
             }

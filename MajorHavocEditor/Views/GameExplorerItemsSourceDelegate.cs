@@ -42,9 +42,16 @@ namespace MajorHavocEditor.Views
                     }
                     else if (args.PropertyName.Equals(nameof(Maze.MazeType)))
                     {
-                        this.ImageIndex = this.Tag is Maze maze ? (int)maze.MazeType + 1 : 0;
-                        this.SelectedImageIndex = this.ImageIndex;
+                        this.ImageKey = GetImageKey( this.Tag );
+                        this.SelectedImageKey = this.ImageKey;
                     }
+                }
+
+                public static string GetImageKey( object item )
+                {
+                    return item is Maze maze ?
+                               maze.MazeType.ToString() :
+                               item.GetType().Name;
                 }
             }
 
@@ -53,9 +60,7 @@ namespace MajorHavocEditor.Views
             /// <inheritdoc />
             public TreeNode CreateNode( object item )
             {
-                string imageKey = item is Maze maze ?
-                                      maze.MazeType.ToString() :
-                                      item.GetType().Name;
+                string imageKey = BoundTreeNode.GetImageKey(item);
 
                 return new BoundTreeNode(((IName)item).Name)
                        {
