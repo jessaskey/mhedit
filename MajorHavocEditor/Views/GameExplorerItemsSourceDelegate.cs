@@ -53,13 +53,15 @@ namespace MajorHavocEditor.Views
             /// <inheritdoc />
             public TreeNode CreateNode( object item )
             {
-                int imageIndex = item is Maze maze ? (int) maze.MazeType + 1 : 0;
+                string imageKey = item is Maze maze ?
+                                      maze.MazeType.ToString() :
+                                      item.GetType().Name;
 
                 return new BoundTreeNode(((IName)item).Name)
                        {
                            Tag = item,
-                           ImageIndex = imageIndex,
-                           SelectedImageIndex = imageIndex,
+                           ImageKey = imageKey,
+                           SelectedImageKey = imageKey,
                        }
                     .ConnectPropertyChanged( (INotifyPropertyChanged) item );
             }

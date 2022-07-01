@@ -12,6 +12,7 @@ namespace MajorHavocEditor.Views
     {
         private const string ImageList = nameof( ImageList );
         private const string FileNames = nameof( FileNames );
+        private const string KeyValueTuples = nameof(KeyValueTuples);
         private const string AssemblyName = nameof( AssemblyName );
         private const string ResourcePath = nameof( ResourcePath );
 
@@ -22,6 +23,17 @@ namespace MajorHavocEditor.Views
 
             cfg[ ImageList ] = il;
             cfg[ FileNames ] = fileNames;
+
+            return cfg;
+        }
+
+        public static IDictionary<string, object> AddImages( this ImageList il,
+            IEnumerable<(string Key, string FileName)> keyValueTuples )
+        {
+            IDictionary<string, object> cfg = new Dictionary<string, object>();
+
+            cfg[ ImageList ] = il;
+            cfg[ KeyValueTuples ] = keyValueTuples;
 
             return cfg;
         }
@@ -58,11 +70,26 @@ namespace MajorHavocEditor.Views
 
             ImageList imageList = (ImageList) config[ ImageList ];
 
-            foreach ( string filename in (IEnumerable<string>)config[FileNames])
+            if ( config.TryGetValue( FileNames, out object fileList ) )
             {
-                imageList.Images.Add(
-                    ResourceLoader.GetEmbeddedImage(
-                        Path.Combine( path, filename ).CreateResourceUri( assembly ) ) );
+                foreach ( string filename in (IEnumerable<string>) fileList )
+                {
+                    imageList.Images.Add(
+                        ResourceLoader.GetEmbeddedImage(
+                            Path.Combine( path, filename )
+                                .CreateResourceUri( assembly ) ) );
+                }
+            }
+            else
+            {
+                foreach ( (string Key, string FileName) kvt in
+                    (IEnumerable<(string Key, string FileName)>) config[ KeyValueTuples ] )
+                {
+                    imageList.Images.Add( kvt.Key,
+                        ResourceLoader.GetEmbeddedImage(
+                            Path.Combine( path, kvt.FileName )
+                                .CreateResourceUri( assembly ) ) );
+                }
             }
 
             return imageList;

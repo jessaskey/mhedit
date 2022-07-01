@@ -22,11 +22,11 @@ namespace MajorHavocEditor.Views
                 new ImageList { TransparentColor = Color.Fuchsia }
                     .AddImages(new[]
                                {
-                                   "ThumbnailViewHS.bmp",
-                                   "maze_a.bmp",
-                                   "maze_b.bmp",
-                                   "maze_c.bmp",
-                                   "maze_d.bmp"
+                                   ( nameof(MazeCollection), "ThumbnailViewHS.bmp" ),
+                                   ( nameof(MazeType.TypeA), "maze_a.bmp" ),
+                                   ( nameof(MazeType.TypeB), "maze_b.bmp" ),
+                                   ( nameof(MazeType.TypeC), "maze_c.bmp" ),
+                                   ( nameof(MazeType.TypeD), "maze_d.bmp" ),
                                })
                     .WithResourcePath("Resources/Images")
                     .Load();
