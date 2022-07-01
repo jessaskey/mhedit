@@ -8,6 +8,11 @@ using MajorHavocEditor.Interfaces.Ui;
 namespace MajorHavocEditor.Controls.Menu
 {
 
+    public interface IHoldsMenuItem
+    {
+        IMenuItem MenuItem { get; set; }
+    }
+
     public static class MenuManagerExtensions
     {
         public static ToolStripItem Create<T>( this IMenuItem menuItem )
@@ -17,7 +22,6 @@ namespace MajorHavocEditor.Controls.Menu
 
             return new T
                    {
-                       Tag = menuItem,
                        Text = menuItem.Display as string ?? menuItem.Name,
                        Name = menuItem.Name,
                        ToolTipText = menuItem.ToolTip as string,
@@ -26,7 +30,7 @@ namespace MajorHavocEditor.Controls.Menu
                        Alignment = menuItem.Options.GetAlignment(), 
                        DisplayStyle = image == null ?
                                           ToolStripItemDisplayStyle.Text :
-                                          typeof(T) == typeof(ToolStripMenuItem) ?
+                                          typeof(T).IsAssignableTo(typeof(ToolStripMenuItem)) ?
                                               ToolStripItemDisplayStyle.ImageAndText :
                                               ToolStripItemDisplayStyle.Image
                    };
@@ -51,5 +55,4 @@ namespace MajorHavocEditor.Controls.Menu
                        ToolStripItemAlignment.Left;
         }
     }
-
 }

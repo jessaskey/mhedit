@@ -8,16 +8,15 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
 using mhedit.Containers;
-using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Views;
 using MajorHavocEditor.Interfaces.Ui;
 using System.Collections.Specialized;
-using System.Diagnostics;
+using MajorHavocEditor.Controls.Commands;
 
 namespace MajorHavocEditor.Services
 {
 
-    public class GameManager
+    public class GameManager : INotifyPropertyChanged
     {
         private ObservableCollection<object> _gameObjects = new ObservableCollection<object>();
         private ObservableCollection<object> _selected = new ObservableCollection<object>();
@@ -39,50 +38,59 @@ namespace MajorHavocEditor.Services
 
             this._selected.CollectionChanged += this.OnSelectedChanged;
 
-            this.AddMazeCommand = new MenuCommand(
+            this.AddMazeCommand = new DelegateCommand(
                 this.AddMaze,
-                this.OneOrLessObjectsSelected );
+                this.OneOrLessObjectsSelected )
+                .ObservesProperty( () => this.SelectedObjects.Count );
 
-            this.AddMazeCollectionCommand = new MenuCommand(
+            this.AddMazeCollectionCommand = new DelegateCommand(
                 this.AddMazeCollection,
-                this.OneOrLessObjectsSelected );
+                this.OneOrLessObjectsSelected)
+                .ObservesProperty(() => this.SelectedObjects.Count);
 
-            this.OpenMazeCommand = new MenuCommand(
-                _ => this._windowManager.Show((Maze)this._selected[0], true),
-                this.OneMazeSelected);
+            this.OpenMazeCommand = new DelegateCommand(
+                () => this._windowManager.Show((Maze)this._selected[0], true),
+                this.OneMazeSelected)
+                .ObservesProperty(() => this.SelectedObjects.Count);
 
-            this.SaveCommand = new MenuCommand(
-                _ => this._fileManager.Save( (IFileProperties) this._selected[ 0 ] ),
-                this.OneObjectSelected );
+            this.SaveCommand = new DelegateCommand(
+                () => this._fileManager.Save( (IFileProperties) this._selected[ 0 ] ),
+                this.OneObjectSelected)
+                .ObservesProperty(() => this.SelectedObjects.Count);
 
-            this.SaveAsCommand = new MenuCommand(
-                _ => this._fileManager.Save( (IFileProperties) this._selected[ 0 ], true ),
-                this.OneObjectSelected );
+            this.SaveAsCommand = new DelegateCommand(
+                () => this._fileManager.Save( (IFileProperties) this._selected[ 0 ], true ),
+                this.OneObjectSelected)
+                .ObservesProperty(() => this.SelectedObjects.Count);
 
-            this.SaveAllCommand = new MenuCommand(
+            this.SaveAllCommand = new DelegateCommand(
                 this.SaveAll,
-                this.OneOrMoreObjectsSelected );
+                this.OneOrMoreObjectsSelected)
+                .ObservesProperty(() => this.SelectedObjects.Count);
 
-            this.LoadFromFileCommand = new MenuCommand( this.LoadFromFile );
+            this.LoadFromFileCommand = new DelegateCommand( this.LoadFromFile );
 
-            this.CloseCommand = new MenuCommand(
+            this.CloseCommand = new DelegateCommand(
                 this.Close,
-                this.OneObjectSelected );
+                this.OneObjectSelected)
+                .ObservesProperty(() => this.SelectedObjects.Count);
 
-            this.LoadFromRomCommand = new MenuCommand(
-                _ => { this._gameObjects.Add( this._romManager.LoadFrom() ); } );
+            this.LoadFromRomCommand = new DelegateCommand( this.LoadFromRom );
 
-            this.DeleteCommand = new MenuCommand(
+            this.DeleteCommand = new DelegateCommand(
                 this.Delete,
-                this.OneOrMoreObjectsSelected );
+                this.OneOrMoreObjectsSelected)
+                .ObservesProperty(() => this.SelectedObjects.Count);
 
-            this.PreviewInHbMameCommand = new MenuCommand(
+            this.PreviewInHbMameCommand = new DelegateCommand(
                 this.PreviewInHbMame,
-                this.OneMazeSelected );
+                this.OneMazeSelected)
+                .ObservesProperty(() => this.SelectedObjects.Count);
 
-            this.ValidateCommand = new MenuCommand(
+            this.ValidateCommand = new DelegateCommand(
                 this.Validate,
-                this.OneOrMoreObjectsSelected );
+                this.OneOrMoreObjectsSelected)
+                .ObservesProperty(() => this.SelectedObjects.Count);
         }
 
         private void OnSelectedChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -129,28 +137,28 @@ namespace MajorHavocEditor.Services
 
         public ICommand ValidateCommand { get; }
 
-        private bool OneOrLessObjectsSelected( object arg )
+        private bool OneOrLessObjectsSelected()
         {
             return this._selected.Count <= 1;
         }
 
-        private bool OneObjectSelected( object arg )
+        private bool OneObjectSelected()
         {
             return this._selected.Count == 1;
         }
 
-        private bool OneOrMoreObjectsSelected( object arg )
+        private bool OneOrMoreObjectsSelected()
         {
             return this._selected.Count >= 1;
         }
 
-        private bool OneMazeSelected( object arg )
+        private bool OneMazeSelected()
         {
-            return this.OneObjectSelected( arg )
+            return this.OneObjectSelected()
                    && this._selected[ 0 ] is Maze;
         }
 
-        private void AddMaze( object notUsed )
+        private void AddMaze()
         {
             /// nothing selected, add at top level
             if ( this._selected.Count == 0 )
@@ -173,7 +181,6 @@ namespace MajorHavocEditor.Services
                 {
                     this._gameObjects.Insert( index + 1, new Maze() );
                 }
-
                 // Find parent collection and insert after selected...
                 else
                 {
@@ -187,12 +194,12 @@ namespace MajorHavocEditor.Services
                                         return index >= 0;
                                     } );
 
-                    found.Mazes.Insert( index + 1, new Maze() );
+                    found.Mazes.Insert( index + 1, new Maze(string.Empty) );
                 }
             }
         }
 
-        private void AddMazeCollection( object notUsed )
+        private void AddMazeCollection()
         {
             /// nothing selected, add at top level
             if ( this._selected.Count == 0 )
@@ -207,7 +214,7 @@ namespace MajorHavocEditor.Services
             }
         }
 
-        private void SaveAll( object notUsed )
+        private void SaveAll()
         {
             // On save all, write MazeCollections, and Loose Mazes that
             // that exist at top level of treeview. No need to go further
@@ -223,7 +230,17 @@ namespace MajorHavocEditor.Services
             }
         }
 
-        private void LoadFromFile( object notUsed )
+        private void LoadFromRom()
+        {
+            MazeCollection mc = this._romManager.LoadFrom();
+
+            if ( mc != null )
+            {
+                this._gameObjects.Add(mc);
+            }
+        }
+
+        private void LoadFromFile()
         {
             OpenFileDialog ofd =
                 new OpenFileDialog
@@ -257,7 +274,7 @@ namespace MajorHavocEditor.Services
         /// <summary>
         /// This closes a singular... Not sure about logic here
         /// </summary>
-        private void Close( object notUsed )
+        private void Close()
         {
             IFileProperties itemToClose = (IFileProperties) this._selected[ 0 ];
 
@@ -298,7 +315,7 @@ namespace MajorHavocEditor.Services
         /// <summary>
         /// TODO: Decide if should force conditions.. like all from same parent, or same level.
         /// </summary>
-        private void Delete( object notUsed )
+        private void Delete()
         {
             DialogResult result = MessageBox.Show(
                 this._selected.Count == 1 ?
@@ -364,7 +381,7 @@ namespace MajorHavocEditor.Services
         /// BUG: This assumes collection exits!!! This needs fixed!!
         /// </summary>
         /// <param name="obj"></param>
-        private void PreviewInHbMame( object notUsed )
+        private void PreviewInHbMame()
         {
             Maze maze = (Maze) this._selected[ 0 ];
 
@@ -379,7 +396,7 @@ namespace MajorHavocEditor.Services
 
         }
 
-        private void Validate( object notUsed )
+        private void Validate()
         {
             foreach ( object subject in this._selected )
             {
@@ -387,6 +404,13 @@ namespace MajorHavocEditor.Services
             }
         }
 
+        // the only reason this is here, is so that DelegateCommand.ObservesProperty()
+        // will function.
+        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
+        {
+            add { }
+            remove { }
+        }
     }
 
 }

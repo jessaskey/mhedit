@@ -73,7 +73,7 @@ namespace MajorHavocEditor.Interfaces.Ui
         // Mimic the ICommandSource interface of WPF here because
         // its very useful. Can't use it directly because it wouldn't
         // support Windows Forms.
-        #region Mimic ICommandSource
+#region Mimic ICommandSource
 
         /// <summary>
         /// The command that will be executed when the menu item is selected.
@@ -83,6 +83,9 @@ namespace MajorHavocEditor.Interfaces.Ui
         /// <summary>
         /// The parameter passed to the ICommand.Exceute method when the command
         /// is executed.
+        /// If the CommandParamater is assigned a Func<object> delegate then this
+        /// will act like a binding in WPF as the delegate will return a value
+        /// for use by the command.
         /// </summary>
         object CommandParameter { get; }
 
@@ -92,6 +95,6 @@ namespace MajorHavocEditor.Interfaces.Ui
         /// </summary>
         //object CommandTarget { get; }
 
-        #endregion
+#endregion
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using MajorHavocEditor.Interfaces.Ui;
 
 namespace MajorHavocEditor.Controls.Menu
@@ -12,31 +11,17 @@ namespace MajorHavocEditor.Controls.Menu
             : base(new ContextMenuStrip())
         { }
 
-#region Overrides of AltMenuManager
+#region Overrides of MenuManager
 
         /// <inheritdoc />
         protected override ToolStripItem CreateMenuItem( IMenuItem menuItem )
         {
-            Image image = menuItem.GetImage();
-
-            if (menuItem is Separator separator)
+            if (menuItem is Separator)
             {
                 return new ToolStripSeparator();
             }
 
             return menuItem.Create<ToolStripMenuItem>();
-
-            //return new ToolStripMenuItem()
-            //       {
-            //           Tag = menuItem,
-            //           Text = menuItem.Display as string ?? menuItem.Name,
-            //           Name = menuItem.Name,
-            //           ToolTipText = menuItem.ToolTip as string,
-            //           Image = image,
-            //           ImageTransparentColor = Color.Fuchsia,
-            //           DisplayStyle = image == null ? ToolStripItemDisplayStyle.Text :
-            //                              ToolStripItemDisplayStyle.ImageAndText
-            //       };
         }
 
 #endregion

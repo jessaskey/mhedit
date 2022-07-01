@@ -1,4 +1,5 @@
 ﻿using System;
+using MajorHavocEditor.Controls.Commands;
 using MajorHavocEditor.Interfaces.Ui;
 
 namespace MajorHavocEditor.Controls.Menu.Items
@@ -16,12 +17,12 @@ namespace MajorHavocEditor.Controls.Menu.Items
 
             this.Icon = "save.png";
 
-            this.Command = new MenuCommand(this.OnExecute);
+            this.Command = new DelegateCommand(this.OnExecute);
         }
 
         public IWindowManager WindowManager { get; set; }
 
-        private void OnExecute(object parameter)
+        private void OnExecute()
         {
 
             if (this.WindowManager != null)

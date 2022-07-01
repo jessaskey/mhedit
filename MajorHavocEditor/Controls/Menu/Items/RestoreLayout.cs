@@ -1,4 +1,5 @@
 ﻿using System;
+using MajorHavocEditor.Controls.Commands;
 using MajorHavocEditor.Interfaces.Ui;
 
 namespace MajorHavocEditor.Controls.Menu.Items
@@ -16,12 +17,12 @@ namespace MajorHavocEditor.Controls.Menu.Items
 
             this.GroupKey = LayoutGroupKey;
 
-            this.Command = new MenuCommand(this.OnExecute);
+            this.Command = new DelegateCommand(this.OnExecute);
         }
 
         public IWindowManager WindowManager { get; set; }
 
-        private void OnExecute(object obj)
+        private void OnExecute()
         {
             if (this.WindowManager != null)
             {

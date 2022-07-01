@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using mhedit.Containers;
+using MajorHavocEditor.Controls.Commands;
 using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Interfaces.Ui;
 using MajorHavocEditor.Services;
@@ -49,7 +51,7 @@ namespace MajorHavocEditor.Views
             this.treeView.ItemsSource = gameManager.GameObjects;
             this.treeView.ItemsDelegate = new ItemsSourceDelegate();
             this.treeView.SelectedItems = gameManager.SelectedObjects;
-
+            
             this.treeView.ContextMenuStrip = (ContextMenuStrip) this._contextMenuManager.Menu;
 
             this.treeView.ImageList = IconList;
@@ -186,7 +188,7 @@ namespace MajorHavocEditor.Views
             this._contextMenuManager.Add(
                 new MenuItem("GameExplorer_Rename")
                 {
-                    Command = new MenuCommand( this.RenameCommand, this.IsOneItemSelected ),
+                    Command = new DelegateCommand( this.RenameCommand, this.IsOneItemSelected ),
                     Display = "Rename",
                     ToolTip = "Rename the Maze or MazeCollection",
                 });
@@ -222,7 +224,7 @@ namespace MajorHavocEditor.Views
                 } );
         }
 
-        private bool IsOneItemSelected(object unused)
+        private bool IsOneItemSelected()
         {
             return this.treeView.SelectedItems.Count == 1;
         }
@@ -273,7 +275,7 @@ namespace MajorHavocEditor.Views
             }
         }
 
-        private void RenameCommand(object unused)
+        private void RenameCommand()
         {
             this.treeView.SelectedNode?.BeginEdit();
         }

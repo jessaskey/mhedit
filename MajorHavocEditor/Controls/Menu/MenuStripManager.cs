@@ -10,12 +10,12 @@ namespace MajorHavocEditor.Controls.Menu
             : base( new ToolStrip { Dock = dockStyle } )
         { }
 
-#region Overrides of AltMenuManager
+#region Overrides of MenuManager
 
         /// <inheritdoc />
         protected override ToolStripItem CreateMenuItem( IMenuItem menuItem )
         {
-            if (menuItem is Separator separator)
+            if (menuItem is Separator)
             {
                 return new ToolStripSeparator();
             }
@@ -32,25 +32,6 @@ namespace MajorHavocEditor.Controls.Menu
 
             return menuItem.Create<ToolStripMenuItem>();
         }
-
-
-        ///// <inheritdoc />
-        //protected override void MoveChildren( ToolStripItem source, ToolStripItem destination )
-        //{
-        //    if (source is ToolStripDropDownItem hasChildren)
-        //    {
-        //        ToolStripDropDownItem receivesChildren = (ToolStripDropDownItem)destination;
-
-        //        ToolStripItem[] children = new ToolStripItem[hasChildren.DropDownItems.Count];
-
-        //        hasChildren.DropDownItems.CopyTo(children, 0);
-
-        //        hasChildren.DropDownItems.Clear();
-
-        //        receivesChildren.DropDownItems.AddRange(children);
-        //    }
-
-        //}
 
 #endregion
     }

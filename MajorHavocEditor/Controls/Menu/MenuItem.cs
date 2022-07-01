@@ -42,6 +42,8 @@ namespace MajorHavocEditor.Controls.Menu
         private string _name;
         private string _parentName = string.Empty;
         private object _display;
+        private object _commandParameter;
+        private Func<object> _func;
 
         public MenuItem( string name )
         {
@@ -130,7 +132,18 @@ namespace MajorHavocEditor.Controls.Menu
         public ICommand Command { get; set; }
 
         /// <inheritdoc />
-        public object CommandParameter { get; set; }
+        public object CommandParameter
+        {
+            get { return this._func?.Invoke(); }
+            set
+            {
+                this._func = value is Func<object> func ?
+                                 func :
+                                 () => this._commandParameter;
+
+                this._commandParameter = value;
+            }
+        }
 
 #endregion
     }

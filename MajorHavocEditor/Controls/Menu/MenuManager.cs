@@ -10,6 +10,55 @@ namespace MajorHavocEditor.Controls.Menu
 
     public abstract class MenuManager : IMenuManager
     {
+        private class CommandLink : IDisposable
+        {
+            public CommandLink(IMenuItem menuItem, ToolStripItem toolStripItem)
+            {
+                this.MenuItem = menuItem;
+
+                this.ToolStripItem = toolStripItem;
+
+                if (menuItem.Command != null)
+                {
+                    toolStripItem.Click += this.OnMenuItemClicked;
+
+                    menuItem.Command.CanExecuteChanged += this.OnCanExecuteChanged;
+
+                    this.OnCanExecuteChanged(menuItem.Command, EventArgs.Empty);
+                }
+            }
+
+            public IMenuItem MenuItem { get; }
+
+            public ToolStripItem ToolStripItem { get; }
+
+            private void OnCanExecuteChanged(object sender, EventArgs e)
+            {
+                this.ToolStripItem.Enabled =
+                    this.MenuItem.Command.CanExecute(this.MenuItem.CommandParameter);
+            }
+
+            private void OnMenuItemClicked(object sender, EventArgs e)
+            {
+                this.MenuItem.Command.Execute(this.MenuItem.CommandParameter);
+            }
+
+#region Implementation of IDisposable
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+                if (this.MenuItem.Command != null)
+                {
+                    this.ToolStripItem.Click -= this.OnMenuItemClicked;
+
+                    this.MenuItem.Command.CanExecuteChanged -= this.OnCanExecuteChanged;
+                }
+            }
+
+#endregion
+        }
+
         /// <summary>
         /// Used when a parent is implied with <see cref="IMenuItem.ParentName"/>
         /// but at the time of reference one had not been explicitly added.
@@ -35,8 +84,8 @@ namespace MajorHavocEditor.Controls.Menu
         {
             this._toolStrip = toolStrip;
         }
-
-        #region Implementation of IMenuManager
+        
+#region Implementation of IMenuManager
 
         public object Menu
         {
@@ -207,41 +256,9 @@ namespace MajorHavocEditor.Controls.Menu
 
         private void AddToMenu(IMenuItem itemToAdd, ToolStripItem stripItemToAdd)
         {
-            stripItemToAdd.Tag = itemToAdd;
+            stripItemToAdd.Tag = new CommandLink( itemToAdd, stripItemToAdd );
 
-            if (itemToAdd.Command != null)
-            {
-                stripItemToAdd.Click += OnMenuItemClicked;
-
-                //itemToAdd.Command.CanExecuteChanged += this.OnCanExecuteChanged;
-            }
-
-            this._menuItems.Add(itemToAdd, stripItemToAdd);
-        }
-
-        private void OnCanExecuteChanged(object sender, EventArgs e)
-        {
-            IMenuItem menuItem = (MenuItem)sender;
-
-            if (this._menuItems.TryGetValue(menuItem, out ToolStripItem toolStripItem))
-            {
-                toolStripItem.Enabled = menuItem.Command.CanExecute(menuItem.CommandParameter);
-            }
-        }
-
-        /// <summary>
-        /// Static removes need to disconnect event handler. 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void OnMenuItemClicked(object sender, EventArgs e)
-        {
-            IMenuItem menuItem = (IMenuItem)((ToolStripItem)sender).Tag;
-
-            if (menuItem.Command.CanExecute(menuItem.CommandParameter))
-            {
-                menuItem.Command.Execute(menuItem.CommandParameter);
-            }
+            this._menuItems.Add( itemToAdd, stripItemToAdd);
         }
 
         private static void ThrowOnDuplicate(IMenuItem itemToAdd, IMenuItem existing)
@@ -265,17 +282,22 @@ namespace MajorHavocEditor.Controls.Menu
 
         protected abstract ToolStripItem CreateMenuItem(IMenuItem menuItem);
 
-        private ToolStripItem RemoveFromMenu(IMenuItem menuItem)
+        private ToolStripItem RemoveFromMenu(IMenuItem key)
         {
-            if (this._menuItems.TryGetValue(menuItem, out ToolStripItem toolStripItem))
+            if (this._menuItems.TryGetValue(key, out ToolStripItem item))
             {
-                // BUG? Does this traverse hierarchy?
-                this._toolStrip.Items.Remove(toolStripItem);
+                if ( item.Tag is IDisposable disposable )
+                {
+                    disposable.Dispose();
+                }
 
-                this._menuItems.Remove(menuItem);
+                // BUG? Does this traverse hierarchy?
+                this._toolStrip.Items.Remove(item);
+
+                this._menuItems.Remove(key);
             }
 
-            return toolStripItem;
+            return item;
         }
 
         private void AddBasicMenus()

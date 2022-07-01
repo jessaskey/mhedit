@@ -1,4 +1,5 @@
 ﻿using System;
+using MajorHavocEditor.Controls.Commands;
 
 namespace MajorHavocEditor.Controls.Menu.Items
 {
@@ -13,7 +14,7 @@ namespace MajorHavocEditor.Controls.Menu.Items
 
             this.SortOrder = int.MaxValue;
 
-            this.Command = new MenuCommand( notUsed => {} );
+            this.Command = new DelegateCommand( () => {} );
 
             // make private group key.
             this.GroupKey = new object();

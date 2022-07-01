@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Krypton.Docking;
 using Krypton.Toolkit;
+using MajorHavocEditor.Controls.Commands;
 using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Interfaces.Ui;
 using MajorHavocEditor.Services;
@@ -64,7 +65,7 @@ namespace MajorHavocEditor
             this._menuManager.Add(
                 new MenuItem( "MainForm_Configuration" )
                 {
-                    Command = new MenuCommand( _ => new DialogConfiguration().ShowDialog() ),
+                    Command = new DelegateCommand( ( ) => new DialogConfiguration().ShowDialog() ),
                     Display = "Configuration",
                     ToolTip = "Displays the Configuration dialog.",
                     GroupKey = new Guid(),
@@ -74,7 +75,7 @@ namespace MajorHavocEditor
             this._menuManager.Add(
                 new MenuItem( "MainForm_About" )
                 {
-                    Command = new MenuCommand( _ => new DialogAbout().ShowDialog() ),
+                    Command = new DelegateCommand(() => new DialogAbout().ShowDialog() ),
                     Display = "About",
                     ToolTip = "Displays the AboutBox.",
                     GroupKey = new Guid(),
@@ -86,8 +87,8 @@ namespace MajorHavocEditor
                 new MenuItem( "MainForm_HomePage" )
                 {
                     /// <see cref="https://docs.microsoft.com/en-us/troubleshoot/developer/visualstudio/csharp/language-compilers/start-internet-browser#provide-exception-handling"/>
-                    Command = new MenuCommand(
-                        _ =>
+                    Command = new DelegateCommand(
+                        () =>
                         {
                             try
                             {
