@@ -96,11 +96,6 @@ namespace MajorHavocEditor.Views
 
         private static readonly ImageList IconList;
 
-        private readonly IMenuManager _contextMenuManager = new ContextMenuManager();
-
-        private readonly IList<MazeObject> _mazeObjects;
-        private readonly IList<MazeObject> _selectedObjects;
-
         static MazeExplorer()
         {
             IconList =
@@ -140,6 +135,10 @@ namespace MajorHavocEditor.Views
                     .WithResourcePath("Resources/Images/Toolbox")
                     .Load();
         }
+
+        private readonly IMenuManager _contextMenuManager = new ContextMenuManager();
+        private readonly IList<MazeObject> _mazeObjects;
+        private readonly IList<MazeObject> _selectedObjects;
 
         public MazeExplorer( Maze maze, IList<MazeObject> selectedItems )
         {

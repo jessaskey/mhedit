@@ -16,24 +16,25 @@ namespace MajorHavocEditor.Views
     {
         private static readonly ImageList IconList;
 
-        private readonly IWindowManager _windowManager;
-        private readonly IMenuManager _contextMenuManager = new ContextMenuManager();
-        private IMenuItem Open;
         static GameExplorer()
         {
             IconList =
                 new ImageList { TransparentColor = Color.Fuchsia }
-                    .AddImages( new[]
-                                {
-                                    "ThumbnailViewHS.bmp",
-                                    "maze_a.bmp",
-                                    "maze_b.bmp",
-                                    "maze_c.bmp",
-                                    "maze_d.bmp"
-                                } )
-                    .WithResourcePath( "Resources/Images" )
+                    .AddImages(new[]
+                               {
+                                   "ThumbnailViewHS.bmp",
+                                   "maze_a.bmp",
+                                   "maze_b.bmp",
+                                   "maze_c.bmp",
+                                   "maze_d.bmp"
+                               })
+                    .WithResourcePath("Resources/Images")
                     .Load();
         }
+
+        private readonly IWindowManager _windowManager;
+        private readonly IMenuManager _contextMenuManager = new ContextMenuManager();
+        private IMenuItem Open;
 
         public GameExplorer( IMenuManager menuManager, IWindowManager windowManager,
             GameManager gameManager )
@@ -49,7 +50,7 @@ namespace MajorHavocEditor.Views
             this._windowManager = windowManager;
 
             this.treeView.ItemsSource = gameManager.GameObjects;
-            this.treeView.ItemsDelegate = new ItemsSourceDelegate();
+            this.treeView.ItemsDelegate = new GameExplorerItemsSourceDelegate();
             this.treeView.SelectedItems = gameManager.SelectedObjects;
             
             this.treeView.ContextMenuStrip = (ContextMenuStrip) this._contextMenuManager.Menu;

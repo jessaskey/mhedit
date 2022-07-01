@@ -8,7 +8,7 @@ namespace MajorHavocEditor.Views
 
     public partial class GameExplorer
     {
-        private class ItemsSourceDelegate : IItemsSourceDelegate
+        private class GameExplorerItemsSourceDelegate : IItemsSourceDelegate
         {
             /// <summary>
             /// I hate WinForms... This class is needed to properly disconnect
