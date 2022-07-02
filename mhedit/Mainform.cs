@@ -853,19 +853,23 @@ namespace mhedit
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 Filter = "Editor Files (*.mhz;*.mhc)|*.mhz;*.mhc|Mazes (*.mhz)|*.mhz|Maze Collections (*.mhc)|*.mhc",
                 CheckFileExists = true,
+                Multiselect = true
             };
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                string fileExtension = Path.GetExtension(ofd.FileName);
+                foreach (var fileName in ofd.FileNames)
+                {
+                    string fileExtension = Path.GetExtension(fileName);
 
-                if (fileExtension.Equals(".mhz", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    this.OpenMaze(ofd.FileName);
-                }
-                else if (fileExtension.Equals(".mhc", StringComparison.CurrentCultureIgnoreCase))
-                {
-                    this.OpenCollection(ofd.FileName);
+                    if (fileExtension.Equals(".mhz", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        this.OpenMaze(fileName);
+                    }
+                    else if (fileExtension.Equals(".mhc", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        this.OpenCollection(fileName);
+                    }
                 }
             }
         }
@@ -1347,22 +1351,23 @@ namespace mhedit
         {
             if (e.KeyCode == Keys.F10)
             {
-                MajorHavocPromisedEnd mhpe = new MajorHavocPromisedEnd();
-                if (mhpe.LoadTemplate(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation)))
+
+                DialogExport exportDialog = new DialogExport();
+                if (System.IO.Directory.Exists(Properties.Settings.Default.LastExportLocation))
                 {
-                    List<Tuple<Maze, int>> mazeInfo = new List<Tuple<Maze, int>>();
+                    exportDialog.ExportDirectory = Properties.Settings.Default.LastExportLocation;
+                }
+
+                DialogResult dr = exportDialog.ShowDialog();
+                if (dr == DialogResult.OK)
+                {
                     foreach (TreeNode node in treeView.Descendants().Cast<TreeNode>().Where(n => n.Checked))
                     {
                         if (node.Tag is MazeCollectionController mazeCollectionController)
                         {
-                            DialogExport exportDialog = new DialogExport();
-                            if (System.IO.Directory.Exists(Properties.Settings.Default.LastExportLocation))
-                            {
-                                exportDialog.ExportDirectory = Properties.Settings.Default.LastExportLocation;
-                            }
-
-                            DialogResult dr = exportDialog.ShowDialog();
-                            if (dr == DialogResult.OK)
+                            List<Tuple<Maze, int>> mazeInfo = new List<Tuple<Maze, int>>();
+                            MajorHavocPromisedEnd mhpe = new MajorHavocPromisedEnd();
+                            if (mhpe.LoadTemplate(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation)))
                             {
                                 foreach (var maze in mazeCollectionController.MazeCollection.Mazes)
                                 {
@@ -1382,17 +1387,25 @@ namespace mhedit
                                     suffix = "te";
                                 }
 
+                                StringBuilder includeBuilder = new StringBuilder();
+                                includeBuilder.AppendLine(";********************************************************************");
+                                includeBuilder.AppendLine(";* MAZECOLLECTION: " + Path.GetFileName(mazeCollectionController.FileName.ToLower()));
+                                includeBuilder.AppendLine(";* Generated On " + DateTime.Now.ToString());
+
                                 Properties.Settings.Default.LastExportLocation = exportDialog.ExportDirectory;
                                 Properties.Settings.Default.Save();
                                 File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, "tw_mazedcan_" + suffix + ".asm"), sourcePageCannon);
                                 File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, "tw_mazedtok_" + suffix + ".asm"), sourcePageToken);
-                                File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, "tw_mazed_" + suffix + ".asm"), sourcePage6);
-                                File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, "tw_mazed2_" + suffix + ".asm"), sourcePage7);
+                                File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, "tw_mazed_" + suffix + ".asm"), includeBuilder.ToString() + sourcePage6);
+                                File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, "tw_mazed2_" + suffix + ".asm"), includeBuilder.ToString() + sourcePage7);
                                 File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, "tw_mazedstr_en_" + suffix + ".asm"), sourceMazeMessages);
                                 //Clipboard.SetText(source);
                                 MessageBox.Show("Source files overwritten for " + mazeCollectionController.MazeCollection.Name);
                             }
-
+                            else
+                            {
+                                MessageBox.Show("There was an issue loading the maze objects: " + mhpe.LastError, "ROM Load Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            }
                         }
                         //if (node.Tag is MazeController mazeController)
                         //{
@@ -1403,10 +1416,6 @@ namespace mhedit
                         //    }
                         //}
                     }
-                }
-                else
-                {
-                    MessageBox.Show("There was an issue loading the maze objects: " + mhpe.LastError, "ROM Load Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
         }
