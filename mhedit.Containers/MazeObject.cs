@@ -220,9 +220,12 @@ namespace mhedit.Containers
             //draw little brackets in each corner
             Graphics g = Graphics.FromImage( img );
 
-            Pen redPen = this.IsHighlighted ?
-                new Pen( Color.Aquamarine, 1 ) :
-                new Pen( Color.Orange, 1 );
+            /// Need to make sure that Selected is higher precidence over Highlighted.
+            /// E.g. TripPad and it's TripPad.Pyroid are selected they end up being
+            /// displayed as Selected.
+            Pen redPen = this.Selected ?
+                             new Pen( Color.Orange, 1 ) :
+                             new Pen( Color.Aquamarine, 1 ); // IsHighlighted
 
             //top left
             g.DrawLine( redPen, 0, 0, 0, 6 );
