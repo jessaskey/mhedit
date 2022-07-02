@@ -11,6 +11,7 @@ namespace mhedit.Containers
     [Serializable]
     public abstract class NotifyPropertyChangedBase : INotifyPropertyChanged
     {
+        [field: NonSerialized] 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged( [CallerMemberName] string propertyName = null )
