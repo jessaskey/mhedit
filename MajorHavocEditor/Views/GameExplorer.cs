@@ -105,7 +105,7 @@ namespace MajorHavocEditor.Views
                 {
                     Command = gameManager.LoadFromFileCommand,
                     Display = "Load from File",
-                    ShortcutKey = Keys.Control | Keys.O,
+                    ShortcutKey = Keys.Control | Keys.L,
                     ToolTip = "Load a Maze or Collection from file.",
                     Icon = @"Resources\Images\Menu\OpenFolder_16x_24.bmp".CreateResourceUri()
                 };
