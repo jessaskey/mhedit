@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using mhedit.Containers;
+using mhedit.Containers.MazeEnemies;
 
 namespace MajorHavocEditor.Views
 {
@@ -53,6 +54,7 @@ namespace MajorHavocEditor.Views
                 {
                     var sorted = this._maze.MazeObjects
                                      .ToLookup( o => o.GetType() )
+                                     .Where(o => o.Key != typeof(TripPadPyroid))
                                      .OrderBy( o => o.Key.Name == typeof( MazeWall ).Name )
                                      .ThenBy( o => o.Key.Name )
                                      .Select( g => new NamedGrouping( g ) )
@@ -68,6 +70,7 @@ namespace MajorHavocEditor.Views
                     var sorted = e.NewItems
                                   .Cast<MazeObject>()
                                   .ToLookup( o => o.GetType() )
+                                  .Where(o => o.Key != typeof(TripPadPyroid))
                                   .OrderBy( o => o.Key.Name )
                                   .ToList();
 
@@ -76,6 +79,7 @@ namespace MajorHavocEditor.Views
                         NamedGrouping found =
                             this._groupedMazeObjects.FirstOrDefault(
                                 g => grouping.Key.Name.Equals( g.Key.Name ) );
+
 
                         /// adding a new group.
                         if ( found == null )
@@ -173,6 +177,10 @@ namespace MajorHavocEditor.Views
                 else if ( item.Tag is IEnumerable enumerable )
                 {
                     return enumerable;
+                }
+                else if (item.Tag is TripPad tripPad)
+                {
+                    return new List<object> { tripPad.Pyroid };
                 }
 
                 return null;
