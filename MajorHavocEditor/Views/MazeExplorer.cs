@@ -10,7 +10,6 @@ using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
 using mhedit.Containers.MazeEnemies.IonCannon;
 using mhedit.Containers.MazeObjects;
-using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Interfaces.Ui;
 
 namespace MajorHavocEditor.Views
@@ -113,7 +112,7 @@ namespace MajorHavocEditor.Views
         static MazeExplorer()
         {
             IconList =
-                new ImageList { TransparentColor = Color.Fuchsia }
+                new ImageList { TransparentColor = Color.HotPink }
                     .AddImages( new[]
                                 {
                                     ( nameof(Arrow), "arrow_32.png" ),
@@ -150,11 +149,10 @@ namespace MajorHavocEditor.Views
                     .Load();
         }
 
-        private readonly IMenuManager _contextMenuManager = new ContextMenuManager();
         private readonly IList<MazeObject> _mazeObjects;
         private readonly IList<MazeObject> _selectedObjects;
 
-        public MazeExplorer( Maze maze, IList<MazeObject> selectedItems )
+        public MazeExplorer( Maze maze, IList<MazeObject> selectedItems, IMenuManager menuManager)
         {
             this.InitializeComponent();
 
@@ -178,7 +176,7 @@ namespace MajorHavocEditor.Views
 
             this.treeView.BeforeLabelEdit += this.OnBeforeLabelEdit;
 
-            this.treeView.ContextMenuStrip = (ContextMenuStrip)this._contextMenuManager.Menu;
+            this.treeView.ContextMenuStrip = (ContextMenuStrip)menuManager.Menu;
         }
 
         private void OnBeforeLabelEdit( object sender, NodeLabelEditEventArgs e )

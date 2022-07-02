@@ -84,8 +84,13 @@ namespace MajorHavocEditor.Controls.Menu
         {
             this._toolStrip = toolStrip;
         }
-        
-#region Implementation of IMenuManager
+
+        protected ToolStrip ToolStrip
+        {
+            get { return this._toolStrip; }
+        }
+
+        #region Implementation of IMenuManager
 
         public object Menu
         {

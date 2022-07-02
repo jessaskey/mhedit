@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Resources\Images\Menu\Open_16x.png" />
-    </ItemGroup>
-
-    <ItemGroup>
         <!--<PackageReference Include="Krypton.Docking" Version="6.2201.4" />-->
         <!--<PackageReference Include="Krypton.Docking" Version="5.550.2108.1" />-->
         <!--<PackageReference Include="Krypton.Docking.Canary" Version="65.22.4.103-beta" />-->
@@ -30,6 +26,8 @@
         <Compile Include="..\mhedit\MazeObjectImages.cs" Link="MazeObjectImages.cs" />
         <EmbeddedResource Include="Resources\Images\Menu\Close.png" />
         <EmbeddedResource Include="Resources\Images\Menu\Configuration.png" />
+        <EmbeddedResource Include="Resources\Images\Menu\Copy_6524_24.bmp" />
+        <EmbeddedResource Include="Resources\Images\Menu\Cut_6523_24.bmp" />
         <EmbeddedResource Include="Resources\Images\Menu\delete.ico" />
         <EmbeddedResource Include="Resources\Images\Menu\hbmame_32.png" />
         <EmbeddedResource Include="Resources\Images\Menu\HomeHS.png" />
@@ -39,6 +37,7 @@
         <EmbeddedResource Include="Resources\Images\Menu\NewMaze.bmp" />
         <EmbeddedResource Include="Resources\Images\Menu\OpenFolder_16x_24.bmp" />
         <EmbeddedResource Include="Resources\Images\Menu\Open_16x.png" />
+        <EmbeddedResource Include="Resources\Images\Menu\Paste_6520_24.bmp" />
         <EmbeddedResource Include="Resources\Images\Menu\rom_32.png" />
         <EmbeddedResource Include="Resources\Images\Menu\SaveAll_16x_24.bmp" />
         <EmbeddedResource Include="Resources\Images\Menu\SaveAs_16x_24.bmp" />
