@@ -6,6 +6,7 @@ using mhedit.Containers;
 using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Interfaces.Ui;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using mhedit.Containers.MazeEnemies;
@@ -23,7 +24,8 @@ namespace MajorHavocEditor.Views
         private PropertyBrowser _propertyBrowser;
         private readonly IMenuManager _contextMenuManager;
         private Maze _maze;
-        private IList<MazeObject> _selectedMazeObjects;
+        private readonly IList<MazeObject> _selectedMazeObjects =
+            new ObservableCollection<MazeObject>();
 
         public MazeUi( Maze maze )
         {
@@ -41,18 +43,6 @@ namespace MajorHavocEditor.Views
                                       AutoScroll = true,
                                       AutoSizeMode = AutoSizeMode.GrowAndShrink,
                                   };
-
-            MazeController mc =
-                new MazeController( maze )
-                {
-                    AutoSize = true,
-                    Anchor = AnchorStyles.Top | AnchorStyles.Left,
-                    Dock = DockStyle.None,
-                };
-
-            wrapper.Controls.Add( mc );
-
-            this._selectedMazeObjects = mc.SelectedMazeObjects;
 
             this.kryptonPanel.Controls.Add( wrapper );
 
@@ -81,6 +71,16 @@ namespace MajorHavocEditor.Views
 
             this._mazeExplorer =
                 new MazeExplorer( maze, this._selectedMazeObjects, this._contextMenuManager );
+
+            MazeController mc =
+                new MazeController(maze, this._selectedMazeObjects, this._contextMenuManager)
+                {
+                    AutoSize = true,
+                    Anchor = AnchorStyles.Top | AnchorStyles.Left,
+                    Dock = DockStyle.None,
+                };
+
+            wrapper.Controls.Add( mc );
 
             this._windowManager = new WindowManager(this.kryptonDockingManager);
 

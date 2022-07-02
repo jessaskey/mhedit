@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
@@ -11,6 +10,7 @@ using mhedit;
 using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
 using mhedit.Containers.MazeObjects;
+using MajorHavocEditor.Interfaces.Ui;
 using Silver.UI;
 
 namespace MajorHavocEditor.Views
@@ -31,8 +31,7 @@ namespace MajorHavocEditor.Views
 		private bool _repainted = false;
 		private bool _gridLines = false;
 
-        private ObservableCollection<MazeObject> _selectedObjects =
-            new ObservableCollection<MazeObject>();
+        private IList<MazeObject> _selectedObjects;
 
 #endregion
 
@@ -51,11 +50,11 @@ namespace MajorHavocEditor.Views
 
 		#region Constructors
 
-		public MazeController( Maze maze )
+		public MazeController( Maze maze, IList<MazeObject> selected, IMenuManager menuManager )
 		{
             this.InitializeComponent();
 
-            this.ContextMenuStrip = this.mazeControllerContextMenu;
+            this.ContextMenuStrip = (ContextMenuStrip) menuManager.Menu;
 
             this.selectAllToolStripMenuItem.DropDown.ImageList = MazeObjectImages.List;
 
@@ -63,7 +62,12 @@ namespace MajorHavocEditor.Views
 
 			this._maze.PropertyChanged += this.OnMazePropertyChanged;
 
-            this._selectedObjects.CollectionChanged += this.OnSelectedObjectsChanged;
+            this._selectedObjects = selected;
+
+            if (selected is INotifyCollectionChanged incc)
+            {
+                incc.CollectionChanged += this.OnSelectedObjectsChanged;
+            }
 
 			this.DoubleBuffered = true;
 			this.SetStyle( ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true );
@@ -352,9 +356,6 @@ namespace MajorHavocEditor.Views
                     this._selectedObjects.Clear();
                     this.Invalidate();
 					break;
-				case Keys.Delete:
-                    this.DeleteSelectedObjects();
-                    break;
 				case Keys.Up:
                     this.TranslateObject(this._selectedObjects.FirstOrDefault(), 0, -1);
 					this.Invalidate();
@@ -993,12 +994,6 @@ namespace MajorHavocEditor.Views
         private void mazeControllerContextMenu_Opening( object sender, CancelEventArgs e )
         {
             this.selectAllToolStripMenuItem.Enabled = this.Maze.MazeObjects.Count != 0;
-
-            this.cutToolStripMenuItem.Enabled =
-                this.copyToolStripMenuItem.Enabled =
-                    this.deleteToolStripMenuItem.Enabled = this._selectedObjects.Count > 0;
-
-            this.pasteToolStripMenuItem.Enabled = Clipboard.ContainsData(ClipboardFormatId);
         }
 
 		private void selectAllToolStripMenuItem_DropDownOpening( object sender, EventArgs e )
@@ -1061,178 +1056,6 @@ namespace MajorHavocEditor.Views
             //this.ComboBoxObjects.SelectedItem =
             //    this._propertyGrid.SelectedObjects.Length > 1 ?
             //        null : this._propertyGrid.SelectedObjects.FirstOrDefault();
-
-            this.Invalidate();
-        }
-
-        private static string ClipboardFormatId = "MazeObjectFormat";
-
-		private void toolStripMenuItemCut_Click(object sender, EventArgs e)
-		{
-   //         foreach ( MazeObject mazeObject in this.CopySelectedToClipboard() )
-   //         {
-			//	/// Call Delete to deal with trips/trippyroids?
-   //             this._maze.MazeObjects.Remove( mazeObject );
-
-   //             if ( mazeObject is TripPad tripPad )
-   //             {
-   //                 this._maze.MazeObjects.Remove(tripPad.Pyroid);
-   //             }
-			//}
-
-            this.RemoveObjectsFromMaze( this.CopySelectedToClipboard() );
-        }
-
-		private void toolStripMenuItemCopy_Click(object sender, EventArgs e)
-        {
-            this.CopySelectedToClipboard();
-        }
-
-        private IEnumerable<MazeObject> CopySelectedToClipboard()
-        {
-            //         List<MazeObject> selected = this._maze.MazeObjects.Where( o => o.Selected ).ToList();
-
-            /////TripPadPyroids can't be copied/cut by themselves!!!!
-            //         if ( selected.Any( s => s.GetType() == typeof(TripPadPyroid)) )
-            //         {
-            //             MessageBox.Show(
-            //                 "The selection includes at least one Trip Pad Pyroid. Remove to complete this action.");
-
-            //             selected.Clear();
-
-            //             return selected;
-            //         }
-
-
-            if ( this.TryRemoveTripPadPyroids( this._selectedObjects,
-                out IEnumerable<MazeObject> noPyroids ) )
-            {
-                List<MazeObject> asList = noPyroids.ToList();
-
-                if (asList.Count != 0 )
-                {
-                    /// Wrap in DataObject so that this data is cleared from clipboard on exit.
-                    Clipboard.SetDataObject( new DataObject( ClipboardFormatId, asList), false );
-                }
-
-                return noPyroids;
-            }
-
-            return new List<MazeObject>();
-        }
-
-		private void toolStripMenuItemPaste_Click(object sender, EventArgs e)
-        {
-            if ( Clipboard.ContainsData( ClipboardFormatId ) )
-            {
-                IEnumerable<MazeObject> selected =
-                    Clipboard.GetData( ClipboardFormatId ) as IEnumerable<MazeObject>;
-
-				/// Always clear any selection before paste.
-                this._selectedObjects.Clear();
-
-				/// TODO: Deal with adding to many of any given object.
-                //bool promptUser = true;
-
-                //_maze.MazeObjects.OrderBy(o => o.GetType() == typeof(MazeWall)).
-                //      ThenBy(o => o.GetType().Name).ToList().ConvertAll(m => (IName)m) );
-
-				foreach ( MazeObject mazeObject in selected )
-                {
-                    //if (this._maze.GetObjectTypeCount(mazeObject.GetType()) >= mazeObject.MaxObjects)
-                    //{
-                    //    MessageBox.Show($"You can't add any more {mazeObject.GetType().Name} objects.",
-                    //        "The Homeworld is near", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    //}
-
-					/// Don't need to set MazeObject.Selected to True because it was when it was Cut.
-					this._maze.MazeObjects.Add( mazeObject );
-
-                    if (mazeObject is TripPad tripPad)
-                    {
-                        this._maze.MazeObjects.Add(tripPad.Pyroid);
-                    }
-                }
-			}
-        }
-
-		private void toolStripMenuItemDelete_Click(object sender, EventArgs e)
-        {
-			this.DeleteSelectedObjects();
-		}
-
-        private void DeleteSelectedObjects()
-        {
-            string plural = this._selectedObjects.Count == 1 ?
-                                this._selectedObjects[0].Name :
-                                $"all {this._selectedObjects.Count} objects";
-
-            DialogResult result = MessageBox.Show(
-                $"Are you sure you want to delete {plural}?", "Confirm Delete",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-            if (result == DialogResult.No)
-            {
-                return;
-            }
-
-            //result = DialogResult.None;
-
-            //IEnumerable<MazeObject> tripPyroids =
-            //    this._selectedObjects.Where(so => so is TripPadPyroid);
-
-            //if (tripPyroids.FirstOrDefault() != null)
-            //{
-            //    result = MessageBox.Show("TripPadPyroids can not be individually added or removed from " +
-            //                             $"a Maze. Select the parent TripPad to perform this action.{Environment.NewLine}{Environment.NewLine}" +
-            //                             "Press OK to skip the TripPadPyroids and continue.", "Selection includes TripPadPyroid",
-            //        MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation);
-            //}
-
-            //if (result == DialogResult.Cancel)
-            //{
-            //    return;
-            //}
-
-            //this.RemoveObjectsFromMaze( this._selectedObjects.Except( tripPyroids ) );
-            if ( this.TryRemoveTripPadPyroids( this._selectedObjects,
-                out IEnumerable<MazeObject> noPyroids ) )
-            {
-                this.RemoveObjectsFromMaze( noPyroids );
-			}
-        }
-
-        private bool TryRemoveTripPadPyroids( in IEnumerable<MazeObject> mazeObjects, out IEnumerable<MazeObject> freeOfTripPadPyroids )
-        {
-            IEnumerable<MazeObject> tripPyroids = mazeObjects.Where( so => so is TripPadPyroid );
-
-			DialogResult result = DialogResult.None;
-
-            if (tripPyroids.FirstOrDefault() != null)
-            {
-                result = MessageBox.Show(
-                    "TripPadPyroids can not be individually added to/removed from a Maze. Select the parent TripPad to perform this action." +
-                    $"{Environment.NewLine}{Environment.NewLine}Press OK to skip the TripPadPyroids and continue.",
-                    "Selection includes TripPadPyroid",
-                    MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation );
-            }
-
-            freeOfTripPadPyroids = mazeObjects.Except( tripPyroids );
-
-			return result != DialogResult.Cancel;
-        }
-
-		private void RemoveObjectsFromMaze( IEnumerable<MazeObject> objectsToRemove )
-        {
-            foreach (MazeObject mazeObject in objectsToRemove)
-            {
-                if (mazeObject is TripPad tripPad)
-                {
-                    this._maze.MazeObjects.Remove(tripPad.Pyroid);
-                }
-
-                this._maze.MazeObjects.Remove(mazeObject);
-            }
 
             this.Invalidate();
         }
