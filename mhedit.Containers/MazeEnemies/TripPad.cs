@@ -54,6 +54,7 @@ namespace mhedit.Containers.MazeEnemies
 
         [DescriptionAttribute( "The pyroid associated with this trip pad." )]
         [TypeConverter( typeof( TypeConverters.TripPadPyroidTypeConverter ) )]
+        [ReadOnly(true)]
         public TripPadPyroid Pyroid
         {
             get { return _pyroid; }
