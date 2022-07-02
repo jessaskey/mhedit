@@ -8,14 +8,9 @@ using MajorHavocEditor.Interfaces.Ui;
 namespace MajorHavocEditor.Controls.Menu
 {
 
-    public interface IHoldsMenuItem
-    {
-        IMenuItem MenuItem { get; set; }
-    }
-
     public static class MenuManagerExtensions
     {
-        public static ToolStripItem Create<T>( this IMenuItem menuItem )
+        public static T Create<T>( this IMenuItem menuItem )
             where T : ToolStripItem, new()
         {
             Image image = menuItem.GetImage();
@@ -27,16 +22,29 @@ namespace MajorHavocEditor.Controls.Menu
                        ToolTipText = menuItem.ToolTip as string,
                        Image = image,
                        ImageTransparentColor = Color.Fuchsia,
-                       Alignment = menuItem.Options.GetAlignment(), 
+                       Alignment = menuItem.Options.GetAlignment(),
                        DisplayStyle = image == null ?
                                           ToolStripItemDisplayStyle.Text :
-                                          typeof(T).IsAssignableTo(typeof(ToolStripMenuItem)) ?
+                                          typeof( T ).IsAssignableTo(
+                                              typeof( ToolStripMenuItem ) ) ?
                                               ToolStripItemDisplayStyle.ImageAndText :
                                               ToolStripItemDisplayStyle.Image
-                   };
+                   }
+                .TrySetShortcutKeys( menuItem.ShortcutKey );
         }
 
-        public static Image GetImage( this IMenuItem menuItem )
+        private static T TrySetShortcutKeys<T>( this T toolStripItem, object shortcutKeys )
+            where T : ToolStripItem
+        {
+            if ( toolStripItem is ToolStripMenuItem tsmi )
+            {
+                tsmi.ShortcutKeys = (Keys?) shortcutKeys ?? Keys.None;
+            }
+
+            return toolStripItem;
+        }
+
+        private static Image GetImage( this IMenuItem menuItem )
         {
             return menuItem.Icon switch
             {
