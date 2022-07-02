@@ -51,18 +51,6 @@ namespace MajorHavocEditor.Views
 
 		#region Constructors
 
-		public MazeController()
-			: this( NameFactory.Create( "Maze" ) )
-		{ }
-
-		public MazeController( string name )
-			: this( new Maze( name ) )
-		{ }
-
-		public MazeController( MazeType type, string name )
-			: this( new Maze( type, name ) )
-		{ }
-
 		public MazeController( Maze maze )
 		{
             this.InitializeComponent();

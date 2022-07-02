@@ -4,8 +4,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using mhedit.Containers.MazeObjects;
 using mhedit.Containers.MazeEnemies;
@@ -16,8 +14,6 @@ using mhedit.Containers.Validation.MajorHavoc;
 
 namespace mhedit.Containers
 {
-    public delegate void MazePropertiesUpdated(object sender);
-
     [DefaultPropertyAttribute("Name")]
     [Serializable]
     [XmlInclude(typeof(IonCannon))]
@@ -58,7 +54,6 @@ namespace mhedit.Containers
         private int _oxygenReward = 16;
         private List<MazeWall> _mazeWallBase;
         private readonly ExtendedObservableCollection<MazeObject> _mazeObjects = new ExtendedObservableCollection<MazeObject>();
-        private List<bool> _transportabilityFlags = new List<bool>();
         private int _mazeStampsX = 0;
         private int _mazeStampsY = 0;
         private EditInfo _created;

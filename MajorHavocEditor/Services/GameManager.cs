@@ -404,6 +404,9 @@ namespace MajorHavocEditor.Services
             }
         }
 
+#region Implementation of INotifyPropertyChanged
+
+        /// <inheritdoc />
         // the only reason this is here, is so that DelegateCommand.ObservesProperty()
         // will function.
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
@@ -411,6 +414,9 @@ namespace MajorHavocEditor.Services
             add { }
             remove { }
         }
+
+#endregion
+
     }
 
 }
