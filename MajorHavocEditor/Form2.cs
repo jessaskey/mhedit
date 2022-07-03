@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -18,7 +19,7 @@ namespace MajorHavocEditor
 
     public partial class Form2 : KryptonForm
     {
-        public static string MHPHomepage = "http://mhedit.askey.org";
+        public static string MHPHomepage = "https://mhedit.askey.org";
 
         private GameManager _gameManager;
         private IMenuManager _menuManager = new MenuStripManager( DockStyle.Top );
@@ -91,7 +92,7 @@ namespace MajorHavocEditor
                         {
                             try
                             {
-                                System.Diagnostics.Process.Start( MHPHomepage );
+                                System.Diagnostics.Process.Start(new ProcessStartInfo(MHPHomepage) { UseShellExecute = true }  );
                             }
                             catch ( Win32Exception noBrowser )
                             {
