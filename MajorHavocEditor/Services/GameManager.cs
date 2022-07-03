@@ -251,22 +251,26 @@ namespace MajorHavocEditor.Services
                     Filter =
                         "Editor Files (*.mhz;*.mhc)|*.mhz;*.mhc|Mazes (*.mhz)|*.mhz|Maze Collections (*.mhc)|*.mhc",
                     CheckFileExists = true,
+                    Multiselect = true
                 };
 
             if ( ofd.ShowDialog() == DialogResult.OK )
             {
-                object opened = Path.GetExtension( ofd.FileName ).ToLowerInvariant() switch
+                foreach ( var fileName in ofd.FileNames )
                 {
-                    ".mhz" => this._fileManager.Load<Maze>( ofd.FileName ),
-                    ".mhc" => this._fileManager.Load<MazeCollection>( ofd.FileName ),
-                    _ => throw new ArgumentOutOfRangeException(
-                             $"{Path.GetExtension( ofd.FileName )} is not a supported extension." )
-                };
+                    object opened = Path.GetExtension(fileName).ToLowerInvariant() switch
+                    {
+                        ".mhz" => this._fileManager.Load<Maze>(fileName),
+                        ".mhc" => this._fileManager.Load<MazeCollection>(fileName),
+                        _ => throw new ArgumentOutOfRangeException(
+                                 $"{Path.GetExtension(fileName)} is not a supported extension.")
+                    };
 
-                //TODO: Insert after Parent.
-                if ( opened != null )
-                {
-                    this._gameObjects.Add( opened );
+                    //TODO: Insert after Parent.
+                    if (opened != null)
+                    {
+                        this._gameObjects.Add(opened);
+                    }
                 }
             }
         }

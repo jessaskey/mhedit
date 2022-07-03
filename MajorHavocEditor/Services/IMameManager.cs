@@ -191,7 +191,7 @@ namespace MajorHavocEditor.Services
 
                         if ( serializeSuccess )
                         {
-                            success = controller.WriteFiles( mamePath );
+                            success = controller.WriteFiles( mamePath, Properties.Settings.Default.MameDriver);
                         }
                         else
                         {

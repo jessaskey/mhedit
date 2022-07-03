@@ -190,5 +190,17 @@ namespace MajorHavocEditor.Properties {
                 this["UpdateSettings"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastExportLocation {
+            get {
+                return ((string)(this["LastExportLocation"]));
+            }
+            set {
+                this["LastExportLocation"] = value;
+            }
+        }
     }
 }

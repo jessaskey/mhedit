@@ -186,6 +186,7 @@ namespace mhedit.GameControllers
                     mazeInitIndex++;
                     maxoid.TriggerDistance = (maxData[0] & 0x0f);
                     maxoid.Speed = (MaxSpeed)((maxData[0] >> 4) & 0x3);
+                    maxoid.HitsToKill =  1+((~(maxData[0] >> 6)) & 0x3);
                     maze.AddObject(maxoid);
                     firstValue = ReadByte(mazeInitIndex, 0, 7);
                 }
@@ -911,7 +912,7 @@ namespace mhedit.GameControllers
             WriteAlphaHigh(alphaHighCsumAddress, (byte)(currentMajorVersion[0] | 0xE0));
         }
 
-        public bool WriteFiles(string destinationPath)
+        public bool WriteFiles(string destinationPath, string driverName)
         {
             bool success = false;
             try
@@ -925,8 +926,8 @@ namespace mhedit.GameControllers
                 MarkPagedROM(7);
                 MarkAlphaHighROM();
 
-                string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM);
-                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM);
+                string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM.Replace("mhavocpe", driverName) );
+                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM.Replace("mhavocpe", driverName) );
 
                 //save each
                 File.WriteAllBytes(page67FileNameMame, _page2367);
@@ -947,7 +948,7 @@ namespace mhedit.GameControllers
 
                 foreach (string rom in otherROMs)
                 {
-                    File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, rom), true);
+                    File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, rom.Replace("mhavocpe", driverName)), true);
                 }
                 success = true;
             }
@@ -1026,7 +1027,7 @@ namespace mhedit.GameControllers
             return offset;
         }
 
-        public String ExtractSource(List<Tuple<Maze, int>> selectedMazes)
+        public String ExtractSource(List<Tuple<Maze, int>> selectedMazes, SourceFile sourceFile)
         {
             int dataPosition = 8;
             int commentPosition = 60;
@@ -1035,6 +1036,7 @@ namespace mhedit.GameControllers
             StringBuilder page6Source = new StringBuilder();
             StringBuilder page7Source = new StringBuilder();
             StringBuilder cannonSource = new StringBuilder();
+            StringBuilder mazeMessageSource = new StringBuilder();
 
             List<String> mazeLetters = new List<string>() { "A", "B", "C", "D" };
             KeyValuePair<int,HiddenLevelToken>[] tokens = new KeyValuePair<int, HiddenLevelToken>[4];
@@ -1050,7 +1052,7 @@ namespace mhedit.GameControllers
                 page7Source.AppendLine(commentLine);
 
                 //Maze Hints
-                AddHints(maze.Hint, maze.Hint2, page7Source, dataPosition, level);
+                AddHints(maze.Hint, maze.Hint2, mazeMessageSource, dataPosition, level);
                 page7Source.AppendLine("");
 
                 //Reactoid.Pyroids.Perkoids.Max
@@ -1154,14 +1156,29 @@ namespace mhedit.GameControllers
                     tokenEncodings.Add(new ObjectEncoding(tokenBytes));
                 }
             }
+
             tokenSource.AppendLine( DumpBytes( "mtok" + "", dataPosition, commentPosition, 8, tokenEncodings) );
 
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine(cannonSource.ToString());
-            sb.AppendLine(tokenSource.ToString());
-            sb.AppendLine(page6Source.ToString());
-            sb.AppendLine(page7Source.ToString());
-            return sb.ToString();
+            switch (sourceFile)
+            {
+                case SourceFile.Page6:
+                    return page6Source.ToString();
+                case SourceFile.Page7:
+                    return page7Source.ToString();
+                case SourceFile.Token:
+                    return tokenSource.ToString();
+                case SourceFile.Cannon:
+                    return cannonSource.ToString();
+                case SourceFile.MazeMessages:
+                    return mazeMessageSource.ToString();
+            }
+            //StringBuilder sb = new StringBuilder();
+            //sb.AppendLine(cannonSource.ToString());
+            //sb.AppendLine(tokenSource.ToString());
+            //sb.AppendLine(page6Source.ToString());
+            //sb.AppendLine(page7Source.ToString());
+            //return sb.ToString();
+            return null;
         }
 
         private void AddHints(string hint1, string hint2, StringBuilder sb, int dataPosition, int level)
@@ -1195,7 +1212,7 @@ namespace mhedit.GameControllers
                 //new line
                 mb.Clear();
                 Tabify(' ', dataPosition, mb);
-                mb.Append("zmess(" + label + ",$" + yPosition.ToString() + ",$" + xPositionHex + ")");
+                mb.Append("czmess(" + label + ",$" + yPosition.ToString() + "," + label + "_)");
                 sb.AppendLine(mb.ToString());
             }
         }
@@ -1698,6 +1715,7 @@ namespace mhedit.GameControllers
                     if (mazeCollection.Mazes[i] == maze)
                     {
                         WriteAlphaHigh((ushort)(_exports["levelst"] + 1), (byte)i );
+                        break;
                     }
                 }
             }
