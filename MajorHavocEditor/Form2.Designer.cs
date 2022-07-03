@@ -76,6 +76,7 @@ namespace MajorHavocEditor
             this.Controls.Add(this.kryptonPanel);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.KeyPreview = true;
             this.Text = "Form2";
             ((System.ComponentModel.ISupportInitialize)(this.kryptonPanel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.kryptonDockableWorkspace)).EndInit();

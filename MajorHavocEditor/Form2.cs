@@ -21,7 +21,7 @@ namespace MajorHavocEditor
         public static string MHPHomepage = "http://mhedit.askey.org";
 
         private GameManager _gameManager;
-        private IMenuManager _menuManager = new MenuStripManager(DockStyle.Top);
+        private IMenuManager _menuManager = new MenuStripManager( DockStyle.Top );
         private IWindowManager _windowManager;
         private GameExplorer _gameExplorer;
         private IValidationService _validationService;
@@ -39,33 +39,30 @@ namespace MajorHavocEditor
 
             this._kryptonManager.GlobalPaletteMode = PaletteModeManager.SparkleBlue;
 
-            this._windowManager = new WindowManager(this.kryptonDockableWorkspace,
-                this.kryptonDockingManager);
+            this._windowManager = new WindowManager( this.kryptonDockableWorkspace,
+                this.kryptonDockingManager );
 
-            this._validationService = new ValidationService(this._windowManager);
+            this._validationService = new ValidationService( this._windowManager );
 
             this._gameManager = new GameManager( this._fileManager, this._romManager,
                 this._mameManager, this._windowManager, this._validationService );
 
-            this._gameExplorer = new GameExplorer(this._menuManager, this._windowManager,
-                this._gameManager);
+            this._gameExplorer = new GameExplorer( this._menuManager, this._windowManager,
+                this._gameManager );
 
             this._propertyBrowser =
                 new PropertyBrowser( this._gameManager.SelectedObjects,
                     DockingState.DockRightAutoHide );
 
-            this.Controls.Add((Control) this._menuManager.Menu);
+            this.Controls.Add( (Control) this._menuManager.Menu );
 
             this.kryptonDockingManager.DefaultCloseRequest = DockingCloseRequest.RemovePage;
-
-            //this._gameExplorer.ValidateCommand = new MenuCommand(
-            //    this.ValidateCommand,
-            //    this.OneOrMoreSelected );
 
             this._menuManager.Add(
                 new MenuItem( "MainForm_Configuration" )
                 {
-                    Command = new DelegateCommand( ( ) => new DialogConfiguration().ShowDialog() ),
+                    Command = new DelegateCommand(
+                        () => new DialogConfiguration().ShowDialog() ),
                     Display = "Configuration",
                     ToolTip = "Displays the Configuration dialog.",
                     GroupKey = new Guid(),
@@ -75,11 +72,12 @@ namespace MajorHavocEditor
             this._menuManager.Add(
                 new MenuItem( "MainForm_About" )
                 {
-                    Command = new DelegateCommand(() => new DialogAbout().ShowDialog() ),
+                    Command = new DelegateCommand( () => new DialogAbout().ShowDialog() ),
                     Display = "About",
                     ToolTip = "Displays the AboutBox.",
                     GroupKey = new Guid(),
-                    Options = new Dictionary<string, object>() { { "Alignment", ToolStripItemAlignment.Right } },
+                    Options = new Dictionary<string, object>()
+                              { { "Alignment", ToolStripItemAlignment.Right } },
                     Icon = @"Resources\Images\Menu\Information.bmp".CreateResourceUri()
                 } );
 
@@ -105,34 +103,28 @@ namespace MajorHavocEditor
                     Display = "Homepage",
                     ToolTip = "Displays the MHPe homepage.",
                     GroupKey = new Guid(),
-                    Options = new Dictionary<string,object>() { { "Alignment", ToolStripItemAlignment.Right } },
+                    Options = new Dictionary<string, object>()
+                              { { "Alignment", ToolStripItemAlignment.Right } },
                     Icon = @"Resources\Images\Menu\HomeHS.png".CreateResourceUri()
                 } );
         }
 
-        //private bool OneOrMoreSelected( object notUsed )
-        //{
-        //    return this._gameExplorer.SelectedItems.Count > 0;
-        //}
+#region Overrides of KryptonForm
 
-        //private void ValidateCommand( object notUsed )
-        //{
-        //    foreach ( object subject in this._gameExplorer.SelectedItems )
-        //    {
-        //        this._validationService.ValidateAndDisplayResults( subject );
-        //    }
-        //}
-
-        protected override void OnLoad(EventArgs e)
+        /// <inheritdoc />
+        protected override void OnLoad( EventArgs e )
         {
-            base.OnLoad(e);
+            base.OnLoad( e );
 
             // https://stackoverflow.com/a/32561014
-            if (Properties.Settings.Default.IsMaximized)
+            if ( Properties.Settings.Default.IsMaximized )
             {
                 this.WindowState = FormWindowState.Maximized;
             }
-            else if (Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(Properties.Settings.Default.WindowPosition)))
+            else if ( Screen.AllScreens.Any(
+                screen => screen.WorkingArea.IntersectsWith(
+                    Properties
+                        .Settings.Default.WindowPosition ) ) )
             {
                 this.StartPosition = FormStartPosition.Manual;
                 this.DesktopBounds = Properties.Settings.Default.WindowPosition;
@@ -140,11 +132,11 @@ namespace MajorHavocEditor
             }
 
             // Setup docking functionality
-            KryptonDockingWorkspace w = 
-                this.kryptonDockingManager.ManageWorkspace(this.kryptonDockableWorkspace);
+            KryptonDockingWorkspace w =
+                this.kryptonDockingManager.ManageWorkspace( this.kryptonDockableWorkspace );
 
-            this.kryptonDockingManager.ManageControl( this.kryptonPanel, w);
-            this.kryptonDockingManager.ManageFloating(this);
+            this.kryptonDockingManager.ManageControl( this.kryptonPanel, w );
+            this.kryptonDockingManager.ManageFloating( this );
 
             // Add docking pages
             //kryptonDockingManager.AddDockspace("Control", DockingEdge.Left, new KryptonPage[] { NewPropertyGrid() });
@@ -155,7 +147,8 @@ namespace MajorHavocEditor
             //SetSchema(this.menuItemSchemaVS2013Blue, null);
 
             string configFile =
-                Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "DockPanel.config");
+                Path.Combine( Path.GetDirectoryName( Application.ExecutablePath ),
+                    "DockPanel.config" );
 
             //if ( File.Exists( configFile ) )
             //{
@@ -163,15 +156,21 @@ namespace MajorHavocEditor
             //}
             //else
             {
-                this._windowManager.Show(this._gameExplorer);
-                this._windowManager.Show(this._propertyBrowser);
+                this._windowManager.Show( this._gameExplorer );
+                this._windowManager.Show( this._propertyBrowser );
+
                 //this._windowManager.Show(new GameToolbox());
             }
         }
 
-        protected override void OnClosing(CancelEventArgs e)
+#endregion
+
+#region Overrides of Form
+
+        /// <inheritdoc />
+        protected override void OnClosing( CancelEventArgs e )
         {
-            base.OnClosing(e);
+            base.OnClosing( e );
 
             Properties.Settings.Default.IsMaximized = this.WindowState == FormWindowState.Maximized;
             Properties.Settings.Default.WindowPosition = this.DesktopBounds;
@@ -189,5 +188,25 @@ namespace MajorHavocEditor
             //    File.Delete(configFile);
             //}
         }
+
+#endregion
+
+#region Overrides of Control
+
+        /// <inheritdoc />
+        protected override void OnKeyDown( KeyEventArgs e )
+        {
+            base.OnKeyDown( e );
+
+            // this is janky but for now it solves the problem.
+            if ( e.KeyCode == Keys.F10 &&
+                 this._gameManager.ExportCommand.CanExecute( null ))
+            {
+                this._gameManager.ExportCommand.Execute( null );
+            }
+        }
+
+#endregion
     }
+
 }

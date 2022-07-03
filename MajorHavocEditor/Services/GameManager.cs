@@ -11,7 +11,10 @@ using mhedit.Containers;
 using MajorHavocEditor.Views;
 using MajorHavocEditor.Interfaces.Ui;
 using System.Collections.Specialized;
+using System.Text;
+using mhedit.GameControllers;
 using MajorHavocEditor.Controls.Commands;
+using MajorHavocEditor.Views.Dialogs;
 
 namespace MajorHavocEditor.Services
 {
@@ -91,6 +94,11 @@ namespace MajorHavocEditor.Services
                 this.Validate,
                 this.OneOrMoreObjectsSelected)
                 .ObservesProperty(() => this.SelectedObjects.Count);
+
+            this.ExportCommand = new DelegateCommand(
+                    this.Export,
+                    this.OneOrMoreMazeCollectionsSelected)
+                .ObservesProperty(() => this.SelectedObjects.Count);
         }
 
         private void OnSelectedChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -137,6 +145,8 @@ namespace MajorHavocEditor.Services
 
         public ICommand ValidateCommand { get; }
 
+        public ICommand ExportCommand { get; }
+
         private bool OneOrLessObjectsSelected()
         {
             return this._selected.Count <= 1;
@@ -154,8 +164,14 @@ namespace MajorHavocEditor.Services
 
         private bool OneMazeSelected()
         {
-            return this.OneObjectSelected()
-                   && this._selected[ 0 ] is Maze;
+            return this.OneObjectSelected() &&
+                   this._selected[ 0 ] is Maze;
+        }
+
+        private bool OneOrMoreMazeCollectionsSelected()
+        {
+            return this.OneOrMoreObjectsSelected() &&
+                   this._selected.All( o => o is MazeCollection );
         }
 
         private void AddMaze()
@@ -405,6 +421,76 @@ namespace MajorHavocEditor.Services
             foreach ( object subject in this._selected )
             {
                 this._validationService.ValidateAndDisplayResults( subject );
+            }
+        }
+
+        private void Export()
+        {
+            DialogExport exportDialog = new DialogExport();
+            if (Directory.Exists(Properties.Settings.Default.LastExportLocation))
+            {
+                exportDialog.ExportDirectory = Properties.Settings.Default.LastExportLocation;
+            }
+
+            DialogResult dr = exportDialog.ShowDialog();
+            if (dr == DialogResult.OK)
+            {
+                foreach ( object o in this._selected )
+                {
+                    if ( o is MazeCollection mazeCollection )
+                    {
+                        List<Tuple<Maze, int>> mazeInfo = new List<Tuple<Maze, int>>();
+                        MajorHavocPromisedEnd mhpe = new MajorHavocPromisedEnd();
+                        if (mhpe.LoadTemplate(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation)))
+                        {
+                            foreach (var maze in mazeCollection.Mazes)
+                            {
+                                int level = mazeCollection.Mazes.IndexOf(maze);
+                                mazeInfo.Add(new Tuple<Maze, int>(maze, level + 1));
+                            }
+
+                            string sourcePage6 = mhpe.ExtractSource(mazeInfo, GameController.SourceFile.Page6);
+                            string sourcePage7 = mhpe.ExtractSource(mazeInfo, GameController.SourceFile.Page7);
+                            string sourcePageToken = mhpe.ExtractSource(mazeInfo, GameController.SourceFile.Token);
+                            string sourcePageCannon = mhpe.ExtractSource(mazeInfo, GameController.SourceFile.Cannon);
+                            string sourceMazeMessages = mhpe.ExtractSource(mazeInfo, GameController.SourceFile.MazeMessages);
+
+                            IFileProperties fp = (IFileProperties) o;
+
+                            string suffix =
+                                fp.Name.Contains( "tournament", StringComparison.InvariantCultureIgnoreCase ) ?
+                                        "te" : "pe";
+
+                            StringBuilder includeBuilder = new StringBuilder();
+                            includeBuilder.AppendLine(";********************************************************************");
+                            includeBuilder.AppendLine($";* MAZECOLLECTION: {fp.Name.ToLower()}");
+                            includeBuilder.AppendLine($";* Generated On {DateTime.Now}");
+
+                            Properties.Settings.Default.LastExportLocation = exportDialog.ExportDirectory;
+                            Properties.Settings.Default.Save();
+                            File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, $"tw_mazedcan_{suffix}.asm"), sourcePageCannon);
+                            File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, $"tw_mazedtok_{suffix}.asm"), sourcePageToken);
+                            File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, $"tw_mazed_{suffix}.asm"), includeBuilder + sourcePage6);
+                            File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, $"tw_mazed2_{suffix}.asm"), includeBuilder + sourcePage7);
+                            File.WriteAllText(Path.Combine(exportDialog.ExportDirectory, $"tw_mazedstr_en_{suffix}.asm"), sourceMazeMessages);
+                            //Clipboard.SetText(source);
+
+                            MessageBox.Show($"Source files overwritten for {mazeCollection.Name}" );
+                        }
+                        else
+                        {
+                            MessageBox.Show("There was an issue loading the maze objects: " + mhpe.LastError, "ROM Load Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        }
+                    }
+                    //if (node.Tag is MazeController mazeController)
+                    //{
+                    //    if (node.Parent?.Tag is MazeCollectionController mazeCollectionController)
+                    //    {
+                    //        int level = mazeCollectionController.MazeCollection.Mazes.IndexOf(mazeController.Maze);
+                    //        mazeInfo.Add(new Tuple<Maze, int>(mazeController.Maze, level + 1));
+                    //    }
+                    //}
+                }
             }
         }
 
