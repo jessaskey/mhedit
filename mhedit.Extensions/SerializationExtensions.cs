@@ -363,6 +363,38 @@ namespace mhedit.Extensions
                 }
             }
         }
+
+        // this code would be used if we used MS compression... But the existing Bzip files
+        // don't appear to be compatible.
+        //public static void SerializeAndCompress(this object obj, Stream stream)
+        //{
+        //    using (ZipArchive archive = new ZipArchive(stream, ZipArchiveMode.Update))
+        //    {
+        //        ZipArchiveEntry entry = archive.CreateEntry(obj.GetType().Name);
+
+        //        using (Stream entryStream = entry.Open())
+        //        {
+        //            obj.Serialize(obj.GetType(), entryStream);
+        //        }
+        //    }
+        //}
+        //public static T ExpandAndDeserialize<T>(this string fileName,
+        //    Action<string> onNotifications = null)
+        //{
+        //    NotificationHandler = onNotifications;
+
+        //    using (FileStream zipToOpen = new FileStream(fileName, FileMode.Open))
+        //    {
+        //        using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Read))
+        //        {
+        //            using (Stream stream = archive.Entries.First().Open())
+        //            {
+        //                return (T)PerformPostDeserializeHacks(
+        //                    Deserialize(typeof(T), stream, OnUnknownElement));
+        //            }
+        //        }
+        //    }
+        //}
     }
 
 }
