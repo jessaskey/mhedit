@@ -51,8 +51,9 @@ namespace MajorHavocEditor
                 this._gameManager );
 
             this._propertyBrowser =
-                new PropertyBrowser( this._gameManager.SelectedObjects,
-                    DockingState.DockRightAutoHide );
+                new PropertyBrowser(this._gameManager.SelectedObjects,
+                    DockingState.DockRightAutoHide)
+                { Caption = "Maze Properties" };
 
             this.Controls.Add( (Control) this._menuManager.Menu );
 

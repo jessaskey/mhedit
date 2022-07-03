@@ -12,6 +12,7 @@ namespace MajorHavocEditor.Views
     {
         private readonly IList _selectedItems;
         private DockingState _dockingState;
+        private string _caption = "Properties";
 
         public PropertyBrowser(IList selectedItems, DockingState dockingState = DockingState.DockRight)
         {
@@ -61,7 +62,8 @@ namespace MajorHavocEditor.Views
 
         public string Caption
         {
-            get { return "Properties"; }
+            get { return _caption; }
+            set { _caption = value; }
         }
 
         public object Icon
