@@ -1,249 +1,60 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{56F50C8E-1406-4888-89A2-575ABF86721E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>mhedit.Containers</RootNamespace>
-    <AssemblyName>mhedit.Containers</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Constants.cs" />
-    <Compile Include="DataConverter.cs" />
-    <Compile Include="EditInfo.cs" />
-    <Compile Include="Enums.cs" />
-    <Compile Include="ExceptionSummary.cs" />
-    <Compile Include="ExtendedObservableCollection.cs" />
-    <Compile Include="IName.cs" />
-    <Compile Include="Maze.cs" />
-    <Compile Include="MazeCollection.cs" />
-    <Compile Include="MazeEnemies\IonCannon\IonCannon.cs" />
-    <Compile Include="MazeEnemies\IonCannon\IonCannonEditor.cs" />
-    <Compile Include="MazeEnemies\IonCannon\ProgramEditor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MazeEnemies\IonCannon\ProgramEditor.Designer.cs">
-      <DependentUpon>ProgramEditor.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MazeEnemies\IonCannon\ProgramPreview.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MazeEnemies\IonCannon\ProgramPreview.Designer.cs">
-      <DependentUpon>ProgramPreview.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MazeEnemies\IonCannon\Commands.cs" />
-    <Compile Include="MazeEnemies\IonCannon\IonCannonInstruction.cs" />
-    <Compile Include="MazeEnemies\IonCannon\IonCannonProgram.cs" />
-    <Compile Include="MazeEnemies\IonCannon\Move.cs" />
-    <Compile Include="MazeEnemies\IonCannon\OrientAndFire.cs" />
-    <Compile Include="MazeEnemies\IonCannon\Orientation.cs" />
-    <Compile Include="MazeEnemies\IonCannon\Pause.cs" />
-    <Compile Include="MazeEnemies\IonCannon\ReturnToStart.cs" />
-    <Compile Include="MazeEnemies\IonCannon\RotateSpeed.cs" />
-    <Compile Include="MazeEnemies\IonCannon\SimpleVelocity.cs" />
-    <Compile Include="MazeEnemies\LightningH.cs" />
-    <Compile Include="MazeEnemies\LightningV.cs" />
-    <Compile Include="MazeEnemies\Maxoid.cs" />
-    <Compile Include="MazeEnemies\Perkoid.cs" />
-    <Compile Include="MazeEnemies\Pyroid.cs" />
-    <Compile Include="MazeEnemies\TripPad.cs" />
-    <Compile Include="MazeEnemies\TripPadPyroid.cs" />
-    <Compile Include="MazeFactory.cs" />
-    <Compile Include="MazeObject.cs" />
-    <Compile Include="MazeObjects\ArrowOut.cs" />
-    <Compile Include="MazeObjects\Arrow.cs" />
-    <Compile Include="MazeObjects\Boots.cs" />
-    <Compile Include="MazeObjects\Clock.cs" />
-    <Compile Include="MazeObjects\EscapePod.cs" />
-    <Compile Include="MazeObjects\Hand.cs" />
-    <Compile Include="MazeObjects\Key.cs" />
-    <Compile Include="MazeObjects\KeyPouch.cs" />
-    <Compile Include="MazeObjects\Lock.cs" />
-    <Compile Include="MazeObjects\ObjectColor.cs" />
-    <Compile Include="MazeObjects\OneWay.cs" />
-    <Compile Include="MazeObjects\Oxoid.cs" />
-    <Compile Include="MazeObjects\Reactoid.cs" />
-    <Compile Include="MazeObjects\Spikes.cs" />
-    <Compile Include="MazeObjects\HiddenLevelToken.cs" />
-    <Compile Include="MazeObjects\Transporter.cs" />
-    <Compile Include="MazeWall.cs" />
-    <Compile Include="AugmentedTreeview.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="NameFactory.cs" />
-    <Compile Include="NotifyPropertyChangedBase.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Range.cs" />
-    <Compile Include="ResourceFactory.cs" />
-    <Compile Include="SignedVelocity.cs" />
-    <Compile Include="ChangeTrackingBase.cs" />
-    <Compile Include="TypeConverters\SignedVelocityTypeConverter.cs" />
-    <Compile Include="TypeConverters\SimpleVelocityTypeConverter.cs" />
-    <Compile Include="TypeConverters\TripPadPyroidTypeConverter.cs" />
-    <Compile Include="TypeConverters\VectorPositionTypeConverter.cs" />
-    <Compile Include="Validation\Collection.cs" />
-    <Compile Include="Validation\CollectionIndexRule.cs" />
-    <Compile Include="Validation\ElementsRule.cs" />
-    <Compile Include="Validation\FileNameRule.cs" />
-    <Compile Include="Validation\MajorHavoc\HandReactorLocationRule.cs" />
-    <Compile Include="Validation\MajorHavoc\HiddenLevelTokenMissingRule.cs" />
-    <Compile Include="Validation\MajorHavoc\HiddenLevelTokensCountRule.cs" />
-    <Compile Include="Validation\MajorHavoc\HiddenLevelTokensRule.cs" />
-    <Compile Include="Validation\MajorHavoc\KeyLockPairsRule.cs" />
-    <Compile Include="Validation\MajorHavoc\MazeHintRule.cs" />
-    <Compile Include="Validation\MajorHavoc\MazeTypeOrderRule.cs" />
-    <Compile Include="Validation\MajorHavoc\PerkoidVelocityRule.cs" />
-    <Compile Include="Validation\MajorHavoc\PyroidVelocityRule.cs" />
-    <Compile Include="Validation\MajorHavoc\SingleColorKeyRule.cs" />
-    <Compile Include="Validation\MajorHavoc\SingleColorLockRule.cs" />
-    <Compile Include="Validation\MajorHavoc\TransporterDirectionRule.cs" />
-    <Compile Include="Validation\MajorHavoc\TransporterPairsRule.cs" />
-    <Compile Include="Validation\NamedPropertyRule.cs" />
-    <Compile Include="Validation\NotNullRule.cs" />
-    <Compile Include="Validation\RangeRule.cs" />
-    <Compile Include="Validation\StringLengthRule.cs" />
-    <Compile Include="Validation\StringExistsRule.cs" />
-    <Compile Include="Validation\ValidationData.cs" />
-    <Compile Include="VersionInformation.cs" />
-    <Compile Include="Validation\CollectionContentRule.cs" />
-    <Compile Include="Validation\CollectionSizeRule.cs" />
-    <Compile Include="Validation\IValidationResult.cs" />
-    <Compile Include="Validation\IValidationRule.cs" />
-    <Compile Include="Validation\StringRegexRule.cs" />
-    <Compile Include="Validation\ValidationAttribute.cs" />
-    <Compile Include="Validation\ValidationExtensions.cs" />
-    <Compile Include="Validation\ValidationLevel.cs" />
-    <Compile Include="Validation\ValidationResult.cs" />
-    <Compile Include="Validation\ValidationResults.cs" />
-    <Compile Include="Validation\ValidationRule.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="MazeEnemies\IonCannon\ProgramEditor.resx">
-      <DependentUpon>ProgramEditor.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MazeEnemies\IonCannon\ProgramPreview.resx">
-      <DependentUpon>ProgramPreview.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Objects\arrow_angle_obj.png" />
-    <EmbeddedResource Include="Images\Objects\arrow_question_obj.png" />
-    <EmbeddedResource Include="Images\Objects\arrow_square_obj.png" />
-    <EmbeddedResource Include="Images\Objects\booties_obj.png" />
-    <EmbeddedResource Include="Images\Objects\cannon_barrel_right.png" />
-    <EmbeddedResource Include="Images\Objects\cannon_obj.png" />
-    <EmbeddedResource Include="Images\Objects\clock_obj.png" />
-    <EmbeddedResource Include="Images\Objects\hand_obj.png" />
-    <EmbeddedResource Include="Images\Objects\key_obj.png" />
-    <EmbeddedResource Include="Images\Objects\lightning_obj.png" />
-    <EmbeddedResource Include="Images\Objects\lightning_v_obj.png" />
-    <EmbeddedResource Include="Images\Objects\lock_obj.png" />
-    <EmbeddedResource Include="Images\Objects\oneway_l_obj.png" />
-    <EmbeddedResource Include="Images\Objects\oneway_obj.png" />
-    <EmbeddedResource Include="Images\Objects\oxoid_obj.png" />
-    <EmbeddedResource Include="Images\Objects\perkoid_obj.png" />
-    <EmbeddedResource Include="Images\Objects\pod_obj.png" />
-    <EmbeddedResource Include="Images\Objects\pyroidr_obj.png" />
-    <EmbeddedResource Include="Images\Objects\pyroid_obj.png" />
-    <EmbeddedResource Include="Images\Objects\reactoid_obj.png" />
-    <EmbeddedResource Include="Images\Objects\roboid_obj.png" />
-    <EmbeddedResource Include="Images\Objects\spikes_obj.png" />
-    <EmbeddedResource Include="Images\Objects\transporter_obj.png" />
-    <EmbeddedResource Include="Images\Objects\trippad_obj.png" />
-    <EmbeddedResource Include="Images\Objects\wallc_empty_64.png" />
-    <EmbeddedResource Include="Images\Objects\wallc_horizontal_64.png" />
-    <EmbeddedResource Include="Images\Objects\wallc_leftdown_64.png" />
-    <EmbeddedResource Include="Images\Objects\wallc_leftup_64.png" />
-    <EmbeddedResource Include="Images\Objects\wallc_rightdown_64.png" />
-    <EmbeddedResource Include="Images\Objects\wallc_rightup_64.png" />
-    <EmbeddedResource Include="Images\Objects\wallc_vertical_64.png" />
-    <EmbeddedResource Include="Images\Objects\wall_empty_64.png" />
-    <EmbeddedResource Include="Images\Objects\wall_horizontal_64.png" />
-    <EmbeddedResource Include="Images\Objects\wall_leftdown_64.png" />
-    <EmbeddedResource Include="Images\Objects\wall_leftup_64.png" />
-    <EmbeddedResource Include="Images\Objects\wall_rightdown_64.png" />
-    <EmbeddedResource Include="Images\Objects\wall_rightup_64.png" />
-    <EmbeddedResource Include="Images\Objects\wall_vertical_64.png" />
-    <EmbeddedResource Include="Images\Objects\arrow_out_up_obj.png" />
-    <EmbeddedResource Include="Images\Objects\arrow_out_down_obj.png" />
-    <EmbeddedResource Include="Images\Objects\arrow_out_left_obj.png" />
-    <EmbeddedResource Include="Images\Objects\arrow_out_right_obj.png" />
-    <EmbeddedResource Include="Images\Objects\pyroidr_d_obj.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Objects\keypouch_32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Objects\reactoid_extra_obj.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Images\Objects\token_a_obj.png" />
-    <EmbeddedResource Include="Images\Objects\token_b_obj.png" />
-    <EmbeddedResource Include="Images\Objects\token_c_obj.png" />
-    <EmbeddedResource Include="Images\Objects\token_d_obj.png" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0-windows</TargetFramework>
+        <UseWindowsForms>true</UseWindowsForms>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Images\Objects\arrow_angle_obj.png" />
+        <EmbeddedResource Include="Images\Objects\arrow_question_obj.png" />
+        <EmbeddedResource Include="Images\Objects\arrow_square_obj.png" />
+        <EmbeddedResource Include="Images\Objects\booties_obj.png" />
+        <EmbeddedResource Include="Images\Objects\cannon_barrel_right.png" />
+        <EmbeddedResource Include="Images\Objects\cannon_obj.png" />
+        <EmbeddedResource Include="Images\Objects\clock_obj.png" />
+        <EmbeddedResource Include="Images\Objects\hand_obj.png" />
+        <EmbeddedResource Include="Images\Objects\key_obj.png" />
+        <EmbeddedResource Include="Images\Objects\lightning_obj.png" />
+        <EmbeddedResource Include="Images\Objects\lightning_v_obj.png" />
+        <EmbeddedResource Include="Images\Objects\lock_obj.png" />
+        <EmbeddedResource Include="Images\Objects\oneway_l_obj.png" />
+        <EmbeddedResource Include="Images\Objects\oneway_obj.png" />
+        <EmbeddedResource Include="Images\Objects\oxoid_obj.png" />
+        <EmbeddedResource Include="Images\Objects\perkoid_obj.png" />
+        <EmbeddedResource Include="Images\Objects\pod_obj.png" />
+        <EmbeddedResource Include="Images\Objects\pyroidr_obj.png" />
+        <EmbeddedResource Include="Images\Objects\pyroid_obj.png" />
+        <EmbeddedResource Include="Images\Objects\reactoid_obj.png" />
+        <EmbeddedResource Include="Images\Objects\roboid_obj.png" />
+        <EmbeddedResource Include="Images\Objects\spikes_obj.png" />
+        <EmbeddedResource Include="Images\Objects\transporter_obj.png" />
+        <EmbeddedResource Include="Images\Objects\trippad_obj.png" />
+        <EmbeddedResource Include="Images\Objects\wallc_empty_64.png" />
+        <EmbeddedResource Include="Images\Objects\wallc_horizontal_64.png" />
+        <EmbeddedResource Include="Images\Objects\wallc_leftdown_64.png" />
+        <EmbeddedResource Include="Images\Objects\wallc_leftup_64.png" />
+        <EmbeddedResource Include="Images\Objects\wallc_rightdown_64.png" />
+        <EmbeddedResource Include="Images\Objects\wallc_rightup_64.png" />
+        <EmbeddedResource Include="Images\Objects\wallc_vertical_64.png" />
+        <EmbeddedResource Include="Images\Objects\wall_empty_64.png" />
+        <EmbeddedResource Include="Images\Objects\wall_horizontal_64.png" />
+        <EmbeddedResource Include="Images\Objects\wall_leftdown_64.png" />
+        <EmbeddedResource Include="Images\Objects\wall_leftup_64.png" />
+        <EmbeddedResource Include="Images\Objects\wall_rightdown_64.png" />
+        <EmbeddedResource Include="Images\Objects\wall_rightup_64.png" />
+        <EmbeddedResource Include="Images\Objects\wall_vertical_64.png" />
+        <EmbeddedResource Include="Images\Objects\arrow_out_up_obj.png" />
+        <EmbeddedResource Include="Images\Objects\arrow_out_down_obj.png" />
+        <EmbeddedResource Include="Images\Objects\arrow_out_left_obj.png" />
+        <EmbeddedResource Include="Images\Objects\arrow_out_right_obj.png" />
+        <EmbeddedResource Include="Images\Objects\pyroidr_d_obj.png" />
+        <EmbeddedResource Include="Images\Objects\keypouch_32.png" />
+        <EmbeddedResource Include="Images\Objects\reactoid_extra_obj.png" />
+        <EmbeddedResource Include="Images\Objects\token_a_obj.png" />
+        <EmbeddedResource Include="Images\Objects\token_b_obj.png" />
+        <EmbeddedResource Include="Images\Objects\token_c_obj.png" />
+        <EmbeddedResource Include="Images\Objects\token_d_obj.png" />
+    </ItemGroup>
+
 </Project>

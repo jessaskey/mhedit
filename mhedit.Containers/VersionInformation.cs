@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Deployment.Application;
+//using System.Deployment.Application;
 using System.Reflection;
 
 namespace mhedit.Containers
