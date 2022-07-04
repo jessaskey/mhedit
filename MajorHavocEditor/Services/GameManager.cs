@@ -258,12 +258,16 @@ namespace MajorHavocEditor.Services
 
         private void LoadFromFile()
         {
+            string initialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            if (Directory.Exists(Properties.Settings.Default.LastFileLocation))
+            {
+                initialDirectory = Properties.Settings.Default.LastFileLocation;
+            }
             OpenFileDialog ofd =
                 new OpenFileDialog
                 {
                     Title = "Open Maze or Maze Collection",
-                    InitialDirectory =
-                        Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ),
+                    InitialDirectory = initialDirectory,
                     Filter =
                         "Editor Files (*.mhz;*.mhc)|*.mhz;*.mhc|Mazes (*.mhz)|*.mhz|Maze Collections (*.mhc)|*.mhc",
                     CheckFileExists = true,
@@ -274,6 +278,8 @@ namespace MajorHavocEditor.Services
             {
                 foreach ( var fileName in ofd.FileNames )
                 {
+                    Properties.Settings.Default.LastFileLocation = Path.GetDirectoryName(fileName);
+                    Properties.Settings.Default.Save();
                     object opened = Path.GetExtension(fileName).ToLowerInvariant() switch
                     {
                         ".mhz" => this._fileManager.Load<Maze>(fileName),

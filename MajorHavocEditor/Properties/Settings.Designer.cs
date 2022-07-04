@@ -202,5 +202,17 @@ namespace MajorHavocEditor.Properties {
                 this["LastExportLocation"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastFileLocation {
+            get {
+                return ((string)(this["LastFileLocation"]));
+            }
+            set {
+                this["LastFileLocation"] = value;
+            }
+        }
     }
 }
