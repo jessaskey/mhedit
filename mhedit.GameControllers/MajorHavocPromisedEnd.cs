@@ -1790,7 +1790,6 @@ namespace mhedit.GameControllers
             {
                 reactoid = maze.MazeObjects.OfType<Reactoid>().FirstOrDefault();
             }
-            int counter = 0;
 
             switch (group)
             {
@@ -1798,23 +1797,21 @@ namespace mhedit.GameControllers
                     //Reactoid
                     if (reactoid != null)
                     {
-                        encodings.Add(reactoid.ToBytes(reactoid.Position), "Reactor");
+                        encodings.Add(reactoid.ToBytes(reactoid.Position), reactoid.Name);
                         foreach (Pyroid pyroid in maze.MazeObjects.OfType<Pyroid>())
                         {
-                            encodings.Add(pyroid.ToBytes(), "F" + counter++.ToString());
+                            encodings.Add(pyroid.ToBytes(), pyroid.Name);
                         }
                         //Perkoids
-                        counter = 0;
                         if (maze.MazeObjects.OfType<Perkoid>().Count() > 0)
                         {
                             encodings.Add(0xfe);
                             foreach (Perkoid perkoid in maze.MazeObjects.OfType<Perkoid>())
                             {
-                                encodings.Add(perkoid.ToBytes(), "R" + counter++.ToString());
+                                encodings.Add(perkoid.ToBytes(), perkoid.Name);
                             }
                         }
                         //Maxoids
-                        counter = 0;
                         if (maze.MazeObjects.OfType<Maxoid>().Count() > 0)
                         {
                             //make sure we did perkoids already
@@ -1825,7 +1822,7 @@ namespace mhedit.GameControllers
                             encodings.Add(0xfe, "End Robots");
                             foreach (Maxoid max in maze.MazeObjects.OfType<Maxoid>())
                             {
-                                encodings.Add(max.ToBytes(), "M" + counter++.ToString());
+                                encodings.Add(max.ToBytes(), max.Name);
                             }
                         }
                         encodings.Add(0xff); //Data End Flag
@@ -1848,14 +1845,14 @@ namespace mhedit.GameControllers
                     {
                         foreach (LightningH lightningH in maze.MazeObjects.OfType<LightningH>())
                         {
-                            encodings.Add(lightningH.ToBytes(), "Lightning-Horizontal");
+                            encodings.Add(lightningH.ToBytes(), "H" + lightningH.Name);
                         }
                         if (maze.MazeObjects.OfType<LightningV>().Count() > 0)
                         {
                             encodings.Add(0xff);
                             foreach (LightningV lightningV in maze.MazeObjects.OfType<LightningV>())
                             {
-                                encodings.Add(lightningV.ToBytes(), "Lightning-Vertical");
+                                encodings.Add(lightningV.ToBytes(), "V" + lightningV.Name);
                             }
                         }
                     }
@@ -1864,14 +1861,14 @@ namespace mhedit.GameControllers
                 case EncodingGroup.Arrows:
                     foreach (Arrow arrow in maze.MazeObjects.OfType<Arrow>())
                     {
-                        encodings.Add(arrow.ToBytes(), "Arrows");
+                        encodings.Add(arrow.ToBytes(), arrow.Name);
                     }
                     encodings.Add(0x00);
                     break;
                 case EncodingGroup.ArrowsOut:
                     foreach (ArrowOut arrow in maze.MazeObjects.OfType<ArrowOut>())
                     {
-                        encodings.Add(arrow.ToBytes(), "Out Arrows");
+                        encodings.Add(arrow.ToBytes(), arrow.Name);
                     }
                     encodings.Add(0x00);
                     break;
@@ -1879,7 +1876,7 @@ namespace mhedit.GameControllers
                     //Trip Point data
                     foreach (TripPad trip in maze.MazeObjects.OfType<TripPad>())
                     {
-                        encodings.Add(trip.ToBytes(), "Trip Pads");
+                        encodings.Add(trip.ToBytes(), trip.Name);
                     }
                     encodings.Add(0x00);
                     break;
@@ -1887,7 +1884,7 @@ namespace mhedit.GameControllers
                     //Trip Action Data
                     foreach (TripPad trip in maze.MazeObjects.OfType<TripPad>())
                     {
-                        encodings.Add(trip.Pyroid.ToBytes(), "Trip Pad Actions");
+                        encodings.Add(trip.Pyroid.ToBytes(), trip.Name + "(pyroid)");
                     }
                     encodings.Add(new byte[] { 0x00, 0x00, 0x00 });
                     break;
@@ -1895,7 +1892,7 @@ namespace mhedit.GameControllers
                     //Wall data, all walls in maze
                     foreach (MazeWall wall in maze.MazeObjects.OfType<MazeWall>().Where(w => !w.IsDynamicWall))
                     {
-                        encodings.Add(wall.ToBytes(maze), "Static Walls");
+                        encodings.Add(wall.ToBytes(maze), wall.Name);
                     }
                     encodings.Add(0x00);
                     break;
@@ -1903,21 +1900,21 @@ namespace mhedit.GameControllers
                     //wall data, only dynamic walls
                     foreach (MazeWall wall in maze.MazeObjects.OfType<MazeWall>().Where(w => w.IsDynamicWall))
                     {
-                        encodings.Add(wall.ToBytes(maze), "Dynamic Walls");
+                        encodings.Add(wall.ToBytes(maze), wall.Name);
                     }
                     encodings.Add(0x00);
                     break;
                 case EncodingGroup.OneWay:
                     foreach (OneWay wall in maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Right))
                     {
-                        encodings.Add(wall.ToBytes(maze), "OneWay Walls-Right");
+                        encodings.Add(wall.ToBytes(maze), wall.Name + "(right)");
                     }
                     if (maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Left).Count() > 0)
                     {
                         foreach (OneWay wall in maze.MazeObjects.OfType<OneWay>().Where(o => o.Direction == OneWayDirection.Left))
                         {
                             encodings.Add(0xff);
-                            encodings.Add(wall.ToBytes(maze), "OneWay Walls-Left");
+                            encodings.Add(wall.ToBytes(maze), wall.Name + "(left)");
                         }
                     }
                     encodings.Add(0x00);
@@ -1941,7 +1938,7 @@ namespace mhedit.GameControllers
                 case EncodingGroup.Spikes:
                     foreach (Spikes spike in maze.MazeObjects.OfType<Spikes>())
                     {
-                        encodings.Add(spike.ToBytes(), "Stalactites");
+                        encodings.Add(spike.ToBytes(), spike.Name);
                     }
                     encodings.Add(0x00);
                     break;
@@ -2045,7 +2042,7 @@ namespace mhedit.GameControllers
                         Reactoid r = maze.MazeObjects.OfType<Reactoid>().FirstOrDefault();
                         if (r != null)
                         {
-                            encodings.Add(hand.ToBytes(r), "Hand");
+                            encodings.Add(hand.ToBytes(r), hand.Name);
                         }
                     }
                     else
@@ -2058,7 +2055,7 @@ namespace mhedit.GameControllers
                     Clock clock = maze.MazeObjects.OfType<Clock>().FirstOrDefault();
                     if (clock != null)
                     {
-                        encodings.Add(clock.ToBytes(),"Clock");
+                        encodings.Add(clock.ToBytes(), clock.Name);
                     }
                     else
                     {
@@ -2070,7 +2067,7 @@ namespace mhedit.GameControllers
                     Boots boots = maze.MazeObjects.OfType<Boots>().FirstOrDefault();
                     if (boots != null)
                     {
-                        encodings.Add(boots.ToBytes(),"Boots");
+                        encodings.Add(boots.ToBytes(), boots.Name);
                     }
                     else
                     {
@@ -2082,7 +2079,7 @@ namespace mhedit.GameControllers
                     KeyPouch keyPouch = maze.MazeObjects.OfType<KeyPouch>().FirstOrDefault();
                     if ( keyPouch != null)
                     {
-                        encodings.Add( keyPouch.ToBytes(), "KeyPouch" );
+                        encodings.Add( keyPouch.ToBytes(), keyPouch.Name );
                     }
                     else
                     {
@@ -2094,7 +2091,7 @@ namespace mhedit.GameControllers
                     EscapePod pod = maze.MazeObjects.OfType<EscapePod>().FirstOrDefault();
                     if (pod != null)
                     {
-                        encodings.Add(pod.ToBytes());
+                        encodings.Add(pod.ToBytes(), pod.Name);
                     }
                     else
                     {
@@ -2108,7 +2105,7 @@ namespace mhedit.GameControllers
                     {
                         reactorTimer = DataConverter.ToDecimal(reactoid.Timer);
                     }
-                    encodings.Add((byte)reactorTimer);
+                    encodings.Add((byte)reactorTimer, "MazeTime");
                     break;
                 case EncodingGroup.ReactorSize:
                     //Reactor Size
@@ -2120,10 +2117,10 @@ namespace mhedit.GameControllers
                             reactorSize = 1;
                         }
                     }
-                    encodings.Add((byte)reactorSize);
+                    encodings.Add((byte)reactorSize, "ReactorSize");
                     break;
                 case EncodingGroup.OxygenReward:
-                    encodings.Add((byte)maze.OxygenReward);
+                    encodings.Add((byte)maze.OxygenReward, "O2 Reward");
                     break;
                 case EncodingGroup.HiddenLevelToken:
                     foreach ( var token in maze.MazeObjects.OfType<HiddenLevelToken>() )
