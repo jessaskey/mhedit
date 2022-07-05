@@ -20,9 +20,9 @@ namespace MajorHavocEditor.Views
                 new ImageList { TransparentColor = Color.Fuchsia }
                     .AddImages( new[]
                                 {
-                                    "Error_red_16x16.png",
-                                    "Warning_yellow_7231_16x16.png",
-                                    "Information_blue_6227_16x16.png",
+                                    (nameof(ValidationLevel.Error), "Error_red_16x16.png"),
+                                    (nameof(ValidationLevel.Warning), "Warning_yellow_7231_16x16.png"),
+                                    (nameof(ValidationLevel.Message), "Information_blue_6227_16x16.png"),
                                 } )
                     .WithResourcePath( "Resources/Images" )
                     .Load();
@@ -32,11 +32,7 @@ namespace MajorHavocEditor.Views
             : this( new ValidationResult() )
         { }
 
-        public ValidationResultTab( IValidationResult result )
-            : this( result, string.Empty )
-        { }
-
-        public ValidationResultTab( IValidationResult result, string title )
+        public ValidationResultTab( IValidationResult result, string title = "" )
         {
             this.InitializeComponent();
 
