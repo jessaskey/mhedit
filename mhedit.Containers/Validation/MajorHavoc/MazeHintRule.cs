@@ -5,8 +5,8 @@ namespace mhedit.Containers.Validation.MajorHavoc
     /// <summary>
     /// Major Havoc Maze Hints only support a specific set of characters and must be
     /// less than 128 characters long.
-    /// " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:"
-    ///
+    /// " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.!-,%:o()hs@><?c"
+    /// 
     /// ValidationAttribute.Options is not supported (Ignored).
     /// 
     /// Composite format string:
@@ -17,7 +17,7 @@ namespace mhedit.Containers.Validation.MajorHavoc
     {
         private const int MaxLength = 128;
         private static readonly Regex HavocRegex =
-            new Regex( $"^[A-Z0-9 .!\\-,%:?csho@]{{0,{MaxLength}}}$" );
+            new Regex( $"^[A-Z0-9 .!\\-,%:o()hs@><?c]{{0,{MaxLength}}}$" );
 
         public MazeHintRule( ValidationData data )
             : base( data )
@@ -28,7 +28,7 @@ namespace mhedit.Containers.Validation.MajorHavoc
             return str != null && !HavocRegex.IsMatch( str ) ?
                        this.CreateResult( str,
                            $"\"{str}\", contains invalid characters or is > {MaxLength} characters long. " +
-                           "Valid characters are \" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ..!-,%:?\"" ) :
+                           "Valid characters are \" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.!-,%:o()hs@><?c\"") :
                        null;
         }
     }
