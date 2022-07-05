@@ -269,7 +269,8 @@ namespace MajorHavocEditor.Views
 
             if ( clickedNode != null && e.Button == MouseButtons.Left )
             {
-                // This captures clicking on an already selected node to unselect.
+                // This captures clicking on an already selected node, which isn't
+                // the Treeview.SelectedNode, to unselect.
                 this._mouseDownMultiSelectNode =
                     clickedNode.Checked &&
                     this._selectedNodes.Count > 1 &&
@@ -306,11 +307,15 @@ namespace MajorHavocEditor.Views
 
             if ( this._mouseDownSelectedNode != null )
             {
-                // If No Control Key and MouseUp also occurs on TreeView.SelectedNode
+                // If No Control Key (single select) and MouseUp also occurs on
+                // TreeView.SelectedNode
                 if ( !ModifierKeys.HasFlag( Keys.Control ) &&
                      this._mouseDownSelectedNode.Bounds.Contains( e.X, e.Y ) )
                 {
                     this._selectedNodes.Clear();
+
+                    // restore the selected node.
+                    this._selectedNodes.Add(this._mouseDownSelectedNode);
 
                     this._cancelUnwantedLabelEdit = this.LabelEdit;
                 }

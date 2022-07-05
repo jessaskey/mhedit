@@ -52,8 +52,8 @@ namespace MajorHavocEditor
                 this._gameManager );
 
             this._propertyBrowser =
-                new PropertyBrowser(this._gameManager.SelectedObjects,
-                    DockingState.DockRightAutoHide)
+                new PropertyBrowser( this._gameManager.SelectedObjects,
+                DockingState.DockRightAutoHide )
                 { Caption = "Maze Properties" };
 
             this.Controls.Add( (Control) this._menuManager.Menu );
@@ -189,6 +189,13 @@ namespace MajorHavocEditor
             //{
             //    File.Delete(configFile);
             //}
+
+
+            if ( e.Cancel != true )
+            {
+                // this will attempt to save any object that's marked as changed.
+                e.Cancel = this.TrySaveEditsOnExit();
+            }
         }
 
 #endregion
@@ -200,15 +207,55 @@ namespace MajorHavocEditor
         {
             base.OnKeyDown( e );
 
-            // this is janky but for now it solves the problem.
+                    // this is janky but for now it solves the problem.
             if ( e.KeyCode == Keys.F10 &&
                  this._gameManager.ExportCommand.CanExecute( null ))
-            {
-                this._gameManager.ExportCommand.Execute( null );
-            }
+                    {
+                        this._gameManager.ExportCommand.Execute( null );
+                    }
+
         }
 
 #endregion
+
+        /// <summary>
+        /// Trys to save changes and returns true to Cancel the exit.
+        /// </summary>
+        /// <returns>True (Cancel) if save fails or users cancels. false to exit otherwise.</returns>
+        private bool TrySaveEditsOnExit()
+        {
+            List<IChangeTracking> changed =
+                this._gameManager.GameObjects
+                    .OfType<IChangeTracking>()
+                    .Where( ct => ct.IsChanged )
+                    .ToList();
+
+            /// no changes don't cancel (exit like normal)
+            if ( !changed.Any() )
+            {
+                return false;
+            }
+
+            DialogResult result = DialogResult.Cancel;
+
+            result = MessageBox.Show(
+                $"There are unsaved changes, Would you like to save them before closing?",
+                "Save changes and Exit",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question );
+
+            /// try to save.
+            if ( result == DialogResult.Yes )
+            {
+                /// Attempt save and cancel if fails.
+                return changed.OfType<IFileProperties>()
+                              .Select( fp => this._fileManager.Save( fp ) )
+                              .Any( saveSuccess => !saveSuccess );
+            }
+
+            /// CANCEL exit if requested 
+            return result == DialogResult.Cancel;
+        }
     }
 
 }
