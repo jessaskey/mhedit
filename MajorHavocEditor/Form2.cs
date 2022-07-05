@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Krypton.Docking;
 using Krypton.Toolkit;
+using mhedit.Containers;
 using MajorHavocEditor.Controls.Commands;
 using MajorHavocEditor.Controls.Menu;
 using MajorHavocEditor.Interfaces.Ui;
