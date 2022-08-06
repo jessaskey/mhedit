@@ -187,7 +187,8 @@ namespace MajorHavocEditor.Services
 
                     if ( loadSuccess )
                     {
-                        bool serializeSuccess = controller.EncodeObjects( collection, maze );
+                        bool serializeSuccess =
+                            controller.EncodeObjects( collection, collection.Mazes.IndexOf( maze ) );
 
                         if ( serializeSuccess )
                         {

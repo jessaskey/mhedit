@@ -1,4 +1,4 @@
-﻿using mhedit.Containers;
+using mhedit.Containers;
 using mhedit.Containers.MazeEnemies;
 using mhedit.Containers.MazeEnemies.IonCannon;
 using mhedit.Containers.MazeObjects;
@@ -1131,10 +1131,14 @@ namespace mhedit.GameControllers
                 page6Source.AppendLine(DumpScalar("reaz" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.ReactorSize).ObjectEncodings));
                 page6Source.AppendLine(DumpScalar("oxyb" + GetMazeCode(level), dataPosition, commentPosition, EncodeObjects(maze, EncodingGroup.OxygenReward).ObjectEncodings));
 
-                HiddenLevelToken token = maze.MazeObjects.Where(o => o.GetType() == typeof(HiddenLevelToken)).FirstOrDefault() as HiddenLevelToken;
-                if (token != null)
+                List<HiddenLevelToken> tokensInMaze = maze.MazeObjects
+                                                          .OfType<HiddenLevelToken>()
+                                                          .ToList();
+
+                foreach ( HiddenLevelToken token in tokensInMaze )
                 {
-                    tokens[(int)token.TokenStyle] = new KeyValuePair<int, HiddenLevelToken>(level-1, token);
+                    tokens[ (int)token.TokenStyle ] =
+                        new KeyValuePair<int, HiddenLevelToken>( level - 1, token );
                 }
             }
 
@@ -1322,9 +1326,9 @@ namespace mhedit.GameControllers
         /// Encodes all mazes in passed collection into EncodingObjects and sets the starting level to the passed maze object. 
         /// </summary>
         /// <param name="mazeCollection">The collection to encode</param>
-        /// <param name="maze">If specified, will make this the starting level when ROMs are generated</param>
+        /// <param name="mazeToStartOn">If specified, will make this the starting level when ROMs are generated</param>
         /// <returns></returns>
-        public bool EncodeObjects(MazeCollection mazeCollection, Maze maze)
+        public bool EncodeObjects(MazeCollection mazeCollection, int mazeToStartOn = 0 )
         {
             int numMazes = 28;
 
@@ -1349,7 +1353,6 @@ namespace mhedit.GameControllers
             {
                 if (mazeCollection.Mazes[i] != null)
                 {
-                    int levelIndex = mazeCollection.Mazes.IndexOf(maze);
                     //Write Table Pointer - First Hint
                     if (!String.IsNullOrEmpty(mazeCollection.Mazes[i].Hint))
                     {
@@ -1387,10 +1390,14 @@ namespace mhedit.GameControllers
                         WritePagedROM((ushort)_exports["mazehints"], new byte[] { 0xff }, (i * 2)+ 1, 7);
                     }
 
-                    HiddenLevelToken token = maze.MazeObjects.Where(o => o.GetType() == typeof(HiddenLevelToken)).FirstOrDefault() as HiddenLevelToken;
-                    if (token != null)
+                    List<HiddenLevelToken> tokensInMaze = mazeCollection.Mazes[ i ].MazeObjects
+                                                                  .OfType<HiddenLevelToken>()
+                                                                  .ToList();
+
+                    foreach ( HiddenLevelToken token in tokensInMaze )
                     {
-                        tokens[(int)token.TokenStyle] = new KeyValuePair<int, HiddenLevelToken>(levelIndex, token);
+                        tokens[ (int)token.TokenStyle ] =
+                            new KeyValuePair<int, HiddenLevelToken>( i, token );
                     }
                 }
             }
@@ -1708,17 +1715,8 @@ namespace mhedit.GameControllers
             //****************
             //set up starting level
             //****************
-            if (maze != null)
-            {
-                for (int i = 0; i < numMazes; i++)
-                {
-                    if (mazeCollection.Mazes[i] == maze)
-                    {
-                        WriteAlphaHigh((ushort)(_exports["levelst"] + 1), (byte)i );
-                        break;
-                    }
-                }
-            }
+            WriteAlphaHigh( (ushort)( _exports[ "levelst" ] + 1 ), (byte)mazeToStartOn );
+
             //*******************
             // Quality Checking
             //*******************

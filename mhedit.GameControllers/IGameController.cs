@@ -1,4 +1,4 @@
-﻿using mhedit.Containers;
+using mhedit.Containers;
 using System;
 using System.Collections.Generic;
 
@@ -15,7 +15,7 @@ namespace mhedit.GameControllers
 
         bool WriteFiles(string mamePath, string driverName);
 
-        bool EncodeObjects(MazeCollection collection, Maze maze);
+        bool EncodeObjects( MazeCollection mazeCollection, int mazeToStartOn = 0 );
 
         byte ReadByte(ushort address, int offset);
 
