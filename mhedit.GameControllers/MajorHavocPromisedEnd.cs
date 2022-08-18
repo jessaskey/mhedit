@@ -1460,7 +1460,7 @@ namespace mhedit.GameControllers
             {
                 allTokenBytes.AddRange(encoding.Bytes);
             }
-            WritePagedROM(_exports["mtok"], allTokenBytes.ToArray(), 0, 6); 
+            currentAddressPage6 += WritePagedROM( _exports[ "mtok" ], allTokenBytes.ToArray(), 0, 6 );
 
             //****************
             //Oxoid data
