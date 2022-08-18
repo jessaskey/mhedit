@@ -53,7 +53,16 @@ namespace mhedit.GameControllers
         public Version GetROMVersion()
         {
             byte[] versionBytes = ReadPagedROM(0x2002, 0, 2, 6);
-            return new Version(versionBytes[0], versionBytes[1],0,0);
+            return new Version( FromBCD( versionBytes[0]), FromBCD( versionBytes[1]),0,0);
+        }
+
+        private static int FromBCD( byte bcd )
+        {
+            int result = 0;
+            result += ( 10 * ( bcd >> 4 ) );
+            result += bcd & 0xf;
+
+            return result;
         }
 
         public bool LoadTemplate(string sourceRomPath)
