@@ -1329,7 +1329,7 @@ namespace mhedit.GameControllers
         /// <returns></returns>
         public bool EncodeObjects(MazeCollection mazeCollection)
         {
-            return EncodeObjects(mazeCollection, null);
+            return EncodeObjects(mazeCollection);
         }
         /// <summary>
         /// Encodes all mazes in passed collection into EncodingObjects and sets the starting level to the passed maze object. 
