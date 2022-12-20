@@ -1070,7 +1070,7 @@ namespace mhedit.GameControllers
         }
 
 
-        public bool EncodeObjects(MazeCollection collection, Maze maze)
+        public bool EncodeObjects( MazeCollection mazeCollection, int mazeToStartOn = 0 )
         {
             throw new Exception("Writing of ROM files is not supported in this driver.");
 

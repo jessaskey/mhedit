@@ -169,7 +169,7 @@
             this.buttonBrowseMameExecutable.Name = "buttonBrowseMameExecutable";
             this.buttonBrowseMameExecutable.Size = new System.Drawing.Size(29, 23);
             this.buttonBrowseMameExecutable.TabIndex = 14;
-            this.buttonBrowseMameExecutable.Text = "button1";
+            this.buttonBrowseMameExecutable.Text = "...";
             this.buttonBrowseMameExecutable.UseVisualStyleBackColor = true;
             this.buttonBrowseMameExecutable.Click += new System.EventHandler(this.buttonBrowseMameExecutable_Click);
             // 

@@ -10,6 +10,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Template\mhavocpe.x1" />
+    </ItemGroup>
+
+    <ItemGroup>
         <!--<PackageReference Include="Krypton.Docking" Version="6.2201.4" />-->
         <!--<PackageReference Include="Krypton.Docking" Version="5.550.2108.1" />-->
         <!--<PackageReference Include="Krypton.Docking.Canary" Version="65.22.4.103-beta" />-->
@@ -121,6 +125,9 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
       <Content Include="Template\mhavocpe.exp">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Template\mhavocpe.x1">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>

@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows.Forms;
 using mhedit.Containers;
 using mhedit.Containers.Validation;
+using mhedit.Extensions;
 using mhedit.GameControllers;
 
 namespace MajorHavocEditor.Services
@@ -93,8 +94,7 @@ namespace MajorHavocEditor.Services
                     ProcessStartInfo info = new ProcessStartInfo( mameExe, args )
                                             {
                                                 ErrorDialog = true,
-                                                RedirectStandardError = true,
-                                                RedirectStandardOutput = true,
+                                                //RedirectStandardError = true,
                                                 UseShellExecute = false,
                                                 WorkingDirectory = Path.GetDirectoryName( mameExe )
                                             };
@@ -105,8 +105,16 @@ namespace MajorHavocEditor.Services
                                     StartInfo = info
                                 };
 
-                    p.Exited += this.ProcessExited;
+                    /// https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.process.beginerrorreadline?view=net-6.0
+                    /// The new MAME exe produces a LOT of stderr text and if this process redirects it to itself and then doesn't
+                    /// read it as it's coming in, the mame process will hang waiting for room in the buffer. I'm not implementing
+                    /// this right now. We can look at the window when it produces errors.
+                    //p.ErrorDataReceived += ( s, d ) =>
+                    //                       { };
+                    //p.BeginErrorReadLine();
+                    //p.Exited += this.ProcessExited;
                     p.Start();
+
                 }
                 catch ( Exception ex )
                 {
@@ -187,7 +195,8 @@ namespace MajorHavocEditor.Services
 
                     if ( loadSuccess )
                     {
-                        bool serializeSuccess = controller.EncodeObjects( collection, maze );
+                        bool serializeSuccess =
+                            controller.EncodeObjects( collection, collection.Mazes.IndexOf( maze ) );
 
                         if ( serializeSuccess )
                         {
@@ -221,6 +230,8 @@ namespace MajorHavocEditor.Services
         }
 
 
+        /// This code no longer works with MAME producing a LOT of stderr output. See process
+        /// start code.
         private void ProcessExited( object sender, EventArgs e )
         {
             if ( sender is Process )
@@ -231,7 +242,7 @@ namespace MajorHavocEditor.Services
                 {
                     if ( p.StandardError != null )
                     {
-                        string errorResult = p.StandardError.ReadToEnd();
+                        string errorResult = p.StandardError.ReadToEndAsync().Result;
 
                         if ( !String.IsNullOrEmpty( errorResult ) )
                         {
