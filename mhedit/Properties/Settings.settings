@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="MameExecutable" Type="System.String" Scope="User">
-      <Value Profile="(Default)">c:\hbmame\hbmame64.exe</Value>
+      <Value Profile="(Default)">c:\hbmame\hbmame.exe</Value>
     </Setting>
     <Setting Name="MameDriver" Type="System.String" Scope="User">
-      <Value Profile="(Default)">mhavocpex</Value>
+      <Value Profile="(Default)">mhavocpe</Value>
     </Setting>
     <Setting Name="MHPUsername" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -46,6 +46,12 @@
     </Setting>
     <Setting Name="LastExportLocation" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MameDriverFilePrefixOverride" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MamePause" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -13,7 +13,7 @@ namespace mhedit.GameControllers
 
         ushort GetAddress(string location);
 
-        bool WriteFiles(string mamePath, string driverName);
+        bool WriteFiles(string mamePath, string driverName, string prefixOverride);
 
         bool EncodeObjects(MazeCollection collection, Maze maze);
 

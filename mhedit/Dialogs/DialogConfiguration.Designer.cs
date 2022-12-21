@@ -34,6 +34,8 @@
             this.tabPageOptions = new System.Windows.Forms.TabPage();
             this.checkBoxShowGridCoordinateReferences = new System.Windows.Forms.CheckBox();
             this.tabPageMAME = new System.Windows.Forms.TabPage();
+            this.label2 = new System.Windows.Forms.Label();
+            this.textBoxMameCommandLineOptions = new System.Windows.Forms.TextBox();
             this.checkBoxMAMEWindow = new System.Windows.Forms.CheckBox();
             this.checkBoxDebug = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -47,8 +49,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBoxMameCommandLineOptions = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.textBoxFilePrefixOverride = new System.Windows.Forms.TextBox();
+            this.checkBoxMAMEPause = new System.Windows.Forms.CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPageOptions.SuspendLayout();
             this.tabPageMAME.SuspendLayout();
@@ -100,6 +103,9 @@
             // 
             // tabPageMAME
             // 
+            this.tabPageMAME.Controls.Add(this.checkBoxMAMEPause);
+            this.tabPageMAME.Controls.Add(this.label3);
+            this.tabPageMAME.Controls.Add(this.textBoxFilePrefixOverride);
             this.tabPageMAME.Controls.Add(this.label2);
             this.tabPageMAME.Controls.Add(this.textBoxMameCommandLineOptions);
             this.tabPageMAME.Controls.Add(this.checkBoxMAMEWindow);
@@ -117,10 +123,26 @@
             this.tabPageMAME.Text = "HBMAME";
             this.tabPageMAME.UseVisualStyleBackColor = true;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 103);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(93, 13);
+            this.label2.TabIndex = 21;
+            this.label2.Text = "HBMAME Options";
+            // 
+            // textBoxMameCommandLineOptions
+            // 
+            this.textBoxMameCommandLineOptions.Location = new System.Drawing.Point(131, 100);
+            this.textBoxMameCommandLineOptions.Name = "textBoxMameCommandLineOptions";
+            this.textBoxMameCommandLineOptions.Size = new System.Drawing.Size(355, 20);
+            this.textBoxMameCommandLineOptions.TabIndex = 20;
+            // 
             // checkBoxMAMEWindow
             // 
             this.checkBoxMAMEWindow.AutoSize = true;
-            this.checkBoxMAMEWindow.Location = new System.Drawing.Point(131, 123);
+            this.checkBoxMAMEWindow.Location = new System.Drawing.Point(131, 149);
             this.checkBoxMAMEWindow.Name = "checkBoxMAMEWindow";
             this.checkBoxMAMEWindow.Size = new System.Drawing.Size(164, 17);
             this.checkBoxMAMEWindow.TabIndex = 19;
@@ -130,7 +152,7 @@
             // checkBoxDebug
             // 
             this.checkBoxDebug.AutoSize = true;
-            this.checkBoxDebug.Location = new System.Drawing.Point(131, 100);
+            this.checkBoxDebug.Location = new System.Drawing.Point(131, 126);
             this.checkBoxDebug.Name = "checkBoxDebug";
             this.checkBoxDebug.Size = new System.Drawing.Size(158, 17);
             this.checkBoxDebug.TabIndex = 18;
@@ -244,21 +266,31 @@
             this.panel1.Size = new System.Drawing.Size(556, 39);
             this.panel1.TabIndex = 15;
             // 
-            // label2
+            // label3
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 77);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(93, 13);
-            this.label2.TabIndex = 21;
-            this.label2.Text = "HBMAME Options";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 77);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(98, 13);
+            this.label3.TabIndex = 23;
+            this.label3.Text = "File Prefix Override:";
             // 
-            // textBoxMameCommandLineOptions
+            // textBoxFilePrefixOverride
             // 
-            this.textBoxMameCommandLineOptions.Location = new System.Drawing.Point(131, 74);
-            this.textBoxMameCommandLineOptions.Name = "textBoxMameCommandLineOptions";
-            this.textBoxMameCommandLineOptions.Size = new System.Drawing.Size(355, 20);
-            this.textBoxMameCommandLineOptions.TabIndex = 20;
+            this.textBoxFilePrefixOverride.Location = new System.Drawing.Point(131, 74);
+            this.textBoxFilePrefixOverride.Name = "textBoxFilePrefixOverride";
+            this.textBoxFilePrefixOverride.Size = new System.Drawing.Size(93, 20);
+            this.textBoxFilePrefixOverride.TabIndex = 22;
+            // 
+            // checkBoxMAMEPause
+            // 
+            this.checkBoxMAMEPause.AutoSize = true;
+            this.checkBoxMAMEPause.Location = new System.Drawing.Point(131, 172);
+            this.checkBoxMAMEPause.Name = "checkBoxMAMEPause";
+            this.checkBoxMAMEPause.Size = new System.Drawing.Size(198, 17);
+            this.checkBoxMAMEPause.TabIndex = 24;
+            this.checkBoxMAMEPause.Text = "Pause between file copy and launch";
+            this.checkBoxMAMEPause.UseVisualStyleBackColor = true;
             // 
             // DialogConfiguration
             // 
@@ -311,5 +343,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBoxMameCommandLineOptions;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox textBoxFilePrefixOverride;
+        private System.Windows.Forms.CheckBox checkBoxMAMEPause;
     }
 }

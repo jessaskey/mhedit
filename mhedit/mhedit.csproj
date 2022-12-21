@@ -45,7 +45,7 @@
     <WebPage>default.aspx</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.1.964.%2a</ApplicationVersion>
+    <ApplicationVersion>1.3.77.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -336,39 +336,42 @@
     <Content Include="template\mhavocpe.exp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="template\136002-125.6c">
+    <Content Include="template\136002-125.6c">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="template\mhavocpe.1bc">
+    </Content>
+    <Content Include="template\mhavocpe.1bc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="template\mhavocpe.1d">
+    </Content>
+    <Content Include="template\mhavocpe.1d">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="template\mhavocpe.1l">
+    </Content>
+    <Content Include="template\mhavocpe.1l">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="template\mhavocpe.1mn">
+    </Content>
+    <Content Include="template\mhavocpe.1mn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="template\mhavocpe.1np">
+    </Content>
+    <Content Include="template\mhavocpe.1np">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="template\mhavocpe.1q">
+    </Content>
+    <Content Include="template\mhavocpe.1q">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="template\mhavocpe.6h">
+    </Content>
+    <Content Include="template\mhavocpe.6h">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="template\mhavocpe.6jk">
+    </Content>
+    <Content Include="template\mhavocpe.6jk">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="template\mhavocpe.6kl">
+    </Content>
+    <Content Include="template\mhavocpe.6kl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="template\mhavocpe.9s">
+    </Content>
+    <Content Include="template\mhavocpe.9s">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
+    <Content Include="template\mhavocpe.x1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.ico">

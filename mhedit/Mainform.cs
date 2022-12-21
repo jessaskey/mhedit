@@ -1024,6 +1024,10 @@ namespace mhedit
                     // Now that we have a Maze in a MazeCollection we can build a ROM set to preview from.
                     if (MAMEHelper.SaveROM(mazeCollectionController.MazeCollection, mazeController.Maze))
                     {
+                        if (Properties.Settings.Default.MamePause)
+                        {
+                            MessageBox.Show("Pause between writing files and launching HBMAME. Yay!","Paused");
+                        }
                         //now launch MAME for mhavoc..
                         string mameExe =
                             Path.GetFullPath(Properties.Settings.Default.MameExecutable);
@@ -1096,7 +1100,11 @@ namespace mhedit
                         string errorResult = p.StandardError.ReadToEnd();
                         if (!String.IsNullOrEmpty(errorResult))
                         {
-                            MessageBox.Show(errorResult, "MAME Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            DialogMessages dm = new DialogMessages();
+                            dm.Text = "MAME Error";
+                            dm.SetMessage(errorResult);
+                            dm.ShowDialog();
+                            //MessageBox.Show(errorResult, "MAME Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }

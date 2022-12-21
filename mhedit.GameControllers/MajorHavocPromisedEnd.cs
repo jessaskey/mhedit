@@ -74,30 +74,32 @@ namespace mhedit.GameControllers
                 }
 
                 Version romVersion = GetROMVersion();
-                if (romVersion.Major >= 0)
+                decimal versionDecimal = (decimal)(romVersion.Major + (romVersion.Minor / 100.0));
+                if (versionDecimal >= 0.22m)
                 {
-                    if (romVersion.Minor >= 0x22)
+                    //load our exports
+                    string exportFile = Path.Combine(sourceRomPath, "mhavocpe.exp");
+                    if (File.Exists(exportFile))
                     {
-                        //load our exports
-                        string exportFile = Path.Combine(sourceRomPath, "mhavocpe.exp");
-                        if (File.Exists(exportFile))
+                        string[] exportLines = File.ReadAllLines(exportFile);
+                        foreach (string exportLine in exportLines)
                         {
-                            string[] exportLines = File.ReadAllLines(exportFile);
-                            foreach (string exportLine in exportLines)
+                            string[] def = exportLine.Replace(" ", "").Replace("\t", "").Replace(".EQU", "|").Split('|');
+                            if (def.Length == 2)
                             {
-                                string[] def = exportLine.Replace(" ", "").Replace("\t", "").Replace(".EQU", "|").Split('|');
-                                if (def.Length == 2)
-                                {
-                                    int value = int.Parse(def[1].Replace("$", ""), System.Globalization.NumberStyles.HexNumber);
-                                    _exports.Add(def[0], (ushort)value);
-                                }
+                                int value = int.Parse(def[1].Replace("$", ""), System.Globalization.NumberStyles.HexNumber);
+                                _exports.Add(def[0], (ushort)value);
                             }
                         }
                     }
                     else
                     {
-                        throw new Exception("ROM Version has to be 0.22 or higher.");
+                        throw new Exception("Export file not found: " + exportFile);
                     }
+                }
+                else
+                {
+                    throw new Exception("ROM Version has to be 0.22 or higher.");
                 }
                 success = true;
             }
@@ -912,7 +914,7 @@ namespace mhedit.GameControllers
             WriteAlphaHigh(alphaHighCsumAddress, (byte)(currentMajorVersion[0] | 0xE0));
         }
 
-        public bool WriteFiles(string destinationPath, string driverName)
+        public bool WriteFiles(string destinationPath, string driverName, string prefixOverride)
         {
             bool success = false;
             try
@@ -926,8 +928,13 @@ namespace mhedit.GameControllers
                 MarkPagedROM(7);
                 MarkAlphaHighROM();
 
-                string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM.Replace("mhavocpe", driverName) );
-                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM.Replace("mhavocpe", driverName) );
+                if (String.IsNullOrEmpty(prefixOverride))
+                {
+                    prefixOverride = driverName;
+                }
+
+                string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM.Replace("mhavocpe.", prefixOverride + ".") );
+                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM.Replace("mhavocpe.", prefixOverride + ".") );
 
                 //save each
                 File.WriteAllBytes(page67FileNameMame, _page2367);
@@ -943,12 +950,14 @@ namespace mhedit.GameControllers
                 otherROMs.Add("mhavocpe.9s");
                 otherROMs.Add("mhavocpe.1bc");
                 otherROMs.Add("mhavocpe.1d");
+                otherROMs.Add("mhavocpe.x1");
                 //otherROMs.Add("036408-01.b1");
                 otherROMs.Add("136002-125.6c");
 
                 foreach (string rom in otherROMs)
                 {
-                    File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, rom.Replace("mhavocpe", driverName)), true);
+                    string targetROM = rom.Replace("mhavocpe.", prefixOverride + ".");
+                    File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, targetROM), true);
                 }
                 success = true;
             }

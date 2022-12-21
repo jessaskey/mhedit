@@ -17,6 +17,11 @@ namespace mhedit
             InitializeComponent();
         }
 
+        public void SetMessage(string message)
+        {
+            textBoxMessages.Text = message;
+        }
+
         public void SetMessages(List<string> messages)
         {
             textBoxMessages.Text = String.Join("\r\n", messages.ToArray());

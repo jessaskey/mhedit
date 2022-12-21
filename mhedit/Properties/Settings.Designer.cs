@@ -25,7 +25,7 @@ namespace mhedit.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("c:\\hbmame\\hbmame64.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("c:\\hbmame\\hbmame.exe")]
         public string MameExecutable {
             get {
                 return ((string)(this["MameExecutable"]));
@@ -37,7 +37,7 @@ namespace mhedit.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("mhavocpex")]
+        [global::System.Configuration.DefaultSettingValueAttribute("mhavocpe")]
         public string MameDriver {
             get {
                 return ((string)(this["MameDriver"]));
@@ -200,6 +200,30 @@ namespace mhedit.Properties {
             }
             set {
                 this["LastExportLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MameDriverFilePrefixOverride {
+            get {
+                return ((string)(this["MameDriverFilePrefixOverride"]));
+            }
+            set {
+                this["MameDriverFilePrefixOverride"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MamePause {
+            get {
+                return ((bool)(this["MamePause"]));
+            }
+            set {
+                this["MamePause"] = value;
             }
         }
     }

@@ -37,6 +37,7 @@
             this.textBoxMessages.Location = new System.Drawing.Point(0, 0);
             this.textBoxMessages.Multiline = true;
             this.textBoxMessages.Name = "textBoxMessages";
+            this.textBoxMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxMessages.Size = new System.Drawing.Size(616, 261);
             this.textBoxMessages.TabIndex = 0;
             // 

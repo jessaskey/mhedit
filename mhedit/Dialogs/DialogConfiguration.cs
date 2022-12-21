@@ -18,12 +18,14 @@ namespace mhedit
         {
             InitializeComponent();
             textBoxMameDriver.Text = Properties.Settings.Default.MameDriver;
+            textBoxFilePrefixOverride.Text = Properties.Settings.Default.MameDriverFilePrefixOverride;
             textBoxMameExecutable.Text = Properties.Settings.Default.MameExecutable;
             //textBoxUsername.Text = Properties.Settings.Default.MHPUsername;
             //textBoxPassword.Text = Properties.Settings.Default.MHPPassword;
             checkBoxDebug.Checked = Properties.Settings.Default.MameDebug;
             checkBoxShowGridCoordinateReferences.Checked = Properties.Settings.Default.ShowGridReferences;
             checkBoxMAMEWindow.Checked = Properties.Settings.Default.MameWindow;
+            checkBoxMAMEPause.Checked = Properties.Settings.Default.MamePause;
             textBoxMameCommandLineOptions.Text = Properties.Settings.Default.MameCommandLineOptions;
 
             //locations
@@ -39,12 +41,14 @@ namespace mhedit
         {
             //save values back
             Properties.Settings.Default.MameDriver = textBoxMameDriver.Text;
+            Properties.Settings.Default.MameDriverFilePrefixOverride = textBoxFilePrefixOverride.Text;
             Properties.Settings.Default.MameExecutable = textBoxMameExecutable.Text;
             //Properties.Settings.Default.MHPUsername = textBoxUsername.Text;
             //Properties.Settings.Default.MHPPassword = textBoxPassword.Text;
             Properties.Settings.Default.MameDebug = checkBoxDebug.Checked;
             Properties.Settings.Default.ShowGridReferences = checkBoxShowGridCoordinateReferences.Checked;
             Properties.Settings.Default.MameWindow = checkBoxMAMEWindow.Checked;
+            Properties.Settings.Default.MamePause = checkBoxMAMEPause.Checked;
             Properties.Settings.Default.MameCommandLineOptions = textBoxMameCommandLineOptions.Text;
 
             //locations

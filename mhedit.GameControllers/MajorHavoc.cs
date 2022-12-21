@@ -961,7 +961,7 @@ namespace mhedit.GameControllers
 
 
 
-        public bool WriteFiles(string mamePath, string driverName)
+        public bool WriteFiles(string destinationPath, string driverName, string prefixOverride)
         {
 
             //fix csums...
@@ -977,9 +977,9 @@ namespace mhedit.GameControllers
             //String hash = String.Empty;
             //foreach (byte b in crc32.ComputeHash(_alphaHigh)) hash += b.ToString("x2").ToLower();
 
-            string alphaHighFileNameMame = mamePath + _alphaHighROM;
-            string alphaLowFileNameMame = mamePath + _alphaLowROM;
-            string page01FileNameMame = mamePath + _page01ROM;
+            string alphaHighFileNameMame = destinationPath + _alphaHighROM;
+            string alphaLowFileNameMame = destinationPath + _alphaLowROM;
+            string page01FileNameMame = destinationPath + _page01ROM;
 
             //save each
             File.WriteAllBytes(alphaHighFileNameMame, _alphaHigh);
@@ -994,9 +994,15 @@ namespace mhedit.GameControllers
             otherROMs.Add("136025.210");
             otherROMs.Add("136025.318");
 
+            if (String.IsNullOrEmpty(prefixOverride))
+            {
+                prefixOverride = driverName;
+            }
+
             foreach (string rom in otherROMs)
             {
-                File.Copy(_sourceRomPath + rom, mamePath + rom, true);
+                string targetROM = rom.Replace("mhavocpe.", prefixOverride + ".");
+                File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, targetROM), true);
             }
 
             return true;
