@@ -49,16 +49,16 @@ namespace MajorHavocEditor.Views
 
             this._windowManager = windowManager;
 
-            //// Must occur before setting up ItemSource!
-            //this.treeView.ImageList = IconList;
+            // Must occur before setting up ItemSource!
+            this.treeView.ImageList = IconList;
 
-            //this.treeView.ItemsSource = gameManager.GameObjects;
-            //this.treeView.ItemsDelegate = new GameExplorerItemsSourceDelegate();
-            //this.treeView.SelectedItems = gameManager.SelectedObjects;
+            this.treeView.ItemsSource = gameManager.GameObjects;
+            this.treeView.ItemsDelegate = new GameExplorerItemsSourceDelegate();
+            this.treeView.SelectedItems = gameManager.SelectedObjects;
 
-            //this.treeView.ContextMenuStrip = (ContextMenuStrip) this._contextMenuManager.Menu;
+            this.treeView.ContextMenuStrip = (ContextMenuStrip) this._contextMenuManager.Menu;
 
-            //this.treeView.MouseDoubleClick += this.OnTreeViewMouseDoubleClick;
+            this.treeView.MouseDoubleClick += this.OnTreeViewMouseDoubleClick;
 
             MenuItem addMenuItem =
                 new MenuItem("GameExplorer_Add")

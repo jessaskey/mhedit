@@ -6,7 +6,7 @@
         <UseWindowsForms>true</UseWindowsForms>
         <LangVersion>latest</LangVersion>
         <ApplicationIcon>app2.ico</ApplicationIcon>
-        <AssemblyName>mhedit</AssemblyName>
+        <AssemblyName>MajorHavocEditor</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
