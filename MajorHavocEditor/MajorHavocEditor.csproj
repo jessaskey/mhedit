@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Resources\Images\Menu\delete.png" />
       <None Remove="Template\mhavocpe.x1" />
     </ItemGroup>
 
@@ -34,7 +35,7 @@
         <EmbeddedResource Include="Resources\Images\Menu\Configuration.png" />
         <EmbeddedResource Include="Resources\Images\Menu\Copy_6524_24.bmp" />
         <EmbeddedResource Include="Resources\Images\Menu\Cut_6523_24.bmp" />
-        <EmbeddedResource Include="Resources\Images\Menu\delete.ico" />
+        <EmbeddedResource Include="Resources\Images\Menu\delete.png" />
         <EmbeddedResource Include="Resources\Images\Menu\hbmame_32.png" />
         <EmbeddedResource Include="Resources\Images\Menu\HomeHS.png" />
         <EmbeddedResource Include="Resources\Images\Menu\Information.bmp" />
