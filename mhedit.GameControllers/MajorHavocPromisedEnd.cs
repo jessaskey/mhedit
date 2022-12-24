@@ -22,8 +22,8 @@ namespace mhedit.GameControllers
         private byte[] _page2367 = new byte[0x8000];
         private byte[] _alphaHigh = new byte[0x4000];
         private Dictionary<string, ushort> _exports = new Dictionary<string, ushort>();
-        private string _page2367ROM = "mhavocpe.1np";
-        private string _alphaHighROM = "mhavocpe.1l";
+        private string _page2367ROM = "mhpe100.1np";
+        private string _alphaHighROM = "mhpe100.1l";
         private string _lastError = String.Empty;
         private readonly string _name;
 
@@ -83,30 +83,29 @@ namespace mhedit.GameControllers
                 }
 
                 Version romVersion = GetROMVersion();
-                if (romVersion.Major >= 0)
+                decimal romVersionNumber = (decimal)(romVersion.Major + (romVersion.Minor / 100.0));
+
+                if (romVersionNumber >= 0.22m)
                 {
-                    if (romVersion.Minor >= 0x22)
+                    //load our exports
+                    string exportFile = Path.Combine(sourceRomPath, "mhpe100.exp");
+                    if (File.Exists(exportFile))
                     {
-                        //load our exports
-                        string exportFile = Path.Combine(sourceRomPath, "mhavocpe.exp");
-                        if (File.Exists(exportFile))
+                        string[] exportLines = File.ReadAllLines(exportFile);
+                        foreach (string exportLine in exportLines)
                         {
-                            string[] exportLines = File.ReadAllLines(exportFile);
-                            foreach (string exportLine in exportLines)
+                            string[] def = exportLine.Replace(" ", "").Replace("\t", "").Replace(".EQU", "|").Split('|');
+                            if (def.Length == 2)
                             {
-                                string[] def = exportLine.Replace(" ", "").Replace("\t", "").Replace(".EQU", "|").Split('|');
-                                if (def.Length == 2)
-                                {
-                                    int value = int.Parse(def[1].Replace("$", ""), System.Globalization.NumberStyles.HexNumber);
-                                    _exports.Add(def[0], (ushort)value);
-                                }
+                                int value = int.Parse(def[1].Replace("$", ""), System.Globalization.NumberStyles.HexNumber);
+                                _exports.Add(def[0], (ushort)value);
                             }
                         }
                     }
-                    else
-                    {
-                        throw new Exception("ROM Version has to be 0.22 or higher.");
-                    }
+                }
+                else
+                {
+                    throw new Exception("ROM Version has to be 0.22 or higher.");
                 }
                 success = true;
             }
@@ -935,8 +934,8 @@ namespace mhedit.GameControllers
                 MarkPagedROM(7);
                 MarkAlphaHighROM();
 
-                string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM.Replace("mhavocpe", driverName) );
-                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM.Replace("mhavocpe", driverName) );
+                string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM.Replace("mhpe100", driverName) );
+                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM.Replace("mhpe100", driverName) );
 
                 //save each
                 File.WriteAllBytes(page67FileNameMame, _page2367);
@@ -944,20 +943,21 @@ namespace mhedit.GameControllers
 
                 //copy others 
                 List<string> otherROMs = new List<string>();
-                otherROMs.Add("mhavocpe.1mn");
-                otherROMs.Add("mhavocpe.1q");
-                otherROMs.Add("mhavocpe.6kl");
-                otherROMs.Add("mhavocpe.6h");
-                otherROMs.Add("mhavocpe.6jk");
-                otherROMs.Add("mhavocpe.9s");
-                otherROMs.Add("mhavocpe.1bc");
-                otherROMs.Add("mhavocpe.1d");
+                otherROMs.Add("mhpe100.1mn");
+                otherROMs.Add("mhpe100.1q");
+                otherROMs.Add("mhpe100.6kl");
+                otherROMs.Add("mhpe100.6h");
+                otherROMs.Add("mhpe100.6jk");
+                otherROMs.Add("mhpe100.9s");
+                otherROMs.Add("mhpe100.1bc");
+                otherROMs.Add("mhpe100.1d");
+                otherROMs.Add("mhpe089.x1");
                 //otherROMs.Add("036408-01.b1");
                 otherROMs.Add("136002-125.6c");
 
                 foreach (string rom in otherROMs)
                 {
-                    File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, rom.Replace("mhavocpe", driverName)), true);
+                    File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, rom.Replace("mhpe100", driverName)), true);
                 }
                 success = true;
             }
