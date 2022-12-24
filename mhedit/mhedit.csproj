@@ -333,44 +333,38 @@
     <Content Include="images\toolbarbuttons\login.png" />
     <Content Include="images\toolbarbuttons\rom.png" />
     <Content Include="images\toolbarbuttons\script-binary-icon.png" />
-    <Content Include="template\mhavocpe.exp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="template\136002-125.6c">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="template\mhavocpe.1bc">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="template\mhpe100.1l">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="template\mhavocpe.1d">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="template\mhpe100.1mn">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="template\mhavocpe.1l">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="template\mhpe100.1np">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="template\mhavocpe.1mn">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="template\mhpe100.1q">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="template\mhavocpe.1np">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="template\mhpe100.6h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="template\mhavocpe.1q">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="template\mhpe100.6jk">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="template\mhavocpe.6h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="template\mhpe100.6kl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="template\mhavocpe.6jk">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="template\mhpe100.9s">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="template\mhavocpe.6kl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="template\mhpe100.exp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="template\mhavocpe.9s">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="template\mhavocpe.x1">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="template\mhpex089.x1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>

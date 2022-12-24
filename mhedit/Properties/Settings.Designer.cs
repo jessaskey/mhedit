@@ -202,29 +202,5 @@ namespace mhedit.Properties {
                 this["LastExportLocation"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string MameDriverFilePrefixOverride {
-            get {
-                return ((string)(this["MameDriverFilePrefixOverride"]));
-            }
-            set {
-                this["MameDriverFilePrefixOverride"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool MamePause {
-            get {
-                return ((bool)(this["MamePause"]));
-            }
-            set {
-                this["MamePause"] = value;
-            }
-        }
     }
 }

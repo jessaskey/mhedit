@@ -22,8 +22,8 @@ namespace mhedit.GameControllers
         private byte[] _page2367 = new byte[0x8000];
         private byte[] _alphaHigh = new byte[0x4000];
         private Dictionary<string, ushort> _exports = new Dictionary<string, ushort>();
-        private string _page2367ROM = "mhavocpe.1np";
-        private string _alphaHighROM = "mhavocpe.1l";
+        private string _page2367ROM = "mhpe100.1np";
+        private string _alphaHighROM = "mhpe100.1l";
         private string _lastError = String.Empty;
         private readonly string _name;
 
@@ -78,7 +78,7 @@ namespace mhedit.GameControllers
                 if (versionDecimal >= 0.22m)
                 {
                     //load our exports
-                    string exportFile = Path.Combine(sourceRomPath, "mhavocpe.exp");
+                    string exportFile = Path.Combine(sourceRomPath, "mhpe100.exp");
                     if (File.Exists(exportFile))
                     {
                         string[] exportLines = File.ReadAllLines(exportFile);
@@ -914,7 +914,7 @@ namespace mhedit.GameControllers
             WriteAlphaHigh(alphaHighCsumAddress, (byte)(currentMajorVersion[0] | 0xE0));
         }
 
-        public bool WriteFiles(string destinationPath, string driverName, string prefixOverride)
+        public bool WriteFiles(string destinationPath, string driverName)
         {
             bool success = false;
             try
@@ -928,13 +928,8 @@ namespace mhedit.GameControllers
                 MarkPagedROM(7);
                 MarkAlphaHighROM();
 
-                if (String.IsNullOrEmpty(prefixOverride))
-                {
-                    prefixOverride = driverName;
-                }
-
-                string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM.Replace("mhavocpe.", prefixOverride + ".") );
-                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM.Replace("mhavocpe.", prefixOverride + ".") );
+                string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM);
+                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM);
 
                 //save each
                 File.WriteAllBytes(page67FileNameMame, _page2367);
@@ -942,22 +937,19 @@ namespace mhedit.GameControllers
 
                 //copy others 
                 List<string> otherROMs = new List<string>();
-                otherROMs.Add("mhavocpe.1mn");
-                otherROMs.Add("mhavocpe.1q");
-                otherROMs.Add("mhavocpe.6kl");
-                otherROMs.Add("mhavocpe.6h");
-                otherROMs.Add("mhavocpe.6jk");
-                otherROMs.Add("mhavocpe.9s");
-                otherROMs.Add("mhavocpe.1bc");
-                otherROMs.Add("mhavocpe.1d");
-                otherROMs.Add("mhavocpe.x1");
+                otherROMs.Add("mhpe100.1mn");
+                otherROMs.Add("mhpe100.1q");
+                otherROMs.Add("mhpe100.6kl");
+                otherROMs.Add("mhpe100.6h");
+                otherROMs.Add("mhpe100.6jk");
+                otherROMs.Add("mhpe100.9s");
+                otherROMs.Add("mhpex089.x1");
                 //otherROMs.Add("036408-01.b1");
                 otherROMs.Add("136002-125.6c");
 
                 foreach (string rom in otherROMs)
                 {
-                    string targetROM = rom.Replace("mhavocpe.", prefixOverride + ".");
-                    File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, targetROM), true);
+                    File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, rom), true);
                 }
                 success = true;
             }

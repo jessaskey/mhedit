@@ -961,7 +961,7 @@ namespace mhedit.GameControllers
 
 
 
-        public bool WriteFiles(string destinationPath, string driverName, string prefixOverride)
+        public bool WriteFiles(string destinationPath, string driverName)
         {
 
             //fix csums...
@@ -994,15 +994,9 @@ namespace mhedit.GameControllers
             otherROMs.Add("136025.210");
             otherROMs.Add("136025.318");
 
-            if (String.IsNullOrEmpty(prefixOverride))
-            {
-                prefixOverride = driverName;
-            }
-
             foreach (string rom in otherROMs)
             {
-                string targetROM = rom.Replace("mhavocpe.", prefixOverride + ".");
-                File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, targetROM), true);
+                File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, rom), true);
             }
 
             return true;
