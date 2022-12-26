@@ -99,23 +99,22 @@
             the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="M:mhedit.GameControllers.MajorHavocPromisedEnd.GetTextPosition(System.String)">
+        <member name="F:mhedit.DialogExport.components">
             <summary>
-            Returns a negative byte offset from center screen to get text centered
-            Assumes letters are 6 units wide
+            Required designer variable.
             </summary>
-            <param name="text">The text to use for calculations</param>
-            <returns>Signed byte value to center align text</returns>
         </member>
-        <member name="M:mhedit.GameControllers.MajorHavocPromisedEnd.EncodeObjects(mhedit.Containers.Maze,mhedit.GameControllers.MajorHavocPromisedEnd.EncodingGroup)">
+        <member name="M:mhedit.DialogExport.Dispose(System.Boolean)">
             <summary>
-            Used to encode individual maze object types, I had to abstract it so that it was easy to
-            pull out serialized data one type at a time so it was easy to get data from the designed mazes
-            into the source code of the main mhavocpe project.
+            Clean up any resources being used.
             </summary>
-            <param name="maze">The target maze</param>
-            <param name="group">The target group to encode</param>
-            <returns></returns>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:mhedit.DialogExport.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
         </member>
         <member name="T:mhedit.GameProfile">
             <summary>
@@ -170,68 +169,6 @@
             <summary>
             The main entry point for the application.
             </summary>
-        </member>
-        <member name="M:mhedit.Serialization.SerializationExtensions.Serialize``1(``0,System.String)">
-            <summary>
-            Serialize the object into the file using XML serialization.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="obj"></param>
-            <param name="fileName"></param>
-        </member>
-        <member name="M:mhedit.Serialization.SerializationExtensions.SerializeAndCompress``1(``0,System.String)">
-            <summary>
-            Serialize the object using XML serialization, compress the XML output,
-            and write the compressed XML to the provided file.
-            .
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="obj"></param>
-            <param name="fileName"></param>
-        </member>
-        <member name="M:mhedit.Serialization.SerializationExtensions.SerializeAndCompress``1(``0,System.IO.Stream)">
-            <summary>
-            Serialize the object using XML serialization, compress the XML output,
-            and write the compressed XML to the provided stream.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="obj"></param>
-            <param name="stream"></param>
-        </member>
-        <member name="M:mhedit.Serialization.SerializationExtensions.ExpandAndDeserialize``1(System.String)">
-            <summary>
-            Open the file, expand the contents into memory and deserialize the expanded
-            XML into the object specified by the type T. 
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="fileName"></param>
-            <returns></returns>
-        </member>
-        <member name="M:mhedit.Serialization.SerializationExtensions.FixMaxMazeObjectViolations(mhedit.Containers.Maze)">
-            <summary>
-            Another HACK: Check the Max Objects of each type and trim off the ones that
-            exceed the limit
-            </summary>
-            <param name="maze"></param>
-        </member>
-        <member name="M:mhedit.Serialization.SerializationExtensions.FixParentChildOnTripPads(mhedit.Containers.Maze)">
-            <summary>
-            HACK: Fixes orphaned TripPadPyroids do to Serialization process boo boo.
-            </summary>
-            <param name="maze"></param>
-        </member>
-        <member name="M:mhedit.Serialization.SerializationExtensions.OnUnknownElement(System.Object,System.Xml.Serialization.XmlElementEventArgs)">
-            <summary>
-            Convert properties that no longer exist on objects to their new format/property.
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
-        </member>
-        <member name="M:mhedit.Serialization.SerializationExtensions.TripPadPyroidUnknownElement(System.Xml.Serialization.XmlElementEventArgs)">
-            <summary>
-            Handle XML Property conversions for TripPadPyroids here.
-            </summary>
-            <param name="args"></param>
         </member>
         <member name="T:mhedit.SystemWindowsTabControl">
              <summary>
