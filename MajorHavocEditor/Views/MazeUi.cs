@@ -27,6 +27,7 @@ namespace MajorHavocEditor.Views
         private readonly IList<MazeObject> _selectedMazeObjects =
             new ObservableCollection<MazeObject>();
 
+        private CustomPanel _wrapper;
         public MazeUi( Maze maze )
         {
             this._maze = maze;
@@ -34,17 +35,15 @@ namespace MajorHavocEditor.Views
             InitializeComponent();
 
             // I need to wrap the maze controller to get scrollbars and fix a focus bug.
-            CustomPanel wrapper = new CustomPanel()
+            this._wrapper = new CustomPanel()
                                   {
                                       Anchor = AnchorStyles.Top | AnchorStyles.Left,
                                       Dock = DockStyle.Fill,
                                       BackColor = Color.Black,
-                                      AutoSize = true,
                                       AutoScroll = true,
-                                      AutoSizeMode = AutoSizeMode.GrowAndShrink,
                                   };
 
-            this.kryptonPanel.Controls.Add( wrapper );
+            this.kryptonPanel.Controls.Add( this._wrapper );
 
             this.Dock = DockStyle.Fill;
 
@@ -80,7 +79,7 @@ namespace MajorHavocEditor.Views
                     Dock = DockStyle.None,
                 };
 
-            wrapper.Controls.Add( mc );
+            this._wrapper.Controls.Add( mc );
 
             this._windowManager = new WindowManager(this.kryptonDockingManager);
 
@@ -124,6 +123,29 @@ namespace MajorHavocEditor.Views
             get { return null; }
         }
 
+        #endregion
+
+#region Overrides of Control
+
+        /// <inheritdoc />
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+
+            /// This will center the maze horizontally in the window.
+            /// It's going to do this every time the window is resized
+            /// At present I don't actually hate this so:
+            /// TODO: Keep this??
+            Control mc = this._wrapper.Controls[0];
+            this._wrapper.AutoScrollPosition =
+                new Point
+                {
+                    X = (mc.Width - this._wrapper.Width) / 2,
+                    Y = 0
+                    //Y = (mc.Height - this.wrapper.Height) / 2
+                };
+        }
+
 #endregion
 
 #region Overrides of UserControl
@@ -141,7 +163,7 @@ namespace MajorHavocEditor.Views
             this._windowManager.Show( this._propertyBrowser );
         }
 
-        #endregion
+#endregion
 
 #region Implementation of INotifyPropertyChanged
 
