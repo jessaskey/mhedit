@@ -35,6 +35,8 @@ namespace MajorHavocEditor.Views
         private void OnItemsCollectionChanged( object sender, NotifyCollectionChangedEventArgs e )
         {
             this.SelectedObjects = this._selectedItems.Cast<object>().ToArray();
+
+            this.ExpandAllGridItems();
         }
 
 #region Implementation of IUserInterface
