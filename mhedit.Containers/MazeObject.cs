@@ -48,7 +48,7 @@ namespace mhedit.Containers
 
         [BrowsableAttribute( true )]
         [DescriptionAttribute( "The name of this maze object." )]
-        public string Name
+        public virtual string Name
         {
             get { return name; }
             set { this.SetField( ref this.name, value ); }

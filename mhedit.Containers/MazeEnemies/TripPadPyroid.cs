@@ -29,6 +29,17 @@ namespace mhedit.Containers.MazeEnemies
                     new Point( 8, 32 ) )
         { }
 
+#region Overrides of MazeObject
+
+        /// <inheritdoc />
+        public override string Name
+        {
+            get { return base.Name; }
+            set {} // Name is implicit since it's assigned to a TripPad.
+        }
+
+#endregion
+
         /// <summary>
         /// This property is basically hidden but allows us to track the associated
         /// objects.
@@ -37,8 +48,23 @@ namespace mhedit.Containers.MazeEnemies
         [XmlIgnore]
         public TripPad TripPad
         {
-            get { return _tripPad; }
-            internal set { _tripPad = value; }
+            get { return this._tripPad; }
+            internal set
+            {
+                if (this._tripPad != null)
+                {
+                    this._tripPad.PropertyChanged -= this.TripPadPropertyChanged;
+                }
+
+                this._tripPad = value;
+
+                if (this._tripPad != null)
+                {
+                    base.Name = $"{value?.Name}Pyroid";
+
+                    this._tripPad.PropertyChanged += this.TripPadPropertyChanged;
+                }
+            }
         }
 
         [BrowsableAttribute( false )]
@@ -128,6 +154,14 @@ namespace mhedit.Containers.MazeEnemies
         public override byte[] ToBytes(object obj)
         {
             return ToBytes();
+        }
+
+        private void TripPadPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(this.Name))
+            {
+                base.Name = $"{this.TripPad?.Name}Pyroid";
+            }
         }
 
         private class ImageFactory
