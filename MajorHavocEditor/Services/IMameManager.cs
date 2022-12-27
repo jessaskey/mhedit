@@ -131,13 +131,6 @@ namespace MajorHavocEditor.Services
 
             if ( collection != null && maze != null )
             {
-                string mamePath =
-                    Path.GetDirectoryName( Properties.Settings.Default.MameExecutable ) +
-                    "\\roms\\" + Properties.Settings.Default.MameDriver + "\\";
-
-                string templatePath = Path.GetDirectoryName( Application.ExecutablePath ) +
-                                      "\\template\\";
-
                 if ( !File.Exists( Properties.Settings.Default.MameExecutable ) )
                 {
                     MessageBox.Show( "MAME Executable not found. Check path in Preferences",
@@ -146,12 +139,19 @@ namespace MajorHavocEditor.Services
                     return false;
                 }
 
-                if ( !Directory.Exists( mamePath ) )
+                // Path.Combine is WONKY!
+                // https://stackoverflow.com/a/53118
+                string mameRomPath = Path.Combine(
+                    Path.GetDirectoryName(Properties.Settings.Default.MameExecutable),
+                    "roms",
+                    Properties.Settings.Default.MameDriver);
+
+                if ( !Directory.Exists( mameRomPath ) )
                 {
-                    Directory.CreateDirectory( mamePath );
+                    Directory.CreateDirectory( mameRomPath );
                 }
 
-                string backupPath = mamePath + "\\_backup\\";
+                string backupPath = Path.Combine( mameRomPath + @"\_backup" );
 
                 //delete the current backup folder so we can make a fresh copy
                 if ( Directory.Exists( backupPath ) )
@@ -159,14 +159,12 @@ namespace MajorHavocEditor.Services
                     Directory.Delete( backupPath, true );
                 }
 
-                if ( !Directory.Exists( backupPath ) )
-                {
-                    Directory.CreateDirectory( backupPath );
-                }
+                Directory.CreateDirectory( backupPath );
 
-                if ( File.Exists(
-                    Path.GetDirectoryName( Properties.Settings.Default.MameExecutable ) +
-                    "\\roms\\" + Properties.Settings.Default.MameDriver + ".zip" ) )
+                if ( File.Exists( Path.Combine(
+                    Path.GetDirectoryName( Properties.Settings.Default.MameExecutable ),
+                    "roms",
+                    $"{Properties.Settings.Default.MameDriver}.zip" ) ) )
                 {
                     MessageBox.Show(
                         "The MAME driver you have specified is using a zipped ROM archive. The level editor does not support zipped ROM's. Please extract your '" +
@@ -179,16 +177,20 @@ namespace MajorHavocEditor.Services
                     return false;
                 }
 
-                foreach ( string file in Directory.GetFiles( mamePath ) )
+                //copy each file here into _backup folder
+                foreach (string file in
+                    Directory.EnumerateFiles(mameRomPath, "*.*", SearchOption.TopDirectoryOnly))
                 {
-                    //copy each file here into _backup folder
-                    File.Copy( file, backupPath + Path.GetFileName( file ), true );
+                    File.Copy(file, Path.Combine(backupPath, Path.GetFileName(file)), true);
                 }
 
                 IValidationResult validationResult = maze.Validate();
 
                 if ( validationResult.Level < ValidationLevel.Error )
                 {
+                    string templatePath = Path.Combine(
+                        Path.GetDirectoryName(Application.ExecutablePath), "template");
+
                     //we will always serialize to target 'The Promised End' here in this editor.
                     IGameController controller = new MajorHavocPromisedEnd();
                     bool loadSuccess = controller.LoadTemplate( templatePath );
@@ -252,16 +254,19 @@ namespace MajorHavocEditor.Services
                     }
                 }
             }
-
+            
             //put back the ROM's from backup
-            string mamePath = Path.GetDirectoryName( Properties.Settings.Default.MameExecutable ) +
-                              "\\roms\\" + Properties.Settings.Default.MameDriver + "\\";
+            string mamePath = Path.Combine(
+                Path.GetDirectoryName(Properties.Settings.Default.MameExecutable),
+                "roms",
+                Properties.Settings.Default.MameDriver);
 
-            string backupPath = mamePath + "_backup\\";
+            string backupPath = Path.Combine(mamePath + @"\_backup");
 
-            foreach ( string file in Directory.GetFiles( backupPath ) )
+            foreach (string file in
+                Directory.EnumerateFiles(backupPath, "*.*", SearchOption.TopDirectoryOnly))
             {
-                File.Copy( file, mamePath + Path.GetFileName( file ), true );
+                File.Copy(file, Path.Combine(mamePath, Path.GetFileName(file)), true);
             }
         }
     }
