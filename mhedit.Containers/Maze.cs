@@ -386,14 +386,12 @@ namespace mhedit.Containers
         public bool AddObject(object obj)
         {
             bool wasAdded = false;
-            MazeObject mazeObject = obj as MazeObject;
 
-            if (mazeObject != null)
+            if (obj is MazeObject mazeObject)
             {
                 if (((MazeObject)obj).MaxObjects > GetObjectTypeCount(obj.GetType()))
                 {
-                    MazeWall wall = obj as MazeWall;
-                    if (wall != null)
+                    if (obj is MazeWall wall)
                     {
                         wall.Name = NameFactory.Create( obj.GetType().Name );
                         wall.Position = wall.GetAdjustedPosition( wall.Position);

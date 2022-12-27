@@ -74,10 +74,10 @@ namespace MajorHavocEditor.Views
             {
                 foreach ( string filename in (IEnumerable<string>) fileList )
                 {
-                    var i = ResourceLoader.GetEmbeddedImage(
-                            Path.Combine(path, filename)
-                                .CreateResourceUri(assembly));
-                    imageList.Images.Add(i);
+                    imageList.Images.Add(
+                        ResourceLoader.GetEmbeddedImage(
+                            Path.Combine( path, filename )
+                                .CreateResourceUri( assembly ) ) );
                 }
             }
             else
@@ -85,9 +85,10 @@ namespace MajorHavocEditor.Views
                 foreach ( (string Key, string FileName) kvt in
                     (IEnumerable<(string Key, string FileName)>) config[ KeyValueTuples ] )
                 {
-                    var uri = Path.Combine(path, kvt.FileName).CreateResourceUri(assembly);
-                    var i = ResourceLoader.GetEmbeddedImage(uri);
-                    imageList.Images.Add( kvt.Key,i);
+                    imageList.Images.Add( kvt.Key,
+                        ResourceLoader.GetEmbeddedImage(
+                            Path.Combine( path, kvt.FileName )
+                                .CreateResourceUri( assembly ) ) );
                 }
             }
 
