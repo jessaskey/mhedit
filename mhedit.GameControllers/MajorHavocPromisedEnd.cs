@@ -19,9 +19,9 @@ namespace mhedit.GameControllers
 
         private string _sourceRomPath = String.Empty;
         //private string _mamePath = String.Empty;
-        private byte[] _page2367 = new byte[0x8000];
+        private Rom _page2367;
         private byte[] _alphaHigh = new byte[0x4000];
-        private Dictionary<string, ushort> _exports = new Dictionary<string, ushort>();
+        private ExportsFile _exports;
         private string _page2367ROM = "mhpe100.1np";
         private string _alphaHighROM = "mhpe100.1l";
         private string _lastError = String.Empty;
@@ -37,6 +37,13 @@ namespace mhedit.GameControllers
         public MajorHavocPromisedEnd( string name )
         {
             this._name = name;
+        }
+
+        public MajorHavocPromisedEnd( Rom rom, ExportsFile exports )
+        {
+            this._page2367 = rom;
+
+            this._exports = exports;
         }
 
         public string Name
@@ -68,51 +75,43 @@ namespace mhedit.GameControllers
         public bool LoadTemplate(string sourceRomPath)
         {
             bool success = false;
+
             try
             {
                 _sourceRomPath = sourceRomPath;
+
                 //load up our roms for now...
                 try
                 {
-                    _page2367 = File.ReadAllBytes(Path.Combine(sourceRomPath, _page2367ROM));
-                    _alphaHigh = File.ReadAllBytes(Path.Combine(sourceRomPath, _alphaHighROM));
+                    _page2367 = new Rom( 0x8000, sourceRomPath );
+                    _page2367.Load();
+                    _alphaHigh = File.ReadAllBytes( Path.Combine( sourceRomPath, _alphaHighROM ) );
                 }
-                catch (Exception Exception)
+                catch ( Exception Exception )
                 {
-                    throw new Exception("ROM Load Error - Page6/7: " + Exception.Message);
+                    throw new Exception( "ROM Load Error - Page6/7: " + Exception.Message );
                 }
 
                 Version romVersion = GetROMVersion();
-                decimal romVersionNumber = (decimal)(romVersion.Major + (romVersion.Minor / 100.0));
-
-                if (romVersionNumber >= 0.22m)
+                if ( romVersion.CompareTo( new Version( 0, 22 ) ) >= 0 )
                 {
                     //load our exports
-                    string exportFile = Path.Combine(sourceRomPath, "mhpe100.exp");
-                    if (File.Exists(exportFile))
-                    {
-                        string[] exportLines = File.ReadAllLines(exportFile);
-                        foreach (string exportLine in exportLines)
-                        {
-                            string[] def = exportLine.Replace(" ", "").Replace("\t", "").Replace(".EQU", "|").Split('|');
-                            if (def.Length == 2)
-                            {
-                                int value = int.Parse(def[1].Replace("$", ""), System.Globalization.NumberStyles.HexNumber);
-                                _exports.Add(def[0], (ushort)value);
-                            }
-                        }
-                    }
+                    this._exports = new ExportsFile( sourceRomPath );
+
+                    this._exports.Load();
                 }
                 else
                 {
-                    throw new Exception("ROM Version has to be 0.22 or higher.");
+                    throw new Exception( "ROM Version has to be 0.22 or higher." );
                 }
+
                 success = true;
             }
-            catch (Exception ex)
+            catch ( Exception ex )
             {
                 _lastError = ex.Message;
             }
+
             return success;
         }
 
@@ -774,12 +773,6 @@ namespace mhedit.GameControllers
             return offset;
         }
 
-        public byte ReadByte(ushort address, int offset)
-        {
-            //throw new Exception("Not implemented.");
-            return 0;
-        }
-
         public byte[] GetBytesFromString(string text)
         {
             text = text.ToUpper();
@@ -801,34 +794,9 @@ namespace mhedit.GameControllers
             return bytes.ToArray();
         }
 
-
-        public ushort GetAddress(string label)
-        {
-            //search the export list for this address...
-            if (_exports.ContainsKey(label.ToLower()))
-            {
-                return _exports[label];
-            }
-            else
-            {
-                throw new Exception("Address not found: " + label.ToString());
-            }
-        }
-
         private byte[] ReadPagedROM(ushort address, int offset, int length, int page)
         {
-            byte[] bytes = new byte[length];
-            int page67Base = 0x4000; //since addresses come in with a base of 0x2000 already, we just need to add this amount
-            if (page == 7) page67Base = 0x6000;
-
-            if (address >= 0x2000 && address <= 0x3fff)
-            {
-                for (int i = 0; i < length; i++)
-                {
-                    bytes[i] = _page2367[page67Base - 0x2000 + address + i + offset];
-                }
-            }
-            return bytes;
+            return this._page2367.ReadPagedROM( address, offset, length, page );
         }
 
         private byte[] ReadAlphaHigh(ushort address, int length)
@@ -845,10 +813,11 @@ namespace mhedit.GameControllers
             }
             return bytes;
         }
+        
+        private static readonly ushort alphaHighBase = 0xc000;
 
         private int WriteAlphaHigh(ushort address, byte data)
         {
-            ushort alphaHighBase = 0xc000;
             address -= alphaHighBase;
             _alphaHigh[address] = data;
             return 1;
@@ -857,17 +826,7 @@ namespace mhedit.GameControllers
 
         private int WritePagedROM(ushort address, byte[] bytes, int offset, int page)
         {
-            int page67Base = 0x4000;
-            if (page == 7) page67Base = 0x6000;
-
-            if (address >= 0x2000 && address <= 0x3fff)
-            {
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    _page2367[page67Base + address - 0x2000 + i + offset] = bytes[i];
-                }
-            }
-            return bytes.Length;
+           return this._page2367.WritePagedROM( address, bytes, offset, page );
         }
 
         private byte[] WordToByteArray(int word)
@@ -885,26 +844,31 @@ namespace mhedit.GameControllers
 
         private void WritePagedChecksum(int lowerBounds, int length, int page, byte csum)
         {
-            byte calculatedCsum = 0;
-            for (int i = lowerBounds; i < (lowerBounds + length - 1); i++)
-            {
-                calculatedCsum += _page2367[i];
-            }
+            byte calculatedCsum = _page2367.CalculateChecksum(
+                lowerBounds, length - 1, page );
+
             //ROM needs to equal csum when it is all said and done
-            byte finalCsum = (byte)((csum - calculatedCsum) & 0xff);
+            byte finalCsum = (byte)((csum ^ calculatedCsum) & 0xff);
+
             WritePagedROM((ushort)(0x2000 + length - 1), new byte[] { finalCsum }, 0, page);
         }
 
-        private void WriteAlphaHighChecksum(int lowerBounds, int length, byte csum)
+        private void WriteAlphaHighChecksum()
         {
+            ushort csumAddress = (ushort) ( _exports[ "chka2" ] - alphaHighBase );
             byte calculatedCsum = 0;
-            for (int i = lowerBounds; i < (lowerBounds + length - 1); i++)
+
+            for ( int i = 0x0000; i < 0x4000; i++ )
             {
-                calculatedCsum += _alphaHigh[i];
+                if ( i == csumAddress )
+                    continue;
+
+                calculatedCsum ^= _alphaHigh[ i ];
             }
+
             //ROM needs to equal csum when it is all said and done
-            byte finalCsum = (byte)((csum - calculatedCsum) & 0xff);
-            WriteAlphaHigh((ushort)(_exports["chka2"]), finalCsum );
+            byte finalCsum = (byte) ( ( 0x01 ^ calculatedCsum ) & 0xff );
+            _alphaHigh[ csumAddress ] = finalCsum;
         }
 
         private void MarkPagedROM(int page)
@@ -925,20 +889,20 @@ namespace mhedit.GameControllers
             bool success = false;
             try
             {
-                //fix csums...
-                WritePagedChecksum(0x4000, 0x2000, 6, 0x08);
-                WritePagedChecksum(0x6000, 0x2000, 7, 0x09);
-                WriteAlphaHighChecksum(0x0000, 0x4000, 0x01);
-
                 MarkPagedROM(6);
                 MarkPagedROM(7);
                 MarkAlphaHighROM();
 
-                string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM.Replace("mhpe100", driverName) );
-                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM.Replace("mhpe100", driverName) );
+                //fix csums...
+                WritePagedChecksum(0x4000, 0x2000, 6, 0x08);
+                WritePagedChecksum(0x6000, 0x2000, 7, 0x09);
+                WriteAlphaHighChecksum();
+
+                string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM );
+                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM );
 
                 //save each
-                File.WriteAllBytes(page67FileNameMame, _page2367);
+                File.WriteAllBytes(page67FileNameMame, _page2367.GetBuffer());
                 File.WriteAllBytes(alphaHighFileNameMane, _alphaHigh);
 
                 //copy others 
@@ -949,15 +913,12 @@ namespace mhedit.GameControllers
                 otherROMs.Add("mhpe100.6h");
                 otherROMs.Add("mhpe100.6jk");
                 otherROMs.Add("mhpe100.9s");
-                otherROMs.Add("mhpe100.1bc");
-                otherROMs.Add("mhpe100.1d");
-                otherROMs.Add("mhpe089.x1");
-                //otherROMs.Add("036408-01.b1");
                 otherROMs.Add("136002-125.6c");
+                otherROMs.Add("mhpex089.x1");
 
                 foreach (string rom in otherROMs)
                 {
-                    File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, rom.Replace("mhpe100", driverName)), true);
+                    File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, rom), true);
                 }
                 success = true;
             }
@@ -970,19 +931,17 @@ namespace mhedit.GameControllers
 
         public byte ReadByte(ushort address, int offset, int page)
         {
-            return ReadPagedROM(address, offset, 1, page)[0];
+            return this._page2367.ReadByte(address, offset, page);
         }
 
         public byte[] ReadBytes(ushort address, int length, int page)
         {
-            return ReadPagedROM(address, 0, length, page);
+            return this._page2367.ReadBytes(address, length, page);
         }
 
         public ushort ReadWord(ushort address, int offset, int page)
         {
-            byte[] bytes = ReadPagedROM(address, offset, 2, page);
-            ushort wordH = bytes[1];
-            return (ushort)(((ushort)wordH << 8) + (ushort)bytes[0]);
+            return this._page2367.ReadWord(address, offset, page);
         }
 
         //returns a text value for the given message index.
