@@ -197,12 +197,13 @@ namespace MajorHavocEditor.Services
 
                     if ( loadSuccess )
                     {
-                        bool serializeSuccess =
-                            controller.EncodeObjects( collection, collection.Mazes.IndexOf( maze ) );
+                        bool serializeSuccess = controller.EncodeObjects( collection );
 
                         if ( serializeSuccess )
                         {
-                            success = controller.WriteFiles( mamePath, Properties.Settings.Default.MameDriver);
+                            controller.SetStartingMaze( collection.Mazes.IndexOf( maze ) );
+
+                            success = controller.WriteFiles( mameRomPath, Properties.Settings.Default.MameDriver);
                         }
                         else
                         {

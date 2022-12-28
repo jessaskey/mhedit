@@ -1,5 +1,4 @@
-using mhedit.Containers;
-using System;
+﻿using mhedit.Containers;
 using System.Collections.Generic;
 
 namespace mhedit.GameControllers
@@ -11,13 +10,16 @@ namespace mhedit.GameControllers
 
         byte[] GetBytesFromString(string text);
 
-        ushort GetAddress(string location);
-
         bool WriteFiles(string mamePath, string driverName);
 
-        bool EncodeObjects( MazeCollection mazeCollection, int mazeToStartOn = 0 );
+        bool EncodeObjects( MazeCollection mazeCollection );
 
-        byte ReadByte(ushort address, int offset);
+        /// <summary>
+        /// This is a kludge until I separate concerns of serialization
+        /// to ROM and outside changes for MAME.
+        /// </summary>
+        /// <param name="mazeToStartOn"></param>
+        void SetStartingMaze( int mazeToStartOn = 0 );
 
         MazeCollection LoadMazes(List<string> loadMessages);
 

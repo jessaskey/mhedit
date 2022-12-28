@@ -12,6 +12,7 @@ using MajorHavocEditor.Views;
 using MajorHavocEditor.Interfaces.Ui;
 using System.Collections.Specialized;
 using System.Text;
+using mhedit.Containers.Validation;
 using mhedit.GameControllers;
 using MajorHavocEditor.Controls.Commands;
 using MajorHavocEditor.Views.Dialogs;
@@ -99,6 +100,11 @@ namespace MajorHavocEditor.Services
                     this.Export,
                     this.OneOrMoreMazeCollectionsSelected)
                 .ObservesProperty(() => this.SelectedObjects.Count);
+
+            this.SpliceCommand = new DelegateCommand(
+                    this.Splice,
+                    this.MazesOrOneMazeCollectionSelected)
+                .ObservesProperty(() => this.SelectedObjects.Count);
         }
 
         private void OnSelectedChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -147,6 +153,8 @@ namespace MajorHavocEditor.Services
 
         public ICommand ExportCommand { get; }
 
+        public ICommand SpliceCommand { get; }
+
         private bool OneOrLessObjectsSelected()
         {
             return this._selected.Count <= 1;
@@ -172,6 +180,18 @@ namespace MajorHavocEditor.Services
         {
             return this.OneOrMoreObjectsSelected() &&
                    this._selected.All( o => o is MazeCollection );
+        }
+
+        private bool MazesOrOneMazeCollectionSelected()
+        {
+            /// Either a single MazeCollection, a single Maze, or several Mazes.
+            /// No mixing between the 3... 
+            if ( this._selected.Count == 1 )
+            {
+                return true;
+            }
+
+            return this._selected.Count > 1 && this._selected.All(o => o is Maze);
         }
 
         private void AddMaze()
@@ -258,16 +278,14 @@ namespace MajorHavocEditor.Services
 
         private void LoadFromFile()
         {
-            string initialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            if (Directory.Exists(Properties.Settings.Default.LastFileLocation))
-            {
-                initialDirectory = Properties.Settings.Default.LastFileLocation;
-            }
             OpenFileDialog ofd =
                 new OpenFileDialog
                 {
                     Title = "Open Maze or Maze Collection",
-                    InitialDirectory = initialDirectory,
+                    InitialDirectory =
+                        Directory.Exists( Properties.Settings.Default.LastFileLocation ) ?
+                            Properties.Settings.Default.LastFileLocation :
+                            Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ),
                     Filter =
                         "Editor Files (*.mhz;*.mhc)|*.mhz;*.mhc|Mazes (*.mhz)|*.mhz|Maze Collections (*.mhc)|*.mhc",
                     CheckFileExists = true,
@@ -432,14 +450,16 @@ namespace MajorHavocEditor.Services
 
         private void Export()
         {
-            DialogExport exportDialog = new DialogExport();
-            if (Directory.Exists(Properties.Settings.Default.LastExportLocation))
-            {
-                exportDialog.ExportDirectory = Properties.Settings.Default.LastExportLocation;
-            }
+            DialogExport exportDialog =
+                new DialogExport
+                {
+                    ExportDirectory =
+                        Directory.Exists( Properties.Settings.Default.LastExportLocation) ?
+                            Properties.Settings.Default.LastExportLocation :
+                            Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments )
+                };
 
-            DialogResult dr = exportDialog.ShowDialog();
-            if (dr == DialogResult.OK)
+            if (exportDialog.ShowDialog() == DialogResult.OK)
             {
                 foreach ( object o in this._selected )
                 {
@@ -497,6 +517,54 @@ namespace MajorHavocEditor.Services
                     //    }
                     //}
                 }
+            }
+        }
+
+        private void Splice()
+        {
+            List<IValidationResult> validationResults = new();
+            ValidationLevel severity = ValidationLevel.NoResults;
+
+            // Perform validation of the selections BEFORE attempting to splice them
+            // as ROM operations just stuff it in...
+            foreach ( object o in this._selected )
+            {
+                IValidationResult currentResult = this._validationService.Validate( o );
+
+                validationResults.Add( currentResult );
+
+                severity = currentResult.Level > severity ? currentResult.Level : severity;
+            }
+
+            if (severity != ValidationLevel.Error)
+            {
+                // splice away!
+                foreach ( object o in this._selected )
+                {
+                    /// BUG: Need to deal with Mazes and how to get which level
+                    /// to overwrite...
+                    if ( o is MazeCollection mazeCollection )
+                    {
+                        this._romManager.Splice( mazeCollection );
+                    }
+                }
+            }
+            else // Can't continue on error, display window, notify and quit.
+            {
+                foreach ( IValidationResult validationResult in validationResults )
+                {
+                    if ( validationResult.Level == ValidationLevel.Error )
+                    {
+                        this._validationService.DisplayResults( validationResult );
+                    }
+                }
+
+                // crush user's dreams...
+                MessageBox.Show( $"Unable to Splice to ROM. Correct validation errors on " +
+                                 $"selected objects and try again. ",
+                    "Validation Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 

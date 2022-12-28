@@ -1069,8 +1069,16 @@ namespace mhedit.GameControllers
             return Convert.ToInt16(value.ToString("X2"), 10);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mazeToStartOn">If specified, will make this the starting level when ROMs are generated</param>
+        public void SetStartingMaze(int mazeToStartOn = 0)
+        {
+            /// nothing to do for the OEM ROMs.
+        }
 
-        public bool EncodeObjects( MazeCollection mazeCollection, int mazeToStartOn = 0 )
+        public bool EncodeObjects( MazeCollection mazeCollection )
         {
             throw new Exception("Writing of ROM files is not supported in this driver.");
 

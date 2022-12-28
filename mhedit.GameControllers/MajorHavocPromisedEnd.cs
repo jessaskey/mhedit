@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace mhedit.GameControllers
 {
+
     public class MajorHavocPromisedEnd : GameController, IGameController
     {
 
@@ -1282,21 +1283,23 @@ namespace mhedit.GameControllers
         }
 
         /// <summary>
-        /// Encodes all mazes in passed collection into EncodingObjects. 
+        /// 
         /// </summary>
-        /// <param name="mazeCollection">The collection to encode</param>
-        /// <returns></returns>
-        public bool EncodeObjects(MazeCollection mazeCollection)
+        /// <param name="mazeToStartOn">If specified, will make this the starting level when ROMs are generated</param>
+        public void SetStartingMaze( int mazeToStartOn = 0 )
         {
-            return EncodeObjects(mazeCollection);
+            //****************
+            //set up starting level
+            //****************
+            WriteAlphaHigh((ushort)(_exports["levelst"] + 1), (byte)mazeToStartOn);
         }
+
         /// <summary>
         /// Encodes all mazes in passed collection into EncodingObjects and sets the starting level to the passed maze object. 
         /// </summary>
         /// <param name="mazeCollection">The collection to encode</param>
-        /// <param name="mazeToStartOn">If specified, will make this the starting level when ROMs are generated</param>
         /// <returns></returns>
-        public bool EncodeObjects(MazeCollection mazeCollection, int mazeToStartOn = 0 )
+        public bool EncodeObjects(MazeCollection mazeCollection)
         {
             int numMazes = 28;
 
@@ -1680,11 +1683,6 @@ namespace mhedit.GameControllers
             {
                 oxyAddressBase += WritePagedROM((ushort)oxyAddressBase, EncodeObjects(mazeCollection.Mazes[i], EncodingGroup.OxygenReward).GetAllBytes().ToArray(), 0, 6);
             }
-            //****************
-            //set up starting level
-            //****************
-            WriteAlphaHigh( (ushort)( _exports[ "levelst" ] + 1 ), (byte)mazeToStartOn );
-
             //*******************
             // Quality Checking
             //*******************

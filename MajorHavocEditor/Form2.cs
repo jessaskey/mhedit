@@ -39,6 +39,9 @@ namespace MajorHavocEditor
         {
             this.InitializeComponent();
 
+            //this.Text =
+            //    $"{this.Text} - {Containers.VersionInformation.ApplicationVersion}  BETA VERSION";
+
             this._kryptonManager.GlobalPaletteMode = PaletteModeManager.SparkleBlue;
 
             this._windowManager = new WindowManager( this.kryptonDockableWorkspace,
@@ -93,7 +96,9 @@ namespace MajorHavocEditor
                         {
                             try
                             {
-                                System.Diagnostics.Process.Start(new ProcessStartInfo(MHPHomepage) { UseShellExecute = true }  );
+                                System.Diagnostics.Process.Start(
+                                    new ProcessStartInfo( MHPHomepage )
+                                    { UseShellExecute = true } );
                             }
                             catch ( Win32Exception noBrowser )
                             {
@@ -208,12 +213,28 @@ namespace MajorHavocEditor
         {
             base.OnKeyDown( e );
 
+            switch ( e.KeyCode )
+            {
+                case Keys.F10:
+
                     // this is janky but for now it solves the problem.
-            if ( e.KeyCode == Keys.F10 &&
-                 this._gameManager.ExportCommand.CanExecute( null ))
+                    if ( this._gameManager.ExportCommand.CanExecute( null ) )
                     {
                         this._gameManager.ExportCommand.Execute( null );
                     }
+
+                    break;
+
+                case Keys.J:
+
+                    //TODO: Jess mode... for all the secret sauce.
+                    if ( ModifierKeys.HasFlag( Keys.Control | Keys.Alt ) )
+                    {
+                        // enable splicing and exporting.
+                    }
+
+                    break;
+            }
 
         }
 
