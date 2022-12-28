@@ -32,8 +32,11 @@
             this.buttonSave = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageOptions = new System.Windows.Forms.TabPage();
+            this.checkBoxCompressOnSave = new System.Windows.Forms.CheckBox();
             this.checkBoxShowGridCoordinateReferences = new System.Windows.Forms.CheckBox();
             this.tabPageMAME = new System.Windows.Forms.TabPage();
+            this.label2 = new System.Windows.Forms.Label();
+            this.textBoxMameCommandLineOptions = new System.Windows.Forms.TextBox();
             this.checkBoxMAMEWindow = new System.Windows.Forms.CheckBox();
             this.checkBoxDebug = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -47,8 +50,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBoxMameCommandLineOptions = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPageOptions.SuspendLayout();
             this.tabPageMAME.SuspendLayout();
@@ -58,9 +59,10 @@
             // 
             // buttonSave
             // 
-            this.buttonSave.Location = new System.Drawing.Point(389, 7);
+            this.buttonSave.Location = new System.Drawing.Point(454, 8);
+            this.buttonSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(75, 23);
+            this.buttonSave.Size = new System.Drawing.Size(88, 27);
             this.buttonSave.TabIndex = 7;
             this.buttonSave.Text = "OK";
             this.buttonSave.UseVisualStyleBackColor = true;
@@ -73,27 +75,42 @@
             this.tabControl1.Controls.Add(this.tabPageLocations);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(556, 271);
+            this.tabControl1.Size = new System.Drawing.Size(649, 313);
             this.tabControl1.TabIndex = 13;
             // 
             // tabPageOptions
             // 
+            this.tabPageOptions.Controls.Add(this.checkBoxCompressOnSave);
             this.tabPageOptions.Controls.Add(this.checkBoxShowGridCoordinateReferences);
-            this.tabPageOptions.Location = new System.Drawing.Point(4, 22);
+            this.tabPageOptions.Location = new System.Drawing.Point(4, 24);
+            this.tabPageOptions.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageOptions.Name = "tabPageOptions";
-            this.tabPageOptions.Size = new System.Drawing.Size(548, 245);
+            this.tabPageOptions.Size = new System.Drawing.Size(641, 285);
             this.tabPageOptions.TabIndex = 2;
             this.tabPageOptions.Text = "Options";
             this.tabPageOptions.UseVisualStyleBackColor = true;
             // 
+            // checkBoxCompressOnSave
+            // 
+            this.checkBoxCompressOnSave.AutoSize = true;
+            this.checkBoxCompressOnSave.Location = new System.Drawing.Point(26, 45);
+            this.checkBoxCompressOnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.checkBoxCompressOnSave.Name = "checkBoxCompressOnSave";
+            this.checkBoxCompressOnSave.Size = new System.Drawing.Size(186, 19);
+            this.checkBoxCompressOnSave.TabIndex = 1;
+            this.checkBoxCompressOnSave.Text = "Compress .mhc/.mhz On Save";
+            this.checkBoxCompressOnSave.UseVisualStyleBackColor = true;
+            // 
             // checkBoxShowGridCoordinateReferences
             // 
             this.checkBoxShowGridCoordinateReferences.AutoSize = true;
-            this.checkBoxShowGridCoordinateReferences.Location = new System.Drawing.Point(22, 17);
+            this.checkBoxShowGridCoordinateReferences.Location = new System.Drawing.Point(26, 20);
+            this.checkBoxShowGridCoordinateReferences.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.checkBoxShowGridCoordinateReferences.Name = "checkBoxShowGridCoordinateReferences";
-            this.checkBoxShowGridCoordinateReferences.Size = new System.Drawing.Size(182, 17);
+            this.checkBoxShowGridCoordinateReferences.Size = new System.Drawing.Size(197, 19);
             this.checkBoxShowGridCoordinateReferences.TabIndex = 0;
             this.checkBoxShowGridCoordinateReferences.Text = "Show Grid Coordinate Reference";
             this.checkBoxShowGridCoordinateReferences.UseVisualStyleBackColor = true;
@@ -109,20 +126,40 @@
             this.tabPageMAME.Controls.Add(this.label6);
             this.tabPageMAME.Controls.Add(this.buttonBrowseMameExecutable);
             this.tabPageMAME.Controls.Add(this.textBoxMameExecutable);
-            this.tabPageMAME.Location = new System.Drawing.Point(4, 22);
+            this.tabPageMAME.Location = new System.Drawing.Point(4, 24);
+            this.tabPageMAME.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageMAME.Name = "tabPageMAME";
-            this.tabPageMAME.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageMAME.Size = new System.Drawing.Size(548, 245);
+            this.tabPageMAME.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.tabPageMAME.Size = new System.Drawing.Size(641, 285);
             this.tabPageMAME.TabIndex = 0;
             this.tabPageMAME.Text = "HBMAME";
             this.tabPageMAME.UseVisualStyleBackColor = true;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(14, 89);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(104, 15);
+            this.label2.TabIndex = 21;
+            this.label2.Text = "HBMAME Options";
+            // 
+            // textBoxMameCommandLineOptions
+            // 
+            this.textBoxMameCommandLineOptions.Location = new System.Drawing.Point(153, 85);
+            this.textBoxMameCommandLineOptions.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.textBoxMameCommandLineOptions.Name = "textBoxMameCommandLineOptions";
+            this.textBoxMameCommandLineOptions.Size = new System.Drawing.Size(414, 23);
+            this.textBoxMameCommandLineOptions.TabIndex = 20;
+            // 
             // checkBoxMAMEWindow
             // 
             this.checkBoxMAMEWindow.AutoSize = true;
-            this.checkBoxMAMEWindow.Location = new System.Drawing.Point(131, 123);
+            this.checkBoxMAMEWindow.Location = new System.Drawing.Point(153, 142);
+            this.checkBoxMAMEWindow.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.checkBoxMAMEWindow.Name = "checkBoxMAMEWindow";
-            this.checkBoxMAMEWindow.Size = new System.Drawing.Size(164, 17);
+            this.checkBoxMAMEWindow.Size = new System.Drawing.Size(186, 19);
             this.checkBoxMAMEWindow.TabIndex = 19;
             this.checkBoxMAMEWindow.Text = "Run with \'-window\' parameter";
             this.checkBoxMAMEWindow.UseVisualStyleBackColor = true;
@@ -130,9 +167,10 @@
             // checkBoxDebug
             // 
             this.checkBoxDebug.AutoSize = true;
-            this.checkBoxDebug.Location = new System.Drawing.Point(131, 100);
+            this.checkBoxDebug.Location = new System.Drawing.Point(153, 115);
+            this.checkBoxDebug.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.checkBoxDebug.Name = "checkBoxDebug";
-            this.checkBoxDebug.Size = new System.Drawing.Size(158, 17);
+            this.checkBoxDebug.Size = new System.Drawing.Size(178, 19);
             this.checkBoxDebug.TabIndex = 18;
             this.checkBoxDebug.Text = "Run with \'-debug\' parameter";
             this.checkBoxDebug.UseVisualStyleBackColor = true;
@@ -140,34 +178,37 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 51);
+            this.label5.Location = new System.Drawing.Point(14, 59);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(88, 13);
+            this.label5.Size = new System.Drawing.Size(96, 15);
             this.label5.TabIndex = 17;
             this.label5.Text = "HBMAME Driver:";
             // 
             // textBoxMameDriver
             // 
-            this.textBoxMameDriver.Location = new System.Drawing.Point(131, 48);
+            this.textBoxMameDriver.Location = new System.Drawing.Point(153, 55);
+            this.textBoxMameDriver.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxMameDriver.Name = "textBoxMameDriver";
-            this.textBoxMameDriver.Size = new System.Drawing.Size(93, 20);
+            this.textBoxMameDriver.Size = new System.Drawing.Size(108, 23);
             this.textBoxMameDriver.TabIndex = 16;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 25);
+            this.label6.Location = new System.Drawing.Point(14, 29);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(113, 13);
+            this.label6.Size = new System.Drawing.Size(122, 15);
             this.label6.TabIndex = 15;
             this.label6.Text = "HBMAME Executable:";
             // 
             // buttonBrowseMameExecutable
             // 
-            //this.buttonBrowseMameExecutable.Image = global::mhedit.Properties.Resources.OpenSelectedItemHS;
-            this.buttonBrowseMameExecutable.Location = new System.Drawing.Point(492, 19);
+            this.buttonBrowseMameExecutable.Location = new System.Drawing.Point(574, 22);
+            this.buttonBrowseMameExecutable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonBrowseMameExecutable.Name = "buttonBrowseMameExecutable";
-            this.buttonBrowseMameExecutable.Size = new System.Drawing.Size(29, 23);
+            this.buttonBrowseMameExecutable.Size = new System.Drawing.Size(34, 27);
             this.buttonBrowseMameExecutable.TabIndex = 14;
             this.buttonBrowseMameExecutable.Text = "...";
             this.buttonBrowseMameExecutable.UseVisualStyleBackColor = true;
@@ -175,9 +216,10 @@
             // 
             // textBoxMameExecutable
             // 
-            this.textBoxMameExecutable.Location = new System.Drawing.Point(131, 22);
+            this.textBoxMameExecutable.Location = new System.Drawing.Point(153, 25);
+            this.textBoxMameExecutable.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxMameExecutable.Name = "textBoxMameExecutable";
-            this.textBoxMameExecutable.Size = new System.Drawing.Size(355, 20);
+            this.textBoxMameExecutable.Size = new System.Drawing.Size(414, 23);
             this.textBoxMameExecutable.TabIndex = 13;
             this.textBoxMameExecutable.MouseLeave += new System.EventHandler(this.textBoxTT_MouseLeave);
             this.textBoxMameExecutable.MouseHover += new System.EventHandler(this.textBoxTT_MouseHover);
@@ -187,19 +229,21 @@
             this.tabPageLocations.Controls.Add(this.buttonBrowseTemplatesFolder);
             this.tabPageLocations.Controls.Add(this.textBoxTemplatesLocation);
             this.tabPageLocations.Controls.Add(this.label1);
-            this.tabPageLocations.Location = new System.Drawing.Point(4, 22);
+            this.tabPageLocations.Location = new System.Drawing.Point(4, 24);
+            this.tabPageLocations.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tabPageLocations.Name = "tabPageLocations";
-            this.tabPageLocations.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageLocations.Size = new System.Drawing.Size(548, 245);
+            this.tabPageLocations.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.tabPageLocations.Size = new System.Drawing.Size(641, 285);
             this.tabPageLocations.TabIndex = 3;
             this.tabPageLocations.Text = "Locations";
             this.tabPageLocations.UseVisualStyleBackColor = true;
             // 
             // buttonBrowseTemplatesFolder
             // 
-            this.buttonBrowseTemplatesFolder.Location = new System.Drawing.Point(501, 19);
+            this.buttonBrowseTemplatesFolder.Location = new System.Drawing.Point(584, 22);
+            this.buttonBrowseTemplatesFolder.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonBrowseTemplatesFolder.Name = "buttonBrowseTemplatesFolder";
-            this.buttonBrowseTemplatesFolder.Size = new System.Drawing.Size(29, 23);
+            this.buttonBrowseTemplatesFolder.Size = new System.Drawing.Size(34, 27);
             this.buttonBrowseTemplatesFolder.TabIndex = 15;
             this.buttonBrowseTemplatesFolder.Text = "...";
             this.buttonBrowseTemplatesFolder.UseVisualStyleBackColor = true;
@@ -207,9 +251,10 @@
             // 
             // textBoxTemplatesLocation
             // 
-            this.textBoxTemplatesLocation.Location = new System.Drawing.Point(19, 19);
+            this.textBoxTemplatesLocation.Location = new System.Drawing.Point(22, 22);
+            this.textBoxTemplatesLocation.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.textBoxTemplatesLocation.Name = "textBoxTemplatesLocation";
-            this.textBoxTemplatesLocation.Size = new System.Drawing.Size(472, 20);
+            this.textBoxTemplatesLocation.Size = new System.Drawing.Size(550, 23);
             this.textBoxTemplatesLocation.TabIndex = 1;
             this.textBoxTemplatesLocation.MouseLeave += new System.EventHandler(this.textBoxTT_MouseLeave);
             this.textBoxTemplatesLocation.MouseHover += new System.EventHandler(this.textBoxTT_MouseHover);
@@ -217,18 +262,20 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 3);
+            this.label1.Location = new System.Drawing.Point(7, 3);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 13);
+            this.label1.Size = new System.Drawing.Size(109, 15);
             this.label1.TabIndex = 0;
             this.label1.Text = "Templates Location";
             // 
             // buttonCancel
             // 
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(470, 7);
+            this.buttonCancel.Location = new System.Drawing.Point(548, 8);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buttonCancel.Name = "buttonCancel";
-            this.buttonCancel.Size = new System.Drawing.Size(75, 23);
+            this.buttonCancel.Size = new System.Drawing.Size(88, 27);
             this.buttonCancel.TabIndex = 14;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
@@ -239,37 +286,23 @@
             this.panel1.Controls.Add(this.buttonCancel);
             this.panel1.Controls.Add(this.buttonSave);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 232);
+            this.panel1.Location = new System.Drawing.Point(0, 268);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(556, 39);
+            this.panel1.Size = new System.Drawing.Size(649, 45);
             this.panel1.TabIndex = 15;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 77);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(93, 13);
-            this.label2.TabIndex = 21;
-            this.label2.Text = "HBMAME Options";
-            // 
-            // textBoxMameCommandLineOptions
-            // 
-            this.textBoxMameCommandLineOptions.Location = new System.Drawing.Point(131, 74);
-            this.textBoxMameCommandLineOptions.Name = "textBoxMameCommandLineOptions";
-            this.textBoxMameCommandLineOptions.Size = new System.Drawing.Size(355, 20);
-            this.textBoxMameCommandLineOptions.TabIndex = 20;
             // 
             // DialogConfiguration
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(556, 271);
+            this.ClientSize = new System.Drawing.Size(649, 313);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "DialogConfiguration";
@@ -311,5 +344,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBoxMameCommandLineOptions;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox checkBoxCompressOnSave;
     }
 }

@@ -72,7 +72,14 @@ namespace MajorHavocEditor.Services
 
                     Application.DoEvents();
 
-                    file.SerializeAndCompress();
+                    if ( Properties.Settings.Default.CompressOnSave )
+                    {
+                        file.SerializeAndCompress();
+                    }
+                    else
+                    {
+                        file.Serialize();
+                    }
 
                     if (file is IChangeTracking ict)
                     {
@@ -109,7 +116,16 @@ namespace MajorHavocEditor.Services
 
             try
             {
-                result = fileName.ExpandAndDeserialize<T>(HandleNotifications);
+                try
+                {
+                    // Try to deserialize as raw XML
+                    result = fileName.Deserialize<T>(HandleNotifications);
+                }
+                catch ( Exception )
+                {
+                    // retry as compressed...
+                    result = fileName.ExpandAndDeserialize<T>(HandleNotifications);
+                }
 
                 void HandleNotifications(string message)
                 {

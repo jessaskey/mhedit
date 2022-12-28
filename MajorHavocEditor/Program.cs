@@ -10,7 +10,7 @@ namespace mhedit
     public interface ITreeObject { }
 }
 
-namespace MHavocEditor
+namespace MajorHavocEditor
 {
     static class Program
     {

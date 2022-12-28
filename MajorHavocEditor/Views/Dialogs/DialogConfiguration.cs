@@ -20,6 +20,7 @@ namespace MajorHavocEditor.Views.Dialogs
             this.checkBoxShowGridCoordinateReferences.Checked = Properties.Settings.Default.ShowGridReferences;
             this.checkBoxMAMEWindow.Checked = Properties.Settings.Default.MameWindow;
             this.textBoxMameCommandLineOptions.Text = Properties.Settings.Default.MameCommandLineOptions;
+            this.checkBoxCompressOnSave.Checked = Properties.Settings.Default.CompressOnSave;
 
             //locations
             this.textBoxTemplatesLocation.Text = Properties.Settings.Default.TemplatesLocation;
@@ -41,6 +42,7 @@ namespace MajorHavocEditor.Views.Dialogs
             Properties.Settings.Default.ShowGridReferences = this.checkBoxShowGridCoordinateReferences.Checked;
             Properties.Settings.Default.MameWindow = this.checkBoxMAMEWindow.Checked;
             Properties.Settings.Default.MameCommandLineOptions = this.textBoxMameCommandLineOptions.Text;
+            Properties.Settings.Default.CompressOnSave = this.checkBoxCompressOnSave.Checked;
 
             //locations
             Properties.Settings.Default.TemplatesLocation = this.textBoxTemplatesLocation.Text;

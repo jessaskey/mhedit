@@ -214,5 +214,29 @@ namespace MajorHavocEditor.Properties {
                 this["LastFileLocation"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastSpliceLocation {
+            get {
+                return ((string)(this["LastSpliceLocation"]));
+            }
+            set {
+                this["LastSpliceLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool CompressOnSave {
+            get {
+                return ((bool)(this["CompressOnSave"]));
+            }
+            set {
+                this["CompressOnSave"] = value;
+            }
+        }
     }
 }

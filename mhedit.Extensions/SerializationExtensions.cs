@@ -52,13 +52,25 @@ namespace mhedit.Extensions
         /// <param name="fromStream"></param>
         /// <param name="onUnknownElement"></param>
         /// <returns></returns>
-        public static T Deserialize<T>( Stream fromStream,
+        public static T Deserialize<T>(this string fileName,
+            Action<string> onNotifications = null)
+        {
+            NotificationHandler = onNotifications;
+
+            using (FileStream fStream = new FileStream(fileName, FileMode.Open))
+            {
+                return (T)PerformPostDeserializeHacks(
+                    Deserialize(typeof(T), fStream, OnUnknownElement));
+            }
+        }
+
+        private static T Deserialize<T>( Stream fromStream,
             XmlElementEventHandler onUnknownElement = null )
         {
             return (T) Deserialize( typeof( T ), fromStream, onUnknownElement );
         }
 
-        public static object Deserialize( Type type, Stream fromStream,
+        private static object Deserialize( Type type, Stream fromStream,
             XmlElementEventHandler onUnknownElement = null )
         {
             XmlSerializer serializer = new XmlSerializer( type );
@@ -93,6 +105,16 @@ namespace mhedit.Extensions
         /// Serialize the object using XML serialization, compress the XML output,
         /// and write the compressed XML to the provided file.
         /// </summary>
+        /// <param name="file"></param>
+        public static void Serialize(this IFileProperties file)
+        {
+            file.Serialize( Path.Combine( file.Path, file.Name ) );
+        }
+
+        /// <summary>
+        /// Serialize the object using XML serialization, compress the XML output,
+        /// and write the compressed XML to the provided file.
+        /// </summary>
         /// <param name="obj"></param>
         /// <param name="fileName"></param>
         public static void SerializeAndCompress( this object obj, string fileName )
@@ -110,14 +132,9 @@ namespace mhedit.Extensions
         /// <param name="file"></param>
         public static void SerializeAndCompress( this IFileProperties file )
         {
-            using ( FileStream fileStream = new FileStream(
-                Path.Combine( file.Path, file.Name ), FileMode.Create ) )
-            {
-                file.SerializeAndCompress( fileStream );
-            }
+            file.SerializeAndCompress( Path.Combine( file.Path, file.Name ) );
         }
-
-
+        
         /// <summary>
         /// Serialize the object using XML serialization, compress the XML output,
         /// and write the compressed XML to the provided stream.

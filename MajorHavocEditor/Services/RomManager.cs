@@ -53,8 +53,8 @@ namespace MajorHavocEditor.Services
                 {
                     Title = "Select Paged ROM",
                     InitialDirectory =
-                        Directory.Exists( Properties.Settings.Default.LastFileLocation ) ?
-                            Properties.Settings.Default.LastFileLocation :
+                        Directory.Exists( Properties.Settings.Default.LastSpliceLocation ) ?
+                            Properties.Settings.Default.LastSpliceLocation :
                             Environment.GetFolderPath( Environment.SpecialFolder.MyDocuments ),
                     Filter = "ROM Files (*.bin;*.1np)|*.bin;*.1np|All files (*.*)|*.*",
                     CheckFileExists = true
@@ -62,7 +62,7 @@ namespace MajorHavocEditor.Services
 
             if ( ofd.ShowDialog() == DialogResult.OK )
             {
-                Properties.Settings.Default.LastFileLocation =
+                Properties.Settings.Default.LastSpliceLocation =
                     Path.GetDirectoryName( ofd.FileName );
 
                 Properties.Settings.Default.Save();
