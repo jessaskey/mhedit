@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using mhedit.Containers;
 using mhedit.Containers.Validation;
@@ -20,6 +21,7 @@ namespace MajorHavocEditor.Services
 
     public class MameManager : IMameManager
     {
+        private StringBuilder _errorOut;
 
 #region Implementation of IMameManager
 
@@ -91,30 +93,28 @@ namespace MajorHavocEditor.Services
 
                 try
                 {
-                    ProcessStartInfo info = new ProcessStartInfo( mameExe, args )
-                                            {
-                                                ErrorDialog = true,
-                                                //RedirectStandardError = true,
-                                                UseShellExecute = false,
-                                                WorkingDirectory = Path.GetDirectoryName( mameExe )
-                                            };
-
-                    Process p = new Process
-                                {
-                                    EnableRaisingEvents = true,
-                                    StartInfo = info
-                                };
+                    Process p =
+                        new Process
+                        {
+                            EnableRaisingEvents = true,
+                            StartInfo = new ProcessStartInfo( mameExe, args )
+                                        {
+                                            UseShellExecute = false,
+                                            WorkingDirectory = Path.GetDirectoryName( mameExe ),
+                                            //RedirectStandardOutput = true,
+                                            RedirectStandardError = true,
+                                        }
+                        };
 
                     /// https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.process.beginerrorreadline?view=net-6.0
-                    /// The new MAME exe produces a LOT of stderr text and if this process redirects it to itself and then doesn't
-                    /// read it as it's coming in, the mame process will hang waiting for room in the buffer. I'm not implementing
-                    /// this right now. We can look at the window when it produces errors.
-                    //p.ErrorDataReceived += ( s, d ) =>
-                    //                       { };
-                    //p.BeginErrorReadLine();
-                    //p.Exited += this.ProcessExited;
+                    //p.OutputDataReceived += this.ProcessOutputDataHandler;
+                    p.ErrorDataReceived += this.ProcessErrorDataHandler;
+                    p.Exited += this.ProcessExited;
                     p.Start();
+                    //p.BeginOutputReadLine();
+                    p.BeginErrorReadLine();
 
+                    //p.WaitForExit();
                 }
                 catch ( Exception ex )
                 {
@@ -142,9 +142,9 @@ namespace MajorHavocEditor.Services
                 // Path.Combine is WONKY!
                 // https://stackoverflow.com/a/53118
                 string mameRomPath = Path.Combine(
-                    Path.GetDirectoryName(Properties.Settings.Default.MameExecutable),
+                    Path.GetDirectoryName( Properties.Settings.Default.MameExecutable ),
                     "roms",
-                    Properties.Settings.Default.MameDriver);
+                    Properties.Settings.Default.MameDriver );
 
                 if ( !Directory.Exists( mameRomPath ) )
                 {
@@ -178,10 +178,10 @@ namespace MajorHavocEditor.Services
                 }
 
                 //copy each file here into _backup folder
-                foreach (string file in
-                    Directory.EnumerateFiles(mameRomPath, "*.*", SearchOption.TopDirectoryOnly))
+                foreach ( string file in
+                    Directory.EnumerateFiles( mameRomPath, "*.*", SearchOption.TopDirectoryOnly ) )
                 {
-                    File.Copy(file, Path.Combine(backupPath, Path.GetFileName(file)), true);
+                    File.Copy( file, Path.Combine( backupPath, Path.GetFileName( file ) ), true );
                 }
 
                 IValidationResult validationResult = maze.Validate();
@@ -189,7 +189,7 @@ namespace MajorHavocEditor.Services
                 if ( validationResult.Level < ValidationLevel.Error )
                 {
                     string templatePath = Path.Combine(
-                        Path.GetDirectoryName(Application.ExecutablePath), "template");
+                        Path.GetDirectoryName( Application.ExecutablePath ), "template" );
 
                     //we will always serialize to target 'The Promised End' here in this editor.
                     IGameController controller = new MajorHavocPromisedEnd();
@@ -203,7 +203,8 @@ namespace MajorHavocEditor.Services
                         {
                             controller.SetStartingMaze( collection.Mazes.IndexOf( maze ) );
 
-                            success = controller.WriteFiles( mameRomPath, Properties.Settings.Default.MameDriver);
+                            success = controller.WriteFiles( mameRomPath,
+                                Properties.Settings.Default.MameDriver );
                         }
                         else
                         {
@@ -224,38 +225,40 @@ namespace MajorHavocEditor.Services
                 {
                     MessageBox.Show( validationResult.ToString(), "Validation Errors",
                         MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
-
-                    success = false;
                 }
             }
 
             return success;
         }
 
-
-        /// This code no longer works with MAME producing a LOT of stderr output. See process
-        /// start code.
-        private void ProcessExited( object sender, EventArgs e )
+        private void ProcessOutputDataHandler(object sender, DataReceivedEventArgs e)
         {
-            if ( sender is Process )
+            /// TODO: This should be redirected to a Logger/Output window.
+        }
+
+        private void ProcessErrorDataHandler( object sender, DataReceivedEventArgs e )
+        {
+            if (!String.IsNullOrEmpty(e.Data))
             {
-                Process p = (Process) sender;
+                this._errorOut ??= new StringBuilder();
 
-                if ( p.ExitCode != 0 )
+                this._errorOut.AppendLine( e.Data );
+            }
+            else if ( sender is Process p )
+            {
+                if ( p.HasExited && p.ExitCode != 0 && this._errorOut?.Length > 0 )
                 {
-                    if ( p.StandardError != null )
-                    {
-                        string errorResult = p.StandardError.ReadToEndAsync().Result;
-
-                        if ( !String.IsNullOrEmpty( errorResult ) )
-                        {
-                            MessageBox.Show( errorResult, "MAME Error", MessageBoxButtons.OK,
-                                MessageBoxIcon.Error );
-                        }
-                    }
+                    MessageBox.Show(
+                        this._errorOut.ToString(),
+                        "MAME Execution Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error );
                 }
             }
-            
+        }
+
+        private void ProcessExited( object sender, EventArgs e )
+        {
             //put back the ROM's from backup
             string mamePath = Path.Combine(
                 Path.GetDirectoryName(Properties.Settings.Default.MameExecutable),
