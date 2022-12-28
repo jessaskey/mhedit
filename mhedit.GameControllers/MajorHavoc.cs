@@ -35,17 +35,17 @@ namespace mhedit.GameControllers
         #endregion
 
         public MajorHavoc()
-            : this( false )
+            : this(false)
         { }
 
         public MajorHavoc(bool isReturnToVaxx)
-            : this( isReturnToVaxx, isReturnToVaxx ? ReturnToVax : Production )
+            : this(isReturnToVaxx, isReturnToVaxx ? ReturnToVax : Production)
         { }
 
-        public MajorHavoc( bool isReturnToVaxx, string name )
+        public MajorHavoc(bool isReturnToVaxx, string name)
         {
             _isReturnToVaxx = isReturnToVaxx;
-            if ( _isReturnToVaxx )
+            if (_isReturnToVaxx)
             {
                 _numberOfLevels = 24;
             }
@@ -187,17 +187,17 @@ namespace mhedit.GameControllers
 
         public MazeCollection LoadMazes(List<string> loadMessages)
         {
-            
-            MazeCollection mazeCollection = new MazeCollection( this.Name );
-            mazeCollection.AuthorEmail =  this._isReturnToVaxx ? "Jess@maynard.vax": "owen@maynard.vax";
+
+            MazeCollection mazeCollection = new MazeCollection(this.Name);
+            mazeCollection.AuthorEmail = this._isReturnToVaxx ? "Jess@maynard.vax" : "owen@maynard.vax";
             mazeCollection.AuthorName = this._isReturnToVaxx ? "Jess Askey" : "Owen Rubin";
 
-            for ( int i = 0; i < _numberOfLevels; i++)
+            for (int i = 0; i < _numberOfLevels; i++)
             {
 
                 byte mazeType = (byte)(i & 0x03);
                 Maze maze = new Maze((MazeType)mazeType, "Level " + (i + 1).ToString());
-                
+
                 //hint text - only first 12 mazes tho
                 if (i < 12)
                 {
@@ -476,8 +476,8 @@ namespace mhedit.GameControllers
                 }
 
                 //clock & boots
-                byte clockData = ReadByte(_exports["mclock"], FixTopLimit(i) );
-                byte bootsData = ReadByte(_exports["mboots"], FixTopLimit(i) );
+                byte clockData = ReadByte(_exports["mclock"], FixTopLimit(i));
+                byte bootsData = ReadByte(_exports["mboots"], FixTopLimit(i));
 
                 if (clockData != 0)
                 {
@@ -708,7 +708,7 @@ namespace mhedit.GameControllers
                         TripPadPyroid tpp = new TripPadPyroid();
                         tpp.LoadPosition(longBytes);
                         tpp.SpeedIndex = (TripPyroidSpeedIndex)speedIndex;
-                        tpp.Direction = (TripPyroidDirection)( vdata & 0x80 );
+                        tpp.Direction = (TripPyroidDirection)(vdata & 0x80);
                         if (styleFlag != 0)
                         {
                             tpp.PyroidStyle = PyroidStyle.Single;
@@ -961,7 +961,7 @@ namespace mhedit.GameControllers
 
 
 
-        public bool WriteFiles(string destinationPath, string driverName)
+        public bool WriteFiles(string mamePath, string driverName)
         {
 
             //fix csums...
@@ -977,9 +977,9 @@ namespace mhedit.GameControllers
             //String hash = String.Empty;
             //foreach (byte b in crc32.ComputeHash(_alphaHigh)) hash += b.ToString("x2").ToLower();
 
-            string alphaHighFileNameMame = destinationPath + _alphaHighROM;
-            string alphaLowFileNameMame = destinationPath + _alphaLowROM;
-            string page01FileNameMame = destinationPath + _page01ROM;
+            string alphaHighFileNameMame = mamePath + _alphaHighROM;
+            string alphaLowFileNameMame = mamePath + _alphaLowROM;
+            string page01FileNameMame = mamePath + _page01ROM;
 
             //save each
             File.WriteAllBytes(alphaHighFileNameMame, _alphaHigh);
@@ -996,7 +996,7 @@ namespace mhedit.GameControllers
 
             foreach (string rom in otherROMs)
             {
-                File.Copy(Path.Combine(_sourceRomPath, rom), Path.Combine(destinationPath, rom), true);
+                File.Copy(_sourceRomPath + rom, mamePath + rom, true);
             }
 
             return true;
@@ -1069,19 +1069,27 @@ namespace mhedit.GameControllers
             return Convert.ToInt16(value.ToString("X2"), 10);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mazeToStartOn">If specified, will make this the starting level when ROMs are generated</param>
+        public void SetStartingMaze(int mazeToStartOn = 0)
+        {
+            /// nothing to do for the OEM ROMs.
+        }
 
-        public bool EncodeObjects(MazeCollection collection, Maze maze)
+        public bool EncodeObjects(MazeCollection mazeCollection)
         {
             throw new Exception("Writing of ROM files is not supported in this driver.");
 
             //bool success = false;
-            
+
             ///////////////////////////////
             //// Start building ROM here //
             ///////////////////////////////
             ////first is the level selection
             //Write("levelst", (byte)maze.MazeType, 1);
-            
+
             ////next hint text
             //Write("mzh0", GetText(maze.Hint), 0);
 

@@ -63,9 +63,10 @@ namespace mhedit.Controllers
                     bool loadSuccess = controller.LoadTemplate(templatePath);
                     if (loadSuccess)
                     {
-                        bool serializeSuccess = controller.EncodeObjects(collection, maze);
+                        bool serializeSuccess = controller.EncodeObjects(collection);
                         if (serializeSuccess)
                         {
+                            controller.SetStartingMaze(collection.Mazes.IndexOf(maze));
                             success = controller.WriteFiles(mamePath, Properties.Settings.Default.MameDriver);
                             if (!success)
                             {
