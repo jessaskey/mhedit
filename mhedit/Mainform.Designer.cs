@@ -53,10 +53,6 @@ namespace mhedit
             this.toolStripButtonAbout = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonConfiguration = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.toolStripButtonContestUpload = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.treeView = new System.Windows.Forms.TreeView();
             this.contextMenuStripTree = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemNew = new System.Windows.Forms.ToolStripMenuItem();
@@ -93,6 +89,7 @@ namespace mhedit
             this.tabControlSystemWindows = new mhedit.SystemWindowsTabControl();
             this.listView1 = new System.Windows.Forms.ListView();
             this.splitterSystemWindows = new System.Windows.Forms.Splitter();
+            this.toolStripButtonGenerateROMs = new System.Windows.Forms.ToolStripButton();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.contextMenuStripTree.SuspendLayout();
@@ -138,12 +135,9 @@ namespace mhedit
             this.toolStripButtonMAME,
             this.toolStripButtonHome,
             this.toolStripButtonAbout,
+            this.toolStripButtonGenerateROMs,
             this.toolStripSeparator4,
-            this.toolStripButtonConfiguration,
-            this.toolStripSeparator5,
-            this.toolStripLabel1,
-            this.toolStripButtonContestUpload,
-            this.toolStripSeparator6});
+            this.toolStripButtonConfiguration});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1033, 25);
@@ -167,7 +161,7 @@ namespace mhedit
             // 
             this.toolStripMenuItemNewMazeCollection.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemNewMazeCollection.Image")));
             this.toolStripMenuItemNewMazeCollection.Name = "toolStripMenuItemNewMazeCollection";
-            this.toolStripMenuItemNewMazeCollection.Size = new System.Drawing.Size(159, 22);
+            this.toolStripMenuItemNewMazeCollection.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemNewMazeCollection.Text = "Maze Collection";
             this.toolStripMenuItemNewMazeCollection.ToolTipText = "New Maze Collection";
             this.toolStripMenuItemNewMazeCollection.Click += new System.EventHandler(this.toolStripMenuItemNewMazeCollection_Click);
@@ -177,7 +171,7 @@ namespace mhedit
             this.toolStripMenuItemNewMaze.Image = ((System.Drawing.Image)(resources.GetObject("toolStripMenuItemNewMaze.Image")));
             this.toolStripMenuItemNewMaze.ImageTransparentColor = System.Drawing.Color.Fuchsia;
             this.toolStripMenuItemNewMaze.Name = "toolStripMenuItemNewMaze";
-            this.toolStripMenuItemNewMaze.Size = new System.Drawing.Size(159, 22);
+            this.toolStripMenuItemNewMaze.Size = new System.Drawing.Size(180, 22);
             this.toolStripMenuItemNewMaze.Text = "Maze";
             this.toolStripMenuItemNewMaze.ToolTipText = "New Maze";
             this.toolStripMenuItemNewMaze.Click += new System.EventHandler(this.toolStripMenuItemNewMaze_Click);
@@ -351,32 +345,6 @@ namespace mhedit
             this.toolStripButtonConfiguration.ToolTipText = "Configuration";
             this.toolStripButtonConfiguration.Click += new System.EventHandler(this.toolStripButtonConfiguration_Click);
             // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-            // 
-            // toolStripLabel1
-            // 
-            this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(118, 22);
-            this.toolStripLabel1.Text = "Major Havoc Project:";
-            // 
-            // toolStripButtonContestUpload
-            // 
-            this.toolStripButtonContestUpload.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonContestUpload.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonContestUpload.Image")));
-            this.toolStripButtonContestUpload.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonContestUpload.Name = "toolStripButtonContestUpload";
-            this.toolStripButtonContestUpload.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonContestUpload.Text = "Upload Maze to Major Havoc Project";
-            this.toolStripButtonContestUpload.Click += new System.EventHandler(this.toolStripButtonContestUpload_Click);
-            // 
-            // toolStripSeparator6
-            // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
-            // 
             // treeView
             // 
             this.treeView.AllowDrop = true;
@@ -424,7 +392,7 @@ namespace mhedit
             this.toolStripSeparator9,
             this.toolStripMenuItemPreview});
             this.contextMenuStripTree.Name = "contextMenuStripTree";
-            this.contextMenuStripTree.Size = new System.Drawing.Size(225, 304);
+            this.contextMenuStripTree.Size = new System.Drawing.Size(225, 282);
             this.contextMenuStripTree.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStripTree_Opening);
             // 
             // toolStripMenuItemNew
@@ -744,6 +712,7 @@ namespace mhedit
             // listView1
             // 
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(3, 3);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(871, 66);
@@ -758,6 +727,16 @@ namespace mhedit
             this.splitterSystemWindows.Size = new System.Drawing.Size(885, 3);
             this.splitterSystemWindows.TabIndex = 0;
             this.splitterSystemWindows.TabStop = false;
+            // 
+            // toolStripButtonGenerateROMs
+            // 
+            this.toolStripButtonGenerateROMs.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonGenerateROMs.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonGenerateROMs.Image")));
+            this.toolStripButtonGenerateROMs.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonGenerateROMs.Name = "toolStripButtonGenerateROMs";
+            this.toolStripButtonGenerateROMs.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonGenerateROMs.Text = "Generate Full ROM Set";
+            this.toolStripButtonGenerateROMs.Click += new System.EventHandler(this.toolStripButtonGenerateROMs_Click);
             // 
             // Mainform
             // 
@@ -828,10 +807,6 @@ namespace mhedit
         private Silver.UI.ToolBox toolBox;
         private System.Windows.Forms.ToolStripButton toolStripButtonLoadFromROM;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
-        private System.Windows.Forms.ToolStripButton toolStripButtonContestUpload;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButtonNew;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemNewMazeCollection;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemNewMaze;
@@ -858,6 +833,7 @@ namespace mhedit
         private System.Windows.Forms.Splitter splitterSystemWindows;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCheckboxes;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+        private System.Windows.Forms.ToolStripButton toolStripButtonGenerateROMs;
     }
 }
 

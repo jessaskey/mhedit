@@ -1440,5 +1440,10 @@ namespace mhedit
         {
             treeView.CheckBoxes = !treeView.CheckBoxes;
         }
+
+        private void toolStripButtonGenerateROMs_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Not yet supported.");
+        }
     }
 }
