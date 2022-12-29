@@ -73,8 +73,7 @@ namespace MajorHavocEditor.Services
 
                     rom.Load();
 
-                    ExportsFile exports =
-                        new ExportsFile( Path.GetDirectoryName( ofd.FileName ) );
+                    ExportsFile exports = new ExportsFile(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation));
 
                     exports.Load();
 

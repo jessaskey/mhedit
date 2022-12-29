@@ -8,6 +8,8 @@ namespace mhedit.GameControllers
 
         bool LoadTemplate(string sourceRomPath);
 
+        bool LoadTemplate(string sourceRomPath, string exportFilePath);
+
         byte[] GetBytesFromString(string text);
 
         bool WriteFiles(string mamePath, string driverName);

@@ -75,6 +75,11 @@ namespace mhedit.GameControllers
 
         public bool LoadTemplate(string sourceRomPath)
         {
+            return LoadTemplate(sourceRomPath, sourceRomPath);
+        }
+
+        public bool LoadTemplate(string sourceRomPath, string exportFilePath)
+        {
             bool success = false;
 
             try
@@ -84,7 +89,7 @@ namespace mhedit.GameControllers
                 //load up our roms for now...
                 try
                 {
-                    _page2367 = new Rom( 0x8000, sourceRomPath );
+                    _page2367 = new Rom( 0x8000, Path.Combine(sourceRomPath, _page2367ROM));
                     _page2367.Load();
                     _alphaHigh = File.ReadAllBytes( Path.Combine( sourceRomPath, _alphaHighROM ) );
                 }
@@ -97,8 +102,7 @@ namespace mhedit.GameControllers
                 if ( romVersion.CompareTo( new Version( 0, 22 ) ) >= 0 )
                 {
                     //load our exports
-                    this._exports = new ExportsFile( sourceRomPath );
-
+                    this._exports = new ExportsFile(exportFilePath);
                     this._exports.Load();
                 }
                 else

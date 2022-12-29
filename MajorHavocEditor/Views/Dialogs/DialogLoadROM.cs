@@ -70,7 +70,7 @@ namespace MajorHavocEditor.Views.Dialogs
                     return;
                 }
 
-                if (controller.LoadTemplate(this.textBoxROMPath.Text))
+                if (controller.LoadTemplate(this.textBoxROMPath.Text, Path.GetFullPath(Properties.Settings.Default.TemplatesLocation)))
                 {
                     Cursor.Current = Cursors.WaitCursor;
                     Application.DoEvents();

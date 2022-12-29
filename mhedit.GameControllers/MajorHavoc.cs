@@ -119,6 +119,12 @@ namespace mhedit.GameControllers
             }
         }
 
+        public bool LoadTemplate(string sourceRomPath, string exportFilePath)
+        {
+            //havoc uses an internal export definition, so we throw it away if specified.
+            return LoadTemplate(sourceRomPath);
+        }
+
         public bool LoadTemplate(string sourceRomPath)
         {
             bool success = false;
@@ -189,7 +195,7 @@ namespace mhedit.GameControllers
         {
             
             MazeCollection mazeCollection = new MazeCollection( this.Name );
-            mazeCollection.AuthorEmail =  this._isReturnToVaxx ? "Jess@maynard.vax": "owen@maynard.vax";
+            mazeCollection.AuthorEmail =  this._isReturnToVaxx ? "jess@maynard.vax": "owen@maynard.vax";
             mazeCollection.AuthorName = this._isReturnToVaxx ? "Jess Askey" : "Owen Rubin";
 
             for ( int i = 0; i < _numberOfLevels; i++)
