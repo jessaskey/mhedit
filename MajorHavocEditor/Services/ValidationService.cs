@@ -10,7 +10,9 @@ namespace MajorHavocEditor.Services
     {
         IValidationResult Validate( object subject );
 
-        void ValidateAndDisplayResults( object subject, string windowTitle = "" );
+        IValidationResult DisplayResults( IValidationResult result, string windowTitle = "");
+
+        IValidationResult ValidateAndDisplayResults( object subject, string windowTitle = "" );
     }
 
     public class ValidationService : IValidationService
@@ -33,13 +35,23 @@ namespace MajorHavocEditor.Services
             return subject.Validate();
         }
 
-        public void ValidateAndDisplayResults( object subject, string windowTitle = "" )
+        /// <inheritdoc />
+        public IValidationResult DisplayResults( IValidationResult result, string windowTitle = "" )
+        {
+            this._validationWindow.Add( new ValidationResultTab( result ) );
+
+            this._windowManager.Show( this._validationWindow );
+
+            return result;
+        }
+
+        public IValidationResult ValidateAndDisplayResults( object subject, string windowTitle = "" )
         {
             IValidationResult validationResult = subject.Validate();
 
-            this._validationWindow.Add( new ValidationResultTab( validationResult ) );
+            this.DisplayResults( validationResult, windowTitle );
 
-            this._windowManager.Show( this._validationWindow );
+            return validationResult;
         }
 
 #endregion
