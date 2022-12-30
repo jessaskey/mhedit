@@ -8,7 +8,7 @@ namespace mhedit.GameControllers
 {
     public class GameController
     {
-        protected string _validText = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.!-,%:o()hs@><?c";
+        protected string _validText = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ.!-,p:h()s@><?c'efgabuwiovw";
 
         public enum SourceFile
         {
