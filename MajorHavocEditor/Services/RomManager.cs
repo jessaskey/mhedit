@@ -77,8 +77,7 @@ namespace MajorHavocEditor.Services
 
                     exports.Load();
 
-                    IGameController controller =
-                        new MajorHavocPromisedEnd( rom, exports );
+                    IGameController controller = new MajorHavocPromisedEnd( rom, exports );
 
                     controller.EncodeObjects( mazeCollection );
 

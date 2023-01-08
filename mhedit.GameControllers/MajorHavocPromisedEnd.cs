@@ -821,12 +821,12 @@ namespace mhedit.GameControllers
         
         private static readonly ushort alphaHighBase = 0xc000;
 
-        private int WriteAlphaHigh(ushort address, byte data)
-        {
-            address -= alphaHighBase;
-            _alphaHigh[address] = data;
-            return 1;
-        }
+        //private int WriteAlphaHigh(ushort address, byte data)
+        //{
+        //    address -= alphaHighBase;
+        //    _alphaHigh[address] = data;
+        //    return 1;
+        //}
 
 
         private int WritePagedROM(ushort address, byte[] bytes, int offset, int page)
@@ -858,23 +858,20 @@ namespace mhedit.GameControllers
             WritePagedROM((ushort)(0x2000 + length - 1), new byte[] { finalCsum }, 0, page);
         }
 
-        private void WriteAlphaHighChecksum()
-        {
-            ushort csumAddress = (ushort) ( _exports[ "chka2" ] - alphaHighBase );
-            byte calculatedCsum = 0;
-
-            for ( int i = 0x0000; i < 0x4000; i++ )
-            {
-                if ( i == csumAddress )
-                    continue;
-
-                calculatedCsum ^= _alphaHigh[ i ];
-            }
-
-            //ROM needs to equal csum when it is all said and done
-            byte finalCsum = (byte) ( ( 0x01 ^ calculatedCsum ) & 0xff );
-            _alphaHigh[ csumAddress ] = finalCsum;
-        }
+        //private void WriteAlphaHighChecksum()
+        //{
+        //    ushort csumAddress = (ushort) ( _exports[ "chka2" ] - alphaHighBase );
+        //    byte calculatedCsum = 0;
+        //    for ( int i = 0x0000; i < 0x4000; i++ )
+        //    {
+        //        if ( i == csumAddress )
+        //            continue;
+        //        calculatedCsum ^= _alphaHigh[ i ];
+        //    }
+        //    //ROM needs to equal csum when it is all said and done
+        //    byte finalCsum = (byte) ( ( 0x01 ^ calculatedCsum ) & 0xff );
+        //    _alphaHigh[ csumAddress ] = finalCsum;
+        //}
 
         private void MarkPagedROM(int page)
         {
@@ -882,12 +879,12 @@ namespace mhedit.GameControllers
             WritePagedROM(0x2002, new byte[] { (byte)(currentMajorVersion[0] | 0xE0) }, 0, page);
         }
 
-        private void MarkAlphaHighROM()
-        {
-            ushort alphaHighCsumAddress = 0xC002;
-            byte[] currentMajorVersion = ReadAlphaHigh(alphaHighCsumAddress, 1);
-            WriteAlphaHigh(alphaHighCsumAddress, (byte)(currentMajorVersion[0] | 0xE0));
-        }
+        //private void MarkAlphaHighROM()
+        //{
+        //    ushort alphaHighCsumAddress = 0xC002;
+        //    byte[] currentMajorVersion = ReadAlphaHigh(alphaHighCsumAddress, 1);
+        //    WriteAlphaHigh(alphaHighCsumAddress, (byte)(currentMajorVersion[0] | 0xE0));
+        //}
 
         public bool WriteFiles(string destinationPath, string driverName)
         {
@@ -896,22 +893,23 @@ namespace mhedit.GameControllers
             {
                 MarkPagedROM(6);
                 MarkPagedROM(7);
-                MarkAlphaHighROM();
+                //MarkAlphaHighROM();
 
                 //fix csums...
                 WritePagedChecksum(0x4000, 0x2000, 6, 0x08);
                 WritePagedChecksum(0x6000, 0x2000, 7, 0x09);
-                WriteAlphaHighChecksum();
+                //WriteAlphaHighChecksum();
 
                 string page67FileNameMame = Path.Combine(destinationPath, _page2367ROM );
-                string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM );
+                //string alphaHighFileNameMane = Path.Combine(destinationPath, _alphaHighROM );
 
                 //save each
                 File.WriteAllBytes(page67FileNameMame, _page2367.GetBuffer());
-                File.WriteAllBytes(alphaHighFileNameMane, _alphaHigh);
+                //File.WriteAllBytes(alphaHighFileNameMane, _alphaHigh);
 
                 //copy others 
                 List<string> otherROMs = new List<string>();
+                otherROMs.Add("mhpe100.1l");
                 otherROMs.Add("mhpe100.1mn");
                 otherROMs.Add("mhpe100.1q");
                 otherROMs.Add("mhpe100.6kl");
@@ -1295,7 +1293,9 @@ namespace mhedit.GameControllers
             //****************
             //set up starting level
             //****************
-            WriteAlphaHigh((ushort)(_exports["levelst"] + 1), (byte)mazeToStartOn);
+            WritePagedROM((ushort)(_exports["levelst"]), new byte[] { (byte)mazeToStartOn }, 0, 6);
+            //Removed all writes to Alpha HIGH
+            //WriteAlphaHigh((ushort)(_exports["levelst"] + 1), (byte)mazeToStartOn);
         }
 
         /// <summary>
