@@ -119,18 +119,12 @@ namespace mhedit.GameControllers
             }
         }
 
-        public bool LoadTemplate(string sourceRomPath, string exportFilePath)
-        {
-            //havoc uses an internal export definition, so we throw it away if specified.
-            return LoadTemplate(sourceRomPath);
-        }
-
-        public bool LoadTemplate(string sourceRomPath)
+        public bool LoadTemplate(string romFilesPath, string notUsed = null)
         {
             bool success = false;
             try
             {
-                _sourceRomPath = sourceRomPath;
+                _sourceRomPath = romFilesPath;
 
                 if (_isReturnToVaxx)
                 {
@@ -140,9 +134,9 @@ namespace mhedit.GameControllers
                 }
 
                 //load up our roms for now...
-                string alphaHighFileName = Path.Combine(sourceRomPath, _alphaHighROM);
-                string alphaLowFileName = Path.Combine(sourceRomPath, _alphaLowROM);
-                string page01FileName = Path.Combine(sourceRomPath, _page01ROM);
+                string alphaHighFileName = Path.Combine(romFilesPath, _alphaHighROM);
+                string alphaLowFileName = Path.Combine(romFilesPath, _alphaLowROM);
+                string page01FileName = Path.Combine(romFilesPath, _page01ROM);
 
                 try
                 {

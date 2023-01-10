@@ -73,25 +73,20 @@ namespace mhedit.GameControllers
             return result;
         }
 
-        public bool LoadTemplate(string sourceRomPath)
-        {
-            return LoadTemplate(sourceRomPath, sourceRomPath);
-        }
-
-        public bool LoadTemplate(string sourceRomPath, string exportFilePath)
+        public bool LoadTemplate(string romFilesPath, string exportFilePath = null)
         {
             bool success = false;
 
             try
             {
-                _sourceRomPath = sourceRomPath;
+                _sourceRomPath = romFilesPath;
 
                 //load up our roms for now...
                 try
                 {
-                    _page2367 = new Rom( 0x8000, Path.Combine(sourceRomPath, _page2367ROM));
+                    _page2367 = new Rom( 0x8000, romFilesPath);
                     _page2367.Load();
-                    _alphaHigh = File.ReadAllBytes( Path.Combine( sourceRomPath, _alphaHighROM ) );
+                    _alphaHigh = File.ReadAllBytes( Path.Combine( romFilesPath, _alphaHighROM ) );
                 }
                 catch ( Exception Exception )
                 {
@@ -101,7 +96,12 @@ namespace mhedit.GameControllers
                 Version romVersion = GetROMVersion();
                 if ( romVersion.CompareTo( new Version( 0, 22 ) ) >= 0 )
                 {
-                    //load our exports
+                    // Look in the ROM path for the Exports file first (allows override) and
+                    // if not there then fall back to passed dir.
+                    exportFilePath =
+                        Directory.GetFiles( romFilesPath, $"*.{ExportsFile.FileExtension}" ).Length > 0 ?
+                            romFilesPath : exportFilePath;
+
                     this._exports = new ExportsFile(exportFilePath);
                     this._exports.Load();
                 }

@@ -5,10 +5,14 @@ namespace mhedit.GameControllers
 {
     public interface IGameController : IName
     {
-
-        bool LoadTemplate(string sourceRomPath);
-
-        bool LoadTemplate(string sourceRomPath, string exportFilePath);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="romFilesPath">Path to the ROM files to load. </param>
+        /// <param name="exportFilePath">Path to the Export File which is used if the
+        /// export file isn't co-located at the romPath. </param>
+        /// <returns></returns>
+        bool LoadTemplate(string romFilesPath, string exportFilePath = null);
 
         byte[] GetBytesFromString(string text);
 

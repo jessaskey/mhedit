@@ -73,6 +73,12 @@ namespace MajorHavocEditor.Services
 
                     rom.Load();
 
+                    //exportFilePath =
+                    //    Directory.GetFiles(romFilesPath, $"*.{ExportsFile.FileExtension}").Length > 0 ?
+                    //        romFilesPath : exportFilePath;
+
+                    //this._exports = new ExportsFile(exportFilePath);
+
                     ExportsFile exports = new ExportsFile(Path.GetFullPath(Properties.Settings.Default.TemplatesLocation));
 
                     exports.Load();
