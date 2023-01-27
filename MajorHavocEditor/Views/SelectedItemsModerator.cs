@@ -88,7 +88,8 @@ namespace MajorHavocEditor.Views
                     {
                         if (value is IGrouping<Type, MazeObject> grouping)
                         {
-                            foreach (MazeObject o in grouping)
+                            foreach ( MazeObject o in
+                                grouping.Where( o => !this._mazeSelections.Contains( o ) ) )
                             {
                                 this._mazeSelections.Add(o);
                             }
