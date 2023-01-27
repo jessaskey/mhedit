@@ -15,6 +15,7 @@ namespace MajorHavocEditor.Views
         private ISelectedNodes _selectedNodes;
         private TreeNode _mouseDownMultiSelectNode;
         private TreeNode _mouseDownSelectedNode;
+        private TreeNode _mouseDownSingleSelectedNode;
         private bool _cancelUnwantedLabelEdit;
 
         public MultiSelectTreeView()
@@ -235,11 +236,13 @@ namespace MajorHavocEditor.Views
             {
                 this._selectedNodes.Clear();
             }
-            else if ( e.Node == this._mouseDownMultiSelectNode )
+            else if ( e.Node == this._mouseDownMultiSelectNode ||
+                      e.Node == this._mouseDownSingleSelectedNode )
             {
                 e.Cancel = true;
 
                 this._mouseDownMultiSelectNode = null;
+                this._mouseDownSingleSelectedNode = null;
             }
         }
 
@@ -264,6 +267,7 @@ namespace MajorHavocEditor.Views
             this._cancelUnwantedLabelEdit = false;
             this._mouseDownMultiSelectNode = null;
             this._mouseDownSelectedNode = null;
+            this._mouseDownSingleSelectedNode = null;
 
             TreeNode clickedNode = this.GetNodeAt( e.X, e.Y );
 
@@ -277,9 +281,15 @@ namespace MajorHavocEditor.Views
                     ModifierKeys.HasFlag( Keys.Control ) &&
                     clickedNode.Bounds.Contains( e.X, e.Y ) ? clickedNode : null;
 
-                // This captures clicking on the Treeview.SelectedNode to unselect.
+                // This captures clicking on the Treeview.SelectedNode to unselect
+                // all selected nodes. Thus only the SelectedNode is selected.
                 this._mouseDownSelectedNode =
                     this._selectedNodes.Count > 1 &&
+                    clickedNode == this.SelectedNode ? clickedNode : null;
+
+                // This captures when a single node is selected and should be unselected
+                this._mouseDownSingleSelectedNode =
+                    this._selectedNodes.Count == 1 &&
                     clickedNode == this.SelectedNode ? clickedNode : null;
             }
         }
@@ -287,6 +297,8 @@ namespace MajorHavocEditor.Views
         /// <inheritdoc />
         protected override void OnMouseUp( MouseEventArgs e )
         {
+            base.OnMouseUp( e );
+
             if ( this._mouseDownMultiSelectNode != null )
             {
                 // If control key still applied and MouseUp occurs on the same (MouseDown) Node.
@@ -316,6 +328,19 @@ namespace MajorHavocEditor.Views
 
                     // restore the selected node.
                     this._selectedNodes.Add(this._mouseDownSelectedNode);
+
+                    this._cancelUnwantedLabelEdit = this.LabelEdit;
+                }
+            }
+
+            if (this._mouseDownSingleSelectedNode != null)
+            {
+                if (ModifierKeys.HasFlag(Keys.Control) &&
+                     this._mouseDownSingleSelectedNode.Bounds.Contains(e.X, e.Y))
+                {
+                    this._selectedNodes.Clear();
+
+                    this.SelectedNode = null;
 
                     this._cancelUnwantedLabelEdit = this.LabelEdit;
                 }

@@ -111,9 +111,10 @@ namespace MajorHavocEditor.Services
         {
             if ( e.Action == NotifyCollectionChangedAction.Add &&
                  e.NewItems.Cast<object>().First() is Maze maze &&
-                 !Control.ModifierKeys.HasFlag(Keys.Control))
+                 ( ( (ICollection) sender ).Count == 1 ||
+                   !Control.ModifierKeys.HasFlag( Keys.Control ) ) )
             {
-                this._windowManager.Show(maze);
+                this._windowManager.Show( maze );
             }
         }
 
