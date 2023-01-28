@@ -753,7 +753,7 @@ namespace MajorHavocEditor.Views
 				{
 					this._selectedObjects.Clear();
 
-					mazeObject.Name = NameFactory.Create( obj.GetType().Name );
+					mazeObject.CreateName();
 
 					if ( obj is MazeWall wall )
 					{
@@ -799,18 +799,14 @@ namespace MajorHavocEditor.Views
 						if ( clonedObject is TripPad tripPad )
 						{
 							//special case for Trip Pads, must create a pyroid too
-							TripPadPyroid tripPyroid = new TripPadPyroid
-							{
-								Name = NameFactory.Create( typeof( TripPadPyroid ).Name ),
-							};
-
+							TripPadPyroid tripPyroid = new TripPadPyroid();
 							tripPyroid.Position = tripPyroid.GetAdjustedPosition( tripPad.Position );
 							tripPad.Pyroid = tripPyroid;
 							this._maze.MazeObjects.Add( tripPyroid );
 						}
 					}
 
-					clonedObject.Name = NameFactory.Create( clonedObject.GetType().Name );
+					clonedObject.CreateName();
 					clonedObject.Position = clonedObject.GetAdjustedPosition( point );
 					this._maze.MazeObjects.Add( clonedObject );
                     this._selectedObjects.Add( clonedObject );

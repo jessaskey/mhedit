@@ -66,7 +66,7 @@ namespace mhedit.Containers
         #region Constructors
 
         public Maze()
-            : this( MazeType.TypeA, NameFactory.Create( "Maze" ) )
+            : this( MazeType.TypeA, null )
         { }
 
         public Maze(string name)
@@ -75,7 +75,7 @@ namespace mhedit.Containers
 
         public Maze(MazeType type, string name)
         {
-            this._mazeName = name;
+            this._mazeName = name ?? this.CreateName();
 
             this.MazeType = type;
 
@@ -393,14 +393,14 @@ namespace mhedit.Containers
                 {
                     if (obj is MazeWall wall)
                     {
-                        wall.Name = NameFactory.Create( obj.GetType().Name );
+                        wall.CreateName();
                         wall.Position = wall.GetAdjustedPosition( wall.Position);
                         _mazeObjects.Add((MazeObject)obj);
                         wasAdded = true;
                     }
                     else
                     {
-                        mazeObject.Name = NameFactory.Create( obj.GetType().Name );
+                        mazeObject.CreateName();
                         _mazeObjects.Add((MazeObject)obj);
                         wasAdded = true;
                     }

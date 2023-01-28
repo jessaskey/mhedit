@@ -713,9 +713,8 @@ namespace mhedit.GameControllers
                         {
                             tpp.PyroidStyle = PyroidStyle.Single;
                         }
-                        maze.AddObject(tpp);
-
                         trip.Pyroid = tpp;
+                        maze.AddObject(tpp);
                     }
                 }
 

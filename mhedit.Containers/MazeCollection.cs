@@ -28,13 +28,9 @@ namespace mhedit.Containers
 
         #region Constructor
 
-        public MazeCollection()
-            : this( NameFactory.Create( "MazeCollection" ) )
-        {}
-
-        public MazeCollection( string name )
+        public MazeCollection( string name = null )
         {
-            _collectionName = name;
+            _collectionName = name ?? this.CreateName();
 
             if (this._mazes is INotifyCollectionChanged incc)
             {
@@ -54,7 +50,7 @@ namespace mhedit.Containers
                 {
                     if ( string.IsNullOrWhiteSpace( newMaze.Name ) )
                     {
-                        newMaze.Name = NameFactory.Create( $"{this.Name}Maze" );
+                        newMaze.CreateName( $"{this.Name}Maze" );
                     }
                 }
             }
