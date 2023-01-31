@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -237,22 +238,37 @@ namespace MajorHavocEditor.Views
 					this._maze.MazeWallBase[i].Selected = false;
 				}
 			}
-			//set wall to 'selected' of there is a user defined wall at that location
-			for (int i = 0; i < this._maze.MazeObjects.Count; i++)
-			{
-				MazeObject mazeObject = (MazeObject)this._maze.MazeObjects[i];
-				if (mazeObject.GetType() == typeof(MazeWall))
-				{
-					currentStamp = this._maze.PointToStamp(mazeObject.Position);
-					if (currentStamp >= 0 && currentStamp < this._maze.MazeWallBase.Count)
-					{
-						if (this._maze.MazeWallBase[currentStamp] != null)
-						{
-							this._maze.MazeWallBase[currentStamp].Selected = true;
-						}
-					}
-				}
-			}
+
+            List<IGrouping<Type, MazeObject>> lookup =
+                this._maze.MazeObjects
+                    .ToLookup(mo => mo.GetType())
+                    .ToList();
+
+            var walls = lookup.FirstOrDefault( g => g.Key == typeof( MazeWall ) ) ??
+                        Enumerable.Empty<MazeObject>();
+
+            ((IList)lookup).Remove(walls);
+            
+            var trips = lookup.Where(g => g.Key == typeof(TripPad));
+
+            var allButWalls = lookup.SelectMany(g => g)
+                                    .Concat(trips.SelectMany(g => g)
+                                                 .Cast<TripPad>()
+                                                 .Select(t => t.Pyroid));
+
+			//set wall to 'selected' if there is a user defined wall at that location
+			foreach ( MazeObject mo in walls)
+            {
+                currentStamp = this._maze.PointToStamp(mo.Position);
+                if (currentStamp >= 0 && currentStamp < this._maze.MazeWallBase.Count)
+                {
+                    if (this._maze.MazeWallBase[currentStamp] != null)
+                    {
+                        this._maze.MazeWallBase[currentStamp].Selected = true;
+                    }
+                }
+            }
+
 			//now draw all walls that don't have a user defined wall at that location
 			for (int rows = 0; rows < this._maze.MazeStampsY; rows++)
 			{
@@ -283,37 +299,27 @@ namespace MajorHavocEditor.Views
 				}
 			}
 
-
-
 			//Console.Write("Walls #1 Complete - " + stopwatch.ElapsedMilliseconds.ToString() + "\n");
-		   // stopwatch.Reset();
+			// stopwatch.Reset();
 			//stopwatch.Start();
 
 			//draw all wall objects
-			for (int i = 0; i < this._maze.MazeObjects.Count; i++)
-			{
-				MazeObject mazeObject = (MazeObject)this._maze.MazeObjects[i];
-				if (mazeObject.GetType() == typeof(MazeWall))
-				{
-					Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * this._zoom), (int)(mazeObject.Image.Height * this._zoom), null, System.IntPtr.Zero);
-					g.DrawImage(scaledImage, new Point((int)((mazeObject.Position.X * this._zoom)+ DataConverter.PADDING), (int)((mazeObject.Position.Y * this._zoom)+ DataConverter.PADDING)));
-				}
-			}
+            foreach ( MazeObject mazeObject in walls )
+            {
+                Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * this._zoom), (int)(mazeObject.Image.Height * this._zoom), null, System.IntPtr.Zero);
+                g.DrawImage(scaledImage, new Point((int)((mazeObject.Position.X * this._zoom) + DataConverter.PADDING), (int)((mazeObject.Position.Y * this._zoom) + DataConverter.PADDING)));
+            }
 
 			//Console.Write("Walls #2 Complete - " + stopwatch.ElapsedMilliseconds.ToString() + "\n");
 			//stopwatch.Reset();
 			//stopwatch.Start();
 
 			//draw all non-wall objects
-			for (int i = 0; i < this._maze.MazeObjects.Count; i++)
-			{
-				MazeObject mazeObject = (MazeObject)this._maze.MazeObjects[i];
-				if (mazeObject.GetType() != typeof(MazeWall))
-				{
-					Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * this._zoom), (int)(mazeObject.Image.Height * this._zoom), null, System.IntPtr.Zero);
-					g.DrawImage( scaledImage, new Point( (int)( ( mazeObject.RenderPosition.X * this._zoom ) + DataConverter.PADDING ), (int)( mazeObject.RenderPosition.Y * this._zoom ) + DataConverter.PADDING ) );
-				}
-			}
+			foreach ( MazeObject mazeObject in allButWalls )
+            {
+                Image scaledImage = mazeObject.Image.GetThumbnailImage((int)(mazeObject.Image.Width * this._zoom), (int)(mazeObject.Image.Height * this._zoom), null, System.IntPtr.Zero);
+                g.DrawImage(scaledImage, new Point((int)((mazeObject.RenderPosition.X * this._zoom) + DataConverter.PADDING), (int)(mazeObject.RenderPosition.Y * this._zoom) + DataConverter.PADDING));
+            }
 
 			this._repainted = true;
 			//Console.Write("Objects Complete - " + stopwatch.ElapsedMilliseconds.ToString() + "\n");
@@ -381,19 +387,6 @@ namespace MajorHavocEditor.Views
 		{
             base.OnMouseDown(e);
 
-            /// Apparently the Panel that MazeController inherits from doesn't naturally get focus
-            /// on click.
-            //this.Focus();
-
-			//         if ( e.Button == MouseButtons.Left &&
-			//              ( ModifierKeys & Keys.Control ) != Keys.Control
-			//              && this.ComboBoxObjects != null )
-			//         {
-			//             this._mouseDownLocation = e.Location;
-
-			//             this.ComboBoxObjects.SelectedItem = this.ObtainObjectAt(e.Location);
-			//}
-
 			if (e.Button == MouseButtons.Left)
             {
                 this._mouseDownLocation = e.Location;
@@ -401,18 +394,6 @@ namespace MajorHavocEditor.Views
                 this.SelectObject(this.ObtainObjectAt(e.Location),
                     (ModifierKeys & Keys.Control) == Keys.Control);
             }
-
-
-			//this._mode = (MultiSelectMode)( ModifierKeys & Keys.Control );
-
-			///// Always need to know what, if any, node is clicked on.
-			//TreeNode selected = this.GetNodeAt( e.Location );
-
-			//this._currentSelection = selected != null &&
-			//                         e.Button == MouseButtons.Left &&
-			//                         e.Location.X >= selected.Bounds.Left &&
-			//                         e.Location.X <= selected.Bounds.Right ?
-			//                             selected : null;
 		}
 
 		private MazeObject SelectObject( MazeObject mazeObject, bool isMultiSelect )
@@ -799,10 +780,7 @@ namespace MajorHavocEditor.Views
 						if ( clonedObject is TripPad tripPad )
 						{
 							//special case for Trip Pads, must create a pyroid too
-							TripPadPyroid tripPyroid = new TripPadPyroid();
-							tripPyroid.Position = tripPyroid.GetAdjustedPosition( tripPad.Position );
-							tripPad.Pyroid = tripPyroid;
-							this._maze.MazeObjects.Add( tripPyroid );
+							tripPad.Pyroid.Position = tripPad.Pyroid.GetAdjustedPosition( tripPad.Position );
 						}
 					}
 
@@ -899,8 +877,11 @@ namespace MajorHavocEditor.Views
 
             /// Get all maze objects hit..
             List<MazeObject> hitList =
-				this._maze.MazeObjects.Where( mo => this.PointInObject( mo, adjustedLocation ) ).
-                     OrderBy( o => o.GetType() == typeof( MazeWall ) ).ToList();
+                this._maze.MazeObjects
+                    .Where( mo => this.PointInObject( mo, adjustedLocation ) ||
+                                  mo is TripPad trip &&
+                                  this.PointInObject( trip.Pyroid, adjustedLocation ) )
+                    .OrderBy( o => o.GetType() == typeof( MazeWall ) ).ToList();
 
 			/// look for an already selected object
 			MazeObject selectedObject = hitList.FirstOrDefault( mo => mo.Selected );

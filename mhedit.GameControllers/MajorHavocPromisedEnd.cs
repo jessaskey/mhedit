@@ -654,16 +654,13 @@ namespace mhedit.GameControllers
                     longBytes[2] = 0x80;
                     longBytes[3] = yh;
 
-                    TripPadPyroid tpp = new TripPadPyroid();
-                    tpp.LoadPosition(longBytes);
-                    tpp.SpeedIndex = (TripPyroidSpeedIndex)speedIndex;
-                    tpp.Direction = (TripPyroidDirection)( vdata & 0x80 );
+                    trip.Pyroid.LoadPosition(longBytes);
+                    trip.Pyroid.SpeedIndex = (TripPyroidSpeedIndex)speedIndex;
+                    trip.Pyroid.Direction = (TripPyroidDirection)( vdata & 0x80 );
                     if (styleFlag != 0)
                     {
-                        tpp.PyroidStyle = PyroidStyle.Single;
+                        trip.Pyroid.PyroidStyle = PyroidStyle.Single;
                     }
-                    trip.Pyroid = tpp;
-                    maze.AddObject(tpp);
                 }
 
                 //finally... de hand

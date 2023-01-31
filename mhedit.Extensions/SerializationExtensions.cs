@@ -275,11 +275,11 @@ namespace mhedit.Extensions
                 maze.MazeObjects.Remove( pyroid );
             }
 
-            /// Promote all children up to the MazeObjects collection.
-            foreach ( TripPad tripPad in maze.MazeObjects.OfType<TripPad>().ToList() )
-            {
-                maze.MazeObjects.Add( tripPad.Pyroid );
-            }
+            ///// Promote all children up to the MazeObjects collection.
+            //foreach ( TripPad tripPad in maze.MazeObjects.OfType<TripPad>().ToList() )
+            //{
+            //    maze.MazeObjects.Add( tripPad.Pyroid );
+            //}
         }
 
         /// <summary>

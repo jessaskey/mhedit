@@ -16,10 +16,11 @@ namespace mhedit.Containers.MazeEnemies
         private TripPadPyroid _pyroid;
 
         public TripPad()
-            : base(Constants.MAXOBJECTS_TRIPPAD,
-                    ResourceFactory.GetResourceImage( "mhedit.Containers.Images.Objects.trippad_obj.png" ),
-                    new Point( 0x80, 0x08 ),
-                    new Point( 32, 32 ) )
+            : base( Constants.MAXOBJECTS_TRIPPAD,
+                ResourceFactory.GetResourceImage(
+                    "mhedit.Containers.Images.Objects.trippad_obj.png" ),
+                new Point( 0x80, 0x08 ),
+                new Point( 32, 32 ) )
         { }
 
         #region Implementation of IChangeTracking
@@ -57,23 +58,8 @@ namespace mhedit.Containers.MazeEnemies
         [ReadOnly(true)]
         public TripPadPyroid Pyroid
         {
-            get { return _pyroid; }
-            set
-            {
-                if ( this._pyroid != null )
-                {
-                    this._pyroid.PropertyChanged -= this.ForwardPropertyChanged;
-                }
-
-                this.SetField( ref this._pyroid, value );
-
-                if ( this._pyroid != null )
-                {
-                    this._pyroid.TripPad = this;
-
-                    this._pyroid.PropertyChanged += this.ForwardPropertyChanged;
-                }
-            }
+            get { return this._pyroid ?? this.InitializePyroid( new TripPadPyroid() ); }
+            set { this.InitializePyroid( value ); }
         }
 
         public override Point GetAdjustedPosition( Point point )
@@ -96,6 +82,24 @@ namespace mhedit.Containers.MazeEnemies
         public override byte[] ToBytes(object obj)
         {
             return ToBytes();
+        }
+
+        /// <summary>
+        /// Pyroid should only be set once!!!
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private TripPadPyroid InitializePyroid( TripPadPyroid value )
+        {
+            this._pyroid = this._pyroid != null ?
+                               throw new InvalidOperationException() :
+                               value ?? throw new ArgumentNullException();
+
+            this._pyroid.TripPad = this;
+
+            this._pyroid.PropertyChanged += this.ForwardPropertyChanged;
+
+            return value;
         }
     }
 }
